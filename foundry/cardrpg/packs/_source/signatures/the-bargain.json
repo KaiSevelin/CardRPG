@@ -12,13 +12,10 @@
   "system": {
     "strength": 3,
     "source": "Spiritualism",
-    "description": "<p>A minor god acts, once. <strong>The GM decides how</strong>, and that is not a hole in the spell &mdash; it is the spell.</p>",
+    "description": "<p>A minor god acts, once, from wherever it is. <strong>The GM decides how</strong>, and that is not a hole in the spell &mdash; it is the spell.</p>",
     "effect": {
-      "verb": "conjure",
-      "conjure": {
-        "creature": ""
-      },
-      "text": "it acts once; the GM decides how"
+      "targets": "self",
+      "text": "a minor god acts once, and the GM decides how"
     },
     "kind": "formula",
     "prepared": false

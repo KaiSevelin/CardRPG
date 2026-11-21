@@ -1,6 +1,6 @@
 # Art list
 
-**779 pieces**, of which **779** are drawn and **0** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**790 pieces**, of which **790** are drawn and **0** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -51,7 +51,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 768 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 779 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **11 pieces**, 11 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -410,7 +410,7 @@ Turned face up in front of four people who have been working toward this for a s
 
 **So draw the figure, and draw them doing the thing the title is about.** The axis and the resource in each brief are the distinguishing pair: a Thief spends a slot kept free and a Duellist spends halves, and the pictures should differ the way those two sentences do. The four Ways are in here too — Shade, Warrior, Scholar and Sworn are titles, and they are the four a level-0 character chooses between.
 
-**56 pieces**, 56 wired up. Suggested path: `cardrpg/art/nodes/title/`
+**58 pieces**, 58 wired up. Suggested path: `cardrpg/art/nodes/title/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -427,9 +427,11 @@ Turned face up in front of four people who have been working toward this for a s
 | ✓ | **Brendan** | Brendan · Support / a turn spent early — Growing things, in the least promising ground available. Brendan is the Five's quiet one and the only god ... | `nodes/title/brendan.webp` |
 | ✓ | **Burglar** | Burglar · Preparation / weight — Doors, locks, windows, roofs and the half-hour before any of it that nobody sees. A burglar's skill is logistics; ... | `nodes/title/burglar.webp` |
 | ✓ | **Cutpurse** | Cutpurse · Deck shape / deck size — A crowd specialist. The Cutpurse works in markets, processions and the press at a city gate, and the whole trad... | `nodes/title/cutpurse.webp` |
+| ✓ | **Demonology** | Demonology · Control / a compounding debt — The Third Side had no school, which is the strangest gap in the Way: Glamour answers the Second and Spi... | `nodes/title/demonology.webp` |
 | ✓ | **Divination** | Divination · Support / someone else's turn — Reading. A diviner's work is other people's turns -- what is about to happen, said just early enough t... | `nodes/title/divination.webp` |
 | ✓ | **Duellist** | Duellist · Reactions / halves — A formal fighter in a Way full of informal ones. The Duellist names an opponent and fights that opponent, and the c... | `nodes/title/duellist.webp` |
 | ✓ | **Elemental Magic** | Elemental Magic · Position / reagents — The physical school. Fire, water, stone and air, worked by formula rather than by bargain, and the most rel... | `nodes/title/elemental-magic.webp` |
+| ✓ | **Engineer** | Engineer · Support / weight — The Furnace burned and its engineers walked out carrying what they knew. | `nodes/title/engineer.webp` |
 | ✓ | **Executioner** | Executioner · Tempo / halves — One blow, delivered correctly, to something that is already finished. The Executioner is the most unpleasant title o... | `nodes/title/executioner.webp` |
 | ✓ | **Fagar** | Fagar · Control / Spent — The borrowed face. Fagar is the Five's god of the ones who are not noticed, and the priesthood is deliberately difficult ... | `nodes/title/fagar.webp` |
 | ✓ | **Flagellant** | Flagellant · Tempo / a permanent Wild — Past caring. The Flagellant is the order the others are embarrassed by and the one that arrives when a town... | `nodes/title/flagellant.webp` |
@@ -534,21 +536,23 @@ A title's own piece of content, and what its node wears in the levelling graph.
 
 Eleven, not twelve: *Step Through* is in the Shadow formulas below.
 
-**11 pieces**, 11 wired up. Suggested path: `cardrpg/art/signatures/mind/`
+**13 pieces**, 13 wired up. Suggested path: `cardrpg/art/signatures/mind/`
 
 | | Name | What it is | File |
 |---|---|---|---|
-| ✓ | **Blood Price** | strength 2 · Cast +4 range 3 ignores armour · [object Object] | `signatures/mind/blood-price.webp` |
+| ✓ | **Blood Price** | strength 2 · Cast +4 range 3 ignores armour · costs 2 Health | `signatures/mind/blood-price.webp` |
 | ✓ | **Call the Unquiet** | strength 3 · Conjure range 2 a corpse rises and fights for you | `signatures/mind/call-the-unquiet.webp` |
 | ✓ | **Graven Strength** | strength 1 · Graven | `signatures/mind/graven-strength.webp` |
 | ✓ | **Hearth and Home** | strength 1 · a camp nobody unfriendly can find, for one night | `signatures/mind/hearth-and-home.webp` |
 | ✓ | **Not Here** | strength 2 · Invisible (1) until you attack or are attacked | `signatures/mind/not-here.webp` |
 | ✓ | **Nothing Left to Take** | strength 1 · you cannot be reduced below 1 Health | `signatures/mind/nothing-left-to-take.webp` |
-| ✓ | **The Bargain** | strength 3 · Conjure it acts once; the GM decides how | `signatures/mind/the-bargain.webp` |
+| ✓ | **Shim and Wedge** | Use range 1 · / Ready · Use an item on an adjacent ally instead of on yourself. The item is yours and is spent as normal. | `signatures/mind/shim-and-wedge.webp` |
+| ✓ | **The Bargain** | strength 3 · a minor god acts once, and the GM decides how | `signatures/mind/the-bargain.webp` |
 | ✓ | **The Reading** | strength 2 · Foresee 3 | `signatures/mind/the-reading.webp` |
+| ✓ | **The True Name** | strength 3 · range 4 Compelled (3) | `signatures/mind/the-true-name.webp` |
 | ✓ | **Unmake** | strength 2 · a Cast you have survived before does not resolve | `signatures/mind/unmake.webp` |
 | ✓ | **Wall of the Sphere** | strength 2 · range 3 area 3 of your element | `signatures/mind/wall-of-the-sphere.webp` |
-| ✓ | **Wither** | strength 2 · Cast Poisoned 1 (2) · [object Object] | `signatures/mind/wither.webp` |
+| ✓ | **Wither** | strength 2 · Cast Poisoned 1 (2) · costs 2 skill cards set aside | `signatures/mind/wither.webp` |
 
 ## Signatures — Way of Faith
 
@@ -562,9 +566,9 @@ A god's first and defining miracle.
 | ✓ | **Out of Barren Ground** | strength 3 · Heal 4 range 2 | `signatures/faith/out-of-barren-ground.webp` |
 | ✓ | **The Borrowed Face** | strength 3 · range 3 Spent: one enemy spends this round attacking its own ally | `signatures/faith/the-borrowed-face.webp` |
 | ✓ | **The Clean Hand** | strength 2 · range 3 an ally's next check or attack cannot fail | `signatures/faith/the-clean-hand.webp` |
-| ✓ | **The Club and the Line** | strength 2 · Cast blast 1 with the weapon in hand · [object Object] | `signatures/faith/the-club-and-the-line.webp` |
+| ✓ | **The Club and the Line** | strength 2 · Cast blast 1 with the weapon in hand · costs 2 Health | `signatures/faith/the-club-and-the-line.webp` |
 | ✓ | **The Drum** | strength 1 · your next Strike this turn is +3 | `signatures/faith/the-drum.webp` |
-| ✓ | **The First Taste** | strength 2 · Tainting 2 range 1 · [object Object] | `signatures/faith/the-first-taste.webp` |
+| ✓ | **The First Taste** | strength 2 · Tainting 2 range 1 · costs 1 Taint | `signatures/faith/the-first-taste.webp` |
 | ✓ | **The Long Night** | strength 3 · Cast +3 range 1 you gain the Health you take | `signatures/faith/the-long-night.webp` |
 | ✓ | **The Long Silence** | Ready 2 · / Shake 1 · Only if you did not move this round. Stillness is the whole of the order's method. | `signatures/faith/the-long-silence.webp` |
 | ✓ | **The Order's Shield** | Defend, Block 2 range 1 · / Block 1 range 1 · The Block goes to an adjacent ally and never to you. The order does not defend itself. | `signatures/faith/the-orders-shield.webp` |
@@ -602,14 +606,14 @@ Pays in a permanent Wild card.
 
 Blood Magic and Spiritualism, handed over by minor nodes.
 
-**72 pieces**, 72 wired up. Suggested path: `cardrpg/art/spells/mind/`
+**78 pieces**, 78 wired up. Suggested path: `cardrpg/art/spells/mind/`
 
 | | Name | What it is | File |
 |---|---|---|---|
 | ✓ | **A Clear Head** | strength 1 · Shake 1 range 3 Dazed and they may play a secondary this turn even if they already have | `spells/mind/a-clear-head.webp` |
 | ✓ | **Ask the Dead** | strength 1 · a corpse answers three questions, as truthfully as it knew | `spells/mind/ask-the-dead.webp` |
 | ✓ | **Become the Shadow** | strength 5 · until the fight ends you are in every shadow at once: Strike from any shadowed square, and nothing can target you | `spells/mind/become-the-shadow.webp` |
-| ✓ | **Boil** | strength 3 · Cast Burning 3 (2) · [object Object] | `spells/mind/boil.webp` |
+| ✓ | **Boil** | strength 3 · Cast Burning 3 (2) · costs 2 Health | `spells/mind/boil.webp` |
 | ✓ | **Cast No Shadow** | strength 2 · until your next turn nothing further than 1 square away can target you | `spells/mind/cast-no-shadow.webp` |
 | ✓ | **Empty Hand** | strength 1 · you may Strike with no item, at your own Might | `spells/mind/empty-hand.webp` |
 | ✓ | **Flesh of the Earth** | strength 2 · Cast range 3 Burning 1 (2) and Corrode 1: it eats the armour as well as the man | `spells/mind/flesh-of-the-earth.webp` |
@@ -626,12 +630,15 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 | ✓ | **Nothing At All** | strength 5 · your action deck becomes 4 cards, you hold all four, and may play any two halves. Costs a hand | `spells/mind/nothing-at-all.webp` |
 | ✓ | **Nothing to Carry** | strength 1 · +2 to all Casts, and you cannot be Disarmed | `spells/mind/nothing-to-carry.webp` |
 | ✓ | **One Less Thing** | strength 1 · Sift 1 once a fight | `spells/mind/one-less-thing.webp` |
-| ✓ | **Open the Vein** | strength 1 · Cast +3 range 2 ignores Block · [object Object] | `spells/mind/open-the-vein.webp` |
+| ✓ | **Open the Vein** | strength 1 · Cast +3 range 2 ignores Block · costs 1 Health | `spells/mind/open-the-vein.webp` |
 | ✓ | **Shake It Off** | strength 2 · Shake 3 range 3 | `spells/mind/shake-it-off.webp` |
-| ✓ | **Slick** | strength 1 · range 3 Off Balance (1) · [object Object] | `spells/mind/slick.webp` |
+| ✓ | **Slick** | strength 1 · range 3 Off Balance (1) · costs 1 skill cards set aside | `spells/mind/slick.webp` |
 | ✓ | **Slippery** | strength 1 · Shake 1 range 2 Grappled until your next turn they cannot be Grappled again | `spells/mind/slippery.webp` |
+| ✓ | **Terms** | strength 1 · one honest answer about what it wants from you | `spells/mind/terms.webp` |
+| ✓ | **The Binding Circle** | strength 2 · range 3 Halted (2) | `spells/mind/the-binding-circle.webp` |
 | ✓ | **The Borrowed Body** | strength 3 · Shape | `spells/mind/the-borrowed-body.webp` |
 | ✓ | **The Borrowed Dark** | strength 3 | `spells/mind/the-borrowed-dark.webp` |
+| ✓ | **The Borrowed Hand** | strength 2 · Cast +4 range 4 ignores Block · costs 1 Taint | `spells/mind/the-borrowed-hand.webp` |
 | ✓ | **The Broken Word** | strength 5 · Spent: one spell or miracle is unlearned by its caster for the rest of the day | `spells/mind/the-broken-word.webp` |
 | ✓ | **The Clean Pot** | strength 1 · a day's rations for the party, every day | `spells/mind/the-clean-pot.webp` |
 | ✓ | **The Crowded Room** | strength 4 · until your next turn every enemy attacks a random figure in reach, chosen by a fate draw | `spells/mind/the-crowded-room.webp` |
@@ -641,14 +648,15 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 | ✓ | **The Face of a Friend** | strength 3 · range 3 one enemy treats you as an ally -- it will not attack you and will take a hit for you -- until you attack it | `spells/mind/the-face-of-a-friend.webp` |
 | ✓ | **The Gathered Pact** | strength 4 · every god you are pacted with grants its written favour, this turn | `spells/mind/the-gathered-pact.webp` |
 | ✓ | **The Grave's Bargain** | strength 5 · Conjure a dead ally, and they stand at 1 Health | `spells/mind/the-graves-bargain.webp` |
-| ✓ | **The Great Bargain** | strength 5 · Conjure a minor god becomes present and fights as an ally for three rounds | `spells/mind/the-great-bargain.webp` |
-| ✓ | **The Grey Sickness** | strength 2 · Tainting 1 slow: a disease, not a poison · [object Object] | `spells/mind/the-grey-sickness.webp` |
+| ✓ | **The Great Bargain** | strength 5 · Imbued (3) and the GM takes something afterwards | `spells/mind/the-great-bargain.webp` |
+| ✓ | **The Grey Sickness** | strength 2 · Tainting 1 slow: a disease, not a poison · costs 2 skill cards set aside | `spells/mind/the-grey-sickness.webp` |
 | ✓ | **The Hand Given** | strength 3 · and it costs a hand: your bare Strike is a Heavy weapon at Strike 4 | `spells/mind/the-hand-given.webp` |
 | ✓ | **The House That Was** | strength 4 · overnight a ruin becomes a house, and the party rests as in a town | `spells/mind/the-house-that-was.webp` |
-| ✓ | **The Kingmaker's Draught** | strength 5 · Poisoned 3 (3) no save. If it dies while poisoned, set aside no skill cards for this formula · [object Object] | `spells/mind/the-kingmakers-draught.webp` |
+| ✓ | **The Kingmaker's Draught** | strength 5 · Poisoned 3 (3) no save. If it dies while poisoned, set aside no skill cards for this formula · costs 5 skill cards set aside | `spells/mind/the-kingmakers-draught.webp` |
 | ✓ | **The Last Card** | strength 2 · you may play that card for both halves | `spells/mind/the-last-card.webp` |
-| ✓ | **The Last Drop** | strength 5 · take your whole turn again, now · [object Object] | `spells/mind/the-last-drop.webp` |
-| ✓ | **The Long Dose** | strength 1 · Cast range 2 Poisoned (3) · [object Object] | `spells/mind/the-long-dose.webp` |
+| ✓ | **The Last Drop** | strength 5 · take your whole turn again, now · costs 1 Health | `spells/mind/the-last-drop.webp` |
+| ✓ | **The Lesser Name** | strength 1 · range 3 Compelled (1) | `spells/mind/the-lesser-name.webp` |
+| ✓ | **The Long Dose** | strength 1 · Cast range 2 Poisoned (3) · costs 1 skill cards set aside | `spells/mind/the-long-dose.webp` |
 | ✓ | **The Long Look** | strength 3 · one true answer about the next scene, and the GM writes a prophecy | `spells/mind/the-long-look.webp` |
 | ✓ | **The Long Masquerade** | strength 5 · you and your whole party appear to be other people for a day | `spells/mind/the-long-masquerade.webp` |
 | ✓ | **The Long Preparation** | strength 1 · name one enemy type: your Casts against it are +2 all fight | `spells/mind/the-long-preparation.webp` |
@@ -659,12 +667,14 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 | ✓ | **The Mirror** | strength 3 · Spent: a Cast aimed at you resolves against its own caster | `spells/mind/the-mirror.webp` |
 | ✓ | **The Nine Names** | strength 1 · a minor god names who here it is angry with | `spells/mind/the-nine-names.webp` |
 | ✓ | **The Open Book** | strength 4 · every ally draws fate with advantage, and Read 2 | `spells/mind/the-open-book.webp` |
-| ✓ | **The Quick Dose** | strength 3 · Cast Poisoned 2 (2) · [object Object] | `spells/mind/the-quick-dose.webp` |
-| ✓ | **The Red Hour** | strength 4 · range 2 every ally within 2 may play a second secondary · [object Object] | `spells/mind/the-red-hour.webp` |
+| ✓ | **The Open Door** | strength 4 · Cast range 2 area 2 | `spells/mind/the-open-door.webp` |
+| ✓ | **The Quick Dose** | strength 3 · Cast Poisoned 2 (2) · costs 3 skill cards set aside | `spells/mind/the-quick-dose.webp` |
+| ✓ | **The Reckoning** | strength 5 · Cast +6 range 6 ignores armour ignores Block and the GM then collects the whole ledger | `spells/mind/the-reckoning.webp` |
+| ✓ | **The Red Hour** | strength 4 · range 2 every ally within 2 may play a second secondary · costs 1 Health | `spells/mind/the-red-hour.webp` |
 | ✓ | **The Risen Rank** | strength 4 · Conjure range 3 corpses rise, and fall again when the round ends | `spells/mind/the-risen-rank.webp` |
-| ✓ | **The Second Heartbeat** | strength 3 · Spent: play a second primary this turn · [object Object] | `spells/mind/the-second-heartbeat.webp` |
+| ✓ | **The Second Heartbeat** | strength 3 · Spent: play a second primary this turn · costs 4 Health | `spells/mind/the-second-heartbeat.webp` |
 | ✓ | **The Shadow Road** | strength 4 · area 1 you and every ally within 1 teleport to any shadowed square on the map | `spells/mind/the-shadow-road.webp` |
-| ✓ | **The Shared Cup** | strength 4 · Cast aimed 3 Poisoned 1 (3) · [object Object] | `spells/mind/the-shared-cup.webp` |
+| ✓ | **The Shared Cup** | strength 4 · Cast aimed 3 Poisoned 1 (3) · costs 4 skill cards set aside | `spells/mind/the-shared-cup.webp` |
 | ✓ | **The Shut Mouth** | strength 2 · Cast range 3 Silenced (1) | `spells/mind/the-shut-mouth.webp` |
 | ✓ | **The Small Pact** | strength 1 · the god grants the favour written on your pact | `spells/mind/the-small-pact.webp` |
 | ✓ | **The Sphere Entire** | strength 4 · range 3 area 5 of your element | `spells/mind/the-sphere-entire.webp` |
@@ -701,21 +711,21 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 | ✓ | **Name the Guilty** | strength 1 · range 6 Judged (1) | `spells/faith/name-the-guilty.webp` |
 | ✓ | **No Step Back** | strength 2 · Block 2 area 2 | `spells/faith/no-step-back.webp` |
 | ✓ | **Nobody's Friend** | strength 2 · range 3 until your next turn no ally may Heal, Interpose for, or redirect a hit from one enemy | `spells/faith/nobodys-friend.webp` |
-| ✓ | **Stand Where I Stand** | strength 1 · range 1 adjacent allies cannot be reduced below 1 Health · [object Object] | `spells/faith/stand-where-i-stand.webp` |
+| ✓ | **Stand Where I Stand** | strength 1 · range 1 adjacent allies cannot be reduced below 1 Health · costs 2 Health | `spells/faith/stand-where-i-stand.webp` |
 | ✓ | **Steady the Hand** | strength 1 · Shake 1 range 3 Compelled | `spells/faith/steady-the-hand.webp` |
-| ✓ | **Taste of the Rot** | strength 1 · Cast +1 range 1 Off Balance (1) the Taint only on a Miss · [object Object] | `spells/faith/taste-of-the-rot.webp` |
+| ✓ | **Taste of the Rot** | strength 1 · Cast +1 range 1 Off Balance (1) the Taint only on a Miss · costs 1 Taint | `spells/faith/taste-of-the-rot.webp` |
 | ✓ | **The Air Between** | strength 4 · until your next turn every ally may take one extra reaction per trigger | `spells/faith/the-air-between.webp` |
 | ✓ | **The Amber District** | strength 5 · until the fight ends every adjacent ally shares your armor and Block, and damage dealt to them is dealt to you instead | `spells/faith/the-amber-district.webp` |
 | ✓ | **The Body Made Clean** | strength 5 · every ally is healed to full and every condition is Lifted and Shaken off. Your action deck is 6 cards for the rest of the day | `spells/faith/the-body-made-clean.webp` |
 | ✓ | **The Brewer's Tithe** | strength 2 · Tainting 2 slow: a disease, not a poison | `spells/faith/the-brewers-tithe.webp` |
-| ✓ | **The Charge** | strength 2 · area 2 every ally within 2 may Move their full value, at once, now · [object Object] | `spells/faith/the-charge.webp` |
+| ✓ | **The Charge** | strength 2 · area 2 every ally within 2 may Move their full value, at once, now · costs 2 Strain | `spells/faith/the-charge.webp` |
 | ✓ | **The Clean Field** | strength 4 · until your next turn no enemy may play a secondary | `spells/faith/the-clean-field.webp` |
 | ✓ | **The Close Work** | strength 2 · adjacent: an enemy's Strike hits the nearest other enemy instead | `spells/faith/the-close-work.webp` |
 | ✓ | **The Driven Out** | strength 4 · area 3 Compelled (1) and you gain Block 3 for each enemy Compelled | `spells/faith/the-driven-out.webp` |
 | ✓ | **The Grey Hour** | strength 4 · range 1 Halted (1) | `spells/faith/the-grey-hour.webp` |
 | ✓ | **The Land Beneath** | strength 5 · area 2 every enemy within 2 is gone until then. You are Prone | `spells/faith/the-land-beneath.webp` |
 | ✓ | **The Lie That Held** | strength 5 · a lie named before the fight is true | `spells/faith/the-lie-that-held.webp` |
-| ✓ | **The Line Holds** | strength 4 · allies adjacent to you cannot be moved, knocked Prone or Compelled · [object Object] | `spells/faith/the-line-holds.webp` |
+| ✓ | **The Line Holds** | strength 4 · allies adjacent to you cannot be moved, knocked Prone or Compelled · costs 2 Health | `spells/faith/the-line-holds.webp` |
 | ✓ | **The Mask of the Captain** | strength 4 · one enemy obeys you for a round -- you play its turn | `spells/faith/the-mask-of-the-captain.webp` |
 | ✓ | **The Narrow Path** | strength 1 · your miracles cost 1 slot less (min 1) | `spells/faith/the-narrow-path.webp` |
 | ✓ | **The Orchard** | strength 4 · Heal 4 and sheds one condition | `spells/faith/the-orchard.webp` |
@@ -724,17 +734,17 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 | ✓ | **The Sea Decides** | strength 5 · shuffle every fate deck on the field into one; everyone draws from it | `spells/faith/the-sea-decides.webp` |
 | ✓ | **The Second Face** | strength 1 · Spent: read one enemy's intent card for this round before anyone acts | `spells/faith/the-second-face.webp` |
 | ✓ | **The Second Thought** | strength 1 · range 3 Dazed (1) | `spells/faith/the-second-thought.webp` |
-| ✓ | **The Shield Line** | strength 2 · range 1 adjacent allies gain your armor as Block · [object Object] | `spells/faith/the-shield-line.webp` |
+| ✓ | **The Shield Line** | strength 2 · range 1 adjacent allies gain your armor as Block · costs 1 Health | `spells/faith/the-shield-line.webp` |
 | ✓ | **The Silent Knife** | strength 5 · adjacent: one enemy is dead. No save, no fate draw, no roll of any kind | `spells/faith/the-silent-knife.webp` |
-| ✓ | **The Slow Failure** | strength 5 · Tainting 3 · [object Object] | `spells/faith/the-slow-failure.webp` |
+| ✓ | **The Slow Failure** | strength 5 · Tainting 3 · costs 2 Taint | `spells/faith/the-slow-failure.webp` |
 | ✓ | **The Slow Mercy** | strength 2 · range 3 healed to full | `spells/faith/the-slow-mercy.webp` |
 | ✓ | **The Spring Tide** | strength 4 · until your next turn every ally draws fate twice and keeps both | `spells/faith/the-spring-tide.webp` |
 | ✓ | **The Turning Tide** | strength 2 · range 3 Cursed an ally redraws a fate card and keeps the second. The Cursed is yours | `spells/faith/the-turning-tide.webp` |
-| ✓ | **The War Drum** | strength 4 · area 2 every ally within 2 takes their whole turn again, now · [object Object] | `spells/faith/the-war-drum.webp` |
+| ✓ | **The War Drum** | strength 4 · area 2 every ally within 2 takes their whole turn again, now · costs 3 Strain | `spells/faith/the-war-drum.webp` |
 | ✓ | **The Weight of It** | strength 2 · range 6 a Judged enemy's armor counts 0 against everyone until your next turn | `spells/faith/the-weight-of-it.webp` |
 | ✓ | **The Whole Cloth** | strength 4 · one enemy type believes the party are its own | `spells/faith/the-whole-cloth.webp` |
 | ✓ | **Undertow** | strength 2 · Cast range 3 blast 2 Wet (1) every target is moved 1 square you choose | `spells/faith/undertow.webp` |
-| ✓ | **Valtor's Own** | strength 5 · for the rest of the fight you play a primary and two secondaries each turn · [object Object] | `spells/faith/valtors-own.webp` |
+| ✓ | **Valtor's Own** | strength 5 · for the rest of the fight you play a primary and two secondaries each turn · costs 1 Strain | `spells/faith/valtors-own.webp` |
 | ✓ | **What Does Not Die** | strength 3 · drop to 1 instead of 0, and lose a spell slot for good | `spells/faith/what-does-not-die.webp` |
 | ✓ | **What Grows Out of Us** | strength 5 · every ally including the dead stands at full Health | `spells/faith/what-grows-out-of-us.webp` |
 
@@ -744,7 +754,7 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 
 **Draw the condition and never the sufferer.** One picture serves a goblin, a dragon and the player, so a figure in the frame is the wrong figure for three quarters of the table — the same constraint the intent deck works under. Each of these is one object or one gesture, close, with the body kept out or cropped to a limb. It is also the only way twenty-five of them do not arrive as twenty-five people pulling faces.
 
-**25 pieces**, 25 wired up. Suggested path: `cardrpg/art/conditions/`
+**26 pieces**, 26 wired up. Suggested path: `cardrpg/art/conditions/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -761,6 +771,7 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 | ✓ | **Graven** | Fresh ink worked into a forearm, the lines raised and the skin still angry around them. Close enough that it is skin and ink and nothing else. | `conditions/graven.webp` |
 | ✓ | **Halted** | An hourglass lying on its side on bare ground, both bulbs half full and nothing moving between them. No sand falling, no hand, no table. | `conditions/halted.webp` |
 | ✓ | **Heckled** | A thumb turned down at the end of a bare arm thrust in from the lower edge, drawn large and crude. Whoever it belongs to is not in the picture. | `conditions/heckled.webp` |
+| ✓ | **Imbued** | A pair of open hands held low, lit from inside the skin rather than from the room, the glow strongest at the knuckles and dying at the wrists. No f... | `conditions/imbued.webp` |
 | ✓ | **Invisible** | A doorway with wet footprints coming through it and stopping, the last pair only half printed. Nobody in the frame. | `conditions/invisible.webp` |
 | ✓ | **Judged** | A pair of hand-scales hanging still with one pan lower than the other, against bare paper. Nothing in either pan. | `conditions/judged.webp` |
 | ✓ | **Marked** | A chalk cross on a plain wooden door, drawn fast and recently, the dust still on the boards beneath it. | `conditions/marked.webp` |

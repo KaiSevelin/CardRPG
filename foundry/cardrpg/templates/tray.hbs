@@ -224,7 +224,13 @@
       </div>
       {{/if}}
       {{#if targets}}
-      <div class="cr-note" data-tooltip="Fate is drawn once per action, not per target">&#9678; {{targets}}</div>
+      {{!-- Each target with its distance, and its reach once something staged has one. Marked when
+            the staged action does not reach it, never disabled: the engine measures squares and
+            does not know about the ledge or the rope (core-rules 12). --}}
+      <div class="cr-note" data-tooltip="Fate is drawn once per action, not per target">&#9678;
+        {{#each targets}}<span class="cr-range__at{{#if this.out}} cr-range__at--out{{/if}}"
+              data-tooltip="{{this.tip}}">{{this.name}}{{#if this.range}} <b>{{this.range}}</b>{{/if}}</span>{{/each}}
+      </div>
       {{/if}}
       <div class="cr-options__buttons">
         {{!-- Clear and Breath are a character's: a monster stages nothing and has no stamina to

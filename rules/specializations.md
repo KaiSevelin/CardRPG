@@ -10,6 +10,20 @@ Two columns carry different weight:
 - **Pays in** for a **Way of Mind** school is *written in the world already*. Those are not proposals.
 - **Leans on** is mostly a proposal, and the places where it is forced are marked.
 
+**Who these people are is content now.**  **[MOVED 2026-11-21]** Fifty paragraphs saying what an
+Ironclad is for, what a Flagellant thinks is happening and why a Knight can afford to be one had
+been written by hand into one copy of the players' handbook, and into the exact region the handbook
+generator overwrites. They were the only description of any of these people in the whole book, they
+were in no pack and on no page, and one `npm run handbook` would have taken all fifty. They are
+`TITLE_BLURBS` in `module/content/title-blurbs.mjs`, checked in both directions the way the card
+blurbs are: a title with no paragraph fails the suite and a paragraph for a title that no longer
+exists fails it too.
+
+Six of the Way of Faith titles share a paragraph rather than each having one, because the Five and
+the three Books are introduced by the arrangement between them and not one god at a time. So an
+entry names every title it covers and the suite holds the invariant that matters, which is that
+every title is covered exactly once.
+
 ---
 
 ## The find: the world already priced magic
@@ -88,9 +102,35 @@ Two consequences worth seeing before this is built:
 
 ---
 
-## Way of Mind — 12 schools, 4 crafts, 1 ritual
+## Way of Mind — 13 schools, 4 crafts, 1 ritual
 
 Direct magic is cast in combat. Ritual magic is not, and anyone literate can do it.
+
+**Demonology and Engineer are built.**  **[BUILT 2026-11-20]** The world document leaned on both and
+neither had a node. **Demonology** closes the Sides: Glamour is the Second, Spiritualism and
+Necromancy are the Fourth, and the Third — the sacrifice-paid road to Sammel, Baal Fagor, the whole
+founding war — had nothing. It takes **Control** rather than Preparation on purpose, because
+Preparation plus *a pact* is Spiritualism, and the two would have collided on axis and currency at
+once. The world also settles what it may not be: *"all summoning of demons and the like is done
+through rituals"*, so the node spends a debt the ritual already incurred and summons nothing in a
+fight. **Engineer** is the first of the four crafts to get a block, and it claims the one piece of
+unowned machinery in the rules — **Corrode**, **Blunt** and repair ([core-rules.md](core-rules.md),
+damaged gear) — which keeps it clear of Artillerist, Trapmaker and Musketeer. Its Tactic pays off at
+the end of a fight rather than inside one, which is a deliberate exception to *"true on the turn you
+are deciding where to go"*.
+Its Signature **Shim and Wedge** is an action card rather than an item, because a Signature that
+could be dropped, stolen or Corroded would be a different kind of object from every other one in
+the book. It is the only Way of Mind card with a primary and a secondary, which is the point: the
+craft casts nothing, so a reaction-only slate would have left it with a blank card.
+
+**Tattoo Magic was already built, and the handbook was wrong about it.**  **[FIXED 2026-11-20]**
+`module/content/way-mind.mjs` has carried the school's seven teachings since before this draft, all
+of them `kind: "feature"` on the reasoning that *a thing usable without being equipped or prepared
+is a feature* — and all eight pictures are drawn. Chapter 25 had named seven different formulas that
+existed nowhere else, which would have orphaned the art and invented a second mechanism. The chapter
+now lists what the content holds. This also answers the renewal question outright: a tattoo is never
+cast, so nothing is consumed and nothing is renewed, and the price is a spell slot spent **for good**
+plus a secret the GM writes down.
 
 | Node | Leans on | Pays in |
 |---|---|---|
@@ -107,6 +147,8 @@ Direct magic is cast in combat. Ritual magic is not, and anyone literate can do 
 | **Ward Magic** ✱ | **Reactions** | Spent — a ward held in reserve is a card gone for the fight |
 | **Divination** ✱ | **Support** | Someone else's turn — and a prophecy the GM holds over you |
 | **Ritual Magic** ✦ | *(out of combat)* | Time, and a recipe that can go wrong |
+| **Demonology** ✱ | **Control** | A **compounding debt** to something on the Third Side, per formula, as an obligation |
+| **Engineer** ✱ | **Support** | Weight — the shop travels with you |
 | **Brewer** | *(craft)* | — |
 | **Smith** | *(craft)* | — |
 | **Jeweller** | *(craft)* | — |
@@ -187,10 +229,12 @@ turns out to be wrong it can be cut without reshaping a branch.
   │  ├─ SHADOW MAGIC    (Position    / a permanent Wild)
   │  ├─ WARD MAGIC      (Reactions   / Spent)
   │  └─ HOUSEHOLD MAGIC (Support     / a place you know)
-  └─ SPIRITUALISM       (Preparation / a pact)
-     ├─ GLAMOUR         (Control     / an elven debt)
-     ├─ TATTOO MAGIC    (Deck shape  / a secret)
-     └─ DIVINATION      (Support     / someone else's turn)
+  ├─ SPIRITUALISM       (Preparation / a pact)
+  │  ├─ GLAMOUR         (Control     / an elven debt)
+  │  ├─ TATTOO MAGIC    (Deck shape  / a secret)
+  │  └─ DIVINATION      (Support     / someone else's turn)
+  ├─ DEMONOLOGY         (Control     / a compounding debt)
+  └─ ENGINEER           (Support     / weight)
 ```
 
 **Household Magic's cell closes an [OPEN] above** rather than leaving it open. The out-of-combat

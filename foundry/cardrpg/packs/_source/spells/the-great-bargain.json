@@ -12,15 +12,16 @@
   "system": {
     "strength": 5,
     "source": "Spiritualism",
-    "description": "<p>It is actually here, for three rounds. The GM plays it as an ally and then it goes, and afterwards it takes something the GM chooses &mdash; which is the only honest way to price a favour that large.</p>",
+    "description": "<p>It does not come. It fills you &mdash; three rounds of a minor god's own power in your hands, and your Casts land like something much older than you. Then it leaves, and afterwards it takes something the GM chooses, which is the only honest way to price a favour that large.</p>",
     "effect": {
-      "verb": "conjure",
-      "conjure": {
-        "creature": ""
-      },
+      "condition": "imbued",
       "duration": 3,
       "targets": "self",
-      "text": "a minor god becomes present and fights as an ally for three rounds"
+      "bonus": {
+        "verb": "cast",
+        "value": 3
+      },
+      "text": "and the GM takes something afterwards"
     },
     "kind": "formula",
     "prepared": false

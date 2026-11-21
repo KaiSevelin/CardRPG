@@ -170,6 +170,11 @@ export const CONDITION_LOOKS = {
   offBalance: "One foot caught on a raised root, the heel already lifting and the weight gone past where it can be recovered. Below the knee only.",
   marked: "A chalk cross on a plain wooden door, drawn fast and recently, the dust still on the boards beneath it.",
   judged: "A pair of hand-scales hanging still with one pan lower than the other, against bare paper. Nothing in either pan.",
+  /* Imbued is power on loan from somebody much older, and the hard part is drawing the loan
+   * rather than the lender: a god in the frame would be a conjuration, which is the exact
+   * thing this condition exists instead of. So the evidence is in what the hands are doing
+   * and what is coming off them. */
+  imbued: "A pair of open hands held low, lit from inside the skin rather than from the room, the glow strongest at the knuckles and dying at the wrists. No face, no figure above the forearms, nothing held.",
 };
 
 /**

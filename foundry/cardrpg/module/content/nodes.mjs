@@ -1280,6 +1280,64 @@ export const NODES = [
     grants: { item: "Recipe: Unknotting", expertise: "lore" }
   },
 
+  /*
+   * --- the Engineer, and the first of Way of Mind's four crafts to be built ---
+   *
+   * **Off `mind.letters` and not off `mind.vigil`**, which is the whole point of putting it in this
+   * Way at all. The Vigil is where the spell slots are; Letters is where *reading and writing* is.
+   * A Furnace engineer studies as hard as a necromancer and casts nothing, so the branch takes the
+   * trunk's literacy and then leaves -- and nothing on it grants a slot, which is what makes the
+   * claim true rather than decorative.
+   *
+   * **It is a title and ritual magic is not**, and the difference is the one specializations.md
+   * draws: a major node is a fighting identity. Ritual magic is a thing to be between fights, and
+   * an engineer in a fight is doing something -- keeping the party's gear standing, which is the
+   * one piece of machinery in the rules nothing owned.
+   *
+   * **Max two crafts**, which is the brief, so Smith stays unbuilt and Brewer and Orator stay
+   * where they already effectively live: the Poison school and the Bard.
+   */
+  {
+    id: "mind.guild", name: "The Guild Floor", after: ["mind.letters"],
+    /* The kit before the theory, because the Furnace guilds taught it that way round: a drawing is
+     * what you are given after you have already filed something true. */
+    grants: { item: "Repair Kit", training: "armour and its repair" }
+  },
+  {
+    id: "mind.guild.tolerances", name: "Tolerances", after: ["mind.guild"],
+    grants: { expertise: "lore", knowHow: "what the Furnace guilds will and will not sell" }
+  },
+  {
+    id: "mind.engineer", name: "Engineer", after: ["mind.guild.tolerances"], title: "Engineer",
+    axis: "Support", resource: "weight",
+    signature: "Shim and Wedge", tactic: "Nothing Is Scrap",
+    /*
+     * **No `spellSlots` here and none anywhere on the branch.** Every other title in this Way
+     * hands over a formula; this one hands over a card, and the Signature is a card for the same
+     * reason. See `MIND_SIGNATURES` for why it is not an item.
+     *
+     * What it SPENDS is not a field, and the gap is the same shape the other crafts will have.
+     * **Weight** is already a number the engine keeps -- `carry`, against the 40 kg limit -- but
+     * what this title spends is not a quantity of it, it is the fact that the shop travels with
+     * you: an engineer carrying what an engineer needs has no room for loot, and that is a
+     * pressure on the party's whole march rather than a cost on a card. A negative `carry` on this
+     * node would have said something cruder and wronger.
+     */
+    grants: { card: "Shim and Wedge", knowHow: "what is holding a structure up" },
+    lore:
+      "The Furnace burned and its engineers walked out carrying what they knew. There is a guild "
+      + "in every surviving district now, and they keep the trains, the cable cars and the sea "
+      + "defences standing.\n\nAn engineer is not a magician, whatever the odd mage working "
+      + "beside them suggests, and nothing on the way here teaches a spell. What you spend is "
+      + "**weight** -- the shop travels with you, and there is no version of this where somebody "
+      + "else carries it. Nothing is scrap: what acid and hammers leave behind is work, not loss."
+  },
+  /* A capstone grants something a fight would notice (way-cards 3.4), and `carry` alone is not
+   * that -- so the card comes first and the bigger pack is what it travels in. *Both Hands* is the
+   * common pool's one Ready-and-swing, which is what a person with a tool in each hand does. */
+  { id: "mind.engineer.spares", name: "Spares and Patterns", after: ["mind.engineer"],
+    grants: { card: "Both Hands", carry: 5 } },
+
   {
     /* The common card a caster gets is the one about spacing, because where to stand is the hard
      * problem this whole Way's Tactics are written about (way-cards 2.5). */
@@ -1380,6 +1438,54 @@ export const NODES = [
       + "this is the only discipline in the game that gets stronger as the deck gets thinner. "
       + "Nothing left to take is a boast when it is true and a eulogy when it is not quite."
   },
+
+  /*
+   * --- Demonology, a fourth school off the trunk ---
+   *
+   * **Off `mind.vigil`, beside Blood Magic rather than under it, and the sibling rule is what
+   * decided that.** Blood Magic was the obvious parent: it is the node that grants **Demonic**, and
+   * Firma.md puts the arrangement there -- the demons hold the Third Side and let the necromancers
+   * use it *in exchange for human sacrifices*. But Blood Magic's children are Necromancy
+   * (Preparation), Asceticism (Deck shape) and **Poison (Control)**, and siblings must differ on
+   * both halves of the cell. Demonology is Control, and bending the axis to fit the slot would
+   * have been the tail wagging the dog: Control is what this school IS -- see way-mind.mjs.
+   *
+   * So it is a fourth root, which on reflection is the better reading anyway. The three roots are
+   * the body, the world and the spirits; the Third Side is its own subject and not a corner of the
+   * blood. **Demonic moves onto this branch** for the same reason: a demonologist who never took
+   * Blood Magic still has to be able to say the words.
+   *
+   * **And it is taken straight off the Vigil, with nothing in front of it**, which is how all four
+   * roots work and is a rule rather than a convenience: a minor node hands over its TRUNK school's
+   * formula and never the school it leads to, because a school's list without the school's price is
+   * the forbidden shape. A run of two nodes in front of this title would have had to teach
+   * Demonology's formulas before anybody had agreed to owe anything, which is the whole school
+   * given away for nothing. The other six formulas are reached the way every root school's are:
+   * through the menu node behind the title.
+   *
+   * **Nothing on it teaches summoning.** The calling is ritual work, lives on `mind.ritual`, and is
+   * open to anyone literate -- which is the world document's gate and not a choice made here.
+   */
+  {
+    id: "mind.demonology", name: "Demonology", after: ["mind.vigil"], title: "Demonology",
+    axis: "Control", resource: "a compounding debt",
+    signature: "The True Name", tactic: "The Terms Are Binding",
+    /* **Demonic here as well as on `mind.blood`**, and the duplication is the point: the Third Side
+     * is reachable two ways -- by paying it in blood, or by keeping a ledger with it -- and a
+     * demonologist who never studied Blood Magic still has to be able to say the words. Imperial
+     * and Valgar are already taught from two directions for less reason than this. */
+    grants: { spell: "The True Name", language: "Demonic", expertise: "presence",
+      knowHow: "which of the Third Side keep their word" },
+    lore:
+      "The Third Side had no school, which is the strangest gap in the Way: Glamour answers the "
+      + "Second and Spiritualism and Necromancy the Fourth, while the side the founding war was "
+      + "fought over had nobody studying it.\n\nA demonologist summons nothing. The calling is "
+      + "ritual work and takes days, and what you carry into a fight is not a demon but **a "
+      + "compounding debt** and the names the thing gave up along the way. The GM keeps the "
+      + "ledger. The terms are binding, and they bind in both directions."
+  },
+  { id: "mind.demon.ledger", name: "The Standing Debt", after: ["mind.demonology"],
+    grants: { choose: { from: "Demonology" } } },
 
   {
     id: "mind.blood.doses", name: "Doses", after: ["mind.blood"],

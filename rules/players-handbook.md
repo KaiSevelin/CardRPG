@@ -16,8 +16,8 @@ were hurt, but because you have been fighting.
 
 ### The Sides
 
-Firma is one of several worlds laid over the same ground. The mountains and lakes of one stand in the
-same places on the next; what differs is who lives there and what they have done to it.
+Firma is one of several worlds laid over the same ground. The mountains and lakes of one stand in
+the same places on the next; what differs is who lives there and what they have done to it.
 
 | | |
 |---|---|
@@ -27,18 +27,26 @@ same places on the next; what differs is who lives there and what they have done
 | **The Fourth Side** | The land of the dead. The accounts contradict each other so completely that nobody can say whether it is a paradise, a hell or a shadow of here. Only the dead are let in. |
 | **A Fifth** | Rumoured, along with a Sixth and a Seventh. Nobody has proved any of them. |
 
+**Two crossings are known to stand open permanently.** The elves keep a gate to the Second Side in
+the heart of Velderon, and their staff come and go through it; nobody else goes through without an
+invitation. The necromancers of Saag et Haar keep a portal of their own, matched by one in Sammel,
+with a demon-permitted road between them: a dusty track through desert, its edges marked by poles
+topped with skulls. Stay inside the markings and pay what the crossing costs, one human sacrifice
+per journey, and you come out the other end. Sandstorms are common, and people who wander off the
+road are not seen again.
+
 ### How it came to this
 
 Humans took the continent slowly. The elves withdrew to the Second Side and the demons to the Third.
-Monsters and nature spirits were driven into remote places, and the trolls, the dragons and the minor
-gods went down into their long sleep.
+Monsters and nature spirits were driven into remote places, and the trolls, the dragons and the
+minor gods went down into their long sleep.
 
-The old reckoning starts at the year 0, when the warrior-king **Athor** pushed his empire to the coast
-in every direction. It held for a hundred years and then cracked, and for five hundred years after
-that the pieces fought over where the lines between them ran. Regions drifted apart. The assassins
-founded their state in the oasis of the Hyena Desert, the blood mages established themselves on the
-island of Hyrlock, and the Strigoi princes organised to grow their undead power. In the old year 674
-the counting started again at 0.
+The old reckoning starts at the year 0, when the warrior-king **Athor** pushed his empire to the
+coast in every direction. It held for a hundred years and then cracked, and for five hundred years
+after that the pieces fought over where the lines between them ran. Regions drifted apart. The
+assassins founded their state in the oasis of the Hyena Desert, the blood mages established
+themselves on the island of Hyrlock, and the Strigoi princes organised to grow their undead power.
+In the old year 674 the counting started again at 0.
 
 **Airships came out of the sky in that first year, and nobody has ever learned from where.** Another
 world, or a land across the sea. What came out of them is called the **Horde**: insect-like, of one
@@ -48,16 +56,16 @@ was doing. Humanity was divided and did not.
 The war has lasted a thousand years. Humans won battles and lost cities, and the direction never
 changed. The Strigoi princes made their own pact with the Horde and kept their neutrality.
 
-**In year 87, with everything nearly lost, humanity made a pact with the blood mages of Hyrlock.** Six
-great territories, the **districts**, were ringed with a protective ritual powered by thousands of
-human sacrifices. The isolated **enclaves** were each given blood mages of their own to renew smaller
-barriers every year. The Horde had the world, but what was inside the rings was safe.
+**In year 87, with everything nearly lost, humanity made a pact with the blood mages of Hyrlock.**
+Six great territories, the **districts**, were ringed with a protective ritual powered by thousands
+of human sacrifices. The isolated **enclaves** were each given blood mages of their own to renew
+smaller barriers every year. The Horde had the world, but what was inside the rings was safe.
 
-What followed was attrition. The Horde strangles the roads between the enclaves and hunts the caravans
-that leave the barriers; humanity raids the **hives**. Tunnels were dug so that one safe place could
-reach another, and the network grew until parts of it were forgotten. Monsters took sections of it,
-landslides let the Horde into others, dissidents built their own communities out in the dark, and here
-and there the digging broke into elven ruins older than anyone's records.
+What followed was attrition. The Horde strangles the roads between the enclaves and hunts the
+caravans that leave the barriers; humanity raids the **hives**. Tunnels were dug so that one safe
+place could reach another, and the network grew until parts of it were forgotten. Monsters took
+sections of it, landslides let the Horde into others, dissidents built their own communities out in
+the dark, and here and there the digging broke into elven ruins older than anyone's records.
 
 **The sacrifices were never popular.** In 879 a mob in the Furnace District beat its blood mages to
 death. A month later the Horde came through the gap, and the district fell.
@@ -79,6 +87,42 @@ furthest from everything, is forest: dense wet conifer, lakes and bogs, with tro
 dragons over it. The **north-east** was the workshop of the continent until it fell, and the roads
 that ran through it are the ones nobody uses any more.
 
+**The mountains have names and so do the ranges nobody goes to.** The **Spear Mountains** are the
+ring around the Core plain, and because they stand next to the cradle of civilisation their inner
+slopes are strewn with the ruins of towns, mining camps and villages; Steinbrëk is the last of them
+still lived in. **Spear Pass** cuts through them and used to be a busy road. The **Mouse Mountains**
+are a forerunner of the Spears, low and mineral-rich, standing over the north edge of the desert.
+**North Wall** is a north-westerly spur, young and sharp-peaked, with abandoned mines strung along
+it. **South Wall** stands on its own in the south-west, the same high sharp rock, never prospected
+and never mined.
+
+**The dry country is in the south.** The **Hyena Desert** is the only real desert on the continent:
+sand, hot days, cold nights, three oases and nothing else that holds water. East of it lies **Lost
+Lake**, once a living salt lake, which the Horde dried out so it could plant its main hive in the
+middle of the bed.
+
+**One sea goes round the whole continent, and sailors name the stretches of it separately.** The
+**Kelp Sea** off the west is fast and stormy, named for the giant kelp whose rafts show which way
+the current runs. **The Breaks** in the south-west throws up ten-metre waves without stopping and
+cut the cliffs of South Wall. **Athor's Bay** in the south is calm, named for the beach where
+Athor's body was landed on its way to burial in Geistburg, and had idyllic fishing villages along it
+before the invasion. **The Tidals** run calm with enormous tides from the Amber coast down to the
+Ruby. The **Troubled Sea** in the south-east killed sailors routinely, which is why Solemn stayed
+undiscovered so long despite being close in. **Everfog** in the north-east is windless and full of
+fog. **Windy Waters** in the far north is as violent as the Troubled Sea.
+
+**And the green and the wet.** **The Wild** is the great eastern conifer forest, taking in the whole
+Amber District and running west to the Spears and south towards Echterhof: rapids, bogs, lakes and
+rocky knolls in a natural labyrinth, with broadleaf trees mixed in at its southern end. **Moss
+Forest** is something else: enormous oaks over tree ferns and thorn thickets, avoided by humans
+before the invasion and avoided by the Horde since, and said to lie close to the other Sides, which
+is why minor gods like **the Cat God** and **Mother Longhand** are named with it. The northern
+tongues of land are wetland, with **Troll Bogs** in the middle, where **the Troll King** is said to have
+ruled the continent from caves beneath the mire before either elves or humans arrived, and the drier
+**Thornmoor** to the east, heath with the odd lake and copse. The **Spray Islands** in the north are
+bare wind-beaten rock nobody has ever lived on, and are held to be where **the Winter Lady** stays
+when she is not walking south with the frost.
+
 **It is three layers, and you will travel in all of them.**
 
 - **Inside the rings.** Five districts and some twenty enclaves. Safe, because the blood magic says
@@ -98,57 +142,150 @@ neighbours, and two a day apart overland can be unreachable.
 
 ### The five districts that are left
 
-**The Core.** Inland, on the fertile damp plain inside the Spear Mountains. It protects **Geistburg**,
-Athor's old capital, five satellite cities and the farmland between them, and the realm is still called
-Denaria. Geistburg is a melting pot of complicated politics, a dozen corrupt noble houses and a
-powerless man who is still titled emperor. The mages' academy and the cathedral of the Church of the
-Eternal God stand apart out on the plain, each grown into a small town of its own around its magic or
-its religion, which is how hypocrisy and religious persecution come to walk together. The capital is
-built on one huge mesa, with the rich and noble inside Geistburg itself, slums over the rest of the
-rock, and ordinary people out in the satellite cities. Cable cars connect the mesa to the plain below.
+**The Core.** Inland, on the fertile damp plain inside the Spear Mountains. The climate is mild and
+the winters are short and heavy with snow, and meandering rivers cross the farmland on their way to
+the **Silver Lake**, which is thick with fish. There is an island in the middle of that lake, the
+**Isle of Spirits**, and it is the only wild ground left inside the ring: ordinary people avoid it
+and the priests will tell you it is a blasphemous place. The only mountain country in the district
+is in the north-east around the mine town of **Steinbrëk**. The district protects **Geistburg**,
+Athor's old capital, five satellite cities and the farmland between them, and the realm is still
+called Denaria.
+
+**Nobody is in charge of the Core, which is not the same as saying nobody rules it.** The Church is
+the strongest power and the mages' academy the second. The emperor and his court hold the formal
+power and not the ability to use it. The **Guild**, which speaks for craftsmen and farmers, is
+strong enough to fight the others over land and frequently does. Every one of them keeps its own
+courts, so which law you are under depends on who claims you. The Church of **the Eternal Spirit** makes
+the tangle worse. The poor are held down hard, and one grouping, the **Weasels**, runs a slow,
+patient resistance against everyone above them, strongest out in the satellite cities, which are
+mostly the Church's ground.
+
+**The capital is built on one huge mesa**, with the rich and noble inside Geistburg proper, slums
+over the rest of the rock, and ordinary people out in the satellite cities. Four cable cars and two
+stairs cut into the stone connect the top to the plain; upper Geistburg is rich, depraved and
+corrupt, and its intrigues run for years between the Church, the mages, the noble houses and the
+embassies of every other district and enclave. Lower Geistburg feeds the upper, and sprawls from
+slum to market to the odd minor-noble castle. Out on the plain, the mages' academy and the cathedral
+of the Church of the Eternal God stand apart, each grown into a small town of its own around its
+magic or its religion, which is how hypocrisy and religious persecution come to walk together.
+**Academy** is one tall tower with a settlement around it, run by a mage titled the **Magus**.
+**Cathedral**, despite the name, has two of them, the grander for **the Eternal God** and the slightly
+less grand for **the Eternal Spirit**, each with its own forts and monasteries of warrior-monks facing
+the other across the same city. Of the satellites, **Gradenbosch** is unwalled and agricultural, and
+its baron keeps his chair with the Academy's help; **Hirmer** sits midway between Cathedral and
+Academy and is pulled apart by both, which has left it a city of whispers and hidden agendas where
+the Weasels are strong; **Erleng** is ruled from three castles by three noble families who pass the
+barony between them on a rota that has held for centuries, and breeds more horses than anywhere in
+the Core, most of them sent on to Regensburg to be trained; **Fynch** farms, keeps the monastery of
+the Flagellants, and has a religious court big enough to handle the volume of death sentences their
+influence produces; and **Steinbrëk** holds the Core's only mines, shafts bored centuries deep into
+the Spears, and has kept itself apart for so long that the politics of the plain barely reach it.
+One quarter of Steinbrëk belongs to an engineering guild of Furnace refugees.
 
 **The Fiord.** The westernmost of the three great fiords of the northern coast, where the sea cuts
 deep inland, with a few islands lying close enough in to belong to the district and six enormous
-lighthouses marking where the ring runs. The capital is **Black Harbour**, which shares the district
-with a handful of fishing villages and one fortified northern town, and the region used to belong to
-the Salt Barons, an association of fishing magnates, smugglers and pirates. The old faith of the Five is strong here and
-the Church of the Eternal God is considered blasphemy. It lands most of the continent's fish. The
-**West Road**, a broad tunnel with underground cities along it, ties it to the Core.
+lighthouses marking where the ring runs. It is a wet place, and inside the coastal cliffs, which in
+places drop sheer and high into deep water, the ground is damp treeless heath, most of the way
+across. The capital is **Black Harbour**, which shares the district with a handful of fishing
+villages and one fortified northern town, and the region used to belong to the Salt Barons, an
+association of fishing magnates, smugglers and pirates. Black Harbour is built of timber that has
+weathered black, which is where the name comes from: a fish-stinking snarl of alleys and dark houses
+in which even the manor houses look shabby. The old faith of the Five is strong here and the Church
+of the Eternal God is considered blasphemy. It lands most of the continent's fish. The **West
+Road**, a broad tunnel with underground cities along it, ties it to the Core.
+
+**It is a clan society of twelve families**, each of them working to grow its own power at the
+others' expense. The law is a council of family representatives that sits once a year, or sooner if
+called. Inside its own ground a family may judge and punish as it likes; anything that touches
+another family has to go up to the council. **Blood feud is an accepted principle of law**, not a
+breakdown of it. The poor are parcelled out under the clans and have no common voice at all, and the
+priests here put the family first, before the faith and before you.
 
 **The Ruby.** Rolling hills in the south-east, warm, famous for wine and fruit, where the rich once
-built winter palaces. The coast feeds it fish and the farmland the rest, but wine is what it is known
-for. The **South Road** runs to the Core District, and the underground city of **Sol** is where the
-rich of the Core and the Ruby go to enjoy themselves, with a reputation that everything is permitted
-there. Religion and politics are relaxed. A voted council governs from **Tanto**, at the centre of
-three coastal cities, none of which dominates the others.
+built winter palaces. Sun and salt easterly winds made it the holiday country of the continent
+before the invasion, and the vineyards run down to a shallow bay of sandbars and big tides. The
+coast feeds it fish and the farmland the rest, but wine is what it is known for. The **South Road**
+runs to the Core District, and the underground city of **Sol** is where the rich of the Core and the
+Ruby go to enjoy themselves, with a reputation that everything is permitted there.
 
-**The Iron.** The northern half of the Hyena Desert and the mineral-rich Mouse Mountains above it.
-**Sammel**, in the northern oasis, is the only large city and nearly matches Geistburg; out at the
-western oasis stands a holy town, thinly peopled, and the rest of the desert is desolate but for a
-couple of caravan camps where there is water. **The Grey**
-and his siblings are worshipped here. Emirs rule, and they have cut Sammel into sealed quarters called
-**Rote**; the old assassin state holds the central one, around the Ziggurat, the tallest building in
-the region. Its embassies sell services under the table in every district but the Amber. The **East
-Road** connects it to the Core and is the least safe of the roads, because the mining lets monsters
-and the Horde break in constantly. The **Night Express** runs it anyway, hauling freight and
-passengers through tunnels black with its own coal smoke.
+**Religion and politics are relaxed, and money is not.** The district is three regions with one city
+each, and each region holds one seat on the council. Violent crime is rare and conflict rarer. The
+economy is good enough that the middle class outnumbers the working class, and even the workers live
+better than they would anywhere else. What the governing care about is income, and a law that
+reduces it does not stay law for long. The old glory still shows in mosaic cobbles, white marble
+palaces and gold ornament that nobody has repaired for a century. **Tanto** sits at the centre and
+is comfortably the dullest of the three, which is exactly why it was given the council to house: a
+city of clerks and trade whose marble spreads wide and impresses nobody. **Serf** is the fashionable
+one, with an opera house, a theatre gilded in every detail and a seafront promenade of pavilions.
+**Damza** lies on a muddy shore and has made that into spas and beach life; the food there is held
+to be the best on Firma, and rich visitors come to take mud baths, eat and drink.
 
-**The Amber.** The far east, the second largest district and the one that was never entirely
-tamed. Dragons turn up. Trolls live in the forests and the mountains. Dense wet conifer forest
-covers most of it, broken by lakes, bogs and hills. Timber was the export until the Furnace fell and took the routes
-with it, and now the inland capital **Karmat**, two small coastal towns and a scatter of villages are
-all there is of it. Karmat is in decline and mercenaries are the only thing it sells: a
-squadron of hard soldiers fights its way through the wilderness to the Iron District once a year.
-The forest barons are broken but not gone, every town runs itself, and the mayor's chair changes hands
-bloodily and often. The war god **Vax** has the most followers, and nobody minds what you believe.
+**The Iron.** Two great oases of the Hyena Desert, where underground cisterns reach the surface, and
+the mineral-rich Mouse Mountains above them, which the ring covers in the north and the east. Iron
+gave the district its name and is the least of what comes out of the ground here. The days are dry
+and hot and the nights are freezing. **Sammel**, in the northern oasis, is the only large city and
+nearly matches Geistburg; out at the western oasis stands **Lempak**, a holy town, thinly peopled,
+holding a necropolis of pyramids, crypts and whole parks of sarcophagi for rulers long dead. The
+rest of the desert is desolate but for a couple of caravan camps where there is water. **The Grey**
+and his siblings are worshipped here.
 
-**The Furnace is gone.** It lay in the north-east, and was the centre of smithing and manufacture,
-with an alchemical academy and a centre of magical research called the Rune Temple in the labyrinth
-city of **Weder**, once the third largest city on the continent. Technology and magic mattered there and
-religion did not. The Furnace built the Iron's trains, the Fiord's sea defences and the Core's cable
-cars. Its damp pine forest has gone to barren bog since the Horde came in, and Weder is ruins. Its refugees founded
-engineering guilds in every surviving district and kept their language, **Valgar**, and their lack of
-religion, which still causes trouble in the Core District.
+**It is a theocracy, and it does not tell you who runs it.** The Grey rule centrally and have handed
+the local power down to Emirs, who are puppets and are not pretending otherwise. The law is
+invisible and arbitrary; people disappear and leave no trace, and because the rulers are unnamed
+there is nobody to hold to account for it. The **thrall system** keeps the mines full of workers who
+die young, and none of that is visible in Sammel. The city is built as walled quarters called
+**Rote**, each shut off from the next, with the oasis canals drawn through them; the old assassin
+state holds the central one, around the **Ziggurat**, a step pyramid that is the tallest building
+in the region and the seat of an emir who is their puppet. Its embassies sell services under the table in every district but the Amber. The **East Road**
+connects it to the Core and is the least safe of the roads, because the mining lets monsters and the
+Horde break in constantly. The **Night Express** runs it anyway, hauling freight and passengers
+through tunnels black with its own coal smoke.
+
+**The Amber.** The far east, the second largest district and the one that was never entirely tamed.
+Dragons turn up. Trolls live in the forests and the mountains. The land comes up sharply out of the
+sea; the tides are as strong as the Ruby's, but the water just offshore is deep and cold, so instead
+of sandbars there is bare rock down to the waterline. Dense wet conifer forest covers most of it,
+mossed and lichened over, broken by deep fissure lakes, steep wooded hills and the odd swamp, with
+small settlements, forts and villages scattered through it. Timber was the export until the Furnace
+fell and took the routes with it, and now the inland capital **Karmat**, two small coastal towns and
+a scatter of villages are all there is of it.
+
+**Nobody leads the Amber.** People take the law into their own hands, and the local mayors, those
+forest barons who still have a name worth holding, and the local warlords all work to keep and
+extend what they have. Every town runs itself and the mayor's chair changes hands bloodily and often, and
+in **Lenden**, in the lawless south, the mayors tend not to last. **Farsee** in the north is the
+exception that holds: a larger city under one noble family, beset constantly by warlords and forest
+barons, and hard to take because it stands on a hill on the coast. Karmat is in decline and sells
+the one thing it still can. It is neutral, so everyone uses it: it takes in young people from across
+the district, equips and trains them as fighters at its military academy, and feeds its own smelter
+to arm them. At the end of the training a lot is drawn, and **a tenth of each intake**, the
+**Tithe**, is formed into squadrons and auctioned to the companies in the city for onward sale to
+the rest of Firma through the Iron District. A squadron of hard soldiers fights its way through the
+wilderness to the Iron once a year. The arrangement pays Karmat's bills, and the steady supply of
+trained soldiers is also what keeps the Amber's wars running. The city council manages the rest with
+bribes, corruption and cunning, and tries very hard not to be in conflict with anyone. **The Amber
+is the one district with no tunnel of its own**, so everything that comes or goes crosses Horde
+ground, quietly. The war god **Vax** has the most followers, and nobody minds what you believe.
+
+**The Furnace is gone.** It lay in the north-east in tidy conifer forest broken up with farmland,
+with the windless **Everfog** coast taking the edge off the northern weather. Steam trains ran on
+rails between its cities and there was never a time when you could not see at least one airship in
+the sky. It was the centre of smithing and manufacture, with an alchemical academy and a centre of
+magical research called the Rune Temple in the labyrinth city of **Weder**, once the third largest
+city on the continent and built a dozen levels down as well as up. Technology and magic mattered
+there and religion did not. The district was organised around its engineer groups, with the Rune
+Temple supplying the magical components they built into their work. The Furnace built the Iron's
+trains, the Fiord's sea defences and the Core's cable cars.
+
+**Then the ritual stopped, in 879.** Forest and cities were levelled into grey bog, and the burnt
+abandoned trunks still standing in it are the only sign the ground was ever wooded. Weder is ruins,
+and the **North-East Road** that served it, a twin-tracked technological marvel with three towns
+strung along it, closed when the district fell; its Core end at Erleng is bricked up behind a
+warded vault door. Many engineer groups got out, and have carried on in other districts and enclaves
+as self-governing units, usually with a mage or two among them. They kept their language,
+**Valgar**, and their lack of religion, which still causes trouble in the Core District, but their
+skills are wanted badly enough that authorities and churches look the other way about how well a
+guild squares with local law.
 
 ### The enclaves
 
@@ -156,125 +293,253 @@ Some twenty of them hold out on small territories with the Horde all around. The
 everybody has heard of.
 
 **Hyrlock.** The island of the blood mages, feared or revered depending on who you ask, a week's
-sailing from the abandoned ports west of the Core District. A caste society under the city of
-**Mander Cliff**: mages at the top, then administrators and merchants, then workers, and beneath them
-the thralls, who are bred to be spent in sacrifice. Power radiates from the **Red Tower**, fifty metres
-of it at the cliff's summit. The faith is of the blood goddess **Parfebe**. Every other district and
-enclave pays Hyrlock an annual tribute in goods and thralls to keep the wards up, and everyone calls
-it the **blood tax**.
+sailing from the abandoned ports west of the Core District. It is a granite plateau standing out of
+the restless Kelp Sea, and one stair hewn into the rock is the only way up from the plain little
+harbour at its foot. The top is barren and grows nothing, so everything but fish is shipped in
+across Horde-held water. It is a matriarchy in which women hold every role that matters, and a caste
+society under the city of **Mander Cliff**: mages at the top, then administrators and merchants,
+then workers, and beneath them the thralls, who are bred to be spent in sacrifice. Power radiates
+from the **Red Tower**, fifty metres of it at the cliff's summit. The faith is of the blood goddess
+**Parfebe**. Every other district and enclave pays Hyrlock an annual tribute in goods and thralls to
+keep the wards up, and everyone calls it the **blood tax**.
 
-**Kelp Bay.** It was a nothing port before year 0 and is now the only one left on the west
-coast, which makes it the single way in to Hyrlock and the blood tax. Three shipping companies run the
-voyages in an unstable cartel, and the pay for surviving one draws adventurers. Fog moves through
-cobbled alleys lit blue for bars, red for brothels and green for business best not described. The
-smell is rotting bodies, spilt beer and cheap perfume, under the fermenting kelp.
+**Kelp Bay.** It was a nothing port before year 0 and is now the only one left on the west coast,
+which makes it the single way in to Hyrlock and the blood tax. The freight traffic has used up every
+square inch of the place: the cliffs inside the ward have been hollowed out into caves for
+warehouses, shops and bars, and the houses on the thin strip of beach have been built layer on layer
+until several of them stand five storeys. It is stressed, raw, and almost always in the cliffs'
+shadow. Three shipping companies run the voyages in an unstable cartel, and the pay for surviving
+one draws adventurers. The harbour is governed by a captain voted in each year who may not hold the
+office two years running; the three companies take it in turn to put a captain up, and the other two
+abstain when it is not their turn. Fog moves through cobbled alleys lit blue for bars, red for
+brothels and green for business best not described. The smell is rotting bodies, spilt beer and
+cheap perfume, under the fermenting kelp. The **Coast Road** runs from here to Farsight, which is
+the only way out that is not a ship.
 
-**Solemn.** A white limestone island south-east of the Ruby District, home of the witches, a sisterhood
-with a magic they keep to themselves. They follow the **Primal Mother**, a fertility goddess, and they
-are one of the few enclaves that needs no blood magic: their own ward holds, and nobody outside knows
-how. It is guessed to have something to do with how thin the island's borders are to the Second and
-Third Sides. Their city **Sonebra** sits walled at the top, all towers and spires.
+**Solemn.** A white limestone island out in the wild Troubled Sea south-east of the Ruby District,
+home of the witches, a sisterhood with a magic they keep to themselves. It has the same shape as
+Hyrlock, a plateau rising out of the water, with limestone instead of granite and a warm climate
+instead of a cold one, and like Hyrlock it is the women who rule. They follow the **Primal Mother**,
+a fertility goddess, seldom leave the island, and run it as a well-ordered, self-sufficient place.
+They are one of the few enclaves that needs no blood magic: their own ward holds, and nobody outside
+knows how. It is guessed to have something to do with how thin the island's borders are to the
+Second and Third Sides, and the island is said to have better contact with them than anywhere else.
+Their city **Sonebra** sits walled at the top, all towers and spires, and its architecture is more
+elvish than human.
 
-**Regensburg.** The militaristic realm in a valley of the Spear Mountains, north-east of the Core
-District, and the most important inland enclave. Three concentric walls ten metres high divide the city into rings, each ring subdivided again,
-all of it designed to make an invasion take as long as possible. A Marshal of the Realm sits at the top
-of a strict hierarchy. It hires its cavalry out to other districts in exchange for the supplies it
-cannot grow. The **Cracked Road** reaches the Core District through cave-riddled limestone and is not
-safe; halfway along it a large underground lake has two harbour villages on it, named From and To.
+**Regensburg.** The militaristic realm in the Spear Mountains, north-east of the Core District, and
+the most important inland enclave. Geistburg's whole military power used to be gathered here; the
+invasion cut the two apart, and now the only thing joining them is a cave system of hundreds of
+tunnels and halls. Regensburg itself is not much more than an enormous fort wedged into a
+strategically excellent position on a cliff that overlooks **Spear Pass**, a route through the
+mountains that used to be busy. Three concentric walls ten metres high divide the city into rings,
+each ring subdivided again, all of it designed to make an invasion take as long as possible. The
+weather is cold and windy with short hot summers. A Marshal of the Realm sits at the top of a strict
+hierarchy, and by the city's right of inheritance his son is expected to take the chair when he
+dies; a woman cannot be Marshal. It hires its cavalry out to other districts in exchange for the
+supplies it cannot grow, and it has made an art of the business: noblemen come from the Core and
+further for the training, the equipment and the horses raised in the enclave. The **Cracked Road**
+reaches the Core District through cave-riddled limestone and is not safe; halfway along it a large
+underground lake, **The Deep**, has two harbour villages on it, named From and To.
 
-**Wolf Peak.** A religious centre of the faith of **the Fire**, on a dormant volcano north
-of the Amber District, never once taken. The roads to the summit are easy to hold and the mountain
-feeds itself inside and out. It also has the best gunpowder and firearms on the continent, because the
-ingredients are all in the mountain: bat guano that never runs out, sulphur from the volcanism, and
-charcoal from fast trees that love the soil. The priesthood has its own language, **Perga**, its own
-dress, and tattoos over every inch. They are rarely seen outside.
+**Wolf Peak.** A religious centre of the faith of **the Fire**, built into the side of a live
+volcano north of the Amber District, never once taken. The stairs to the summit are easy to hold and
+the volcano's plumes of smoke keep the Horde from coming at it out of the air. **It has never used
+blood ritual or human sacrifice**, and has never needed to. The mountain feeds itself inside and
+out. It also has the best gunpowder and firearms on the continent, because the ingredients are all
+in the mountain: bat guano that never runs out, sulphur from the volcanism, and charcoal from fast
+trees that love the soil. Powder and guns are what it barters outward for the few things it cannot
+make. Inside, everything is shared citizen to citizen, so there is no shop and no bar anywhere in
+the enclave. Fire is holy here: the ground is warm underfoot and beacons burn along the whole length
+of the monastery, never out. The priesthood rules, people of the wrong faith are not usually allowed
+to stay, and it has its own language, **Perga**, its own dress, and tattoos over every inch. They
+are rarely seen outside.
 
 **Echterhof.** A large neutral city in the middle of Horde territory, ruled by Strigoi princes, with
-farmland around it the Horde has left alone. Strigoi
-live off humans, so a large human population lives there caught between the vampires and the Horde. A
-human mayor is appointed to keep order and choose who is eaten, usually criminals, and when criminals
-run short it is done by lot, by grudge or by whim. The city welcomes visitors, because the more people
-there are the less likely you are the one chosen. The **Guest Law** guarantees that a guest will not be
-killed, and guarantees that a guest who breaks any of its many clauses will be. It also offers land and
-the prospect of a title, to keep people coming. They worship **The First**, the first vampire.
+farmland around it the Horde has left alone, because the Strigoi have an agreement with the Horde, which
+respects their ground as protected. The city sits permanently under a cloud of smoke, though the
+farmland around it is sunny and pleasant; the smoke is burnt in the five towers that crown the five
+Strigoi palaces, and it is what lets the vampires move about outdoors on most days. Only an unusual
+combination of hard wind and strong sun clears it. The palaces are stately marble colossi built in
+tiers, each over a well-guarded crypt for the days its prince has to get back to his coffin. Strigoi
+live off humans, so a large human population lives there caught between the vampires and the Horde,
+drawn by good farmland and by the fact that fear of the Horde outweighs fear of vampires. A human
+mayor is appointed to keep order and choose who is eaten, usually criminals, and when criminals run
+short it is done by lot, by grudge or by whim. The princes rule jointly and behave like any other
+pack of despotic high nobility, bar the drinking of blood, and they are careful to keep their take
+low enough that the enclave stays attractive to guests, which is to say to food. The city welcomes
+visitors, because the more people there are the less likely you are the one chosen. The **Guest
+Law** guarantees that a guest will not be killed, and guarantees that a guest who breaks any of its
+many clauses will be. It also offers land and the prospect of a title, to keep people coming. Their
+households hold further Strigoi and a quantity of human and half-human handlers. They worship **The
+First**, the first vampire, who is a minor god, and who sleeps in a crypt deep under the city: when
+the princes cannot agree, or when what they want drifts from what he wants, his is the last word.
 
-**Velderon.** The elves' embassy on Firma, east of the Fiord District: an ancient elven ruin with one
-restored corner. The elves are neutral and live on the Second Side; their own magic keeps the Horde
-out, and the embassy exists to watch the Horde and make sure it never starts looking upward. You do
-not go in without an invitation.
+**Velderon.** The elves' embassy on Firma, east of the Fiord District, and the one place on the
+continent where you are guaranteed to meet an elf. It is a chalk-white palace standing in the ruins
+of the elves' own capital here, from before Athor beat them: an ancient ruin with one restored
+corner. The elves are neutral and live on the Second Side; their own magic keeps the Horde out,
+along with everyone else, and a few mages maintain those wards. Beyond them there is a small
+garrison and nothing: no resources, no facilities. A permanent gate to the Second Side stands in the
+heart of the embassy, and the staff come and go through it, with a modest flow of supplies to keep
+the ambassador in the manner he expects. The embassy exists to watch the Horde and make sure it
+never starts looking upward. You do not go in without an invitation. The ruins around it are holy
+ground to the elves, which does not stop adventurers trying them for artefacts from the elves' time,
+danger and all.
 
-**Saag et Haar.** What is left of Seetch, the realm of the necromancer kings, south of the Hyena
-Desert. The greatest of those kings, **Fahlas**, still rules it after four hundred years and has become
-a minor god. It depends on blood mages now like everywhere else, though raising the dead keeps the
-number of sacrifices lower. The government is a tyranny, the religion is the death goddess **Aecht**,
-and the tongue is **Veche**. A trade road runs to Sammel through the Third Side: portals at both ends
-and a demon-permitted road between them, paid for in human sacrifice. The city buys slaves in Sammel
-and pays in silver, gold and gemstones out of its own mines.
+**Saag et Haar.** What is left of Seetch, the realm of the necromancer kings. Athor beat nearly
+everything and never managed to beat them. The enclave runs along the south coast below the Hyena
+Desert, and the city of the same name stands a little inland, near the mouth of the **Lizard
+River**, which dries up in some years. The land is half desert, hot and unwelcoming, with sandstorms
+blowing in off the Hyena and one small band of arable ground in the west. The mining is the opposite
+of small: slaves and zombies are worn through in the low hills after silver, gold and gemstones. The
+greatest of those kings, **Fahlas**, still rules it after four hundred years and has become a minor
+god: he cheated age and arrived at divinity. Below him the army and the necromancers split the
+power between them, and he governs with an iron hand and permanent paranoia about who is coming for
+his chair. It depends on blood mages now like everywhere else, though raising the dead keeps the
+number of sacrifices lower. The government is a tyranny, the religion is the death goddess
+**Aecht**, and the tongue is **Veche**. A trade road runs to Sammel through the Third Side: portals
+at both ends and a demon-permitted road between them, paid for in human sacrifice. The city buys
+slaves in Sammel and pays in silver, gold and gemstones out of its own mines.
 
-**The Triple Enclave.** Three frontier towns north of the Iron District, on the western slopes of
-the Spear Mountains and all of them in mountainous country, each walled around a castle and a duke,
-sharing one group of blood mages and one safe tunnel, the **Steel Road**.
-**Farsight** stands on the open upper slopes and the Church of the Eternal God holds it absolutely, its duchess also a
-cardinal, religion behind every law. **Marke** sits above the high bogs of its valley and exports
-**dreamwort**, whose dried seed is a powerful drug; its duke is powerless and the **Dream Guild**, a
-criminal organisation with branches in every district, holds the real power. They are rumoured to have
-a safe-passage treaty with the Horde. **Highfall** is built into a mountain with a waterfall coming
-over its walls, and tries to run things the old way: it lends the Dream Guild troops, and takes money
-and sacrificial slaves from the Iron District in exchange.
+**The Triple Enclave.** Three frontier towns north of the Iron District and halfway to Kelp Bay, on
+the western slopes of the Spear Mountains and all of them in mountainous country, each walled around
+a castle and a duke, sharing one group of blood mages and one safe tunnel, the **Steel Road**. They
+sit high up, and the winters are cold, but it is far enough south that the rest of the year is
+pleasant in spite of the altitude. Between them they come to religion, drugs and soldiers, one each.
+**Farsight** stands on the open upper slopes and the Church of the Eternal God holds it absolutely,
+its duchess also a cardinal, religion behind every law. **Marke** sits above the high bogs of its
+valley and exports **dreamwort**, whose dried seed is a powerful drug; its duke is powerless and the
+**Dream Guild**, a criminal organisation with branches in every district, holds the real power. They
+are rumoured to have a safe-passage treaty with the Horde. **Highfall** is built into a mountain
+with a waterfall coming over its walls, and tries to run things the old way: it lends the Dream
+Guild troops, and takes money and sacrificial slaves from the Iron District in exchange.
 
 **Desert Stream.** The third oasis of the Hyena Desert, outside the Iron District's ward and holding
-a small one of its own that covers the water and nothing else. The isolation has told on the people
-there and their reputation is poor, but the oasis feeds everyone who reaches it.
+a small one of its own that covers the water and nothing else. When the rings went up and the oasis
+found itself outside them, its people managed at the last moment to attract a group of blood mages
+down from Hyrlock, and bought them by handing over power in the oasis. The mages have held it ever
+since, two or three families of them living entirely apart from everyone else. **They speak the
+local tongue, Gastve, with an accent, and have stopped speaking it at all**, and they keep interpreters
+for dealing with the people they rule, and they do not understand local custom and have not tried
+to. They take in local members only where it keeps the bloodline strong. In exchange the ward holds,
+so the villagers hand over their children and their relatives for the sacrifices without complaint,
+the alternative being what it is. The isolation has told on everybody and the enclave's reputation
+is poor, but the oasis feeds everyone who reaches it.
+
+### The roads under the ground
+
+**What is under the continent is five things at once**, and only the first of them was built on
+purpose: the tunnels dug between the districts; natural cave systems that have been down there for
+millennia; abandoned elven ruins left from whatever the elves were doing underground; the boltholes
+of monsters the Horde hunted off the surface; and the old underworld proper, with the Queen of the
+Dark's successors in it. A named road is a road somebody maintains. Everything it passes through is
+one of the other four.
+
+**The West Road**, Black Harbour to Erleng, is the good one: broad, high, with few side connections
+to anything. Fish is most of what moves along it. Three towns have grown up to service the traffic:
+**Underswamp**, **Drowntown** and **The Pillars**, damp, loud places of bars, bonded warehouses and
+inns, with a handful of smaller inns on the stretches between them.
+
+**The South Road** runs from Tanto in the Ruby to Fynch in the Core. From the Core as far as **Sol**
+you can take the **Velvet Line**, which is a luxury train; from Sol onward to the Ruby the tunnel
+will not take rail and you go by stagecoach, or on your own feet. It is mostly safe. The exceptions
+are the two or three places where neighbouring tunnels join it, and at those there are military
+posts that will escort you for a fee. Sol itself is a gaudy, lavishly-appointed pleasure city
+filling one enormous cavern, and the rumour that everything is permitted there is not much of an
+exaggeration.
+
+**The East Road**, Sammel to Gradenbosch, is the least safe of the roads. Thousands of years of
+mining have left whole stretches perforated like a cheese. The **Night Express** runs it and is
+rarely troubled; ordinary travellers walking it disappear into the dark all the time. Four small
+forts along the way serve as fortified inns and depots.
+
+**The North-East Road** tied Weder to Erleng and was a wonder of engineering: twin rail lines, and
+three towns between the Furnace and the Core. **Goldenburg** assembled freight and sold it to
+passers-through, **Strema** rested travellers and ran mines of its own, and **Meredi**, nearest the
+Core, farmed mushrooms across the floor of the great chamber it sat in. It closed when the Furnace
+fell. The Erleng end is bricked up behind a vault door carrying protective rituals, and what is on
+the other side of it is a matter of opinion.
+
+**The Coast Road**, Kelp Bay to Farsight, is a walking tunnel and nothing more, two abreast at its
+widest. Porter caravans hauling the blood tax and everything else jam it regularly. Midway along it
+somebody blasted out **The Lost Inn**, which reliably has the strangest collection of people on the
+continent under one roof.
+
+**The Steel Road**, Highfall to Gradenbosch, is a little wider: two riders abreast. It is safe from
+monsters, having few side tunnels, though the road itself forks here and there and comes back
+together later. It is also the route **dreamwort** travels into the Core, so the risk on it is
+criminal rather than monstrous. No towns, but a string of overnight stops with beer and a bed.
+
+**The Cracked Road**, Regensburg to an opening between Erleng and Steinbrëk, is unsafe and important
+at the same time, because the military traffic between the Core and Regensburg has to go somewhere.
+There is a fort at the Core mouth that is permanently braced for surprises. Most of the route is
+natural limestone cave, and unknown tunnels join it along its whole length, some running to
+**the Queen of the Dark**'s country, some to monster dens, some to collapses that have let the Horde in. A
+good many of those openings have been sealed. Limestone does not stay sealed. One great chamber
+holds **The Deep**, an underground lake fed by three underground rivers, which has to be crossed by
+boat; the walled harbour towns of **From** (Core side) and **To** (Regensburg side) exist to row
+people over. There are no inns between them, so travellers pitch tents in the chambers along the
+way.
 
 ### The hives
 
 Mostly they look like gigantic anthills of earth and organic matter, winding inside into tunnels and
 chambers for larvae and for each of the Horde's roles. **Twelve are known.**
 
-**Xtchaargh** is the only hive that will receive human envoys. It has a human quarter in the middle of
-its tunnels, with ordinary houses and squares, called the **Summer Village**, where humans who serve
-the Horde live and train spies to pull enclaves and districts apart. It is said that a delegation from
-the Furnace District went there shortly before its blood mages were killed.
+**Xtchaargh** stands west of the Core and can be seen from the western edge of the district: a thing
+the size of a small mountain, bored through with winding tunnels, sitting there to remind everyone
+inside the ward what is outside it. It is the only hive that will receive human envoys, if it judges
+them important enough to bother with. It has a human quarter in the middle of its tunnels, with
+ordinary houses and squares, called the **Summer Village**, where humans who serve the Horde live
+and train spies to pull enclaves and districts apart. One hole to the outside lights the whole of
+it, barely. The village is a parody of a pre-invasion idyll built so that humans can live inside a
+hive: white corner boards on the houses, gardens planted with mushrooms where the flowers would go,
+tidy paths of woodchip and shavings, and bioluminescent lamps along them. It is said that a
+delegation from the Furnace District went there shortly before its blood mages were killed.
 
-**Chguuth** is the main hive, in the south-east, twice the height of any other and reinforced with the
-chitin of the dead. The enormous flying **Skaah** that were mistaken for airships all set out from
-here. The Queen sits here.
+**Chguuth** is the main hive, in the south-east, standing in the brutal heat haze at the middle of
+the dried-out bed of Lost Lake, which the Horde dried out to put it there. It is more than twice
+the size of Xtchaargh, eight hundred metres of anthill reinforced with the chitin of the dead, and
+you can smell it sour on the air for miles out. The enormous flying **Skaah** that were mistaken for
+airships all set out from here, and moor at its summit when they are not out over the continent. The
+Queen sits here.
 
 **The underworld** is not empty either. Demons, minor gods and monsters pushed off the surface have
-strongholds down there. **The Queen of the Dark** and **the Troll King** have always been there
-and do not care for visitors. Other stretches are infested with the Horde.
+strongholds down there. **The Queen of the Dark** and **the Troll King** have always been there and
+do not care for visitors. Other stretches are infested with the Horde.
 
 ### What people believe
 
-**The Church of the Eternal God.** *The Eternal God is the only true god, and the emperor his only true
-representative on Firma.* Three tenets: **purity** of soul and body, which means avoiding strong
-feeling and poisons and keeping yourself trained, and holds that all other gods are impure;
+**The Church of the Eternal God.** *The Eternal God is the only true god, and the emperor his only
+true representative on Firma.* Three tenets: **purity** of soul and body, which means avoiding
+strong feeling and poisons and keeping yourself trained, and holds that all other gods are impure;
 **obedience**, because what the god, the emperor and his priests say is law and questioning it is
-blasphemy; and **solidarity**, helping your brothers and sisters in faith and never charging them for
-it. Its chief saint is Athor, who spread it across Firma, alongside lesser saints like the dragonslayer
-Vesper, the healer Selma and the martyr Bullius, local saints, and every emperor who has ever lived.
-Inside it: **the Black Circle**, a religious secret police; **the Holy Shield**, its order of knights;
-**the White Brothers** and **the Black Sisters**, its largest orders of monks and nuns; and **the
-Flagellants**, the most extreme and frequently violent.
+blasphemy; and **solidarity**, helping your brothers and sisters in faith and never charging them
+for it. Its chief saint is Athor, who spread it across Firma, alongside lesser saints like the
+dragonslayer Vesper, the healer Selma and the martyr Bullius, local saints, and every emperor who
+has ever lived. Inside it: **the Black Circle**, a religious secret police; **the Holy Shield**, its
+order of knights; **the White Brothers** and **the Black Sisters**, its largest orders of monks and
+nuns; and **the Flagellants**, the most extreme and frequently violent.
 
 **The Church of the Eternal Spirit.** A sister church holding that the Eternal God's spirit drifts
 through all the air of Firma. Same tenets, same saints, plus its founder **Vegnar**, who was Athor's
-brother. The two churches are rivals who tolerate each other, with accusations of blasphemy surfacing
-now and then. Inside it: **God's Spirit** as its secret police, **the Holy Sword** as its knights,
-**the Devoted** as its monks and nuns, and **the Unseen**, an order of assassins.
+brother. The two churches are rivals who tolerate each other, with accusations of blasphemy
+surfacing now and then. Inside it: **God's Spirit** as its secret police, **the Holy Sword** as its
+knights, **the Devoted** as its monks and nuns, and **the Unseen**, an order of assassins.
 
 **The Five.** The largest religion before Athor, known all along the coasts. **Sessyfyn** the winged
-fish, goddess of fishing and seafaring. **Valtor** the two-pointed spear, her brother and husband, god
-of strength and battle. **Fagar** the mask of fish scales, their child, the trickster. **Vulpet** the
-shark, daughter of **Fagar** and **Sessyfyn**, driven out for being so ugly. **Brendan** the conch
-horn, son of **Fagar** and **Valtor**, who stands for the beauty that can come out of ugly things.
-Its **Mummers** walk about in animal masks singing and pressing drink on people; its **Berserkers**
-work themselves up with drums and dancing before a battle.
+fish, goddess of fishing and seafaring. **Valtor** the two-pointed spear, her brother and husband,
+god of strength and battle. **Fagar** the mask of fish scales, their child, the trickster.
+**Vulpet** the shark, daughter of **Fagar** and **Sessyfyn**, driven out for being so ugly.
+**Brendan** the conch horn, son of **Fagar** and **Valtor**, who stands for the beauty that can come
+out of ugly things. Its **Mummers** walk about in animal masks singing and pressing drink on people;
+its **Berserkers** work themselves up with drums and dancing before a battle.
 
-**The Grey.** Three siblings and three books. **The Grey** embodies assassination, and the Grey Book is
-on avoiding discovery and killing quietly. **The Purple** brews poison, and the Purple Book is recipes.
-**The Yellow** stands for lies, deceit and betrayal, and the Yellow Book is misinformation and
-disguise. The three sects match the three books.
+**The Grey.** Three siblings and three books. **The Grey** embodies assassination, and the Grey Book
+is on avoiding discovery and killing quietly. **The Purple** brews poison, and the Purple Book is
+recipes. **The Yellow** stands for lies, deceit and betrayal, and the Yellow Book is misinformation
+and disguise. The three sects match the three books.
 
 **Local gods.** **Vax**, war, in the Amber District. **Parfebe**, blood, on Hyrlock. **The Primal
 Mother**, fertility, on Solemn. **The Fire**, fire, at Wolf Peak. **The First**, vampirism, in
@@ -282,8 +547,8 @@ Echterhof. **Aecht**, death, in Saag et Haar.
 
 **The minor gods, who demonstrably exist.** Perhaps a hundred powerful nature spirits and beings,
 forced into remote places and underground when Athor took the continent. They grant no miracles, and
-they are what the school of Spiritualism is built on. Among the known: **the Winter Lady**,
-**the Queen of the Dark**, **the Troll King**, **Baal Fagor**, **the Land Jelly**, **the Cat God**,
+they are what the school of Spiritualism is built on. Among the known: **the Winter Lady**, **the
+Queen of the Dark**, **the Troll King**, **Baal Fagor**, **the Land Jelly**, **the Cat God**,
 **Fahlas** and **Mother Longhand**. Cults gather round them: **the Silent** follow **the Winter
 Lady**, **the Soot Club** try to summon **Baal Fagor**, and **the Dancers** use drugs to speak with
 **the Land Jelly**.
@@ -296,6 +561,7 @@ Lady**, **the Soot Club** try to summon **Baal Fagor**, and **the Dancers** use 
 | **Valgar** | The lost language of the Furnace District, kept by its engineering guilds |
 | **Perga** | Spoken at Wolf Peak |
 | **Veche** | The local tongue of Saag et Haar |
+| **Gastve** | The tongue of Desert Stream, which its blood mages refuse to speak |
 | **Elvish** | Common among the elves and most of the lesser gods |
 | **Demonic** | Common among demons |
 | **Troll** | Common among trolls |
@@ -304,11 +570,12 @@ Lady**, **the Soot Club** try to summon **Baal Fagor**, and **the Dancers** use 
 ### What a character can become
 
 Your Way is the direction you grow in, and each one ends in specialists the world has names for.
-Every one of those names is in *Specializations*, with the standing rule it carries and what it
-pays for it in.
+Every one of those names is in *Specializations*, with the standing rule it carries and what it pays
+for it in.
 
-**Way of Mind** runs to the schools of direct magic, each a vocabulary rather than a rank, and to
-ritual magic for what takes days rather than a turn.
+**Way of Mind** runs to the schools of direct magic, each a vocabulary rather than a rank, to
+ritual magic for what takes days rather than a turn, and to the trades: a Furnace engineer studies
+as hard as a necromancer and casts nothing at all.
 
 **Way of Strength** runs to the people who stand in the line, hold the door, and go through what is
 in the way rather than around it.
@@ -467,7 +734,7 @@ casting Ways, because they are printed on a prepared spell rather than on a card
 | **Overwatch** | an enemy walks into the ground you are watching | A held shot, loosed at the first enemy to walk into the ground you are watching: your weapon's own range, through a sixty degree arc on the way you are facing, and no further than you can see. The weapon decides what arrives, so a thrown knife and a musket are the same card and nothing like each other. | 3 cards |
 | **Brace** | you are hit | Reduce the damage, barely. Any card whose own reaction cannot fire is still worth this much, which is deliberately too little to be worth spending a good card on. | any card that cannot answer otherwise |
 | **Parry** | you are hit | Turn the blow with what you are already holding. Reduces the damage by your weapon's own Defend value, so a sword parries better than a knife. | 10 cards |
-| **Block** | you are hit | The shield comes up. Reduces the damage by the shield's Defend value and one more for being a shield, which is the best answer to a hit in the game. | 5 cards |
+| **Block** | you are hit | The shield comes up. Reduces the damage by the shield's Defend value and one more for being a shield, which is the best answer to a hit in the game. | 6 cards |
 | **Use** | you are hit | Something off your belt, drunk or broken open as the blow lands. Heals you by the item's Use value, and the item is spent doing it. | 4 cards |
 | **Deflect** | you are hit | You move the attacker's arm, and one of their own takes the blow instead. It has to be a serious one, and it has to be somebody standing next to them. | a prepared spell |
 | **Sidestep** | an enemy ends its move next to you | Step out of reach as they arrive, by the number the card prints. The attack that was walking toward you never arrives. | 12 cards |
@@ -1551,6 +1818,30 @@ Walking into a Way is not yet a specialization, so these four carry no Signature
 
 ### Way of Strength: 12 titles
 
+**Infantry** make up the bulk of armies and have different roles, from pike men to sword men.
+
+**Executioners** are shock troops in the army, or chosen for elite squads.
+
+**Gladiators** have training in arena fights, fights that in some places are to the death, but mostly are nonlethal.
+
+**Guardians** are specialized in defending castles, manors and similar high-value targets.
+
+**Ironclad** are specialized troops trained to withstand charges.
+
+**Artillerists** typically work with siege machines and cannons.
+
+**Tacticians** are leaders in battle with responsibility for parts of an army.
+
+**Knights** are mostly from wealthy or noble surroundings, considering the cost of armour and a war horse.
+
+**Berserkers** can usually be found in troops that are not organized, where fury and attack mean more than tactics.
+
+**Musketeers** are specialized in firearms and in how to use discipline and pack tactics to increase their effect.
+
+**Street Fighters** usually have no or little connection to armies. They often learned their art of fighting in order to survive a tough childhood.
+
+**Bodyguards** specialize in protecting their employer, often in the service of nobles and rich merchants.
+
 | Title | Leans on | Spends | Signature | Tactic |
 |---|---|---|---|---|
 | **Infantry** | Position | an ally | Shoulder to Shoulder | **The Line.** While an ally is adjacent to you, neither of you can be moved against your will. |
@@ -1568,6 +1859,30 @@ Walking into a Way is not yet a specialization, so these four carry no Signature
 
 ### Way of Shade: 12 titles
 
+**Thieves** specialize in thefts, stealth and speed.
+
+**Scouts** are observers and reconnaissance, sometimes making up separate units in an army.
+
+**Duellists** are fighters who specialize in man-to-man fights.
+
+**Assassins** often work as contract killers, or as covert troops in an army.
+
+**Cutpurses** usually earn their living by pickpocketing or grab-and-run steals.
+
+**Burglars** specialize in breaking into houses to steal valuables.
+
+**Archers** are the main missile troops in an army. The heavy training with longbows makes a mark on their bodies.
+
+**Trapmakers** specialize in making traps and impeding movement in battles.
+
+**Acrobats** are trained in movement in tough terrain and in how to get out of tough spots.
+
+**Bards** work as jesters, comedians or troubadours, and are masters of influencing crowds and persons.
+
+**Gamblers** have an agreement with lady luck and can feel the tides and ebbs of luck in their bones.
+
+**Half-mages** use magic combined with stealth and speed.
+
 | Title | Leans on | Spends | Signature | Tactic |
 |---|---|---|---|---|
 | **Thief** | Control | a slot kept free | The Opening | **Never Where You Looked.** An enemy that attacks you and misses may not attack you again this round. |
@@ -1583,15 +1898,45 @@ Walking into a Way is not yet a specialization, so these four carry no Signature
 | **Gambler** | Deck shape | the fate deck | Double or Nothing | **The Long Odds.** While two or more enemies are adjacent to you, you draw fate with advantage. |
 | **Half-mage** | Preparation | spell slots | One Trick | **One Hand Free.** You may Cast with a weapon in your other hand. Casting never needs a hand free. |
 
-### Way of Mind: 12 titles
+### Way of Mind: 14 titles
+
+**Engineers** come out of the Furnace guilds and are not magicians at all, whatever the odd mage working beside them suggests. They keep the trains, the cable cars and the sea defences standing, and in the field they keep the party's gear standing.
+
+**Blood Magicians** all have ancestry traceable to Hyrock. The art of turning your own or another's blood to power was invented there.
+
+**Elemental magicians** focus on the five elements: Air, Fire, Earth, Water and Ether.
+
+**Spiritualists** use spirits from the Fourth Side to give them power.
+
+**Necromancers** have their connection to dead people who have not travelled to the Fourth Side yet.
+
+**Ascetics** focus on withstanding elements and force.
+
+**Demonologists** deal with the Third Side. The summoning itself is ritual work and takes days, so what a demonologist carries into a fight is not a demon but the debt owed for one, and the names it gave up along the way.
+
+**Poisoners** use draughts and poison spells to overcome opponents.
+
+**Shadow mages** find their power in dark places.
+
+**Warders** are specialists in removing magic and in protecting areas.
+
+**Household magicians** mostly focus on mundane magic, such as getting a good harvest or spoiling the neighbours' milk.
+
+**Glamour mages** made a deal with the elves to be able to use a part of the elven magic.
+
+**Tattoo magicians** brand themselves with prepared spells in the form of tattoos.
+
+**Diviners** focus on predicting the future, or on finding answers about now by magic.
 
 | Title | Leans on | Spends | Signature | Tactic |
 |---|---|---|---|---|
+| **Engineer** | Support | weight | Shim and Wedge | **Nothing Is Scrap.** Corrode on your armour and Blunt on your weapons, and on those of an ally adjacent to you, are repaired at the end of a fight with no check and no kit. |
 | **Blood Magic** | Tempo | your own Health | Blood Price | **Your Own Blood Is Nearest.** You may always Cast on yourself whatever the spell's range, and never take disadvantage for it. |
 | **Elemental Magic** | Position | reagents | Wall of the Sphere | **The Sphere Holds.** Your own Blast spares you alone, whatever the card says. |
 | **Spiritualism** | Preparation | a pact | The Bargain | **Something Is Always Listening.** You know whether any square within 6 is shadowed, high ground or difficult ground before anyone steps on it. |
 | **Necromancy** | Preparation | a bound Taint | Call the Unquiet | **The Dead Are Furniture.** Corpses are cover for you and difficult ground for your enemies. |
 | **Asceticism** | Deck shape | an empty hand | Nothing Left to Take | **The Still Point.** If you did not Move this turn, you cannot be moved and attacks against you have disadvantage. |
+| **Demonology** | Control | a compounding debt | The True Name | **The Terms Are Binding.** A condition you have put on an enemy cannot be removed by that enemy's own action. |
 | **Poison** | Control | skill cards | Wither | **The Patient Hand.** An enemy you have put a condition on this fight has disadvantage against you. |
 | **Shadow Magic** | Position | a permanent Wild | Step Through | **At Home in the Dark.** While you stand in a shadowed square, enemies more than 2 squares away cannot target you at all. |
 | **Ward Magic** | Reactions | Spent | Unmake | **The Standing Guard.** One extra reaction each round, usable only to answer a Cast. |
@@ -1601,6 +1946,26 @@ Walking into a Way is not yet a specialization, so these four carry no Signature
 | **Divination** | Support | someone else's turn | The Reading | **Already Seen.** You are never surprised, and at the start of any round you may swap your place in the initiative order with a willing ally's. |
 
 ### Way of Faith: 16 titles
+
+**The Eternal God's** servants see themselves as the true religion, and enforce that more than other religions do.
+
+**The Eternal Spirit** shares the attitude of the Eternal God, being an offshoot, but has fewer members and less power. Sometimes the Eternal God and the Eternal Spirit work together, sometimes they kill each other.
+
+**Vax** is a local god in Parfebe, and most followers have a connection to the city, even though cults pop up now and then in other places. Vax is a very macho religion.
+
+**The First** worship the creator of all Strigloi. He is said to still be around, and is either described as senile or as terrifying.
+
+**Sessyfyn**, **Valtor**, **Fagar**, **Vulpet** and **Brendan** are the **Five**, a small pantheon of gods whose servants work together and accept each other. It is mainly a coastal religion, and predates the Eternal God.
+
+**The servants of the Grey, the Purple and the Yellow** also work together, but with less trust. It is a newer religion with origins among assassins and thieves.
+
+**Inquisitors** are a religious role, church members working to remove sin as the church defines it.
+
+**Shieldsworn** form the devout part of a church's army.
+
+**Anchorites** ignore banal things in life in order to be fully one with their god. Some of them stay their whole life on a pillar, others just try to ignore people.
+
+**Flagellants** drive themselves into ecstasy from the love of their religion. Some walk in processions whipping their bare backs, others dance for hours in groups.
 
 | Title | Leans on | Spends | Signature | Tactic |
 |---|---|---|---|---|
@@ -1747,6 +2112,7 @@ do not hold them: they are simply true once the node is yours.
 | **Turn Aside** | Their shield is suddenly worth twice what it was. *You do not stop the blow; you make their shield worth twice what it was for exactly as long as it takes.* | – | – | Mend | 1 |
 | **Shake It Off** | Whatever is on them comes off now, not on their turn. *Whatever is on them, off, on the turn it happened rather than on yours. Three is enough for anything the game can print.* | – | – | Mend | 1 |
 | **The Mirror** | The blow goes back the way it came, in full. *Not stopped. Returned, in full, to the man who sent it, which is worse for him than for you and is the whole reason to prepare this instead of Unmake.* | – | – | Unmake | 1 |
+| **Shim and Wedge** | Two fingers of iron and a mallet, and between them they will hold a door, a wheel or a man's harness together for exactly as long as you need. *Use an item on an adjacent ally instead of on yourself. The item is yours and is spent as normal.* | Use at range 1 | Ready | Block | 1 |
 | **Unmake** | You have read this spell before, and that is the only reason it stops. *You have felt this one before. That is the only reason you can stop it: a warder's book is a record of what the party has survived, which is a condition on LEARNING it, held by the GM, not something the engine tests.* | – | – | Unmake | 1 |
 
 ### Way of Faith
@@ -2003,9 +2369,9 @@ many spell slots preparing one costs.
 | **The Nine Names** | 1 | Out of combat. A minor god names who in this place it is angry with, and will not say why. |
 | **Hold to the Bargain** | 2 | It was going to fail. Something intervened, once, because it owes you. |
 | **The Borrowed Body** | 3 | A spirit lends you its shape. Your deck, your Health and whatever is wrong with you come along, a body is what you fight with, not who you are. |
-| **The Bargain** | 3 | A minor god acts, once. The GM decides how, and that is not a hole in the spell, it is the spell. |
+| **The Bargain** | 3 | A minor god acts, once, from wherever it is. The GM decides how, and that is not a hole in the spell, it is the spell. |
 | **The Gathered Pact** | 4 | Every pact at once, called in on the same turn. Each god does exactly what it promised and no more, which is why this is worth four slots and not five. |
-| **The Great Bargain** | 5 | It is actually here, for three rounds. The GM plays it as an ally and then it goes, and afterwards it takes something the GM chooses, which is the only honest way to price a favour that large. |
+| **The Great Bargain** | 5 | It does not come. It fills you, three rounds of a minor god's own power in your hands, and your Casts land like something much older than you. Then it leaves, and afterwards it takes something the GM chooses, which is the only honest way to price a favour that large. |
 
 ### Necromancy
 
@@ -2017,6 +2383,18 @@ many spell slots preparing one costs.
 | **Call the Unquiet** | 3 | It does not know it died. It will stop when the fight does. |
 | **The Risen Rank** | 4 | Every body within three squares, up at once, for one round. Then they are bodies again, and the ground is worse than it was. |
 | **The Grave's Bargain** | 5 | They stand up at one Health, and they are themselves, and they know. When the fight ends they are dead again, and you are a little less alive for it. |
+
+### Demonology
+
+| Spell | Strength | What it does |
+|---|---|---|
+| **The Lesser Name** | 1 | One of its smaller names, said out loud. The thing that hears it does what you said for a round, and the debt grows by as much as a small name is worth. |
+| **Terms** | 1 | Out of combat: one question to whatever you are indebted to, about what it wants. It answers honestly, because honesty costs it nothing. |
+| **The Borrowed Hand** | 2 | Something reaches through for exactly as long as a blow takes. Four damage at four squares, round a shield rather than through it, and the hand is not yours, which is the entire legal defence and has never once worked. |
+| **The Binding Circle** | 2 | Chalk, salt and a name. What is inside it does not leave it. A hold is a contract, and a contract wants attending. |
+| **The True Name** | 3 | The name it carried before it was ever on the Third Side. For three rounds the creature you name does what you tell it, and then it remembers that you know. The debt doubles. |
+| **The Open Door** | 4 | A hand's width of the Third Side, here, for three rounds. Lava under the flagstones and an air nothing breathes: what stands in it is burned and slowed, and nothing comes through, because nothing has been asked to. |
+| **The Reckoning** | 5 | You call in the whole tab at once and something large enough to settle it attends to one thing. Six damage at six squares, past armour and past a shield. Then the ledger is settled, out of you, or out of whoever is standing nearest, and the GM chooses which. |
 
 ### Elemental Magic
 
@@ -2058,16 +2436,37 @@ many spell slots preparing one costs.
 | **The Crowded Room** | 4 | For one round nobody can tell who is who, and the fate deck decides who swings at whom. It is as likely to help them as you. |
 | **The Long Masquerade** | 5 | Out of combat: you and your whole party are other people for a day. Only magic sees through it, and most places have none. |
 
+### Tattoo Magic
+
+Nothing in this school is a spell. All of these are **features**: usable without being equipped or
+prepared, so they are never cast, never consumed and never need renewing. **Strength** here is not a
+preparing cost: it is the ladder, and a spell slot spent for good.
+
+| Teaching | Strength | What it does |
+|---|---|---|
+| **Graven Eye** | 1 | An eye on the back of your neck that is not decorative. You are never surprised again, and you never sleep quite as well. |
+| **Graven Sight** | 1 | Two small eyes carved behind the ear, looking the way you came. You always know the next two cards you will draw. You may not change their order, and the knowing is worth exactly as much as what you do about it. |
+| **Graven Road** | 1 | A road down the inside of both legs. Slowed, Burdened and Overloaded all still land on you; none of them slows you down. |
+| **Graven Strength** | 1 | It is on your arm. It does not need remembering, and it never comes off. |
+| **Graven Shield** | 2 | A shield you cannot put down, drawn across your back by somebody who knew what they were doing. |
+| **Graven Heart** | 3 | A second heart, drawn over the first. The GM writes down a secret worth six Health, and you will find out which one when it matters. |
+| **Graven Armour** | 4 | Plate, in ink, over everything. It weighs nothing and you are never again anything but weighed down. |
+| **The Whole Skin** | 5 | There is no skin left to write on. It is the last thing you ever learn, and afterwards you are something else wearing a mage's name. |
+
 ### Asceticism
 
-| Spell | Strength | What it does |
+2 teachings here are **features** rather than a formula: always on, never prepared and never cast.
+
+| Teaching | Strength | What it does |
 |---|---|---|
 | **Empty Hand** | 1 | No weapon, and no need of one. It is not a better Strike than a sword; it is a Strike you cannot be parted from. |
 | **Nothing to Carry** | 1 | Nothing in either hand, and nothing anybody can take out of them. The bonus to Casts is incidental; the point is that Disarm stops being a word. |
 | **One Less Thing** | 1 | You look at what is coming and decide you do not want it. The card is not lost -- it is in the discard with everything else, and a breath brings it back -- but the draw pile is one shorter, which is the direction this school always walks. |
 | **Nothing Left to Take** | 1 | There is nothing in your hand and nothing left to lose, and the second follows from the first. |
 | **The Last Card** | 2 | One card left, and it does both jobs. A hand of one is the worst hand in the game and this is the formula that makes it the best. |
+| **The Hand Given** | 3 | It costs a hand. What is left strikes like a Heavy weapon, for ever, and you will never hold a shield again. |
 | **The Empty Deck** | 4 | Nothing in your hand, nothing left to draw, and nothing anybody can do to you. It is the shortest window in the game and it is absolute. |
+| **Nothing At All** | 5 | Four cards, all of them in your hand, every turn. You have given away a hand and most of a deck, and what is left is a man who always has exactly the right card. |
 
 ### Shadow Magic
 

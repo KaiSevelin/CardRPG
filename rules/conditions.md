@@ -43,6 +43,7 @@ These take something away. They are the fighter's vocabulary.
 | **Slowed** | `slowed` | tortoise | All Move values are halved, rounding down. |
 | **Stunned** | `stunned` | brain-freeze | You can't play reactions. |
 | **Graven** | `graven` | aura | **Ink in your skin.** It carries the bonus the tattoo grants, and nothing takes it off. |
+| **Imbued** | `imbued` | electric | **A minor god's power, on loan.** It carries the bonus the bargain grants, and it ends when the god's time does. |
 | **Halted** | `halted` | hourglass | **Your turn does not happen.** Not interrupted &mdash; it never took place, and the round moves on without you. |
 | **Heckled** | `heckled` | thumb-down | You draw fate with **disadvantage**. |
 | **Prone** | `prone` | falling | Melee Strikes against you have advantage. Standing up costs Move 1. |
@@ -506,6 +507,7 @@ the tray: the price and the effect are two separate steps.
 | **Dazed** | **yes** | the tray allows a primary only, and says so |
 | **Stunned** | **yes** | `reactionsFor` returns nothing at all while `noReactions` is true, so there is no reaction to offer — this row said "advisory, reactions have no legality gate" long after that gate was written |
 | **Graven** | advisory | the bonus it carries is read by `collectBonuses`, grouped under `graven` so two tattoos on the same verb cap each other |
+| **Imbued** | advisory | the same reader, grouped under `imbued`: the bonus rides on the condition instance, because what a god lends is the bargain's business and not the word's |
 | **Halted** | **yes** | `refusesAction` refuses every Strike, Cast, Defend, heal, Use and check, in the resolver rather than the tray. **It does not skip the turn in initiative** — whose turn it is stays the GM's to run; it makes the turn do nothing, which is what the condition says |
 | **Heckled** | **yes** | the fate draw reads it, the same way Invisible is read &mdash; **both** fate draws since 2026-11-15. This row was true of attacks and false of skill checks for as long as it had been written: the flag was read inside `advantageFor`, which only `resolveAttack` calls, so the one check a heckle exists to spoil never noticed it. `conditionSway` is the reader now and `resolveCheck` asks it too |
 | **Slowed** | **yes, on the face** | the printed Move is halved — Move itself is never resolved, figures are moved by hand |
@@ -540,6 +542,7 @@ Every source in the content as it stands ([way-cards.md](way-cards.md),
 | **Slowed** | *Set* (Trapmaker) · *Pin the Shadow* (Shade) · *Frost* (Elemental) |
 | **Stunned** | *Lightning* (Elemental) |
 | **Graven** | *Graven Strength* (Tattoo Magic) · *The Whole Skin* (Tattoo Magic) |
+| **Imbued** | *The Great Bargain* (Spiritualism) — and nothing else, because one god at a time is the whole point of a pact |
 | **Halted** | *The Grey Hour* (The Grey) |
 | **Heckled** | *Heckle* (Bard) — and nothing else, by design |
 | **Invisible** | Smoke Bomb · *Not Here* (Glamour) · *Vanish*, *Smoke and Go* (Shade) |
@@ -612,6 +615,7 @@ removal in the content, and the gaps are the point.
 | **Heckled** | **Shake Off** · the duration, which is the heckler's next turn |
 | **Marked**, **Judged** | **the duration**, and only the duration — an opening cannot be shaken off, *by design* |
 | **Graven** | **nothing** |
+| **Imbued** | **the duration** — three rounds, which is the length of the loan |
 
 That table is the state **before** a dispel existed, and eight conditions had no answer at all
 beyond waiting a turn. Six cards in the content print a duration of **(2)**, so waiting could mean

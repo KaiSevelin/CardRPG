@@ -88,6 +88,7 @@ export const CARD_BLURBS = {
   "Smoke and Go": "Something hits the ground, and you are not where you were.",
 
   /* --- Way of Mind --------------------------------------------------------- */
+  "Shim and Wedge": "Two fingers of iron and a mallet, and between them they will hold a door, a wheel or a man's harness together for exactly as long as you need.",
   "Hold to the Bargain": "Something that owes you intervenes, once.",
   "Turn Aside": "Their shield is suddenly worth twice what it was.",
   "Shake It Off": "Whatever is on them comes off now, not on their turn.",

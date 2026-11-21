@@ -55,7 +55,7 @@ schema too, so a face can render without a second convention.
 
 #### `text` was carrying the game  **[MEASURED 2026-11-02]**
 
-**Of 380 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
+**Of 389 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
 when played. `case ""` in the tray broke out of a switch that
 is the end of the method: no effect, no prompt, not a line in chat. The branch below it already
 announced any verb the engine did not recognise, so the arrangement was exactly backwards `-` **a
@@ -184,7 +184,12 @@ extra reaction per trigger, fate twice, a check that cannot fail, a failure that
 One value per card is a free-text special wearing an enum's clothes. **The uniform half is who; the
 varied half stays prose.**
 
-**114 steps still carry prose, 26 of them prose alone** `-` the same first number as before, which
+> **[2026-11-21] Both totals moved by the same nine steps.** Demonology's seven formulas arrived,
+> the Engineer's Signature with them, and *The Great Bargain* traded a `conjure` for an `imbued`
+> condition. Seven of the nine carry prose, because what Demonology spends is a debt that
+> compounds and no `cost` field holds an obligation with an opinion.
+
+**116 steps still carry prose, 26 of them prose alone** `-` the same first number as before, which
 is not a failure to make progress, and a second number that went **up** by five. That is honest
 rather than a regression: `timing: "permanent"` was the only field on five of the Graven steps, and
 it was a slot budget wearing a timing's clothes rather than a rule about when anything happens. Nine

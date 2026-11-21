@@ -49,7 +49,15 @@ export const TRANSFORMATIONS = [
 /* -------------------------------------------- */
 
 /**
- * **The eight minor gods the world names**, which is what a conjuration may call by name.
+ * **The eight minor gods the world names.**
+ *
+ * **[CHANGED 2026-11-21] Nothing in the content conjures one any more.** This said *what a
+ * conjuration may call by name*, and it was true while Spiritualism's two bargains put a god
+ * on the board. They do not: the greater one imbues its caster and the lesser one has a god
+ * act from wherever it is, because *all summoning of demons and the like is done through
+ * rituals* and calling one of the hundred is that kind of work. These stay because they are
+ * the roster's top end and a GM places them the way they place a dragon -- and because the
+ * resolver's by-name path is still what a creature's `summon` capability reaches.
  *
  * Firma.md is unusually specific about these and the specificity is the point: *unlike the other
  * gods, the minor gods demonstrably exist* -- a hundred or so nature spirits and beings forced into

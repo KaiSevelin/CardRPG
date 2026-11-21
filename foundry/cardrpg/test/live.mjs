@@ -3362,6 +3362,299 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **[BUILT 2026-11-21] How far they can move, on the board, in Foundry.**
+   *
+   * core-rules 12 called unresolved movement the largest remaining engine gap and the ruling was
+   * that it stays a sentence the table applies **as long as it is clear to the player how far they
+   * can move**. `board.mjs` answers that with a Dijkstra over the ground costs and paints the
+   * result, and validate.mjs already exercises the walk against a stubbed grid.
+   *
+   * What a stub cannot check is the painting, which is the half that talks to the application:
+   * `canvas.interface.grid` and its named highlight layers. Two mistakes are invisible from the
+   * source and would both ship looking fine -- **passing centres where Foundry wants the top-left
+   * corner**, which puts every square half a square up and to the left, and a layer name that
+   * collides with the ruler's or a template's, which makes clearing ours clear theirs. So the
+   * positions are read back out of the layer and compared against the exact pixels they should be.
+   *
+   * It paints and clears. It never moves a figure, and there is nothing here that could.
+   */
+  await probe("how far a figure can move, painted on the board", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const b = await import("/systems/cardrpg/module/board.mjs");
+      const g = await import("/systems/cardrpg/module/ground.mjs");
+      const { hero } = LIVE;
+      const npc = game.actors.find(a => a.type === "npc");
+      const scene = canvas.scene;
+      const grid = canvas.grid.size;
+      await g.clearGround(scene);
+      const wasNodes = [...(hero.system.nodes ?? [])];
+      const made = [];
+      const put = async (actor, x, y) => {
+        const [doc] = await scene.createEmbeddedDocuments("Token",
+          [(await actor.getTokenDocument({ x, y })).toObject()]);
+        made.push(doc);
+        return doc;
+      };
+
+      /*
+       * **The scene has to have squares on it, and the smoke world's has none.**
+       *
+       * **[FOUND 2026-11-21]** `gridType: 0` -- gridless, at 100px. Every other spatial probe
+       * passes on it because forced movement, the watch arc and the ground zones are all pixel
+       * arithmetic, and a gridless scene still has a pixel size. The reach walk is the first thing
+       * here that asks the GRID to enumerate squares, and it correctly refuses: Foundry's
+       * `highlightPosition` cannot paint a square on a scene that has none, so a walk that
+       * answered would be an answer nothing could draw.
+       *
+       * So the probe makes its own precondition and puts it back. Said out loud rather than
+       * assumed, because the next person to wonder why this probe is longer than its neighbours
+       * should find the reason here.
+       */
+      const wasGrid = scene.grid.type;
+      if (wasGrid === CONST.GRID_TYPES.GRIDLESS) {
+        await scene.update({ "grid.type": CONST.GRID_TYPES.SQUARE });
+        await new Promise(done => Hooks.once("canvasReady", done));
+      }
+      const squared = canvas.grid.type === CONST.GRID_TYPES.SQUARE;
+
+      /* A clear patch, found rather than assumed: the board is shared with every probe above. */
+      const used = new Set(canvas.tokens.placeables.map(t => `${t.document.x},${t.document.y}`));
+      let spot = null;
+      for (let row = 400; row < 1700 && !spot; row += grid) {
+        for (let col = 400; col < 2400; col += grid) {
+          let ok = true;
+          for (let i = -2; i <= 2 && ok; i++) {
+            for (let j = -2; j <= 2; j++) {
+              if (used.has(`${col + j * grid},${row + i * grid}`)) { ok = false; break; }
+            }
+          }
+          if (ok) { spot = { x: col, y: row }; break; }
+        }
+      }
+      if (!spot) return [["a clear patch to walk out of", "none on the board", "one"]];
+
+      const me = await put(hero, spot.x, spot.y);
+      const token = me.object;
+
+      /* Open ground: the square ring, because a diagonal is one square. */
+      const one = b.reachFrom(hero, 1, token).size;
+      const two = b.reachFrom(hero, 2, token).size;
+
+      /* Painted, and read back off Foundry's own layer at the pixels it should have used. */
+      const painted = b.showReach(hero, 1, token);
+      const layer = canvas.interface.grid.getHighlightLayer("cardrpg.reach");
+      const positions = layer ? layer.positions.size : -1;
+      const east = `${spot.x + grid},${spot.y}`;
+      const onTheCorner = layer ? layer.positions.has(east) : false;
+      /* The same square's CENTRE must NOT be in there: that is the half-square mistake, named. */
+      const offByHalf = layer
+        ? layer.positions.has(`${spot.x + grid + grid / 2},${spot.y + grid / 2}`) : false;
+
+      b.clearReach();
+      const afterClear = layer ? layer.positions.size : -1;
+
+      /* Difficult ground beside the figure costs 2 to enter, so Move 1 cannot step into it. */
+      await g.layGround(scene, {
+        shape: "adjacent", effects: ["difficult"],
+        origin: { x: spot.x + grid + grid / 2, y: spot.y + grid / 2 }, radius: 0, until: null
+      });
+      const bogged = b.reachFrom(hero, 1, token);
+      const intoTheBog = bogged.has(`${Math.floor(spot.y / grid)},`
+        + `${Math.floor((spot.x + grid) / grid)}`) ? "stepped in" : "no";
+      const bogCost = b.reachFrom(hero, 2, token)
+        .get(`${Math.floor(spot.y / grid)},${Math.floor((spot.x + grid) / grid)}`)?.spent
+        ?? "unreachable";
+
+      /* And a Burglar walks into it for 1, which is the node reaching the walk. */
+      await hero.update({ "system.nodes": ["root", "shade.burglar"] });
+      const burgled = b.reachFrom(hero, 1, token).size;
+      await hero.update({ "system.nodes": wasNodes });
+
+      /* A figure in the way is neither a destination nor a route. */
+      await g.clearGround(scene);
+      const inTheWay = await put(npc, spot.x + grid, spot.y);
+      const blocked = b.reachFrom(hero, 1, token).size;
+
+      /* And the distance primitive, measured between two real tokens on a real grid. */
+      const apart = b.squaresBetween(me, inTheWay);
+      const adjacent = b.isAdjacent(me, inTheWay);
+
+      for (const doc of made.reverse()) await doc.delete();
+      await g.clearGround(scene);
+      canvas.tokens?.releaseAll?.();
+      if (scene.grid.type !== wasGrid) {
+        await scene.update({ "grid.type": wasGrid });
+        await new Promise(done => Hooks.once("canvasReady", done));
+      }
+      return [
+        ["the scene this ran on has squares", squared, true],
+        ["a Move of 1 reaches the eight around you", one, 8],
+        ["and a Move of 2 the ring outside that", two, 24],
+        ["painting one says how many it coloured", painted, 8],
+        ["and Foundry's own layer holds that many", positions, 8],
+        ["at the square's top-left corner, where it wants them", onTheCorner, true],
+        ["and not at its centre, half a square out", offByHalf, false],
+        ["clearing takes them off again", afterClear, 0],
+        ["difficult ground costs 2, so a Move of 1 stops short", intoTheBog, "no"],
+        ["and at Move 2 the first bog square has cost it all", bogCost, 2],
+        ["a Burglar does not feel it and reaches the ring", burgled, 8],
+        ["a figure in the way is one square fewer", blocked, 7],
+        ["and the distance between two real tokens", apart, 1],
+        ["which is what adjacent means", adjacent, true]
+      ];
+    });
+  });
+
+  /*
+   * **[BUILT 2026-11-21] How far the target is, and whether what is staged reaches it.**
+   *
+   * The other half of the Move ruling, and the same bargain: the engine measures and says so, and
+   * refuses nothing. A card that reads *within 4* printed the 4 and nothing ever compared it to a
+   * board, so the one question an attack turns on was asked of somebody squinting at a map.
+   *
+   * Driven through the DOM rather than through the context object, because the chip is the whole
+   * feature: a number computed correctly and rendered nowhere is the failure this probe exists to
+   * catch. And through a WEAPON's reach rather than a card's, because that is the path with
+   * something to get wrong -- no card in the starter deck carries a range at all, so every Strike
+   * in a real hand takes its reach from the item `#itemFor` picks, which is the same call the click
+   * will make.
+   */
+  await probe("how far the target is, and whether the staged card reaches it", async () => {
+    await settle(page);
+    const prepared = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      const npc = game.actors.find(a => a.type === "npc");
+      const scene = canvas.scene;
+      const grid = canvas.grid.size;
+      const made = [];
+      const put = async (actor, x, y) => {
+        const [doc] = await scene.createEmbeddedDocuments("Token",
+          [(await actor.getTokenDocument({ x, y })).toObject()]);
+        made.push(doc.id);
+        return doc;
+      };
+      /* A clear row, found rather than assumed. */
+      const used = new Set(canvas.tokens.placeables.map(t => `${t.document.x},${t.document.y}`));
+      let row = null;
+      for (let y = 400; y < 1700 && !row; y += grid) {
+        for (let x = 400; x < 2400; x += grid) {
+          let ok = true;
+          for (let i = 0; i <= 4; i++) if (used.has(`${x + i * grid},${y}`)) ok = false;
+          if (ok) { row = { x, y }; break; }
+        }
+      }
+      if (!row) return { fail: "no clear row" };
+
+      const me = await put(hero, row.x, row.y);
+      /* Three squares east, which is past a sword and well inside a bow. */
+      const them = await put(npc, row.x + 3 * grid, row.y);
+      them.object?.setTarget(true, { user: game.user, releaseOthers: true });
+
+      /*
+       * **Every** equipped weapon, not the first one.  [FIXED 2026-11-21] The first draft took one
+       * and put the bow in beside it, and the tray correctly went on offering the better of the
+       * two -- `#itemsFor` sorts by what a weapon is worth NOW, so a Longsword beats a Shortbow and
+       * the chip kept reading 3/1. The probe's precondition was wrong, not the display.
+       */
+      const melees = hero.items.filter(i => i.type === "item" && i.system.equipped
+        && (i.system.verbs?.strike?.value ?? null) !== null).map(i => i.id);
+      const { GEAR } = await import("/systems/cardrpg/module/graph.mjs");
+      const { slateData } = await import("/systems/cardrpg/module/setup.mjs");
+      const shortbow = GEAR.get("Shortbow");
+      const [bow] = shortbow
+        ? await hero.createEmbeddedDocuments("Item", [slateData({ ...shortbow }, "item")])
+        : [];
+
+      /* A Strike in hand, staged the way a click stages it. */
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      const d = await import("/systems/cardrpg/module/decks.mjs");
+      const hand = d.deckOf(hero, "actionHand");
+      const strike = hand?.cards?.contents
+        ?.find(c => (c.system.primary ?? []).some(st => st.verb === "strike"));
+      const tray = game.cardrpg.openTray(hero);
+      tray.side = "action";
+      tray.staged = [];
+      await tray.render();
+      return {
+        made, tokenId: them.id, melees, bowId: bow?.id ?? null,
+        strikeId: strike?.id ?? null, bowReach: shortbow?.verbs?.strike?.range ?? null
+      };
+    });
+    if (prepared.fail) return [["a clear row to measure along", prepared.fail, "one"]];
+
+    await page.waitForSelector(".cr-range__at", { timeout: 20000 });
+    /** The chips, as text plus whether each is marked out of reach. */
+    const chips = () => page.evaluate(() => [...document.querySelectorAll(".cr-range__at")]
+      .map(el => ({
+        text: el.textContent.replace(/\s+/g, " ").trim(),
+        out: el.classList.contains("cr-range__at--out")
+      })));
+
+    /* 1. Nothing staged: the distance alone, because it is worth knowing while you are choosing. */
+    const bare = await chips();
+
+    /* 2. A Strike with the sword in hand, which reaches 1 and does not reach three squares. */
+    const melee = await page.evaluate(async ({ strikeId, bowId }) => {
+      const { hero } = LIVE;
+      if (bowId) await hero.items.get(bowId)?.update({ "system.equipped": false });
+      const tray = game.cardrpg.openTray(hero);
+      tray.staged = strikeId ? [{ cardId: strikeId, half: "primary" }] : [];
+      await tray.render();
+      return true;
+    }, prepared);
+    const withSword = await chips();
+
+    /* 3. The same Strike with the bow in hand and every blade put away: reach 6, and in range. */
+    const armed = await page.evaluate(async ({ melees, bowId }) => {
+      const { hero } = LIVE;
+      for (const id of melees) await hero.items.get(id)?.update({ "system.equipped": false });
+      if (bowId) {
+        await hero.items.get(bowId)?.update({ "system.equipped": true, "system.equippedSlot": "hands" });
+      }
+      const tray = game.cardrpg.openTray(hero);
+      await tray.render();
+      /* What the hand is actually holding, reported so a failure here explains itself rather than
+       * leaving the next person to guess which weapon won. */
+      return hero.items.filter(i => i.type === "item" && i.system.equipped
+        && (i.system.verbs?.strike?.value ?? null) !== null)
+        .map(i => `${i.name} r${i.system.verbs.strike.range ?? 1}`).sort().join(", ") || "nothing";
+    }, prepared);
+    const withBow = await chips();
+
+    /* And put the character, the board and the window back as they were. */
+    await page.evaluate(async ({ made, melees, bowId }) => {
+      const { hero } = LIVE;
+      const scene = canvas.scene;
+      const tray = game.cardrpg.openTray(hero);
+      tray.staged = [];
+      if (bowId) await hero.deleteEmbeddedDocuments("Item", [bowId]);
+      for (const id of melees) {
+        await hero.items.get(id)?.update({ "system.equipped": true, "system.equippedSlot": "hands" });
+      }
+      for (const id of [...made].reverse()) {
+        await scene.getEmbeddedDocument("Token", id)?.delete();
+      }
+      game.user.targets.forEach(t => t.setTarget(false, { user: game.user }));
+      canvas.tokens?.releaseAll?.();
+      await tray.render();
+    }, prepared);
+
+    return [
+      ["the chip is drawn for the target", bare.length, 1],
+      ["and with nothing staged it is the distance alone", bare[0]?.text ?? "", "Goblin 3"],
+      ["and nothing is out of reach of nothing", bare[0]?.out ?? null, false],
+      ["a Strike staged", melee, true],
+      ["with a sword it reads three of one", withSword[0]?.text ?? "", "Goblin 3/1"],
+      ["and is marked out of reach", withSword[0]?.out ?? null, true],
+      ["the bow in the catalogue reaches", prepared.bowReach, 6],
+      ["and it is the only thing in hand that strikes", armed, "Shortbow r6"],
+      ["with the bow it reads three of six", withBow[0]?.text ?? "", "Goblin 3/6"],
+      ["and is not marked", withBow[0]?.out ?? null, false]
+    ];
+  });
+
   await probe("the system itself", async () => {
     const rows = await page.evaluate(() => {
       const errors = (globalThis.LIVE_ERRORS ?? []).filter(e => !/favicon|DevTools/.test(e));

@@ -1,0 +1,25 @@
+{
+  "_id": "927PmeaPiS3UlidP",
+  "_key": "!items!927PmeaPiS3UlidP",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The True Name",
+  "type": "spell",
+  "img": "systems/cardrpg/art/signatures/mind/the-true-name.webp",
+  "system": {
+    "strength": 3,
+    "source": "Demonology",
+    "description": "<p>The name it carried before it was ever on the Third Side. For three rounds the creature you name does what you tell it, and then it remembers that you know. The debt doubles.</p>",
+    "effect": {
+      "range": 4,
+      "condition": "compelled",
+      "duration": 3,
+      "ignoresCover": true
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

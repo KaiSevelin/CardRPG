@@ -296,6 +296,7 @@
   "CARDRPG.CostScale.WholeHand": "your whole hand",
   "CARDRPG.Condition.Halted": "Halted",
   "CARDRPG.Condition.Graven": "Graven",
+  "CARDRPG.Condition.Imbued": "Imbued",
   "CARDRPG.Ground.Line": "A line",
   "CARDRPG.Ground.Area": "An area",
   "CARDRPG.Ground.Adjacent": "The squares next to you",

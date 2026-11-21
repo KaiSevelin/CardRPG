@@ -18,7 +18,7 @@ import fs from "node:fs";
 import path from "node:path";
 import * as CONTENT from "../module/content.mjs";
 const { ITEMS, FEATURES } = CONTENT;
-import { SPELLS, GRAPH, ALL_TACTICS } from "../module/graph.mjs";
+import { SPELLS, TEACHINGS, GRAPH, ALL_TACTICS } from "../module/graph.mjs";
 import { CARDRPG } from "../module/config.mjs";
 
 const OUT = path.join(import.meta.dirname, "..", "..", "..", "rules", "players-handbook.md");
@@ -223,17 +223,44 @@ function featureChapter() {
   return out;
 }
 
+/*
+ * **Every teaching, not every spell.**  [FIXED 2026-11-21]
+ *
+ * This walked `SPELLS`, which is `TEACHINGS` filtered to `kind === "spell"` -- so the nine a school
+ * teaches as **features** were in no chapter of the handbook at all. Seven of them are one school's
+ * entire list: Tattoo Magic's, which a player could read about in chapter 20, pick at a level-up,
+ * and then find nothing for. The two Asceticism features were missing the same way.
+ *
+ * They are features for a reason that is the opposite of an oversight -- *a thing usable without
+ * being equipped or prepared is a feature*, and a tattoo is never prepared -- and the fix is to
+ * stop sorting the chapter by the slate the engine uses and sort it by what a reader is looking
+ * for, which is "what can this school teach me". The header says **Teaching** rather than Spell
+ * wherever a list is not all spells, and a list that is all features says so in a line, because
+ * for those the Strength column is not a preparing cost.
+ */
 function spellChapter() {
   const bySource = new Map();
-  for (const s of SPELLS.values()) {
-    if (!bySource.has(s.source)) bySource.set(s.source, []);
-    bySource.get(s.source).push(s);
+  for (const t of TEACHINGS) {
+    if (!bySource.has(t.source)) bySource.set(t.source, []);
+    bySource.get(t.source).push(t);
   }
   const out = [];
-  for (const [source, spells] of bySource) {
+  for (const [source, teachings] of bySource) {
+    const features = teachings.filter(t => t.kind === "feature");
     out.push(`### ${source}`, "");
-    out.push("| Spell | Strength | What it does |", "|---|---|---|");
-    for (const s of spells.sort((a, b) => (a.strength ?? 0) - (b.strength ?? 0))) {
+    if (features.length === teachings.length) {
+      out.push("Nothing in this school is a spell. All of these are **features**: usable without "
+        + "being equipped or", "prepared, so they are never cast, never consumed and never need "
+        + "renewing. **Strength** here is not a", "preparing cost: it is the ladder, and a spell "
+        + "slot spent for good.", "");
+    } else if (features.length) {
+      out.push(`${plural(features.length, "teaching")} here ${features.length === 1 ? "is a" : "are"}`
+        + ` **feature${features.length === 1 ? "" : "s"}** rather than a formula: always on, never`
+        + " prepared and never cast.", "");
+    }
+    out.push(`| ${features.length ? "Teaching" : "Spell"} | Strength | What it does |`,
+      "|---|---|---|");
+    for (const s of teachings.sort((a, b) => (a.strength ?? 0) - (b.strength ?? 0))) {
       const cost = s.cost?.health ? ` Costs ${s.cost.health} Health.` : "";
       out.push(`| **${s.name}** | ${s.strength ?? ""} | ${cell(s.description)}${cost} |`);
     }
@@ -776,10 +803,30 @@ function titleChapter() {
   }
   out.push("");
 
+  /*
+   * **The paragraphs come before the table, and they are content rather than prose.**
+   *
+   * **[MOVED 2026-11-21]** They were written by hand into one copy of the handbook and lived
+   * only there, inside the region this generator owns -- which means every run of
+   * `npm run handbook` was one keystroke away from deleting the only place in the book that says
+   * who any of these people are. They are `TITLE_BLURBS` now, checked in both directions.
+   *
+   * Printed in the graph's order and not the table's own, which is the same order: a reader meets
+   * each title as prose and then finds it in the row beneath. An entry covering several titles
+   * prints once, at the first of them, so the Five arrive together the way the paragraph about
+   * them assumes.
+   */
   for (const id of WAY_ORDER) {
     const ts = all.filter(n => n.id.startsWith(id + "."));
-    out.push(`### ${GRAPH.get(id).name}: ${plural(ts.length, "title")}`, "",
-      "| Title | Leans on | Spends | Signature | Tactic |", "|---|---|---|---|---|");
+    out.push(`### ${GRAPH.get(id).name}: ${plural(ts.length, "title")}`, "");
+    const said = new Set();
+    for (const n of ts) {
+      const blurb = CONTENT.TITLE_BLURBS.find(b => b.titles.includes(n.title));
+      if (!blurb || said.has(blurb)) continue;
+      said.add(blurb);
+      out.push(plain(blurb.text), "");
+    }
+    out.push("| Title | Leans on | Spends | Signature | Tactic |", "|---|---|---|---|---|");
     for (const n of ts) {
       const tactic = n.tactic
         ? `**${n.tactic}.** ${cell(ALL_TACTICS[n.tactic] ?? "")}`

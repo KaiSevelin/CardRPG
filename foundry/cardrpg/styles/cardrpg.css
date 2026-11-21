@@ -437,6 +437,22 @@
 /* -------------------------------------------- */
 
 .cardrpg .cr-note { margin: 0.2em 0; font-size: 0.72rem; color: var(--cardrpg-dim); }
+
+/*
+ * **The range display.**  [BUILT 2026-11-21]
+ *
+ * One chip per target: its name, and `3/4` once something staged has a reach. Out of reach is
+ * marked by COLOUR and by a rule under it, never by greying: grey means *you cannot click this*
+ * everywhere else in this HUD, and this is a measurement rather than a refusal -- the player may
+ * absolutely play it, and the GM may absolutely allow it.
+ */
+.cardrpg .cr-range__at { margin-left: 0.5em; white-space: nowrap; }
+.cardrpg .cr-range__at b { font-weight: 600; color: var(--cardrpg-ink); }
+.cardrpg .cr-range__at--out { color: var(--cardrpg-harm-edge); }
+.cardrpg .cr-range__at--out b {
+  color: var(--cardrpg-harm-edge);
+  border-bottom: 1px solid currentColor;
+}
 .cardrpg .cr-warn { margin: 0.2em 0; font-size: 0.75rem; color: var(--cardrpg-group-1); font-weight: 600; }
 .cardrpg .cr-warn-inline { color: var(--cardrpg-group-1); font-weight: 600; }
 .cardrpg .cr-row { display: flex; gap: 0.3em; }

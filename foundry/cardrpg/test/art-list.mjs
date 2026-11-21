@@ -110,7 +110,24 @@ export function brief(entry) {
    * with an empty subject line and the model drew their NAMES. Found by the check below, which
    * exists because the injuries shelf did the same thing for the same reason.
    */
-  if (entry.cost) bits.push(entry.cost);
+  /*
+   * **And a spell's `cost` is an object, which this pushed whole.**  [FIXED 2026-11-21]
+   *
+   * A twist's cost is a sentence and a formula's is `{ health: 2 }`, so twenty-two prompts read
+   * *"· [object Object]"* and had been doing so since the line above was written -- *Blood Price*,
+   * *Boil*, *Wither* and every other formula that charges for itself. The subject said less than
+   * nothing: it said the word "object" to an image model. The price is worth drawing, which is the
+   * whole argument of the schools that charge one, so it is spelled out.
+   */
+  if (typeof entry.cost === "string") bits.push(entry.cost);
+  else if (entry.cost) {
+    const WORDS = { health: "Health", taint: "Taint", strain: "Strain",
+      skillCards: "skill cards set aside" };
+    const paid = Object.entries(WORDS)
+      .filter(([k]) => entry.cost[k])
+      .map(([k, word]) => `${entry.cost[k]} ${word}`);
+    if (paid.length) bits.push(`costs ${paid.join(" and ")}`);
+  }
   if (entry.blurb) bits.push(entry.blurb);
   if (entry.active?.text) bits.push(entry.active.text);
   if (entry.approach) {

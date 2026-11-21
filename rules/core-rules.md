@@ -3284,10 +3284,43 @@ says which of the three a square is doing to you.
 - **[OPEN]** **Figure size.** Nothing says whether an ogre or a mounted knight occupies more than one
   square, and it is tangled with mounts ([conditions.md](conditions.md) §4.2) — both wait on the same
   decision.
-- **[OPEN]** **Move is not resolved by the engine.** Figures are pushed by hand, and the tray prints
-  the played value (halved by Slowed, reduced by Frozen) but nothing else. Given that mobility is the
-  most valuable action in the game (§11), this is the largest remaining engine gap: at minimum the
-  HUD should show reach to each target, since that is the number every positional decision turns on.
+- **[ANSWERED 2026-11-21]** **Move is not resolved by the engine, and it is not going to be.**
+  This item used to call it the largest remaining engine gap, on the grounds that mobility is the
+  most valuable action in the game (§11) and the tray printed the played value and nothing else.
+
+  The ruling is that **movement stays a sentence the table applies, as long as it is clear to the
+  player how far they can move.** That turns the whole thing from a resolution problem into a
+  display one, which is the better trade: enforcing movement means a pathfinder with a special case
+  for every exception in the book — a shove, a trap, a Burglar who ignores difficult ground, an
+  Ironclad who cannot be moved, a mount — and a table that overrides it anyway.
+
+  So three things show the player the number instead, and none of them moves a figure or spends
+  anything:
+
+  | What | Where |
+  |---|---|
+  | The played value, with what reduced it | the card's own face, since phase 1 |
+  | What a square costs to cross | Foundry's ruler, charged double over difficult ground by a region behaviour |
+  | **Which squares that reaches** | painted on the board when a Move is staged (`module/board.mjs`) |
+
+  The third is new. It is a walk out from the figure costing each square what the ground costs,
+  stopping at the staged value, painted in two shades so that *you can get there* and *you can get
+  there and it is the whole card* are different colours. It never moves anybody, never refuses a
+  drag, and takes itself off the board the moment "from here" stops being true. A square held by
+  another figure is neither a destination nor a route, which is the only rule it assumes and the
+  one every table plays anyway.
+
+  **What made it possible was that this game had no distance.** Chebyshev was computed in two
+  places and both were special cases — adjacency, and the overwatch arc — so nothing could answer
+  *how many squares is that*. It is one function now, and the second thing it bought was **range**,
+  which had the same fault and which nobody had decided either: a card reading *within 4* printed
+  the 4 and nothing ever compared it to a board, so *can I hit that from here* was a question for
+  somebody squinting at a map. The HUD prints each target's distance now, and `3/4` once something
+  staged has a reach, marked when it does not reach.
+
+  Both are measurements and neither is a gate. Nothing is greyed, no play is refused and there is no
+  warning, because the engine knows how many squares it is and does not know about the ledge, the
+  rope, or the GM who has just said yes.
 
 - **The Way graphs.** Every node, benefit and specialization for Strength, Shade and Mind. The
   leveling *mechanism* is settled in [leveling.md](leveling.md) — a milestone step along a directed

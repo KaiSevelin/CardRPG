@@ -1,0 +1,28 @@
+{
+  "_id": "wH2YFFuSWYQBliZF",
+  "_key": "!items!wH2YFFuSWYQBliZF",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Borrowed Hand",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-borrowed-hand.webp",
+  "system": {
+    "strength": 2,
+    "source": "Demonology",
+    "cost": {
+      "taint": 1
+    },
+    "description": "<p>Something reaches through for exactly as long as a blow takes. Four damage at four squares, round a shield rather than through it, and the hand is not yours &mdash; which is the entire legal defence and has never once worked.</p>",
+    "effect": {
+      "verb": "cast",
+      "range": 4,
+      "mod": 4,
+      "ignoresBlock": true
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

@@ -46,6 +46,7 @@ import {
  * public knowledge anyway -- so the HUD flips it through the same function the turn hook does. */
 import { revealIntent, turnOf } from "./combat.mjs";
 import { layGround, groundChips } from "./ground.mjs";
+import { showReach, clearReach, squaresBetween } from "./board.mjs";
 import {
   readCall, setCall, clearCall, describeCall, cardAnswers, bestTool, helpOptions,
   readChallenge, startChallenge, endChallenge, catchBreathInChallenge, drawTwist, twistCounts,
@@ -56,6 +57,18 @@ import {
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 /* -------------------------------------------- */
+
+/**
+ * **The three verbs that reach somebody else.** `defend`, `move` and `ready` are things you do to
+ * yourself, so a distance to a target means nothing for them. Read as a set rather than from
+ * `CARDRPG.verbs` because this is not a property of a verb the rest of the game asks about: it is
+ * the one question the range display has, and a flag on all six that only this reads would be a
+ * flag nobody could see the point of.
+ */
+const REACHES = new Set(["strike", "cast", "use"]);
+
+/** A range of 99 in the catalogue means *any distance*, and two steps use it. */
+const UNLIMITED = 99;
 
 export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
@@ -332,6 +345,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
   async close(options) {
     CardRPGTray.#open.delete(this.actor.id);
+    /* The paint belongs to this window's staging, so it goes when the window does. Left behind it
+     * would be an answer with nothing on the screen saying whose question it was. */
+    clearReach();
     return super.close(options);
   }
 
@@ -411,6 +427,131 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     super._onRender?.(context, options);
     this.#fitSidebar();
     this.#fitControls();
+    this.#paintReach();
+  }
+
+  /**
+   * **The squares a staged Move would reach, painted on the board.**  [BUILT 2026-11-21]
+   *
+   * core-rules 12's ruling: movement stays a sentence the table applies, **as long as it is clear
+   * to the player how far they can move**. The faces have printed the number since phase 1; what
+   * they could not do is say which squares it is, which is the question actually being asked when
+   * somebody is choosing between Advance and a Strike.
+   *
+   * **Done here and not in the stage handler**, although staging is what changes it. Every route
+   * into the play area ends in a render -- staging, unstaging, Clear, Play, shifting a stack,
+   * putting a slate back, a condition arriving from somebody else's turn -- and hanging this off
+   * each of them would be eight copies of one line, with the ninth route added later and missed.
+   * One render, one answer, and the answer always matches the faces it was read off.
+   *
+   * It spends nothing and moves nobody. See board.mjs.
+   */
+  #paintReach() {
+    if (this.actor?.type === "npc") return clearReach();
+    const budget = this.#moveStaged();
+    if (!budget) return clearReach();
+    showReach(this.actor, budget);
+  }
+
+  /**
+   * **Every target, how far off it is, and whether what is staged reaches it.**  [BUILT 2026-11-21]
+   *
+   * This line used to be the targets' names and nothing else, which is the shape of the gap: a
+   * card that reads *within 4* printed the 4, the engine never measured anything, and so the one
+   * question an attack turns on was asked of a person squinting at a map. Nobody decided that
+   * either -- `squaresBetween` did not exist, so it could not be answered.
+   *
+   * **It measures and says so; it does not refuse.** Same ruling as Move (core-rules 12): the
+   * number has to be in front of the player, and what they do with it is the table's. Play is not
+   * gated, nothing is greyed, and an out-of-reach target is marked rather than blocked -- because
+   * the engine does not know about the ledge, the dangling rope or the GM who has just said yes.
+   *
+   * Distance is printed even with nothing staged, because *how far away is that* is worth knowing
+   * while you are still choosing the card.
+   */
+  #targetRows() {
+    const reaches = this.#reachStaged();
+    /* The furthest, because that is the question: can this action touch that figure at all. The
+     * tooltip carries every verb's own reach, so a card that strikes at 1 and casts at 3 is not
+     * reduced to one number without saying so. */
+    const furthest = reaches.length ? Math.max(...reaches.map(r => r.reach)) : null;
+    const spell = reaches.map(r => `${r.verb} ${r.reach >= UNLIMITED ? "any distance" : r.reach}`)
+      .join(", ");
+    return [...(game.user.targets ?? [])].map(token => {
+      const away = squaresBetween(this.actor, token.document ?? token);
+      const out = away !== null && furthest !== null && furthest < UNLIMITED && away > furthest;
+      return {
+        name: token.name,
+        away,
+        reach: furthest,
+        out,
+        /* "3" with nothing staged, "3/4" once something with a reach is. */
+        range: away === null ? "" : (furthest === null ? `${away}` : `${away}/${furthest}`),
+        tip: away === null
+          ? `${token.name} is not on the board, so there is no distance to measure.`
+          : `${token.name} is ${away} ${away === 1 ? "square" : "squares"} away`
+            + (spell ? `, and what you have staged reaches ${spell}.` : ".")
+            + (out ? " Nothing stops you playing it; the engine does not know about the rope." : "")
+      };
+    });
+  }
+
+  /**
+   * **What each staged step can reach, by verb.**
+   *
+   * A step's own `range` wins over the item's, and that order is the rule rather than a
+   * convenience: *Taste of the Rot* is a Cast at range 1 and means adjacent, so a wand with a
+   * three-square cast line must not quietly extend it. With no range on the step the weapon's
+   * line decides, through `rangeOnLine`, which is the same number the gear panel prints and
+   * already counts the bonuses a slate grants. With neither, 1: adjacent is what saying nothing
+   * has always meant in this game.
+   *
+   * A step counts when it carries a range OR its verb reaches somebody. Both tests are needed:
+   * eleven steps in the catalogue carry a range with no verb at all -- a condition laid on
+   * somebody at a distance -- and a Strike carries its reach on the weapon rather than on itself.
+   */
+  #reachStaged() {
+    const hand = deckOf(this.actor, "actionHand");
+    const out = [];
+    for (const { cardId, half } of this.staged) {
+      const card = hand?.cards?.get(cardId);
+      for (const step of card?.system?.[half] ?? []) {
+        const reaching = REACHES.has(step.verb);
+        if (!reaching && (step.range === null || step.range === undefined)) continue;
+        let reach = step.range ?? null;
+        if (reach === null && reaching) {
+          const item = this.#itemFor(step.verb, half, step.requires);
+          const line = item?.system?.verbs?.[step.verb];
+          reach = line ? this.actor.system.rangeOnLine(line, item) : null;
+        }
+        out.push({ verb: step.verb ?? "it", reach: reach ?? 1 });
+      }
+    }
+    return out;
+  }
+
+  /**
+   * **What the staged halves add up to as a Move, after everything that reduces it.**
+   *
+   * Summed over the staged halves rather than computed from the cards, and through `moveAsPlayed`
+   * per step, because **that is what the faces print**: a Slowed Advance reads Move 1 on the card
+   * in front of the player, and the highlight has to be the same number or one of the two is
+   * lying. Halving each step rather than the sum is the same reason -- core-rules 7 halves *your
+   * Move*, the face applies it per card, and this agrees with the face.
+   *
+   * Zero when nothing staged moves, which is the ordinary case and means *take the paint off*.
+   */
+  #moveStaged() {
+    const hand = deckOf(this.actor, "actionHand");
+    let squares = 0;
+    for (const { cardId, half } of this.staged) {
+      const card = hand?.cards?.get(cardId);
+      for (const step of card?.system?.[half] ?? []) {
+        if (step.verb !== "move" || step.param === null || step.param === undefined) continue;
+        squares += this.actor.system.moveAsPlayed?.(step.param)?.played ?? step.param;
+      }
+    }
+    return squares;
   }
 
   /** Re-measure when the sidebar opens or shuts, without re-rendering the whole HUD. */
@@ -608,7 +749,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       inCombat: !!myCombatant,
       myTurn: combat?.combatant?.actor?.id === actor.id,
       turnOwner: combat?.combatant?.name ?? "",
-      targets: [...(game.user.targets ?? [])].map(t => t.name).join(", "),
+      targets: this.#targetRows(),
       drawPct: Math.round(100 * (counts.draw ?? 0) / deckTotal)
     });
   }

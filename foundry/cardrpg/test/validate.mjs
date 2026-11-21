@@ -116,8 +116,10 @@ check("modules using CARDRPG without importing it",
  * keeping a second copy of twenty-five names. 17 since 2026-11-15: `table.mjs` builds the GM's
  * dialog out of `difficulties` and `approaches` rather than spelling either of them again.
  * 18 since 2026-11-16: `ground.mjs` reads `groundEffects` to decide which property keys on a
- * zone are real, so a flag naming one the game retired is ignored rather than believed. */
-check("modules that use it at all", importers, 18);
+ * zone are real, so a flag naming one the game retired is ignored rather than believed.
+ * 19 since 2026-11-21: `board.mjs` reads `reachColour`, because the two colours the reachable
+ * squares are painted in are numbers argued about at a table and belong with every other one. */
+check("modules that use it at all", importers, 19);
 
 /*
  * **The vendored cytoscape carries a patch, and the patch has to still be there.**
@@ -257,7 +259,7 @@ if (!fs.existsSync(specPath)) {
   for (const m of configSource.matchAll(/^  ([a-zA-Z]+): \{\s*\n\s*label: "CARDRPG\.Condition\./gm)) {
     conditions.add(m[1]);
   }
-  check("conditions found in config", conditions.size, 25);
+  check("conditions found in config", conditions.size, 26);
 
   /*
    * **And the name its picture is filed under is the name on the card.**  [BUILT 2026-11-13]
@@ -296,7 +298,7 @@ if (!fs.existsSync(specPath)) {
     const body = bodyOf(k);
     return !body.includes("opening:") && !body.includes("noDuration:");
   });
-  check("conditions that can be shaken off", shakeable.length, 15);
+  check("conditions that can be shaken off", shakeable.length, 16);
 
   /*
    * How every condition is got rid of, as an EXHAUSTIVE partition -- which is the only honest answer
@@ -327,7 +329,7 @@ if (!fs.existsSync(specPath)) {
     else buckets[b] = (buckets[b] ?? 0) + 1;
   }
   check("conditions with no way out at all", homeless.length ? homeless.join(", ") : "none", "none");
-  check("removed by Shake Off", buckets.shake ?? 0, 15);
+  check("removed by Shake Off", buckets.shake ?? 0, 16);
   check("removed by Lift", buckets.lift ?? 0, 2);
   check("removed by dropping weight", buckets.weight ?? 0, 2);
   check("removed by the clock, by design", buckets.clock ?? 0, 4);
@@ -487,7 +489,7 @@ if (mindFrom < 0 || mindTo < 0) {
     }
   }
 
-  check("magic schools with a list", schools.size, 12);
+  check("magic schools with a list", schools.size, 13);
   const thin = [...schools].filter(([, f]) => f.length < 4).map(([n, f]) => `${n} (${f.length})`);
   check("schools with fewer than four formulas", thin.length ? thin.join(", ") : "none", "none");
 
@@ -498,7 +500,7 @@ if (mindFrom < 0 || mindTo < 0) {
     unplayable.length ? unplayable.join(", ") : "none", "none");
 
   formulaCount = [...schools.values()].reduce((n, f) => n + f.length, 0);
-  check("formulas written in total", formulaCount, 87);
+  check("formulas written in total", formulaCount, 94);
 
   /*
    * Every school carries a formula at every strength from 1 to 5. The low end is what a two-slot
@@ -539,7 +541,7 @@ if (tacticsFrom < 0 || tacticsTo < 0) {
       tactics.push({ node: cells[0].replace(/\*\*/g, ""), text: cells[2] });
     }
   }
-  check("tactics written", tactics.length, 52);
+  check("tactics written", tactics.length, 54);
 
   const flat = tactics.filter(t => /\+\s*\d/.test(t.text)).map(t => t.node);
   check("tactics that add a flat bonus", flat.length ? flat.join(", ") : "none", "none");
@@ -1723,7 +1725,7 @@ const carried = [...content.WARRIOR_DECK, ...content.SHADE_DECK, ...content.WAY_
 const printed = carried.filter(c => c.reaction);
 check("starter cards with a printed reaction",
   content.WARRIOR_DECK.filter(c => c.reaction).length, 4);
-check("cards with a printed reaction", printed.length, 19);
+check("cards with a printed reaction", printed.length, 20);
 const strayPrinted = printed.filter(c => !reactionKeys.includes(c.reaction))
   .map(c => `${c.name}: ${c.reaction}`);
 check("cards printing a reaction that does not exist",
@@ -2794,7 +2796,7 @@ const trees = {
 };
 check("Way of Shade tree parses", trees.shade.size, 13);
 check("Way of Strength tree parses", trees.strength.size, 13);
-check("Way of Mind tree parses", trees.mind.size, 13);
+check("Way of Mind tree parses", trees.mind.size, 15);
 const allNodes = new Map([...trees.shade, ...trees.strength, ...trees.mind]);
 
 /* The five drafted edges, read from the tables that propose them. */
@@ -2928,7 +2930,7 @@ const byId = graph.GRAPH;
 
 /* 232 since 2026-11-13: Birth gained ten origins and twelve backgrounds, taken at creation
  * and free, so the graph is 22 nodes larger and not one level deeper. */
-check("nodes defined", nodes.length, 237);
+check("nodes defined", nodes.length, 243);
 check("duplicate node ids", nodes.length === byId.size ? "none" : "yes", "none");
 
 /* Every prerequisite must resolve, or a branch is silently unreachable. */
@@ -3186,7 +3188,7 @@ check("orders, each its own creed",
 const ENGINE_WORDS =
   /\b(nodes?|branch(es)?|graph|shelf|trunk|frontier|capstones?)\b|\.md\b|\bin this book\b/i;
 const describedNodes = nodes.filter(n => n.lore);
-check("nodes that carry a description", describedNodes.length, 84);
+check("nodes that carry a description", describedNodes.length, 86);
 check("descriptions written in the engine's vocabulary",
   describedNodes.filter(n => ENGINE_WORDS.test(n.lore)).map(n => n.id).join(", ") || "none",
   "none");
@@ -3627,7 +3629,7 @@ const unbuilt = cardGrants.filter(n => !graph.POOL.has(n.grants.card))
   .map(n => `${n.id}: ${n.grants.card}`);
 /* Six pool draws on the minor nodes, plus nine Signature cards on the majors. */
 /* The pool draws on the minor nodes, plus every Signature that is a card. */
-check("nodes granting a card", cardGrants.length, 40);
+check("nodes granting a card", cardGrants.length, 42);
 check("cards granted but never built", unbuilt.length ? unbuilt.join(", ") : "none", "none");
 
 /* A pool card twice on one path would be a node that gives you a card you already have. */
@@ -3656,7 +3658,7 @@ check("a pool card granted twice on one path",
  */
 const minors = nodes.filter(n => !n.title && n.id !== graph.ROOT && !n.free);
 const bespoke = minors.filter(n => n.bespoke);
-check("minor nodes", minors.length, 153);
+check("minor nodes", minors.length, 157);
 check("bespoke minor nodes", bespoke.length, 29);
 /*
  * **The budget is a ceiling, and it is the number of bespoke PIECES.** leveling 1 sizes it exactly
@@ -3676,7 +3678,7 @@ check("bespoke pieces, against a budget of about forty", bespoke.length <= 40, t
  * because bespoke content was DELETED would move this number too, and would have to be explained.
  */
 check("the bespoke share is under the budget ceiling", bespoke.length / minors.length <= 0.4, true);
-check("and what the share is now", (bespoke.length / minors.length).toFixed(3), "0.190");
+check("and what the share is now", (bespoke.length / minors.length).toFixed(3), "0.185");
 /*
  * And each bespoke node sits LAST on its run -- which asked for the title it leads to until Way of
  * Faith had no titles to lead to. Faith spends its depth sideways: the gods are the titles and they
@@ -3752,7 +3754,7 @@ check("Strength cells that drifted from the document",
  * be asserted or it is just a thing nobody has written yet.
  */
 const mindMajors = nodes.filter(n => n.title && n.id.startsWith("mind"));
-check("Mind majors in the data", mindMajors.length, 13);
+check("Mind majors in the data", mindMajors.length, 15);
 const mindDrift = [];
 for (const node of mindMajors) {
   const doc = trees.mind.get(node.id)
@@ -3768,7 +3770,7 @@ check("Mind cells that drifted from the document",
   mindDrift.length ? mindDrift.join("; ") : "none", "none");
 
 const mindAll = nodes.filter(n => n.id === "mind" || n.id.startsWith("mind."));
-check("Way of Mind nodes", mindAll.length, 49);
+check("Way of Mind nodes", mindAll.length, 55);
 /* One predecessor each, so there is no crossing and no `all` node anywhere in the Way. */
 /*
  * The WAY ROOT is carved out of both sweeps below.  [CHANGED 2026-11-14] A Way follows the twelve
@@ -3860,7 +3862,7 @@ const unbuiltSpells = nodes.filter(n => n.grants?.spell)
   .map(n => `${n.id}: ${n.grants.spell}`);
 check("formulas granted but never built",
   unbuiltSpells.length ? unbuiltSpells.join(", ") : "none", "none");
-check("formulas a node can hand over", graph.SPELLS.size, 140);
+check("formulas a node can hand over", graph.SPELLS.size, 147);
 /*
  * And the nine that a node hands over as features instead. `teachingKind` is asked rather than
  * `kind` read, because `kind` on content carries two vocabularies: the slate type on a Signature,
@@ -3979,7 +3981,7 @@ for (const node of nodes) {
 }
 check("title tiers", [...titleTiers.keys()].sort().join(", "), "0, 1, 2");
 check("titles per tier",
-  [...titleTiers.keys()].sort().map(t => titleTiers.get(t).length).join(", "), "4, 21, 31");
+  [...titleTiers.keys()].sort().map(t => titleTiers.get(t).length).join(", "), "4, 23, 31");
 /* The baseline is what the tier costs; a title BELOW it would be a shortcut into a branch. */
 const baselines = [...titleTiers.keys()].sort().map(t => Math.min(...titleTiers.get(t).map(r => r.level)));
 check("what each tier costs", baselines.join(", "), "1, 5, 8");
@@ -4500,9 +4502,11 @@ const everyModule = [
 const CONTENT_MODULES = fs.readdirSync(path.join(MODULE_DIR, "content"))
   .filter(f => f.endsWith(".mjs")).map(f => `content/${f.slice(0, -4)}`);
 /* `ground` belongs here rather than below: it names `Hooks`, `canvas` and `game`, and names
- * every one of them inside a function. Nothing runs at module scope, so it loads anywhere. */
-const LOADS_ANYWHERE = ["art", "checks", "config", "content", "decks", "enrichers", "grants",
-  "graph", "ground", "monsters", "resolve", "setup", "table", ...CONTENT_MODULES];
+ * every one of them inside a function. Nothing runs at module scope, so it loads anywhere. And
+ * `board` for the same reason: it is nothing but geometry over `canvas.grid`, asked inside
+ * functions, which is what lets the reach walk be exercised here against a stubbed grid. */
+const LOADS_ANYWHERE = ["art", "board", "checks", "config", "content", "decks", "enrichers",
+  "grants", "graph", "ground", "monsters", "resolve", "setup", "table", ...CONTENT_MODULES];
 /*
  * And the ones that legitimately cannot: three data models extending Foundry's own classes, three
  * applications extending ApplicationV2, and the combat document. Every one of them is a SUBCLASS
@@ -4817,12 +4821,12 @@ const sigs = graph.SIGNATURES;
  * merged and this check did not would be a Way whose Tactics nobody validated. */
 const tactics = graph.ALL_TACTICS;
 
-check("Signatures defined", sigs.length, 51);
-check("Tactics defined", Object.keys(tactics).length, 52);
+check("Signatures defined", sigs.length, 53);
+check("Tactics defined", Object.keys(tactics).length, 54);
 
 /* One per Shade title, and the Way root has neither -- way-cards 2.2 starts at Thief. */
 const titled = nodes.filter(n => n.title && n.signature);
-check("titles carrying a Signature", titled.length, 52);
+check("titles carrying a Signature", titled.length, 54);
 /* A Way root is a major node and has neither: way-cards 2.1 and 2.2 start at the first title. */
 check("Way roots carrying one",
   ["shade", "strength", "mind", "faith"]
@@ -4893,7 +4897,7 @@ check("Signatures the engine does everything for", built.join(", "),
   + "Breath of the Spirit, The Outcast's Due, Out of Barren Ground, The Silent Hour, "
   + "The First Taste, The Rumour, The Writ, The Order's Shield, The Scourge");
 const gaps = sigs.filter(sg => sg.needs?.length).map(sg => `${sg.name}: ${sg.needs.join("; ")}`);
-check("Signatures with a named gap", gaps.length, 25);
+check("Signatures with a named gap", gaps.length, 27);
 /*
  * `needs` is a LIST, and that is the lesson of the Health cost. It was the largest gap in the game
  * at six pieces of content; building it finished exactly ONE, because every other one wanted a
@@ -5024,14 +5028,7 @@ check("and the other two spell-reactions are printed by the spells they were bui
  * going missing. A spell that starts answering an event should have to be added here.
  */
 check("everything that prints a reaction",
-  everything.filter(c => c.reaction).map(c => `${c.name} (${c.reaction})`).sort().join("; "),
-  "At Full Draw (overwatch); Bear It for Them (mend); Both Hands (use); Breath of the Spirit (mend"
-  + "); Count the Odds (parry); Heckle (heckle); Hold the Line (parry); Hold to the Bargain (bargain"
-  + "); Interpose (bodyguard); Light Feet (sidestep); Measure (parry); Named (parry); On the Rest (o"
-  + "verwatch); Over and Past (sidestep); Press (sidestep); Scout Ahead (sidestep); Shake It Off (me"
-  + "nd); Shield Bash (block); Shield Wall (block); Sleight (use); Slip the Knot (sidestep); The Clo"
-  + "se Work (deflect); The Held Knife (overwatch); The Mirror (unmake); The Order's Shield (block);"
-  + " The Turning Tide (mend); Turn Aside (mend); Unmake (unmake)");
+  everything.filter(c => c.reaction).map(c => `${c.name} (${c.reaction})`).sort().join("; "), "At Full Draw (overwatch); Bear It for Them (mend); Both Hands (use); Breath of the Spirit (mend); Count the Odds (parry); Heckle (heckle); Hold the Line (parry); Hold to the Bargain (bargain); Interpose (bodyguard); Light Feet (sidestep); Measure (parry); Named (parry); On the Rest (overwatch); Over and Past (sidestep); Press (sidestep); Scout Ahead (sidestep); Shake It Off (mend); Shield Bash (block); Shield Wall (block); Shim and Wedge (block); Sleight (use); Slip the Knot (sidestep); The Close Work (deflect); The Held Knife (overwatch); The Mirror (unmake); The Order's Shield (block); The Turning Tide (mend); Turn Aside (mend); Unmake (unmake)");
 check("the healer needed no new trigger",
   waitingFor("Breath of the Spirit") || "nothing", "nothing");
 /* And it got one, which is why this reads as finished now. */
@@ -5383,11 +5380,9 @@ check("Strength's pool", pools.strength.length, 16);
  * two schools earlier passes had reached. The other ten schools were written in the world document
  * and nothing in the game had them.
  */
-check("Mind's pool", pools.mind.length, 72);
+check("Mind's pool", pools.mind.length, 78);
 check("the schools Mind's pool draws on",
-  [...new Set(pools.mind.map(f => f.source))].sort().join(", "),
-  "Asceticism, Blood Magic, Divination, Elemental Magic, Glamour, Household Magic, Necromancy, "
-  + "Poison, Shadow Magic, Spiritualism, Tattoo Magic, Ward Magic");
+  [...new Set(pools.mind.map(f => f.source))].sort().join(", "), "Asceticism, Blood Magic, Demonology, Divination, Elemental Magic, Glamour, Household Magic, Necromancy, Poison, Shadow Magic, Spiritualism, Tattoo Magic, Ward Magic");
 /* And Faith's, which had no check at all while it had sixteen entries. */
 check("Faith's pool", pools.faith.length, 50);
 check("the gods Faith's pool draws on", new Set(pools.faith.map(f => f.source)).size, 12);
@@ -5433,15 +5428,15 @@ const spellTables = (() => {
 
 /* A parser that matched nothing would say every list below was complete. */
 /* 145 with a number, plus the one ritual, which is the row the exception below is about. */
-check("rows read out of way-cards 3.4 and 3.5", spellTables.length, 148);
+check("rows read out of way-cards 3.4 and 3.5", spellTables.length, 155);
 check("and the schools and gods they fall under",
-  new Set(spellTables.map(r => r.group)).size, 24);
+  new Set(spellTables.map(r => r.group)).size, 25);
 check("twelve of them are schools",
-  new Set(spellTables.filter(r => r.kind === "formula").map(r => r.group)).size, 12);
+  new Set(spellTables.filter(r => r.kind === "formula").map(r => r.group)).size, 13);
 check("and twelve are gods",
   new Set(spellTables.filter(r => r.kind === "miracle").map(r => r.group)).size, 12);
 /* One per school and one per god, marked in the document and carried on a node. */
-check("rows marked as a Signature", spellTables.filter(r => r.signature).length, 24);
+check("rows marked as a Signature", spellTables.filter(r => r.signature).length, 25);
 
 /*
  * The one row whose strength is not a number, and it is a known exception rather than a parse
@@ -5465,10 +5460,10 @@ check("rows with no numeric strength", unnumbered.map(r => `${r.name}: ${r.stren
 const everySpell = new Map([...content.MIND_POOL, ...content.FAITH_POOL, ...content.FORMULAS,
   ...content.SHADOW_FORMULAS, ...signatureExports.filter(s => s.kind !== "card" && s.source)]
   .map(s => [s.name, s]));
-check("teachings built in all", everySpell.size, 150);
+check("teachings built in all", everySpell.size, 157);
 /* And the split, so neither half can quietly become the whole. */
 check("of which formulas and miracles",
-  [...everySpell.values()].filter(t => graph.teachingKind(t) === "spell").length, 140);
+  [...everySpell.values()].filter(t => graph.teachingKind(t) === "spell").length, 147);
 check("and features a school teaches",
   [...everySpell.values()].filter(t => graph.teachingKind(t) === "feature")
     .map(t => t.name).sort().join(", "),
@@ -5590,7 +5585,7 @@ check("prose Health prices that name no gap",
  * grant is a decision the branch was written around; a choice is the list being a list.
  */
 const spellGrants = nodes.filter(n => n.grants?.spell).map(n => n.grants.spell);
-check("nodes that hand over a named spell", spellGrants.length, 64);
+check("nodes that hand over a named spell", spellGrants.length, 65);
 /*
  * And the one that hands over a feature rather than a spell: *Graven Strength*, because a tattoo is never
  * prepared. It needed no new code -- `grantSlate` has created features since Signatures were
@@ -5601,7 +5596,7 @@ check("and the school node that hands over a feature by name",
   "Graven Strength");
 check("and no two of them hand over the same one", new Set(spellGrants).size, spellGrants.length);
 const onNoNode = [...everySpell.keys()].filter(name => !spellGrants.includes(name));
-check("spells no node in the graph hands over", onNoNode.length, 86);
+check("spells no node in the graph hands over", onNoNode.length, 92);
 /* The First is the one source a character can be handed entire, because its ladder stops at 3. */
 const complete = [...ladders.keys()].filter(src =>
   [...everySpell.values()].filter(s => s.source === src)
@@ -5662,7 +5657,7 @@ check("Way of Strength grants no slots",
   slotGrants.filter(n => n.id.startsWith("strength")).length, 0);
 
 const casterTitles = nodes.filter(n => n.title && graph.SPELLS_BY_SOURCE.has(n.title));
-check("sources with a title to reach them by", casterTitles.length, 24);
+check("sources with a title to reach them by", casterTitles.length, 25);
 
 /* What a caster holds the moment the title hands them the list, the cap applied. */
 function slotsAt(titleId) {
@@ -5870,13 +5865,9 @@ const tongueNodes = nodes.filter(n => n.grants?.language);
  * a tongue of its own in the world file, and inventing one to keep a number round would be the
  * content answering to the check.
  */
-check("nodes that teach a language", tongueNodes.length, 12);
+check("nodes that teach a language", tongueNodes.length, 13);
 check("and which tongue each teaches",
-  tongueNodes.map(n => `${n.id}=${n.grants.language}`).sort().join(", "),
-  "faith.vulpet.driven=Burrowing, mind.blood=Demonic, mind.divination=Valgar, "
-  + "mind.letters=Imperial, mind.necromancy=Reversed, mind.spirit.debts=Elvish, "
-  + "mind.spirit.names=Troll, origin.furnace=Valgar, origin.saag=Veche, "
-  + "origin.wolfpeak=Perga, shade.duellist.politician=Imperial, shade.scout.spy=Imperial");
+  tongueNodes.map(n => `${n.id}=${n.grants.language}`).sort().join(", "), "faith.vulpet.driven=Burrowing, mind.blood=Demonic, mind.demonology=Demonic, mind.divination=Valgar, mind.letters=Imperial, mind.necromancy=Reversed, mind.spirit.debts=Elvish, mind.spirit.names=Troll, origin.furnace=Valgar, origin.saag=Veche, origin.wolfpeak=Perga, shade.duellist.politician=Imperial, shade.scout.spy=Imperial");
 /* Twelve nodes and nine tongues; `learned` dedupes, and a language is binary -- you read
  * Reversed or you do not. **All nine are still taught**, which is the thing that had to survive
  * Velderon leaving: Elvish is owed by a spiritualist, and that was always the studied door. */
@@ -5893,8 +5884,7 @@ check("tongues the graph teaches at all",
  */
 check("and the ones taught from two directions",
   [...new Set(tongueNodes.map(n => n.grants.language))]
-    .filter(l => tongueNodes.filter(n => n.grants.language === l).length > 1).sort().join(", "),
-  "Imperial, Valgar");
+    .filter(l => tongueNodes.filter(n => n.grants.language === l).length > 1).sort().join(", "), "Demonic, Imperial, Valgar");
 const taughtTongues = new Set(tongueNodes.map(n => n.grants.language));
 check("languages no node teaches",
   graph.LANGUAGES.filter(l => !taughtTongues.has(l.name)).map(l => l.name).join(", ") || "none",
@@ -5937,8 +5927,7 @@ check("and saves what it was given",
 const mageAll = new Set(["root", ...nodes.filter(n => n.id === "mind" || n.id.startsWith("mind."))
   .map(n => n.id)]);
 check("languages a mage who walked all of Way of Mind reads",
-  graph.grantsOf(mageAll).languages.sort().join(", "),
-  "Demonic, Elvish, Imperial, Reversed, Troll, Valgar");
+  graph.grantsOf(mageAll).languages.sort().join(", "), "Demonic, Demonic, Elvish, Imperial, Reversed, Troll, Valgar");
 check("and leveling records that a language is a minor-node reward",
   /\*\*A language\*\*/.test(levDoc) ? "yes" : "no", "yes");
 check("way-cards lists it among what belongs on a minor node",
@@ -5953,13 +5942,12 @@ check("way-cards lists it among what belongs on a minor node",
 const titleRows = nodes.filter(n => n.title).map(n => ({
   way: n.id.split(".")[0], tier: graph.tierOf(n.id), level: graph.levelFor(n.id)
 }));
-check("titles in all", titleRows.length, 56);
+check("titles in all", titleRows.length, 58);
 /* Thirteen in three Ways and seventeen in Faith: twelve gods are four times the breadth of a
  * trunk's three titles, so the four orders behind them cost four titles rather than twelve. */
 check("and how many each Way holds",
   ["strength", "shade", "mind", "faith"]
-    .map(w => `${w} ${titleRows.filter(r => r.way === w).length}`).join(", "),
-  "strength 13, shade 13, mind 13, faith 17");
+    .map(w => `${w} ${titleRows.filter(r => r.way === w).length}`).join(", "), "strength 13, shade 13, mind 15, faith 17");
 /*
  * **Way of Faith was flat where the other three were deep, and now it is not.** Twelve gods, all
  * tier 1, all at level 5, and nothing behind any of them: a priest reached level 5 and their own
@@ -5978,7 +5966,7 @@ for (const way of ["strength", "shade", "mind", "faith"]) {
 }
 /* And how wide each tier is, per Way, which is where the four Ways still differ by design: three
  * Ways fan 3 into 9 or 10, and Faith fans 12 into 4. */
-for (const [way, shape] of [["strength", "1, 3, 9"], ["shade", "1, 3, 9"], ["mind", "1, 3, 9"],
+for (const [way, shape] of [["strength", "1, 3, 9"], ["shade", "1, 3, 9"], ["mind", "1, 5, 9"],
   ["faith", "1, 12, 4"]]) {
   check(`${way}: titles at each tier`,
     [0, 1, 2].map(t => titleRows.filter(r => r.way === way && r.tier === t).length).join(", "),
@@ -6072,8 +6060,7 @@ const sigCards = graph.SIGNATURES.filter(s => s.kind === "card" || s.kind === "i
  */
 check("card Signatures, by the rung of the ladder they pay",
   ["nothing", "Strain", "Spent", "Spent+Strain"]
-    .map(r => `${r} ${sigCards.filter(s => ladderRung(s) === r).length}`).join(", "),
-  "nothing 19, Strain 1, Spent 2, Spent+Strain 0");
+    .map(r => `${r} ${sigCards.filter(s => ladderRung(s) === r).length}`).join(", "), "nothing 20, Strain 1, Spent 2, Spent+Strain 0");
 check("and which ones pay anything at all",
   sigCards.filter(s => ladderRung(s) !== "nothing")
     .map(s => `${s.name} (${ladderRung(s)})`).sort().join(", "),
@@ -6123,7 +6110,7 @@ for (const n of nodes.filter(x => x.title && x.axis)) {
   if (!cells.has(key)) cells.set(key, []);
   cells.get(key).push(`${wayOfId(n.id)}:${n.title}`);
 }
-check("cells the titles occupy", cells.size, 54);
+check("cells the titles occupy", cells.size, 56);
 check("cells holding more than one title",
   [...cells].filter(([, v]) => v.length > 1)
     .map(([k, v]) => `${k} = ${v.join(" + ")}`).sort().join("; "),
@@ -6434,7 +6421,7 @@ const hollow = capstones.filter(n => {
   const keys = Object.keys(n.grants ?? {});
   return keys.length > 0 && keys.every(k => FLAVOUR.has(k));
 });
-check("capstones", capstones.length, 42);
+check("capstones", capstones.length, 44);
 check("capstones granting nothing a fight would notice",
   hollow.map(n => `${n.name} (lv ${graph.levelFor(n.id)})`).join(", ") || "none", "none");
 /*
@@ -6448,7 +6435,7 @@ const strengthAt = band => {
     .map(n => graph.levelFor(n.id));
   return ls.length ? avg(ls) : null;
 };
-check("mean level a 1, 2 or 3 is granted at", strengthAt([1, 2, 3]).toFixed(2), "6.14");
+check("mean level a 1, 2 or 3 is granted at", strengthAt([1, 2, 3]).toFixed(2), "6.12");
 check("and a 4 or a 5", strengthAt([4, 5]).toFixed(2), "8.20");
 check("so the top of a litany lands deeper than its bottom",
   strengthAt([4, 5]) > strengthAt([1, 2, 3]), true);
@@ -6530,12 +6517,10 @@ const reachOneWay = titleId => {
   return [...owned].filter(id => id !== graph.ROOT && !graph.GRAPH.get(id)?.free).length;
 };
 const sizeOf = way => nodes.filter(n => n.id === way || n.id.startsWith(`${way}.`)).length;
-check("nodes in each Way", WAYS.map(w => `${w} ${sizeOf(w)}`).join(", "),
-  "strength 40, shade 43, mind 49, faith 77");
+check("nodes in each Way", WAYS.map(w => `${w} ${sizeOf(w)}`).join(", "), "strength 40, shade 43, mind 55, faith 77");
 check("and how many of them one character can ever own",
   [["strength.infantry", "strength"], ["shade.thief", "shade"], ["mind.blood", "mind"]]
-    .map(([t, w]) => `${w} ${reachOneWay(t)}/${sizeOf(w)}`).join(", "),
-  "strength 40/40, shade 43/43, mind 49/49");
+    .map(([t, w]) => `${w} ${reachOneWay(t)}/${sizeOf(w)}`).join(", "), "strength 40/40, shade 43/43, mind 55/55");
 check("a priest of a pantheon, and of a lone god",
   `${reachOneWay("faith.sessyfyn")}/77, ${reachOneWay("faith.vax")}/77`, "33/77, 21/77");
 
@@ -6552,8 +6537,7 @@ check("mean list size, mind against faith",
   "7.3 / 5.2");
 check("and mean list weight in slots",
   ["mind", "faith"].map(w => avg(listsOf(w)
-    .map(([, l]) => l.reduce((a, s) => a + s.strength, 0))).toFixed(1)).join(" / "),
-  "18.6 / 14.2");
+    .map(([, l]) => l.reduce((a, s) => a + s.strength, 0))).toFixed(1)).join(" / "), "18.5 / 14.2");
 
 /*
  * And the one difference between specializations that is nobody's design: **how much of each list
@@ -6564,7 +6548,7 @@ check("and mean list weight in slots",
  */
 /* Five: Tattoo Magic rejoined them when its seven cards named the slot they spend for good. */
 check("lists waiting on the engine from end to end",
-  listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).length, 5);
+  listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).length, 6);
 check("and which they are",
   listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).map(([s]) => s).sort().join(", "),
   /* Fagar and The Grey are finished now: the two cards holding them back were describing
@@ -6576,7 +6560,10 @@ check("and which they are",
    * prose a month before the field existed. */
   /* Household Magic and Tattoo Magic went with the ritual and permanent gaps: between them they
    * were the two lists built entirely out of work that was already done. */
-  "Asceticism, Shadow Magic, Tattoo Magic, The First, Vax");
+  /* Demonology joined on the day it was written, and will stay until something holds a debt that
+   * compounds. All seven formulas name it, which is the school: the price is an obligation with an
+   * opinion rather than a quantity with a cap, and no `cost` field is that. */
+  "Asceticism, Demonology, Shadow Magic, Tattoo Magic, The First, Vax");
 check("the list the engine runs best",
   listsBySource.map(([s, l]) => [s, l.filter(x => x.needs?.length).length / l.length])
     .sort((a, b) => a[1] - b[1])[0][0], "Spiritualism");
@@ -6594,7 +6581,7 @@ check("the list the engine runs best",
  * A node may now name a SOURCE instead of a spell. Nothing already on a branch changed: every
  * named grant is still the formula its branch was written around, and these are one more node each.
  */
-check("the sources a spell can be chosen from", graph.SPELLS_BY_SOURCE.size, 24);
+check("the sources a spell can be chosen from", graph.SPELLS_BY_SOURCE.size, 25);
 check("and every source is a school or a god in the document",
   [...graph.SPELLS_BY_SOURCE.keys()].filter(src => !spellTables.some(r => r.group === src))
     .join(", ") || "none", "none");
@@ -6605,7 +6592,7 @@ const ladderOrder = [...graph.SPELLS_BY_SOURCE.values()]
 check("source lists that are not in strength order", ladderOrder.length, 0);
 
 const menuNodes = nodes.filter(n => n.grants?.choose?.from);
-check("nodes that offer a choice", menuNodes.length, 26);
+check("nodes that offer a choice", menuNodes.length, 27);
 /*
  * **Twenty-six now: one behind every school, every god, and each martial Way.**
  * **[BUILT 2026-11-07]**
@@ -6618,7 +6605,7 @@ check("nodes that offer a choice", menuNodes.length, 26);
  * the reasoning, was what needed extending.
  */
 check("one behind every school, every god and each martial Way",
-  new Set(menuNodes.map(n => n.grants.choose.from)).size, 26);
+  new Set(menuNodes.map(n => n.grants.choose.from)).size, 27);
 /* And what each martial menu may offer, which is every rung of the cost ladder but the top one:
  * way-cards 1.3 reserves Spent + Strain at "once in a deck", and a card has no slot budget to
  * fence it the way a spell's strength fences a formula. */
@@ -6651,7 +6638,7 @@ check("menu nodes marked bespoke",
 const spellMenus = menuNodes.filter(n => graph.SPELLS_BY_SOURCE.has(n.grants.choose.from));
 const cardMenus = menuNodes.filter(n => graph.CARDS_BY_SOURCE.has(n.grants.choose.from));
 check("menu nodes, split by the kind of list they name",
-  `${spellMenus.length} spell, ${cardMenus.length} card`, "24 spell, 2 card");
+  `${spellMenus.length} spell, ${cardMenus.length} card`, "25 spell, 2 card");
 
 const namedByNodes = nodes.filter(n => n.grants?.spell).map(n => n.grants.spell);
 const choosable = new Set(spellMenus
@@ -6678,8 +6665,7 @@ const unreachableCards = poolCards.map(c => c.name)
   .filter(name => !namedCards.has(name) && !choosableCards.has(name));
 check("pool cards in total", poolCards.length, 41);
 check("cards no node can hand over at all",
-  unreachableCards.length ? unreachableCards.sort().join(", ") : "none",
-  "Both Hands, Dig In, Nothing Held Back, Off-Hand Blow, Press");
+  unreachableCards.length ? unreachableCards.sort().join(", ") : "none", "Dig In, Nothing Held Back, Off-Hand Blow, Press");
 check("and all of them are one of the two declared cases",
   unreachableCards.every(name => {
     const card = poolCards.find(c => c.name === name);
@@ -6687,7 +6673,7 @@ check("and all of them are one of the two declared cases",
   }), true);
 /* Which is a different number from before, and it is the one the last pass pinned at ninety-five. */
 check("spells reachable only through a choice",
-  [...graph.SPELLS.keys()].filter(n => !namedByNodes.includes(n)).length, 76);
+  [...graph.SPELLS.keys()].filter(n => !namedByNodes.includes(n)).length, 82);
 
 /*
  * **Every piece of gear a node promises exists, and arrives.**  [BUILT 2026-11-14]
@@ -6875,7 +6861,7 @@ const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
 check("content the engine does everything for", workingCards, 100);
-check("content with a named gap", audited.filter(c => c.needs.length).length, 114);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 122);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -6890,7 +6876,7 @@ for (const card of audited) {
  * sleep* against an engine with no sleep that empties a fate deck. Naming it is what keeps the
  * overcharge from being a silent one.
  */
-check("distinct gaps across all content", gapCounts.size, 100);
+check("distinct gaps across all content", gapCounts.size, 105);
 /*
  * Two different questions, and the list is what lets them be asked apart.
  *
@@ -6989,8 +6975,7 @@ const mute = GAP_CLOSERS.filter(([, isBuilt]) => !audited.some(c => isBuilt(c)))
 check("closers no content in the game can satisfy", mute.join(", ") || "none", "none");
 /* And how many each one finds, so a closer narrowing to one card is visible rather than silent. */
 check("content each closer recognises",
-  GAP_CLOSERS.map(([gap, isBuilt]) => `${audited.filter(c => isBuilt(c)).length}`).join(" "),
-  "7 2 1 5 5 4 4 3 3 6 1 4 7 5");
+  GAP_CLOSERS.map(([gap, isBuilt]) => `${audited.filter(c => isBuilt(c)).length}`).join(" "), "8 2 1 3 5 4 4 3 4 6 2 4 7 5");
 /*
  * And the map does not rot either: a gap nobody names and nobody has built is a line in this list
  * describing nothing. Two are allowed to be unnamed, because closing them is what emptied them --
@@ -7025,12 +7010,7 @@ for (const c of audited) {
 const topOfQueue = [...queue].filter(([, n]) => n >= 4)
   .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
   .map(([gap, n]) => `${n} ${gap}`);
-check("the gaps four or more pieces of content wait on", topOfQueue.join(" | "),
-  "8 a spell slot spent for good | 6 skill cards set aside to pay for a formula | "
-  + "5 a condition applied to an area | "
-  + "5 a spell that taints its caster | "
-  + "5 a Wild that leaves the fate deck when you sleep | "
-  + "4 an enemy that attacks its own side");
+check("the gaps four or more pieces of content wait on", topOfQueue.join(" | "), "8 a spell slot spent for good | 6 a debt that compounds, which no cost field holds | 6 skill cards set aside to pay for a formula | 5 a condition applied to an area | 5 a spell that taints its caster | 5 a Wild that leaves the fate deck when you sleep | 4 an enemy that attacks its own side");
 
 check("the gap mentioned by the most content", `${worst.join("; ")} (${most})`,
   "a spell slot spent for good (8)");
@@ -7049,8 +7029,7 @@ const bestFinish = Math.max(...finishes.values());
  */
 check("the gap that would finish the most content",
   [...finishes.entries()].filter(([, n]) => n === bestFinish).map(([g]) => g).sort().join("; ")
-  + ` (${bestFinish})`,
-  "an enemy that attacks its own side; skill cards set aside to pay for a formula (4)");
+  + ` (${bestFinish})`, "a debt that compounds, which no cost field holds (5)");
 /* And how much of the queue is one card deep, which is what a long tail of singletons means. */
 /*
  * Fifty, down one: five Shadow formulas that each named a single gap now name two, so they leave
@@ -7062,7 +7041,7 @@ check("the gap that would finish the most content",
  * re-counted -- which is the only way a number here is allowed to fall.
  */
 check("gaps that would finish exactly one piece of content",
-  [...finishes.values()].filter(n => n === 1).length, 58);
+  [...finishes.values()].filter(n => n === 1).length, 59);
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.
@@ -7252,9 +7231,77 @@ check("cards with both a requirement and a reaction, which nothing checks",
  * face's half of it moved into `#stepFace`, whose parameter is called `half` for the same reason
  * the resolver's is. Two call sites, one literal -- so a change to one of them cannot be a change
  * to only one of them.
+ *
+ * **Three since 2026-11-21**, and the third is why the one spelling was worth keeping: the range
+ * display has to know which weapon is serving a staged Strike before it can say what that Strike
+ * reaches, and the only right answer is the one the click will use. A reader that picked its own
+ * item would print a reach off a weapon the turn was not going to be played with.
  */
-check("the face and the click pick through one call",
-  (traySource.match(/#itemFor\(step\.verb, half, step\.requires\)/g) ?? []).length, 2);
+check("the face, the click and the range display pick through one call",
+  (traySource.match(/#itemFor\(step\.verb, half, step\.requires\)/g) ?? []).length, 3);
+/*
+ * **The range display: it measures, and it refuses nothing.**  [BUILT 2026-11-21]
+ *
+ * A card that reads *within 4* printed the 4 and the engine never compared it to a board, so the
+ * one question an attack turns on was asked of somebody squinting at a map. The chip answers it:
+ * each target's distance, and `3/4` once something staged has a reach.
+ *
+ * The checks here are the three decisions, because the arithmetic is driven in `test/live.mjs`
+ * against a real board, a real weapon and the real DOM.
+ */
+/*
+ * **1. A step's own range beats the item's**, and that order is a rule rather than a convenience:
+ * *Taste of the Rot* is a Cast at range 1 and means adjacent, so a wand with a three-square cast
+ * line must not quietly extend it. Eleven steps in the catalogue carry a range of 1 and would
+ * every one of them be wrong under the other order.
+ */
+check("the staged step's own range is preferred to the weapon's",
+  /let reach = step\.range \?\? null;[\s\S]{0,240}?rangeOnLine\(line, item\)/.test(traySource)
+    ? "yes" : "no", "yes");
+check("and the steps that would break under the other order",
+  everything.flatMap(c => [...(c.primary ?? []), ...(c.secondary ?? []),
+    ...(c.effect ? [c.effect] : [])]).filter(st => st.range === 1).length, 11);
+/*
+ * **2. Three of the six verbs reach somebody else.** `defend`, `move` and `ready` are things you
+ * do to yourself, so a distance to a target means nothing for them. Pinned against config rather
+ * than retyped, so a seventh verb is a decision somebody is made to take rather than a verb that
+ * silently reaches nobody.
+ */
+const trayReaches = /const REACHES = new Set\(\[([^\]]*)\]\)/.exec(traySource)?.[1] ?? "";
+check("the verbs that reach a target",
+  (trayReaches.match(/"(\w+)"/g) ?? []).map(q => q.replace(/"/g, "")).sort().join(", "),
+  "cast, strike, use");
+const reachingVerbs = new Set((trayReaches.match(/"(\w+)"/g) ?? []).map(q => q.replace(/"/g, "")));
+check("and the three that cannot, which is the rest of the six",
+  Object.keys(CARDRPG.verbs).filter(v => !reachingVerbs.has(v)).sort().join(", "),
+  "defend, move, ready");
+/* And a step with no verb at all still reaches, when it carries a range: a condition laid on
+ * somebody at a distance is most of what range 1 and range 3 are used for. */
+check("a step with a range but no verb is measured too",
+  /if \(!reaching && \(step\.range === null \|\| step\.range === undefined\)\) continue;/
+    .test(traySource) ? "yes" : "no", "yes");
+/* One on the pools and the Signatures, and ten more across the two starter decks and the Way
+ * cards, which this list does not cover. The one is enough to make the rule non-vacuous. */
+check("and how many such steps the pools carry",
+  everything.flatMap(c => [...(c.primary ?? []), ...(c.secondary ?? [])])
+    .filter(st => !st.verb && st.range !== null && st.range !== undefined).length, 1);
+/*
+ * **3. Nothing is gated by it**, which is the whole ruling (core-rules 12): the engine measures
+ * squares and does not know about the ledge, the dangling rope or the GM who has just said yes. So
+ * the chip is marked by COLOUR and never disabled, and no code path refuses a play for distance.
+ */
+const trayHbs = fs.readFileSync(path.join(root, "templates/tray.hbs"), "utf8");
+check("the chip marks out of reach rather than disabling it",
+  /cr-range__at--out/.test(trayHbs) && !/this\.out[^}]*disabled/.test(trayHbs) ? "yes" : "no",
+  "yes");
+check("and the mark is painted rather than greyed",
+  /cr-range__at--out \{[^}]*--cardrpg-harm-edge/.test(css.replace(/\s+/g, " ")) ? "yes" : "no",
+  "yes");
+/* A zero-hit grep, which is the shape this rule has to be checked in: there is no line to find. */
+check("and nothing anywhere refuses an action for being out of range",
+  /out of range[\s\S]{0,40}return|notifications\.warn\([^)]*too far/.test(traySource)
+    ? "it does" : "none", "none");
+
 /* Narrowed BEFORE the sort: a Shade holding a bow and a dagger strikes harder with the dagger. */
 check("the requirement narrows the list before the best is chosen",
   /\.filter\(i => itemMeets\(i, requires\)\)[\s\S]{0,120}\.sort\(/.test(traySource)
@@ -7440,7 +7487,7 @@ const artable = (await import("../module/art.mjs")).SHELVES.flatMap(s => s.list 
  * art, because a node wears the art of what it hands over; that is true of what the GRAPH
  * draws and false of what the PANE does, which shows a picture beside three paragraphs of
  * prose about a person. */
-check("pieces of content that take art", artable.length, 768);
+check("pieces of content that take art", artable.length, 779);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -7963,7 +8010,7 @@ const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.m
 /* Every piece the game can hand Foundry a path for, which is all of them: kept as the denominator
  * the three states below have to add up to, and no longer printed as progress. */
 check("pieces the game has a path for", artable.filter(e => artInLive(e)).length
-  + backs.filter(([k]) => backOfLive(k)).length, 779);
+  + backs.filter(([k]) => backOfLive(k)).length, 790);
 /*
  * **And every path the game hands Foundry names a file that is there.**
  *
@@ -7982,7 +8029,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 779);
+check("art paths the game would hand Foundry", artable.length + backs.length, 790);
 /*
  * **The brief's progress line used to be the total, and nobody noticed for months.**
  *
@@ -8301,7 +8348,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 768);
+check("briefs the check actually read", briefs.length, 779);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -8511,10 +8558,113 @@ check("and any that run to more than a sentence",
 check("the tray hands the line to the card it draws",
   /blurb: CARD_BLURBS\[cardName\(card\)\]/.test(traySource) ? "yes" : "no", "yes");
 
+/*
+ * **Every title says who these people are, and the only copy of that was in a file nobody
+ * generates.**
+ *
+ * **[BUILT 2026-11-21]** Fifty paragraphs of *who an Ironclad is for*, *what a Flagellant thinks
+ * is happening*, *why a Knight can afford to be one* had been written by hand into one copy of the
+ * handbook -- and written INSIDE the region `handbook.mjs` owns, between its markers. Every run of
+ * `npm run handbook` overwrote them, and the only reason the book still had them is that the run
+ * was made against the other copy. The suite could not see the loss, because nothing here knew the
+ * paragraphs were supposed to exist: a chapter with the table and no prose is a complete chapter
+ * as far as a count is concerned.
+ *
+ * They are `TITLE_BLURBS` now, and the shape is `CARD_BLURBS`' shape for `CARD_BLURBS`' reason:
+ * prose is edited as prose, and a keyed list can be checked from both ends. A title with no
+ * paragraph fails, and a paragraph for a title that no longer exists fails.
+ *
+ * **The one difference is that an entry names a LIST of titles**, because six of the Way of Faith
+ * titles are gods who share a priesthood and the paragraph's subject is the arrangement between
+ * them. What is held instead of one-entry-per-title is the invariant that actually matters: every
+ * title is covered, and covered once.
+ */
+/*
+ * **The four Way roots are not in here, and that is not an omission.** Warrior, Shade, Scholar and
+ * Sworn carry a `title` and so are titles by every test this file applies, but walking into a Way
+ * is not yet a specialization: they have no Signature and no Tactic, they are printed in a table of
+ * their own, and the sentence that introduces them says what all four are at once. A paragraph
+ * apiece would be four ways of writing "you have not chosen yet".
+ */
+const titleNodes = nodes.filter(n => n.title && n.id.includes("."));
+const blurbFor = title => content.TITLE_BLURBS.filter(b => b.titles.includes(title));
+check("paragraphs saying who the titles are", content.TITLE_BLURBS.length, 48);
+check("and the titles they cover between them",
+  content.TITLE_BLURBS.reduce((n, b) => n + b.titles.length, 0), 54);
+check("titles with nobody saying who they are",
+  titleNodes.filter(n => blurbFor(n.title).length === 0).map(n => n.title).join(", ") || "none",
+  "none");
+check("and titles introduced twice",
+  titleNodes.filter(n => blurbFor(n.title).length > 1).map(n => n.title).join(", ") || "none",
+  "none");
+check("and paragraphs written for a title that is gone",
+  content.TITLE_BLURBS.flatMap(b => b.titles)
+    .filter(t => !titleNodes.some(n => n.title === t)).join(", ") || "none", "none");
+/*
+ * Each one opens by bolding who it is about, which is what makes the chapter skimmable: a reader
+ * looking for the Burglars finds them in bold at the head of a paragraph rather than in the middle
+ * of one.
+ */
+check("paragraphs that do not open with who they are about",
+  content.TITLE_BLURBS.filter(b => !/^\*\*\S/.test(b.text)).flatMap(b => b.titles).join(", ")
+  || "none", "none");
+/*
+ * **And a paragraph covering several titles must name every one of them**, which is the failure
+ * this shape makes possible: a god quietly dropped from the Five's sentence would still be covered
+ * as far as the counts above are concerned, and would then appear in the table having never been
+ * introduced. Only the group entries are checked, because a single title's paragraph names its
+ * people and not its title -- the Asceticism paragraph is about ascetics, and should be.
+ */
+check("gods left out of the paragraph that introduces them",
+  content.TITLE_BLURBS.filter(b => b.titles.length > 1)
+    .flatMap(b => b.titles.filter(t => !b.text.includes(t.replace(/^The /, ""))))
+    .join(", ") || "none", "none");
+/* The same vocabulary rule the node descriptions are held to, for the same reason: this is the one
+ * chapter written from inside the world, and a rule stated here is a rule that can disagree with
+ * the one stated in the row underneath. */
+check("paragraphs written in the engine's vocabulary",
+  content.TITLE_BLURBS.filter(b => ENGINE_WORDS.test(b.text)).flatMap(b => b.titles).join(", ")
+  || "none", "none");
+check("and the handbook's titles chapter reads the table",
+  /CONTENT\.TITLE_BLURBS\.find/.test(fs.readFileSync(path.join(root, "test/handbook.mjs"), "utf8"))
+    ? "yes" : "no", "yes");
+
+
 const { fill: fillHandbook } = await import("./handbook.mjs");
 const handbook = fs.readFileSync(path.join(root, "../../rules/players-handbook.md"), "utf8");
 check("the handbook's reference chapters are current",
   fillHandbook(handbook) === handbook ? "yes" : "stale, run npm run handbook", "yes");
+
+/*
+ * **And the copy of the handbook without the HTML is a copy, not a second document.**
+ *
+ * **[BUILT 2026-11-21]** `rules/players-handbook-no-html.md` is the handbook with the map marker
+ * and the generator's comment markers taken out, for readers and editors that show those lines as
+ * content. It was neither generated nor checked, and so became the one place in the repository
+ * where prose could be written and then quietly lost: the fifty paragraphs above were typed into
+ * it, inside the region `handbook.mjs` overwrites, and survived only because nobody ran the
+ * generator against that file. A count cannot see a paragraph, and nothing here knew this file was
+ * supposed to be a copy.
+ *
+ * **The first check is the one that matters** and it only looks one way: prose the copy has that
+ * the handbook has not. That is content somebody wrote into the wrong file, and it is reported
+ * while it still exists rather than after a build has eaten it. The second says the copy is
+ * otherwise current, which is a chore and not a hazard.
+ *
+ * `npm run build` deliberately does NOT write this file -- that would rebuild the trap one step
+ * further along -- so it has a command of its own, and the command makes the same refusal.
+ */
+const { plainHandbook, orphaned: orphanedProse } = await import("./plain.mjs");
+const plainCopy = fs.readFileSync(path.join(root, "../../rules/players-handbook-no-html.md"), "utf8");
+const strandedProse = orphanedProse(plainCopy, handbook);
+check("prose that lives only in the copy without the HTML",
+  strandedProse.length ? `${strandedProse.length}: ${strandedProse[0].slice(0, 60)}` : "none",
+  "none");
+check("and the copy is otherwise current",
+  plainCopy === plainHandbook(handbook) ? "yes" : "stale, run npm run plain", "yes");
+/* And it is a copy of the whole document, not of the chapters somebody happened to be reading. */
+check("and it carries every chapter",
+  (plainCopy.match(/^## \d+\. /gm) ?? []).length, 26);
 /*
  * And the catalogue is all of it: a chapter that silently covered half the items would still be
  * "current" by the check above, because the generator would agree with itself.
@@ -9856,8 +10006,10 @@ check("and neither file still has Geistburg on more than one",
 
 check("cities the Ruby District's council speaks for, in the world's file",
   geoRead(geoWorld, /(\w+) smaller cities lie along the coast/), "three");
+/* The handbook's own wording changed when chapter 1 grew: the council's three seats are now read
+ * off the regions that hold them rather than off the cities, which is the same three. */
 check("and in the handbook",
-  geoRead(geoBook, /at the centre of (\w+) coastal cities/), "three");
+  geoRead(geoBook, /The district is (\w+) regions with one city each/), "three");
 
 check("coastal towns left to the Amber, in the world's file",
   geoRead(geoWorld, /(\w+) smaller coastal towns/), "two");
@@ -9867,7 +10019,8 @@ check("and in the handbook",
 check("which way Solemn lies from the Ruby, in the world's file",
   geoRead(geoWorld, /white limestone island ([\w-]+) of the Ruby District/), "south-east");
 check("and in the handbook",
-  geoRead(geoBook, /white limestone island ([\w-]+) of the Ruby District/), "south-east");
+  geoRead(geoBook, /white limestone island (?:[^.]*? )?([\w-]+) of the Ruby District/),
+  "south-east");
 
 /*
  * **The Fiord District holds the north coast, and that is what makes Kelp Bay possible.**
@@ -9895,11 +10048,68 @@ check("where the Furnace District lay, in the world's file",
 check("and in the handbook",
   geoRead(geoBook, /The Furnace is gone\.\*\* It lay in the ([\w-]+)/), "north-east");
 
-/* Regensburg sits in the mountain ring itself, not out on the plain the ring encloses. */
-check("the range Regensburg sits in, in the world's file",
-  geoRead(geoWorld, /situated in a valley of (?:the )?(Spear Mountains)/), "spear mountains");
+/*
+ * **Regensburg stands on a cliff above Spear Pass, and for a while it stood in a valley as well.**
+ *
+ * **[FIXED 2026-11-21]** `rules/Core.md` is the author's own source document and the world file is
+ * the English retelling built from it, and the two had drifted on this: Core.md puts the fort
+ * *wedged into a good strategic position on a cliff overlooking Spear Pass*, the world file put the
+ * city *in a valley of the Spear Mountains*. A fort holding a pass and a city sitting in a valley
+ * are not the same place, and the difference is load-bearing -- a realm that hires out its cavalry
+ * and survives on what it is paid is a realm that controls a road.
+ *
+ * The author ruled for Core.md. So the fact pinned here is the pass and not the valley, and the
+ * zero-hit check underneath is the one that matters, because the valley is what has to stay gone.
+ */
+check("what Regensburg holds, in the world's file",
+  geoRead(geoWorld, /stands on a cliff above (Spear Pass)/), "spear pass");
 check("and in the handbook",
-  geoRead(geoBook, /in a valley of the (Spear Mountains)/), "spear mountains");
+  geoRead(geoBook, /on a cliff that overlooks \*\*(Spear Pass)\*\*/), "spear pass");
+check("and neither file still puts it in a valley",
+  [["the world's file", geoWorld], ["the handbook", geoBook]]
+    .filter(([, t]) => /valley of (?:the )?Spear Mountains/i.test(t)).map(([n]) => n).join(", ")
+  || "none", "none");
+/* And the range is still named, because a pass through nothing in particular is not a place. The
+ * world file names it on the same sentence as the pass; the handbook names it in the paragraph that
+ * lays the continent out, two hundred lines earlier, so each is read where it is written. */
+check("the range the pass runs through, in the world's file",
+  geoRead(geoWorld, /Spear Pass, a road through the (Spear Mountains)/), "spear mountains");
+check("and the handbook still names the range",
+  /\*\*Spear Mountains\*\*/.test(geoBook) ? "yes" : "no", "yes");
+
+/*
+ * **And the three facts the world file had wrong are pinned to the document it is derived from.**
+ *
+ * **[BUILT 2026-11-21]** The chain is longer than the two documents checked above:
+ * `rules/Core.md` is the author's own Swedish source of record, `rules/Core-en.md` is its English
+ * translation, `worldinfo/Firma.md` is the world file written from that, and the handbook's lore
+ * chapter is the retelling for players. Only the last link was ever checked, so three facts could
+ * sit wrong in the world file indefinitely and the suite would agree with itself all the way down:
+ * Regensburg in a valley rather than on its cliff, Sammel divided into quarters rather than built
+ * as them, and Wolf Peak a dormant volcano whose plumes of smoke were its air defence.
+ *
+ * Only these three are paired here, and deliberately: pairing the whole of two long documents by
+ * pattern would be a second world file written in regular expressions. These are the ones that
+ * drifted, and a fact that has drifted once is the one worth a pin.
+ */
+/* Read defensively and said out loud, because this file is the one document in the chain that is
+ * not yet in version control: a missing source of record should report itself here rather than
+ * throw ENOENT out of the middle of a geography section. */
+const sourcePath = path.join(root, "../../rules/Core-en.md");
+check("the source document is where the suite expects it",
+  fs.existsSync(sourcePath) ? "yes" : "no, rules/Core-en.md is missing", "yes");
+const sourceDoc = (fs.existsSync(sourcePath) ? fs.readFileSync(sourcePath, "utf8") : "")
+  .replace(/\s+/g, " ");
+check("what Regensburg holds, in the source document",
+  geoRead(sourceDoc, /position on a cliff overlooking (Spear Pass)/), "spear pass");
+check("how Sammel is built, in the source document",
+  geoRead(sourceDoc, /a city built up of (walled) quarters, Rote/), "walled");
+check("and what Wolf Peak is built into, in the source document",
+  geoRead(sourceDoc, /the (active) volcano's plumes of smoke/), "active");
+/* And the world file agrees with it on the one of the three the handbook does not retell: the
+ * volcano. The other two are pinned against the handbook above. */
+check("and the world file has the volcano awake with it",
+  /lone active volcano/.test(geoWorld) ? "yes" : "no", "yes");
 
 /*
  * **Three oases in the Hyena Desert, and each one is somewhere different.** Sammel is in the
@@ -9952,7 +10162,7 @@ check("and in the handbook",
  * reads as a seventh district nobody has written.
  *
  * Every retired word is still in use elsewhere and must stay -- the four **Sides** are First
- * through Fourth, **The First** is the vampire god, **Rote** are the sealed quarters of Sammel the
+ * through Fourth, **The First** is the vampire god, **Rote** are the walled quarters of Sammel the
  * district was named after, and the **East Road** runs out of the desert. So the sweep wants the
  * word `District` beside the name and nothing looser than that.
  */
@@ -9962,8 +10172,17 @@ check("documents still naming a district by a retired name",
     .filter(([, text]) => retiredDistrict.test(text)).map(([name]) => name).join(", ") || "none",
   "none");
 /* And the two words the rename had to leave standing, each of which is why a name was retired. */
+/* **[CHANGED 2026-11-21]** They were *sealed quarters* the emirs had divided the city into; Core.md
+ * has the city built as walled quarters in the first place, each shut off from the next, with the
+ * oasis canals drawn through them. The author ruled for Core.md, so the word to hold is walled. */
 check("Sammel's quarters are still called Rote",
-  /sealed quarters called \*\*Rote\*\*/.test(geoBook) ? "yes" : "no", "yes");
+  /walled quarters called\s+\*\*Rote\*\*/.test(geoBook) ? "yes" : "no", "yes");
+/* And the emir in the Ziggurat is the Grey's puppet rather than a ruler, which is the other half of
+ * what Core.md says and the reason the Iron District is called a theocracy at all. */
+check("and who sits in the Ziggurat",
+  [["the world's file", /seat of an emir who is the Grey's puppet/.test(geoWorld)],
+    ["the handbook", /seat of an\s+emir who is their puppet/.test(geoBook)]]
+    .filter(([, hit]) => !hit).map(([n]) => n).join(", ") || "a puppet in both", "a puppet in both");
 check("and the road out of the desert is still the East Road",
   /\*\*East Road\*\*/.test(geoWorld) ? "yes" : "no", "yes");
 /* And the names themselves, in the order the world's file introduces them. */
@@ -10253,7 +10472,7 @@ const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-
 /* 233: Blood Magic dropped its cast line with its refusal -- the rewrite put a stone basin in
  * the frame and nobody at all, and a line opening *if any bare skin shows* under a direction
  * saying there is no skin is the contradiction the refusal was made of. */
-check("cards, signatures and features given an assigned person", castLines.length, 233);
+check("cards, signatures and features given an assigned person", castLines.length, 237);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
@@ -10290,7 +10509,7 @@ check("western ancestries among them, which had nearly vanished",
    * against 33.7%, which is the proportion holding rather than a seventh shelf of westerners.
    * The number this check is really about is that ratio. 60 of 178 once `find-the-gap` dropped
    * its cast line -- see NO_PERSON in art-prompts.mjs, and the refusal it was added for. */
-  castLines.filter(m => EURO.has(m[2])).length, 76);
+  castLines.filter(m => EURO.has(m[2])).length, 77);
 check("and every ancestry on the list is used somewhere",
   new Set(castLines.map(m => m[2])).size, 15);
 
@@ -10554,7 +10773,7 @@ check("and each one says what is not in the frame",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 768);
+check("file paths in the brief", rows.length, 779);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -10661,7 +10880,7 @@ for (const entry of everyEntry) {
     for (const st of arr ?? []) everyStep.push({ card: entry.name, st });
   }
 }
-check("steps the timing audit read", everyStep.length, 380);
+check("steps the timing audit read", everyStep.length, 389);
 
 /*
  * **Every key a combo clause uses is a key the clause's schema declares.**
@@ -10708,14 +10927,14 @@ check("combo-clause keys content uses that the schema would drop",
  * census below is one gap shorter than it was.
  */
 for (const [what, count, read] of [
-  ["leave ground behind", 8, s => s.st.ground?.shape],
-  ["say who they are for", 32, s => s.st.targets],
+  ["leave ground behind", 9, s => s.st.ground?.shape],
+  ["say who they are for", 34, s => s.st.targets],
   ["say how often they may be played", 3, s => s.st.oncePer],
   /* Five, not three: *Measure* and *Bring It Down* joined when the fields became readable, and
    * the conditional pair on *Between the Plates* hangs off its opening rather than its step. Eight
    * now, and the three that joined are Way of Shade cards written for exactly this: the Way that
    * bypasses a defence rather than breaking it. */
-  ["go straight through armour, Block or cover", 10,
+  ["go straight through armour, Block or cover", 13,
     s => s.st.ignoresArmour || s.st.ignoresBlock || s.st.ignoresCover],
   ["name whose fate deck they Read", 4, s => s.st.readDeck],
   ["wait on a state of the player's own", 11, s => s.st.whileState]
@@ -10982,7 +11201,7 @@ check("timings declared and never used",
  * entirely how many, from what, whose side and at what price -- four numbers, in a sentence.
  */
 const conjurings = everyStep.filter(s => s.st.verb === "conjure");
-check("steps that conjure", conjurings.length, 5);
+check("steps that conjure", conjurings.length, 3);
 /*
  * **And each says, in prose, what it is calling up.** `from` was a field for one turn and went
  * back to being a sentence: *a corpse rises*, *a minor god becomes present*. The engine never
@@ -11284,7 +11503,7 @@ const proseLeft = everyStep.filter(s => s.st.text);
  * start and 33 now. A step with prose beside its fields is a step the engine resolves and the
  * table reads; a step with prose alone is one the engine drops on the floor.
  */
-check("steps still carrying prose", proseLeft.length, 114);
+check("steps still carrying prose", proseLeft.length, 116);
 /* And the schema document says the same numbers, read off the same sweep rather than typed into
  * prose a second time: a document that counts the content is a document that goes stale. */
 check("the schema document records what the sweep found",
@@ -11355,8 +11574,7 @@ const planned = packs.planDocuments();
 
 check("compendium packs", planned.length, 8);
 check("and what each one holds",
-  planned.map(p => `${p.name}:${p.docs.length}`).join(" "),
-  "creatures:112 characters:1 items:187 features:23 spells:118 injuries:14 signatures:30 decks:13");
+  planned.map(p => `${p.name}:${p.docs.length}`).join(" "), "creatures:112 characters:1 items:187 features:23 spells:124 injuries:14 signatures:31 decks:13");
 /* Faults the generator records rather than throws: a filename collision silently drops a document,
  * so the build reports it and this refuses to pass with one outstanding. */
 check("faults the generator reported", planned[0].faults.join("; ") || "none", "none");
@@ -11400,8 +11618,8 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
  */
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
-check("documents the stamp sweep read", everyPackDoc.length, 498);
-check("and children beneath them", everyPackChild.length, 393);
+check("documents the stamp sweep read", everyPackDoc.length, 505);
+check("and children beneath them", everyPackChild.length, 394);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
     || d._stats?.systemId !== manifest.id
@@ -11454,7 +11672,7 @@ check("packs whose size disagrees with the content",
 /* And the twenty-one Signatures that are CARDS are not missing, they are in a deck: a Card is a
  * different document class and cannot live in an Item pack. */
 check("Signatures that are cards, and so are in a deck instead",
-  graph.SIGNATURES.filter(s => s.kind === "card").length, 21);
+  graph.SIGNATURES.filter(s => s.kind === "card").length, 22);
 check("which accounts for every Signature",
   graph.SIGNATURES.filter(s => s.kind !== "card").length
   + graph.SIGNATURES.filter(s => s.kind === "card").length, graph.SIGNATURES.length);
@@ -11483,7 +11701,7 @@ check("pack sources that disagree with the content",
   stale.length ? `${stale.length}: ${stale.slice(0, 4).join(", ")}` : "none", "none");
 /* A comparison that read no files would report "none" for a repository with no packs at all. */
 check("documents the comparison actually read",
-  planned.reduce((n, p) => n + p.docs.length, 0), 498);
+  planned.reduce((n, p) => n + p.docs.length, 0), 505);
 
 /*
  * **An id is a promise.** A world that imports a creature keeps the pack's id, and so does every
@@ -11516,7 +11734,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 891);
+check("ids the rule actually read", everyId.size, 899);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -12248,7 +12466,7 @@ check("the indexes are refilled rather than replaced",
 /* ---- what it refuses, asked rather than read ---- */
 
 const coreNodes = [...graph.LIVE_NODES];
-check("the graph starts as core content", coreNodes.length, 237);
+check("the graph starts as core content", coreNodes.length, 243);
 
 /* A prerequisite that does not exist: the first price section 8 names. */
 check("a node following nothing that exists",
@@ -12311,7 +12529,7 @@ check("and the graph is still whole", graph.GRAPH.has("shade.thief"), true);
 
 /* Back to core, so every check after this section is asking about the shipped graph. */
 check("the graph can be put back", graph.rebuildGraph({}).length, 0);
-check("and it is core again", graph.LIVE_NODES.length, 237);
+check("and it is core again", graph.LIVE_NODES.length, 243);
 check("with the replaced node restored", graph.GRAPH.get("shade.footwork")?.name, "Footwork");
 
 /* ---- the lock, which is the answer to "not in an active campaign" ---- */
@@ -13939,7 +14157,7 @@ check("the rule finds a timing the vocabulary does not have",
 check("and passes one it does", unknownTiming({ timing: "ritual" }) ? "found" : "no", "no");
 /* And over the steps that declare one, counted -- so the sweep cannot be pointed at nothing. */
 const timedSteps = everyStep.filter(s => s.st.timing);
-check("steps that say when they are played", timedSteps.length, 22);
+check("steps that say when they are played", timedSteps.length, 23);
 /* The sweep itself, named, so the planted list and the game go through the SAME expression: a
  * predicate tested on a planted value still leaves the sweep applying it switchable. */
 const strayIn = steps => steps.filter(s => unknownTiming(s.st))
@@ -14134,7 +14352,7 @@ check("and passes one that rides on it",
  */
 const bonusSteps = everyStep.filter(s => !!s.st?.bonus?.value);
 check("steps that grant a bonus at all",
-  bonusSteps.map(s => s.card).sort().join(", "), "Graven Strength, The Whole Skin");
+  bonusSteps.map(s => s.card).sort().join(", "), "Graven Strength, The Great Bargain, The Whole Skin");
 /* Named for the same reason as `strayIn` below: the planted list and the game go through one
  * expression, so switching the sweep off fails the planted case. */
 const escapesIn = steps => steps.filter(s => escapes(s.st)).map(s => s.card);
@@ -14604,6 +14822,229 @@ const withMastery = {
 check("a mastery raises the passive by one", resolve.passiveScore(withMastery, "might"), 6);
 check("and only in the approach it names", resolve.passiveScore(withMastery, "lore"), 3);
 globalThis.game = savedGame;
+/* -------------------------------------------- */
+/*  How far a figure can go                     */
+/* -------------------------------------------- */
+
+/*
+ * **The reach walk, RUN rather than read.**  [BUILT 2026-11-21]
+ *
+ * `board.mjs` answers two questions the game had no answer for -- *how many squares is that*, and
+ * *which squares could this figure end in* -- and the second is a Dijkstra over ground costs. A
+ * grep cannot check arithmetic. So the grid is stubbed, which is cheap because the module names
+ * `canvas` only inside its functions, and the walk is asked for real answers.
+ *
+ * The stub is a square grid of 100px squares with offsets counted the way Foundry counts them,
+ * `i` down and `j` across. It is a FAITHFUL stub rather than a convenient one: `getCenterPoint`
+ * and `getTopLeftPoint` differ by half a square, which is exactly the confusion that would make a
+ * highlight land one square up and to the left of the squares it was measuring.
+ */
+const savedCanvas = globalThis.canvas;
+const savedHooks = globalThis.Hooks;
+const SQ = 100;
+const fakeGrid = {
+  size: SQ,
+  isGridless: false,
+  getOffset: ({ x, y }) => ({ i: Math.floor(y / SQ), j: Math.floor(x / SQ) }),
+  getCenterPoint: ({ i, j }) => ({ x: j * SQ + SQ / 2, y: i * SQ + SQ / 2 }),
+  getTopLeftPoint: ({ i, j }) => ({ x: j * SQ, y: i * SQ })
+};
+/** A zone of difficult ground as a rectangle, the one shape `inside` can measure without a canvas. */
+const bog = (i, j, rows, cols, effects = ["difficult"]) => ({
+  getFlag: (ns, key) => (ns === "cardrpg" && key === "ground" ? { effects, damage: 0 } : null),
+  shapes: [{ type: "rectangle", x: j * SQ, y: i * SQ, width: cols * SQ, height: rows * SQ }]
+});
+/**
+ * **A token DOCUMENT, and the stub models the undrawn case on purpose.**
+ *
+ * **[FIXED 2026-11-21]** The first version of this stub handed the walk a placeable-shaped object
+ * with a `document` hanging off it, and every check below passed -- against the one shape the
+ * failure cannot take. Foundry's `getActiveTokens()` returns placeables and returns only the ones
+ * that are `rendered`, so a token created a moment ago answers with an **empty array**: the walk
+ * found no subject and returned nothing for a figure plainly standing on the board. The live probe
+ * caught it; this did not, because the stub was more convenient than reality.
+ *
+ * So `rendered` is false here, exactly as it is for a token on the frame it was created, and
+ * `getActiveTokens` honours its `document` argument. A stub weaker than reality is a stub that
+ * certifies the bug.
+ */
+let tokenSeq = 0;
+const placed = (i, j, actor = null) => ({
+  id: `tok${++tokenSeq}`,
+  actorId: actor ? "some-actor" : "npc-actor",
+  actor,
+  x: j * SQ,
+  y: i * SQ,
+  width: 1,
+  height: 1,
+  parent: null
+});
+const standing = (i, j) => placed(i, j);
+const hero = (i, j, system = {}) => {
+  const doc = placed(i, j);
+  const actor = {
+    system,
+    /* Documents when asked for them, nothing when asked for drawn placeables. */
+    getActiveTokens: (linked = false, document = false) => (document ? [doc] : [])
+  };
+  doc.actor = actor;
+  return { actor, token: doc };
+};
+const board = (regions = [], figures = []) => {
+  const scene = { regions, grid: { size: SQ }, tokens: figures };
+  for (const doc of figures) doc.parent = scene;
+  globalThis.Hooks = { on: () => {}, callAll: () => {} };
+  globalThis.canvas = {
+    ready: true,
+    grid: fakeGrid,
+    scene,
+    /* Empty, like a canvas mid-draw, so nothing below can lean on the placeables. */
+    tokens: { placeables: [] },
+    /* No `interface`, deliberately: `showReach` must survive a canvas with no highlight layer and
+     * still report what it would have painted, which is what makes it checkable here at all. */
+    interface: undefined
+  };
+  return scene;
+};
+
+const boardMod = await import("../module/board.mjs");
+
+/* The plain case first, and it is the one that would catch a diagonal counted as two: Chebyshev
+ * gives a square ring, so the counts are 8, 24, 48 and not 4, 12, 24. */
+{
+  const { actor, token } = hero(10, 10);
+  board([], [token]);
+  check("squares a Move of 1 reaches", boardMod.reachFrom(actor, 1, token).size, 8);
+  check("and a Move of 2", boardMod.reachFrom(actor, 2, token).size, 24);
+  check("and a Move of 3", boardMod.reachFrom(actor, 3, token).size, 48);
+  /* Nothing staged means nothing painted, which is the state the board is in almost all the time. */
+  check("and a Move of 0", boardMod.reachFrom(actor, 0, token).size, 0);
+  /* The square you are standing in is not somewhere you can go. */
+  check("the square the figure is already in is not offered",
+    boardMod.reachFrom(actor, 3, token).has("10,10") ? "offered" : "no", "no");
+  /* And the far corner of the ring is reachable, which is the diagonal claim stated positively. */
+  check("the diagonal corner at three squares is reachable",
+    boardMod.reachFrom(actor, 3, token).has("7,7") ? "yes" : "no", "yes");
+  /*
+   * **With no token handed over**, which is the path the live probe found broken and the one the
+   * tray actually uses: the walk has to find the figure through the actor, and the only way to
+   * find one Foundry has not drawn yet is to ask for documents rather than placeables. This
+   * returned 0 before that fix, for a figure standing in plain sight.
+   */
+  check("the walk finds an undrawn figure through its actor", boardMod.reachFrom(actor, 1).size, 8);
+  check("and so does the distance between two actors",
+    boardMod.squaresBetween(actor, hero(10, 13).actor), 3);
+}
+
+/*
+ * **Difficult ground, which is the whole reason this is a Dijkstra and not a flood fill.**
+ *
+ * A bog wall two squares wide down the column to the east. With Move 2 a figure beside it can step
+ * in but not through, so the squares beyond are gone -- and the test that matters is that the
+ * squares to the WEST are untouched, because a flood fill that charged the bog to everything, or a
+ * breadth-first walk that found the cheap route late, would move both numbers at once.
+ */
+{
+  const { actor, token } = hero(10, 10);
+  const open = (() => { board([], [token]); return boardMod.reachFrom(actor, 2, token).size; })();
+  board([bog(0, 11, 30, 2)], [token]);
+  const crossed = boardMod.reachFrom(actor, 2, token);
+  check("a bog two squares wide costs more than open ground", crossed.size < open ? "yes" : "no",
+    "yes");
+  check("the first bog square still costs its 2",
+    crossed.get("10,11")?.spent ?? "unreachable", 2);
+  /* Entering at 2 leaves nothing for the second column, so the far side is out of reach. */
+  check("and the second one is out of reach at Move 2",
+    crossed.has("10,12") ? "reachable" : "no", "no");
+  /* Dry ground on the other side is exactly as far as it ever was: 1 per square. */
+  check("while the dry square two to the west still costs 2",
+    crossed.get("10,8")?.spent ?? "unreachable", 2);
+}
+
+/*
+ * **And the Burglar, who goes through the window.**
+ *
+ * `ignoresGround` is granted by a node and filtered where the ground is read, so the same bog that
+ * stops everybody else should cost this figure nothing. This is the check that would catch the
+ * exemption being applied to the square somebody is standing in and not to the squares they are
+ * considering, which is a plausible way to get this wrong and invisible from the outside.
+ */
+{
+  const plain = hero(10, 10);
+  const burglar = hero(10, 10, { ignoresGround: ["difficult"] });
+  board([bog(0, 11, 30, 2)], [plain.token]);
+  const stopped = boardMod.reachFrom(plain.actor, 2, plain.token).size;
+  board([bog(0, 11, 30, 2)], [burglar.token]);
+  const through = boardMod.reachFrom(burglar.actor, 2, burglar.token);
+  check("a figure that does not feel difficult ground reaches further",
+    through.size > stopped ? "yes" : "no", "yes");
+  /* Two squares in, at 1 each, where everybody else pays 2 for the first one alone. */
+  check("and two squares into the bog costs it two",
+    through.get("10,12")?.spent ?? "unreachable", 2);
+  /* The same number as open ground, which is the claim: 24 at Move 2, bog or no bog. */
+  check("which is the whole open ring again", through.size, 24);
+}
+
+/* A figure in the way is not a destination, and the walk does not go through one. */
+{
+  const { actor, token } = hero(10, 10);
+  const wall = [standing(9, 11), standing(10, 11), standing(11, 11)];
+  board([], [token, ...wall]);
+  const past = boardMod.reachFrom(actor, 1, token);
+  check("squares held by another figure are not offered", past.size, 5);
+  check("and the walk does not route through one",
+    boardMod.reachFrom(actor, 2, token).has("10,12") ? "through" : "no", "no");
+}
+
+/* Gridless scenes get nothing rather than a guess: a square highlight on no squares is a lie. */
+{
+  const { actor, token } = hero(10, 10);
+  board([], [token]);
+  globalThis.canvas.grid = { ...fakeGrid, isGridless: true };
+  check("a gridless scene is answered with nothing", boardMod.reachFrom(actor, 3, token).size, 0);
+}
+
+/*
+ * **The distance primitive**, which is the other half of this module and the one with callers
+ * outside it. A diagonal is one square: core-rules 11, and every `range` printed on every step.
+ */
+{
+  const { token } = hero(10, 10);
+  board([], [token]);
+  const at = (i, j) => ({ x: j * SQ, y: i * SQ, width: 1, height: 1, parent: null });
+  check("a diagonal is one square", boardMod.squaresBetween(at(10, 10), at(11, 11)), 1);
+  check("and straight along a row", boardMod.squaresBetween(at(10, 10), at(10, 14)), 4);
+  check("and the knight's shape is the longer leg",
+    boardMod.squaresBetween(at(10, 10), at(12, 13)), 3);
+  check("the same square is nought", boardMod.squaresBetween(at(10, 10), at(10, 10)), 0);
+  check("adjacency is that measure and not a second one",
+    [boardMod.isAdjacent(at(10, 10), at(11, 11)), boardMod.isAdjacent(at(10, 10), at(12, 10)),
+      boardMod.isAdjacent(at(10, 10), at(10, 10))].join(","), "true,false,false");
+  /* A thing that is not on the board has no distance, and null is not zero: a caller that read it
+   * as zero would make an unplaced figure adjacent to everything. */
+  check("and nothing placed has no distance at all",
+    String(boardMod.squaresBetween(at(10, 10), null)), "null");
+  /* A 2x2 figure is measured from its middle, so it is not a square and a half further off than
+   * it looks -- and the answer is still a whole number of squares. */
+  const ogre = { x: 12 * SQ, y: 10 * SQ, width: 2, height: 2, parent: null };
+  check("a figure larger than a square is measured from its middle",
+    boardMod.squaresBetween(at(10, 10), ogre), 3);
+}
+
+/* And what the painter would paint, asked without a canvas that can paint: the count comes back,
+ * so the one line the tray calls is exercised rather than merely present. */
+{
+  const { actor, token } = hero(10, 10);
+  board([], [token]);
+  check("the painter reports the squares it would colour", boardMod.showReach(actor, 2, token), 24);
+  /* And it does not throw on a canvas with no highlight layer, which is every headless run. */
+  check("and clearing one that was never drawn is safe",
+    (() => { try { boardMod.clearReach(); return "safe"; } catch { return "threw"; } })(), "safe");
+}
+
+globalThis.canvas = savedCanvas;
+globalThis.Hooks = savedHooks;
+
 /* An untrained user caps a tool at +1, which is the one place a training is arithmetic. */
 check("an untrained user caps the tool",
   /trained \? \(bonus\.value \?\? 0\) : Math\.min\(1, bonus\.value \?\? 0\)/.test(resolveSource)
@@ -15294,7 +15735,7 @@ const toolTrainers = nodes.filter(n => n.grants?.training
 /* 19 since 2026-11-13: the twelve backgrounds each teach one and issue it, which is what
  * backgrounds.md meant by *gear always includes the trained tool* -- and what this very
  * check caught them not doing. */
-check("nodes that teach a tool training", toolTrainers.length, 19);
+check("nodes that teach a tool training", toolTrainers.length, 20);
 /*
  * **A node may issue a LIST**, since 2026-11-14, so every reader here flattens. A trade hands
  * over the tool it trained you on and the thing you did the work with, and `item` as a bare
@@ -15317,14 +15758,7 @@ check("what each one is issued",
   toolTrainers.filter(n => issues(n).length)
     .map(n => `${n.grants.training}:${issues(n)
       .find(i => (trainingTools.get(n.grants.training) ?? []).includes(i))}`)
-    .sort().join(", "),
-  "armour and its repair:Repair Kit, armour and its repair:Repair Kit, "
-  + "armour and its repair:Repair Kit, games of chance:Gaming Set, games of chance:Gaming Set, "
-  + "lockpicks:Lockpicks, lockpicks:Lockpicks, lockpicks:Lockpicks, "
-  + "rope and climbing:Climbing Rope, rope and climbing:Climbing Rope, "
-  + "rope and climbing:Climbing Rope, traps:Hunting Traps, traps:Hunting Traps, "
-  + "treating wounds:Healer's Kit, treating wounds:Healer's Kit, treating wounds:Healer's Kit, "
-  + "treating wounds:Healer's Kit");
+    .sort().join(", "), "armour and its repair:Repair Kit, armour and its repair:Repair Kit, armour and its repair:Repair Kit, armour and its repair:Repair Kit, games of chance:Gaming Set, games of chance:Gaming Set, lockpicks:Lockpicks, lockpicks:Lockpicks, lockpicks:Lockpicks, rope and climbing:Climbing Rope, rope and climbing:Climbing Rope, rope and climbing:Climbing Rope, traps:Hunting Traps, traps:Hunting Traps, treating wounds:Healer's Kit, treating wounds:Healer's Kit, treating wounds:Healer's Kit, treating wounds:Healer's Kit");
 /*
  * **And nothing measured is issued FOR A LEVEL.** A service weapon or a suit of armour is the
  * obvious next thought and the answer is still no: those are numbers this project has simulated
@@ -16251,21 +16685,18 @@ check("of which the trainings that reach a tool",
  */
 const expertiseNodes = nodes.filter(n => n.grants?.expertise);
 const masteryNodes = nodes.filter(n => n.grants?.mastery);
-check("nodes granting an expertise", expertiseNodes.length, 9);
+check("nodes granting an expertise", expertiseNodes.length, 11);
 check("nodes granting a mastery", masteryNodes.length, 4);
 /* Two per Way and one per Way: every Way scales its own approaches, and nobody scales all six. */
 check("expertise, by Way",
   ["strength", "shade", "mind", "faith"]
-    .map(w => `${w} ${expertiseNodes.filter(n => n.id.startsWith(w)).length}`).join(", "),
-  "strength 2, shade 2, mind 3, faith 2");
+    .map(w => `${w} ${expertiseNodes.filter(n => n.id.startsWith(w)).length}`).join(", "), "strength 2, shade 2, mind 5, faith 2");
 check("mastery, by Way",
   ["strength", "shade", "mind", "faith"]
     .map(w => `${w} ${masteryNodes.filter(n => n.id.startsWith(w)).length}`).join(", "),
   "strength 1, shade 1, mind 1, faith 1");
 check("and the approaches each scales",
-  expertiseNodes.map(n => `${n.id.split(".")[0]}:${n.grants.expertise}`).sort().join(", "),
-  "faith:lore, faith:presence, mind:lore, mind:lore, mind:presence, "
-  + "shade:shadow, shade:wits, strength:agility, strength:might");
+  expertiseNodes.map(n => `${n.id.split(".")[0]}:${n.grants.expertise}`).sort().join(", "), "faith:lore, faith:presence, mind:lore, mind:lore, mind:lore, mind:presence, mind:presence, shade:shadow, shade:wits, strength:agility, strength:might");
 /* All six approaches reachable, and a mastery only in four: the deeper step is scarcer. */
 check("approaches an expertise exists for",
   [...new Set(expertiseNodes.map(n => n.grants.expertise))].sort().join(", "),
@@ -16284,7 +16715,7 @@ check("a mastery is always deeper than that Way's expertise",
   }).map(m => m.id).join(", ") || "none", "none");
 
 /* Nothing new was added to the graph for any of it. */
-check("nodes in the graph", nodes.length, 237);
+check("nodes in the graph", nodes.length, 243);
 check("and every expertise rides a node that was already there",
   expertiseNodes.filter(n => Object.keys(n.grants).length < 2).map(n => n.id).join(", ") || "none",
   "none");
@@ -16991,8 +17422,7 @@ check("and it says where the cards go back to",
 /* And the other two currencies, which were prose on six spells until this increment. */
 const taintCost = [...graph.SPELLS.values()].filter(s => s.cost?.taint);
 check("spells that cost Taint",
-  taintCost.map(s => s.name).sort().join(", "),
-  "Taste of the Rot, The First Taste, The Slow Failure");
+  taintCost.map(s => s.name).sort().join(", "), "Taste of the Rot, The Borrowed Hand, The First Taste, The Slow Failure");
 const strainCost = [...graph.SPELLS.values()].filter(s => s.cost?.strain);
 check("spells that cost Strain",
   strainCost.map(s => s.name).sort().join(", "),
@@ -17972,7 +18402,7 @@ readFiles.set("decksSource", decksSource);
  * reason to open. `iconDoc` is rules/icons.md, the icon spec, which had fallen seven icons behind
  * the folder; `attribution` is the icons own ATTRIBUTION.md, which had not, and is now checked in
  * both directions because CC BY 3.0 is the reason it ships. */
-check("files this suite greps by name", readFiles.size, 80);
+check("files this suite greps by name", readFiles.size, 82);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -18077,6 +18507,9 @@ const absentGreps = [
   String.raw`and no longer warns that nothing can grant it :: Skill card[\s\S]{0,80}\*\*\[OPEN\]\*\* The one reward on this list with no key`,
   String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,
   String.raw`and no table offers a Swedish column :: \| Swedish \|`,
+  /* The range display measures and refuses nothing: there is no line to find, which is the
+   * only shape this rule can be checked in. */
+  String.raw`and nothing anywhere refuses an action for being out of range :: out of range[\s\S]{0,40}return|notifications\.warn\([^)]*too far`,
   String.raw`and nothing ever puts a condition in the waved set :: waved\.add\(.*condition`,
   String.raw`and nothing in the content deals an injury directly :: verb: "maiming"[\s\S]{0,120}injury:`,
   String.raw`and nothing matches a document back by its escaped name :: find\(card => card\.name === name\)`,
@@ -18122,6 +18555,9 @@ const absentGreps = [
   String.raw`so the grant sum asks nothing about an injury :: slate\.type === "injury"`,
   String.raw`taking a node back refunds nothing :: system\.levels`,
   String.raw`the actor stores no pending counter :: pending: new fields\.NumberField`,
+  /* Marked by colour, never disabled: grey means *you cannot click this* everywhere else in
+   * this HUD, and a measurement is not a refusal. */
+  String.raw`the chip marks out of reach rather than disabling it :: this\.out[^}]*disabled`,
   String.raw`the claim that there are two triggers :: There are two triggers`,
   String.raw`the deck module reaches back into the resolver :: from "\.\/resolve\.mjs"`,
   String.raw`the deck module reaches back into the resolver :: resolve\.mjs"\)`,

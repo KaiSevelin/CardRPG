@@ -253,6 +253,31 @@ export async function expireGround(scene, round) {
 }
 
 /**
+ * **What crossing a square multiplies a step of movement by, and 0 for ordinary ground.**
+ *
+ * **[BUILT 2026-11-21]** This formula was written inside `syncCrossing`, which is the one place
+ * that needed it until the reachable-square highlight needed exactly the same answer about a
+ * square nobody is standing in. Two copies of *what difficult ground costs* is how the ruler and
+ * the highlight come to disagree about the same bog, and a player trusting the colours over the
+ * ruler would be trusting the wrong one without ever being told which.
+ *
+ * `effects` is an array or a Set, because a zone carries a list and `groundAt` answers with a Set.
+ * **Zero and not one** is the ordinary answer, because the caller that has had this formula the
+ * longest reads zero as *attach no behaviour at all* -- a region that charges 1x is a region with
+ * a multiplier nobody can see the point of. A caller walking squares wants `Math.max(1, cost)`.
+ *
+ * Dearest wins rather than the two multiplying: a square can be marked both, and a bog in front of
+ * a wall is a wall.
+ */
+export function crossingCost(effects) {
+  const has = key => (effects instanceof Set ? effects.has(key) : (effects ?? []).includes(key));
+  return Math.max(
+    has("impassable") ? CARDRPG.groundCost.impassable : 0,
+    has("difficult") ? CARDRPG.groundCost.difficult : 0
+  );
+}
+
+/**
  * **What crossing the zone costs, handed to Foundry's own measurement.**  [BUILT 2026-11-16]
  * Phase 3.
  *
@@ -271,10 +296,7 @@ export async function expireGround(scene, round) {
  */
 async function syncCrossing(region, ground) {
   if (!region) return;
-  const walk = Math.max(
-    ground?.effects?.includes("impassable") ? CARDRPG.groundCost.impassable : 0,
-    ground?.effects?.includes("difficult") ? CARDRPG.groundCost.difficult : 0
-  );
+  const walk = crossingCost(ground?.effects);
   const mine = (region.behaviors ?? []).filter(b => b.getFlag?.("cardrpg", "crossing"));
   if (!walk) {
     const ids = mine.map(b => b.id);

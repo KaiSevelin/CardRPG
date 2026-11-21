@@ -767,10 +767,12 @@ Formulas, with their strength in brackets. Strength is the slot cost.
 | **Tattoo Magic** | **Graven Strength** (1) | A permanent tattoo: **+2 Strike with Heavy items** — and the GM writes down a secret. |
 | **Asceticism** | **Nothing Left to Take** (1) | While your **hand is empty**, you cannot be reduced below 1 Health. |
 | **Shadow Magic** | **Step Through** (2) | Teleport to any shadowed square you can see. A **Wild** card joins your fate deck, for good. |
-| **Spiritualism** | **The Bargain** (3) | A minor god acts once this fight. **The GM decides how**, and that is the point. |
+| **Spiritualism** | **The Bargain** (3) | A minor god acts once this fight, from wherever it is. **The GM decides how**, and that is the point. |
 | **Household Magic** | **Hearth and Home** (ritual) | Out of combat: a camp nobody unfriendly can find, for one night. |
 | **Ward Magic** | **Unmake** (2) | Reaction — **Spent**: a ✦ Cast **you have survived before** does not resolve. |
 | **Divination** | **The Reading** (2) | **Read 3** (core-rules §6) on any one fate deck **except your own**. |
+| **Demonology** | **The True Name** (3) | **Compelled (3)** on one creature at range 4, ignoring cover. The debt **doubles**. |
+| **Engineer** | **Shim and Wedge** (card) | Primary: 🧪 **Use** an item on an **adjacent ally** rather than on yourself. Secondary: ⇄ Ready. Reaction: 🛡 Block. |
 
 **Unmake carries the school's whole price in its own text.** *A Cast you have survived before* is the
 learning condition printed on the card: a warder's book is a record of what the party has lived
@@ -1049,6 +1051,8 @@ sight, and their own Blast. Every tactic here is about that.
 | **Household Magic** | **The House Helps** | Indoors you ignore difficult ground, and you know where every door is before you see it. |
 | **Ward Magic** | **The Standing Guard** | One extra reaction each round, usable **only** to answer a ✦ Cast. |
 | **Divination** | **Already Seen** | You are never surprised, and at the start of any round you may **swap your place in the initiative order** with a willing ally's. |
+| **Demonology** | **The Terms Are Binding** | A condition you have put on an enemy cannot be removed by **that enemy's own action**. |
+| **Engineer** | **Nothing Is Scrap** | **Corrode** on your armour and **Blunt** on your weapons, and on those of an adjacent ally, are repaired at the end of a fight with **no check and no kit**. |
 
 **Tattoo Magic's is the only player answer to Silenced in the game.** [conditions.md](conditions.md)
 §8 records that Silenced is the one condition that can empty a turn and that it does so only to
@@ -1321,7 +1325,7 @@ fishes. So they may be played every time they are drawn.
 > what makes each one its own trick is the **depth** of the reach, not the fact of it. Tattoo Magic
 > still owns it permanently and Asceticism still owns the choice.
 
-### 3.4 Way of Mind — the twelve schools  **[BUILT 2026-11-01]**
+### 3.4 Way of Mind — the thirteen schools  **[BUILT 2026-11-01]**
 
 **Strength is the slot cost** (§1.4), so the bracketed number is what a formula takes out of the
 budget. The Signature from §2.3 is listed first in each school and marked ✦.
@@ -1600,12 +1604,12 @@ nothing to prepare once you have given the hand. The other six are formulas.
 
 | Formula | Str | Effect |
 |---|---|---|
-| ✦ **The Bargain** | 3 | A minor god acts once this fight. **The GM decides how**, and that is the point. |
+| ✦ **The Bargain** | 3 | A minor god acts once this fight, **from wherever it is**. **The GM decides how**, and that is the point. |
 | **The Small Pact** | 1 | Name one god you are pacted with. It grants **the favour written on the pact** — the same favour every time. |
 | **Hold to the Bargain** | 2 | ⚡ Reaction: an ally's failed check becomes a **Partial**. Once per pact per fight. |
 | **The Nine Names** | 1 | Out of combat: a minor god names **who in this place it is angry with**, and will not say why. |
 | **The Gathered Pact** | 4 | **Every** god you are pacted with grants its written favour, this turn. |
-| **The Great Bargain** | 5 | A minor god becomes **present**. The GM plays it as an ally for the rest of the fight, and afterwards it takes something the GM chooses. |
+| **The Great Bargain** | 5 | **It does not come. It fills you.** **Imbued (3)** on yourself: **+3 ✦ Cast** for three rounds, and afterwards the god takes something the GM chooses. |
 
 > **The pact *is* the spell, and that is how this school avoids being one card twelve times.** *The
 > Bargain* leaves everything to the GM, which is wonderful once and arbitrary twice — so every other
@@ -1613,6 +1617,24 @@ nothing to prepare once you have given the hand. The other six are formulas.
 > favour is fixed from then on, so *The Small Pact* is a different spell for every character who takes
 > it and the same spell every time *they* cast it.
 >
+> **[CHANGED 2026-11-21] A god does not walk into a fight, and neither bargain puts one on the
+> board.** Both were conjurations, and that was wrong on the world's own terms: *all summoning of
+> demons and the like is done through rituals*
+> ([Firma.md](../worldinfo/Firma.md)) &mdash; days, a recipe and the ritual twist deck &mdash; and
+> calling one of the hundred is that kind of work rather than a card. It was also wrong on numbers:
+> the gods are Health 55 to 90 against a Dragon's 50, so *The Great Bargain* was not a strength-5
+> spell, it was the end of the encounter.
+>
+> **So the god imbues its spiritualist instead**, which is what *paid in a pact* should buy: not a
+> bodyguard, but power you are briefly allowed to hold. **Imbued** is a new condition
+> ([conditions.md](conditions.md)) and it is built the way Graven is &mdash; the bonus rides on the
+> instance, so what a particular god lends is the pact's business &mdash; except that it has a
+> duration, because leaving is part of the arrangement. *The Bargain* keeps the GM's free hand and
+> loses the verb that was offering to build a body nobody asked for.
+>
+> **The same rule the demonologists follow** (§3.4, Demonology): the calling is ritual work, and the
+> school is what you do with what the calling bought.
+
 > **[OPEN]** The minor gods themselves. The world document says they *"grant no miracles, but they are
 > the basis of the Spiritualism school"* and does not name them. Until it does, a pact is the GM's to
 > write, which is workable and is not the same as finished.
@@ -1682,6 +1704,48 @@ nothing to prepare once you have given the hand. The other six are formulas.
 > true answer now and hands the GM something to spend on you whenever they like. Every other school's
 > price is a thing you give up at the moment of learning or casting; a diviner's is a thing that
 > happens to them.
+
+#### Demonology — Control, paid in a compounding debt  **[BUILT 2026-11-21]**
+
+**Not one of these summons anything, and that is the school rather than a restriction on it.**
+[Firma.md](../worldinfo/Firma.md) is flat about the mechanism — *all summoning of demons and the like
+is done through rituals* — so the calling takes days, draws from the ritual twist deck, and is open
+to anyone literate. What the ritual buys is **a debt**. These seven are the ways of spending one.
+
+| Formula | Str | Effect |
+|---|---|---|
+| **The Lesser Name** | 1 | **Compelled (1)** on one enemy at range 3. The debt grows. |
+| **Terms** | 1 | Out of combat: **one question** to whatever you are indebted to, about what it wants. The answer is honest, because honesty costs it nothing. |
+| **The Borrowed Hand** | 2 | ⚔ 4 at ◎4, **ignoring Block**. Costs **1 Taint**. |
+| **The Binding Circle** | 2 | **Halted (2)** on one enemy at range 3. |
+| ✦ **The True Name** | 3 | **Compelled (3)** on one creature at range 4, **ignoring cover**. The debt **doubles**. |
+| **The Open Door** | 4 | A 2-square area within 2 becomes **difficult ground** dealing **2 a turn**, for 3 rounds. Nothing comes through, because nothing has been asked to. |
+| **The Reckoning** | 5 | ⚔ 6 at ◎6, past **armour and Block**. Then the GM settles the ledger — out of you, or out of whoever is standing nearest, and the GM chooses which. |
+
+> **Why Control and not Preparation.** Preparation paid in *a pact* is Spiritualism, and the two
+> would have collided on both halves of the cell at once. The demonologist's hold on a fight is a
+> set of terms somebody else is now inside, which is what Control means in this Way.
+>
+> **And why it is a root rather than one of Blood Magic's.** Blood Magic is where the world
+> document put the arrangement, and it is the node that teaches **Demonic**. But Poison already
+> holds Control among its children and siblings differ on **both** halves of the cell
+> ([specializations.md](specializations.md)), so the choice was between moving the school and
+> bending its axis. The axis is the school, so the school moved: it sits beside Blood Magic as a
+> fourth root, and the Demonic goes with it.
+>
+> **The debt is the GM's ledger and not a number.** Every other tracked price in the Way — Health, a
+> bound Taint, skill cards, a permanent Wild — is a quantity with a cap. A thing on the Third Side
+> does not want a quantity; it wants an obligation, and the obligation compounds. That is the same
+> shape Spiritualism's *a pact* and Glamour's *an elven debt* have carried since both were written.
+
+#### And the Engineer, which has no list at all  **[BUILT 2026-11-21]**
+
+**The Engineer is a craft, so it teaches no formulas and is not one of the thirteen.**
+[specializations.md](specializations.md) has listed four crafts — Brewer, Smith, Jeweller, Orator —
+since this Way was written, priced at nothing because a craft has no spell to charge for. This is
+the first of them built, and what it hands over is **Shim and Wedge** (§2.3) and a Tactic (§3.3):
+nothing on the route to it grants a spell slot, which is what makes *casts nothing at all* true
+rather than decorative. What it spends is **weight** — the shop travels with you.
 
 ### 3.5 Way of Faith — the twelve gods  **[BUILT 2026-11-01]**
 

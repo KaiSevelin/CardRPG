@@ -701,6 +701,45 @@
       }
     },
     {
+      "_id": "ia96KG3TinxdFN4j",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.ia96KG3TinxdFN4j",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1800,
+      "name": "Shim and Wedge",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Shim and Wedge",
+          "img": "systems/cardrpg/art/signatures/mind/shim-and-wedge.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "use",
+            "range": 1,
+            "targets": "oneAlly"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "block",
+        "costs": {},
+        "text": "Use an item on an adjacent ally instead of on yourself. The item is yours and is spent as normal."
+      }
+    },
+    {
       "_id": "oiGXDJfIM19UcKBL",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.oiGXDJfIM19UcKBL",
       "_stats": {
@@ -708,7 +747,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1800,
+      "sort": 1900,
       "name": "The Writ",
       "type": "action",
       "face": 0,
@@ -748,7 +787,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1900,
+      "sort": 2000,
       "name": "The Order's Shield",
       "type": "action",
       "face": 0,
@@ -792,7 +831,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2000,
+      "sort": 2100,
       "name": "The Long Silence",
       "type": "action",
       "face": 0,
@@ -831,7 +870,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2100,
+      "sort": 2200,
       "name": "The Scourge",
       "type": "action",
       "face": 0,

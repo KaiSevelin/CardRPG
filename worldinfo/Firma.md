@@ -1,3 +1,14 @@
+<!-- The source of record for this continent is rules/Core.md, with rules/Core-en.md as its
+     English translation; this file is the world written up from them, and rules/players-handbook.md
+     chapter 1 is the retelling for players. Where this file and Core.md disagree, Core.md wins.
+
+     [RECONCILED 2026-11-21] Three facts had drifted and were put back: Regensburg stands on a
+     cliff above Spear Pass rather than down in the range it runs through, Sammel is BUILT as
+     walled quarters called Rote rather than divided into them by its emirs, and Wolf Peak's
+     volcano is active, which is what its plumes of smoke and its warm ground were already
+     assuming. The suite now reads all three out of Core-en.md as well, because only the last link
+     of the chain had ever been checked. -->
+
 # History
 
 Humans slowly took more and more of the continent of Firma. The elves left for the Second Side, a
@@ -76,9 +87,7 @@ Tanto.
 The Iron District covers a roughly square northern half of the Hyena Desert and the mineral-rich
 Mouse Mountains north of it. The city of Sammel in the north oasis is the only large city,
 and nearly the size of Geistburg. Villages and a few mining camps are scattered through the Mouse
-Mountains, but the rest of the Hyena Desert is desolate apart from a couple of caravan camps and a holy, sparsely populated town at the western oasis where there is water. The Grey and his siblings are worshipped in the district, which is ruled by emirs who
-have divided Sammel into separate, isolated **Rote**. The former assassin state now rules the central
-Rote around the region's tallest building, the Ziggurat. Embassies that offer services under the
+Mountains, but the rest of the Hyena Desert is desolate apart from a couple of caravan camps and a holy, sparsely populated town at the western oasis where there is water. The Grey and his siblings are worshipped in the district, which is a theocracy: the Grey's people rule it centrally and have handed local power to emirs. Sammel is built as walled quarters called **Rote**, each shut off from the next, with the oasis canals drawn through them, and the region's tallest building, the step pyramid they call the Ziggurat, stands over the central Rote as the seat of an emir who is the Grey's puppet. Embassies that offer services under the
 table can be found in every district except the Amber, and in a couple of enclaves. The city is linked
 to the Core District by the **East Road**, a less safe tunnel system, since the whole
 region's mine workings give rise to countless break-ins by monsters and the Horde. A freight and
@@ -159,21 +168,21 @@ is the enclave's centre.
 
 ## Regensburg
 
-The capital of the militaristic western realm situated in a valley of the Spear Mountains in the north-east of the Core District is the most important
-inland enclave. Regensburg has preserved its military background and could certainly survive a couple
+The capital of the militaristic western realm is the most important inland enclave. It stands on a cliff above Spear Pass, a road through the Spear Mountains north-east of the Core District that
+carried heavy traffic before the invasion, and the fort is wedged into the strategic position rather than laid out on open ground. Regensburg has preserved its military background and could certainly survive a couple
 of years without enchantments. The three concentric city walls are ten metres high and divide the city
 into three rings. Within each ring are further walls dividing the rings into sections, all to resist
 invasion as long as possible. The city has a military government with a strict hierarchy and a Marshal
 of the Realm at the top. Companies of its cavalry are hired out to other districts in exchange for
 deliveries of the supplies the enclave depends on. The enclave is linked to the Core District by an
 unsafe tunnel through cave-riddled limestone, the **Cracked Road**. A large
-underground lake midway along it has given rise to two sketchy harbour villages named From and To.
+underground lake midway along it, **The Deep**, has given rise to two sketchy harbour villages named From and To, which row travellers across because there is no other way past the water.
 
 ## Wolf Peak
 
-A religious centre of those who profess the faith of the Fire, at the top of a lone dormant volcano
+A religious centre of those who profess the faith of the Fire, blasted into the side of a lone active volcano
 north of the Amber District, has held out undefeated against the Horde. Wolf Peak has
-roads to the summit that are easy to defend, and its ingenious use of the surfaces outside and inside
+roads to the summit that are easy to defend and plumes of smoke that keep the Horde from coming at it out of the air, and its ingenious use of the surfaces outside and inside
 the mountain, together with careful husbandry of resources, makes it self-sufficient. The enclave's
 advanced technology in gunpowder and firearms helps. The materials for powder are inside the mountain:
 never-failing guano fields from bats and large sulphur deposits from the volcanism, while charcoal is

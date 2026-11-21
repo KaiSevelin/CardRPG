@@ -1,6 +1,6 @@
 # Art prompts
 
-**779 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**790 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 768 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 779 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -3638,7 +3638,7 @@ Draw the work and not the worker -- the kit laid out, the bench, the deck at the
 
 ## Titles — who a character becomes
 
-**56 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/nodes/title/`.
+**58 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/nodes/title/`.
 
 Shown in the level-up pane while a player decides whether to spend a level on becoming this. **This is the one shelf here whose subject is a person, so draw the figure** -- and draw them doing the thing the title is about, not posing as it. The axis and resource in the subject line are what separate two titles whose prose reads alike; let the pictures differ the way those sentences do.
 
@@ -3880,6 +3880,18 @@ Draw the quality itself as one human moment -- the person it describes, caught i
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of South Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
+### Demonology
+
+File: `nodes/title/demonology.webp`
+
+```text
+SUBJECT. "Demonology" — Demonology · Control / a compounding debt — The Third Side had no school, which is the strangest gap in the Way: Glamour answers the Second and Spiritualism and Necromancy the Fourth, while the side the founding war was
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Caribbean appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
 ### Divination
 
 File: `nodes/title/divination.webp`
@@ -3914,6 +3926,18 @@ SUBJECT. "Elemental Magic" — Elemental Magic · Position / reagents — The ph
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Southeast Asian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Engineer
+
+File: `nodes/title/engineer.webp`
+
+```text
+SUBJECT. "Engineer" — Engineer · Support / weight — The Furnace burned and its engineers walked out carrying what they knew.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Germanic appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Executioner
@@ -5054,7 +5078,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of M
 
 ## Signatures — Way of Mind
 
-**11 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/signatures/mind/`.
+**13 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/signatures/mind/`.
 
 A title's defining card, and what its node wears in the levelling graph. Grander than a pool card: this is what a player was aiming at.
 
@@ -5148,7 +5172,7 @@ Use the full range, both ends of it:
 File: `signatures/mind/blood-price.webp`
 
 ```text
-SUBJECT. "Blood Price" — strength 2 · Cast +4 range 3 ignores armour · [object Object]
+SUBJECT. "Blood Price" — strength 2 · Cast +4 range 3 ignores armour · costs 2 Health
 
 Four damage at three squares, and nothing between you and it matters. The two Health are not a drawback; they are the school.
 
@@ -5227,16 +5251,28 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Persian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
+### Shim and Wedge
+
+File: `signatures/mind/shim-and-wedge.webp`
+
+```text
+SUBJECT. "Shim and Wedge" — Use range 1 · / Ready · Use an item on an adjacent ally instead of on yourself. The item is yours and is spent as normal.
+
+Draw the object mid-use, landing 1 square from the one who threw it; a weapon coming to hand, caught between carried and held.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Southeast Asian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
 ### The Bargain
 
 File: `signatures/mind/the-bargain.webp`
 
 ```text
-SUBJECT. "The Bargain" — strength 3 · Conjure it acts once; the GM decides how
+SUBJECT. "The Bargain" — strength 3 · a minor god acts once, and the GM decides how
 
-A minor god acts, once. The GM decides how , and that is not a hole in the spell — it is the spell.
+A minor god acts, once, from wherever it is. The GM decides how , and that is not a hole in the spell — it is the spell.
 
-Draw something arriving that was not there a moment ago.
+Draw that line literally: the one moment it describes, and nothing else in frame.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
@@ -5253,6 +5289,20 @@ Three cards down somebody else's luck. Never your own — a diviner who could st
 Draw the moment before a thing happens, shown twice.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Mediterranean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The True Name
+
+File: `signatures/mind/the-true-name.webp`
+
+```text
+SUBJECT. "The True Name" — strength 3 · range 4 Compelled (3)
+
+The name it carried before it was ever on the Third Side. For three rounds the creature you name does what you tell it, and then it remembers that you know. The debt doubles.
+
+Draw pulled toward something against the will.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of South Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Unmake
@@ -5288,7 +5338,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of H
 File: `signatures/mind/wither.webp`
 
 ```text
-SUBJECT. "Wither" — strength 2 · Cast Poisoned 1 (2) · [object Object]
+SUBJECT. "Wither" — strength 2 · Cast Poisoned 1 (2) · costs 2 skill cards set aside
 
 Dazed while it lasts, and one damage a turn that armour does not stop.
 
@@ -5449,7 +5499,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of W
 File: `signatures/faith/the-club-and-the-line.webp`
 
 ```text
-SUBJECT. "The Club and the Line" — strength 2 · Cast blast 1 with the weapon in hand · [object Object]
+SUBJECT. "The Club and the Line" — strength 2 · Cast blast 1 with the weapon in hand · costs 2 Health
 
 Strike every adjacent enemy. No free hand needed, because the club is the holy symbol — which is the gift on the node, not on the card.
 
@@ -5477,7 +5527,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of M
 File: `signatures/faith/the-first-taste.webp`
 
 ```text
-SUBJECT. "The First Taste" — strength 2 · Tainting 2 range 1
+SUBJECT. "The First Taste" — strength 2 · Tainting 2 range 1 · costs 1 Taint
 
 Draw a cup taken away from the mouth and held out to somebody else, the taster's own lip already stained -- the stain is ink-dark and not coloured. Two hands and the cup between them, and nothing else in the frame.
 
@@ -5843,7 +5893,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 
 ## Formulas — Way of Mind pool
 
-**72 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/spells/mind/`.
+**78 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/spells/mind/`.
 
 Blood magic and spiritualism: the working, not the worker.
 
@@ -5973,7 +6023,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/boil.webp`
 
 ```text
-SUBJECT. "Boil" — strength 3 · Cast Burning 3 (2) · [object Object]
+SUBJECT. "Boil" — strength 3 · Cast Burning 3 (2) · costs 2 Health
 
 Not your blood this time. Theirs, and it does not stop.
 
@@ -6175,7 +6225,7 @@ Draw a hand turning one thing over and letting it drop.
 File: `spells/mind/open-the-vein.webp`
 
 ```text
-SUBJECT. "Open the Vein" — strength 1 · Cast +3 range 2 ignores Block · [object Object]
+SUBJECT. "Open the Vein" — strength 1 · Cast +3 range 2 ignores Block · costs 1 Health
 
 Your own blood, thrown. It goes round a shield rather than through it.
 
@@ -6199,7 +6249,7 @@ Draw footing lost, landing 3 squares from the one who threw it.
 File: `spells/mind/slick.webp`
 
 ```text
-SUBJECT. "Slick" — strength 1 · range 3 Off Balance (1) · [object Object]
+SUBJECT. "Slick" — strength 1 · range 3 Off Balance (1) · costs 1 skill cards set aside
 
 Oil of something. No save: a man whose feet have gone is not resisting anything.
 
@@ -6216,6 +6266,30 @@ SUBJECT. "Slippery" — strength 1 · Shake 1 range 2 Grappled until your next t
 Not enough water to drown in. Exactly enough to be impossible to hold.
 
 Draw footing lost, landing 2 squares from the one who threw it; held, and not letting go.
+```
+
+### Terms
+
+File: `spells/mind/terms.webp`
+
+```text
+SUBJECT. "Terms" — strength 1 · one honest answer about what it wants from you
+
+Out of combat: one question to whatever you are indebted to, about what it wants. It answers honestly, because honesty costs it nothing.
+
+Draw that line literally: the one moment it describes, and nothing else in frame.
+```
+
+### The Binding Circle
+
+File: `spells/mind/the-binding-circle.webp`
+
+```text
+SUBJECT. "The Binding Circle" — strength 2 · range 3 Halted (2)
+
+Chalk, salt and a name. What is inside it does not leave it. A hold is a contract, and a contract wants attending.
+
+Draw stopped dead at a line.
 ```
 
 ### The Borrowed Body
@@ -6240,6 +6314,18 @@ SUBJECT. "The Borrowed Dark" — strength 3
 Every square on the map, dark at once — for your allies as much as for you, and for anyone else who knows what to do with it.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
+```
+
+### The Borrowed Hand
+
+File: `spells/mind/the-borrowed-hand.webp`
+
+```text
+SUBJECT. "The Borrowed Hand" — strength 2 · Cast +4 range 4 ignores Block · costs 1 Taint
+
+Something reaches through for exactly as long as a blow takes. Four damage at four squares, round a shield rather than through it, and the hand is not yours — which is the entire legal defence and has never once worked.
+
+Draw the shape forming between the hands, thrown with the whole body, nothing held back, landing 4 squares from the one who threw it, going round the shield rather than through it.
 ```
 
 ### The Broken Word
@@ -6355,11 +6441,11 @@ Draw something arriving that was not there a moment ago.
 File: `spells/mind/the-great-bargain.webp`
 
 ```text
-SUBJECT. "The Great Bargain" — strength 5 · Conjure a minor god becomes present and fights as an ally for three rounds
+SUBJECT. "The Great Bargain" — strength 5 · Imbued (3) and the GM takes something afterwards
 
-It is actually here, for three rounds. The GM plays it as an ally and then it goes, and afterwards it takes something the GM chooses — which is the only honest way to price a favour that large.
+It does not come. It fills you — three rounds of a minor god's own power in your hands, and your Casts land like something much older than you. Then it leaves, and afterwards it takes something the GM chooses, which is the only honest way to price a favour that large.
 
-Draw something arriving that was not there a moment ago.
+Draw something much larger briefly working through a person.
 ```
 
 ### The Grey Sickness
@@ -6367,7 +6453,7 @@ Draw something arriving that was not there a moment ago.
 File: `spells/mind/the-grey-sickness.webp`
 
 ```text
-SUBJECT. "The Grey Sickness" — strength 2 · Tainting 1 slow: a disease, not a poison · [object Object]
+SUBJECT. "The Grey Sickness" — strength 2 · Tainting 1 slow: a disease, not a poison · costs 2 skill cards set aside
 
 Not a poison. A disease, which is the difference between a bad afternoon and something still with them next week.
 
@@ -6403,7 +6489,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-kingmakers-draught.webp`
 
 ```text
-SUBJECT. "The Kingmaker's Draught" — strength 5 · Poisoned 3 (3) no save. If it dies while poisoned, set aside no skill cards for this formula · [object Object]
+SUBJECT. "The Kingmaker's Draught" — strength 5 · Poisoned 3 (3) no save. If it dies while poisoned, set aside no skill cards for this formula · costs 5 skill cards set aside
 
 Three rounds of three, no save, and no cost at all if it finishes him. If it does not, you have paid five cards for an angry survivor who knows your face.
 
@@ -6427,11 +6513,23 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-last-drop.webp`
 
 ```text
-SUBJECT. "The Last Drop" — strength 5 · take your whole turn again, now · [object Object]
+SUBJECT. "The Last Drop" — strength 5 · take your whole turn again, now · costs 1 Health
 
 You will not be standing afterwards. You will have had two turns.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
+```
+
+### The Lesser Name
+
+File: `spells/mind/the-lesser-name.webp`
+
+```text
+SUBJECT. "The Lesser Name" — strength 1 · range 3 Compelled (1)
+
+One of its smaller names, said out loud. The thing that hears it does what you said for a round, and the debt grows by as much as a small name is worth.
+
+Draw pulled toward something against the will.
 ```
 
 ### The Long Dose
@@ -6439,7 +6537,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-long-dose.webp`
 
 ```text
-SUBJECT. "The Long Dose" — strength 1 · Cast range 2 Poisoned (3) · [object Object]
+SUBJECT. "The Long Dose" — strength 1 · Cast range 2 Poisoned (3) · costs 1 skill cards set aside
 
 No damage at all. Three rounds of a man who cannot use his off hand, which in a fight is worse than three damage and lasts longer.
 
@@ -6566,16 +6664,40 @@ For one round the whole party is lucky and you can see why. Two cards down each 
 Draw that line literally: the one moment it describes, and nothing else in frame.
 ```
 
+### The Open Door
+
+File: `spells/mind/the-open-door.webp`
+
+```text
+SUBJECT. "The Open Door" — strength 4 · Cast range 2 area 2
+
+A hand's width of the Third Side, here, for three rounds. Lava under the flagstones and an air nothing breathes: what stands in it is burned and slowed, and nothing comes through, because nothing has been asked to.
+
+Draw the shape forming between the hands, landing 2 squares from the one who threw it.
+```
+
 ### The Quick Dose
 
 File: `spells/mind/the-quick-dose.webp`
 
 ```text
-SUBJECT. "The Quick Dose" — strength 3 · Cast Poisoned 2 (2) · [object Object]
+SUBJECT. "The Quick Dose" — strength 3 · Cast Poisoned 2 (2) · costs 3 skill cards set aside
 
 Adjacent, because it has to go in them. Two rounds, two damage a round, and armour is no part of the conversation.
 
 Draw a shape held in the air between the hands, half-finished and still forming; colour draining out.
+```
+
+### The Reckoning
+
+File: `spells/mind/the-reckoning.webp`
+
+```text
+SUBJECT. "The Reckoning" — strength 5 · Cast +6 range 6 ignores armour ignores Block and the GM then collects the whole ledger
+
+You call in the whole tab at once and something large enough to settle it attends to one thing. Six damage at six squares, past armour and past a shield. Then the ledger is settled — out of you, or out of whoever is standing nearest, and the GM chooses which.
+
+Draw the shape forming between the hands, thrown with the whole body, nothing held back, landing 6 squares from the one who threw it, going through whatever it is wearing as if it were not there, going round the shield rather than through it.
 ```
 
 ### The Red Hour
@@ -6583,7 +6705,7 @@ Draw a shape held in the air between the hands, half-finished and still forming;
 File: `spells/mind/the-red-hour.webp`
 
 ```text
-SUBJECT. "The Red Hour" — strength 4 · range 2 every ally within 2 may play a second secondary
+SUBJECT. "The Red Hour" — strength 4 · range 2 every ally within 2 may play a second secondary · costs 1 Health
 
 Draw the hour that was bought, never the price that bought it -- a thick tallow candle with hour lines scored across it, burned down past the first line, the flame low and one heavy fall of wax run down the side. No figure, no hand, no wrist, no bandage, no blade, no wound and no blood anywhere in the frame.
 ```
@@ -6605,7 +6727,7 @@ Draw the arrival, landing 3 squares from the one who threw it.
 File: `spells/mind/the-second-heartbeat.webp`
 
 ```text
-SUBJECT. "The Second Heartbeat" — strength 3 · Spent: play a second primary this turn · [object Object]
+SUBJECT. "The Second Heartbeat" — strength 3 · Spent: play a second primary this turn · costs 4 Health
 
 Two hearts for one turn. The second one is paid for.
 
@@ -6629,7 +6751,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-shared-cup.webp`
 
 ```text
-SUBJECT. "The Shared Cup" — strength 4 · Cast aimed 3 Poisoned 1 (3) · [object Object]
+SUBJECT. "The Shared Cup" — strength 4 · Cast aimed 3 Poisoned 1 (3) · costs 4 skill cards set aside
 
 Everyone who drank. Three rounds of it, over three squares, and the save is the only mercy in the formula.
 
@@ -7054,7 +7176,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/faith/stand-where-i-stand.webp`
 
 ```text
-SUBJECT. "Stand Where I Stand" — strength 1 · range 1 adjacent allies cannot be reduced below 1 Health · [object Object]
+SUBJECT. "Stand Where I Stand" — strength 1 · range 1 adjacent allies cannot be reduced below 1 Health · costs 2 Health
 
 Allies adjacent to you cannot be reduced below 1 Health until your next turn. His miracles are paid in yours.
 
@@ -7078,7 +7200,7 @@ Draw footing lost, landing 3 squares from the one who threw it; pulled toward so
 File: `spells/faith/taste-of-the-rot.webp`
 
 ```text
-SUBJECT. "Taste of the Rot" — strength 1 · Cast +1 range 1 Off Balance (1) the Taint only on a Miss · [object Object]
+SUBJECT. "Taste of the Rot" — strength 1 · Cast +1 range 1 Off Balance (1) the Taint only on a Miss · costs 1 Taint
 
 One adjacent enemy: 1 damage and Off-Balance, no save. A Miss costs you a Taint, which is the god being paid whether or not it worked.
 
@@ -7138,7 +7260,7 @@ Draw something going wrong under the skin.
 File: `spells/faith/the-charge.webp`
 
 ```text
-SUBJECT. "The Charge" — strength 2 · area 2 every ally within 2 may Move their full value, at once, now · [object Object]
+SUBJECT. "The Charge" — strength 2 · area 2 every ally within 2 may Move their full value, at once, now · costs 2 Strain
 
 Strain 2, and the whole line moves at once. Movement is a sentence the table applies (core-rules 11), so this miracle is finished as written.
 
@@ -7220,7 +7342,7 @@ Draw a plank laid across a gap with nothing under its far end and nothing holdin
 File: `spells/faith/the-line-holds.webp`
 
 ```text
-SUBJECT. "The Line Holds" — strength 4 · allies adjacent to you cannot be moved, knocked Prone or Compelled · [object Object]
+SUBJECT. "The Line Holds" — strength 4 · allies adjacent to you cannot be moved, knocked Prone or Compelled · costs 2 Health
 
 Nobody beside you is moved, knocked down or turned. It costs two Health a man, and Vax expects you to count them first.
 
@@ -7328,7 +7450,7 @@ Draw sight swimming.
 File: `spells/faith/the-shield-line.webp`
 
 ```text
-SUBJECT. "The Shield Line" — strength 2 · range 1 adjacent allies gain your armor as Block · [object Object]
+SUBJECT. "The Shield Line" — strength 2 · range 1 adjacent allies gain your armor as Block · costs 1 Health
 
 Every ally adjacent to you gains your armor value as Block until your next turn. One Health per ally, so a long line is a dear one.
 
@@ -7352,7 +7474,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/faith/the-slow-failure.webp`
 
 ```text
-SUBJECT. "The Slow Failure" — strength 5 · Tainting 3 · [object Object]
+SUBJECT. "The Slow Failure" — strength 5 · Tainting 3 · costs 2 Taint
 
 Tainting 3 on them and two Taint on you — which with the first taste is Afflicted. A priest of The Purple who casts their thesis is ill for good.
 
@@ -7400,7 +7522,7 @@ Draw a shadow that chose someone.
 File: `spells/faith/the-war-drum.webp`
 
 ```text
-SUBJECT. "The War Drum" — strength 4 · area 2 every ally within 2 takes their whole turn again, now · [object Object]
+SUBJECT. "The War Drum" — strength 4 · area 2 every ally within 2 takes their whole turn again, now · costs 3 Strain
 
 Strain 3, and everybody near you goes again. The same mechanism Blood Magic's thesis wants, bought with pain instead of blood.
 
@@ -7448,7 +7570,7 @@ Draw the shape forming between the hands, landing 3 squares from the one who thr
 File: `spells/faith/valtors-own.webp`
 
 ```text
-SUBJECT. "Valtor's Own" — strength 5 · for the rest of the fight you play a primary and two secondaries each turn · [object Object]
+SUBJECT. "Valtor's Own" — strength 5 · for the rest of the fight you play a primary and two secondaries each turn · costs 1 Strain
 
 Your whole hand, strained, and for the rest of the fight you act like three men. There is nothing left to play it with, which is the god's idea of a bargain.
 
@@ -7481,7 +7603,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 
 ## Conditions
 
-**25 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/conditions/`.
+**26 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/conditions/`.
 
 On the table all fight, face up under a duration that is counting down. Draw **the condition and never who has it**: one picture serves a goblin, a dragon and the player alike, so the body stays out of frame or is cropped to a limb. An object, a mark or a gesture -- the evidence, not the victim.
 
@@ -7695,6 +7817,16 @@ File: `conditions/heckled.webp`
 
 ```text
 SUBJECT. "Heckled" — A thumb turned down at the end of a bare arm thrust in from the lower edge, drawn large and crude. Whoever it belongs to is not in the picture.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Imbued
+
+File: `conditions/imbued.webp`
+
+```text
+SUBJECT. "Imbued" — A pair of open hands held low, lit from inside the skin rather than from the room, the glow strongest at the knuckles and dying at the wrists. No face, no figure above the forearms, nothing held.
 
 Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
 ```
@@ -11969,7 +12101,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**302 prompts in 37 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**305 prompts in 37 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **10 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -11987,7 +12119,7 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **3** | 2 | ground covered -- weight forward, the last footfall still behind; the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/lunge` `cards/shade-starter/slip-in` `signatures/strength/the-lance` |
 | **3** | 2 | an edge, worn and sharpened back more than once | `items/arming-sword` `items/trident` `items/npc/goblin-spear` |
 | **2** | 2 | a hand working an object, the object mid-use rather than held up to be seen; a weapon coming to hand, caught between carried and held | `cards/starter/quick-hands` `cards/shade-starter/light-fingers` |
-| **68** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `cards/fate/critical` `cards/fate/minus-one` `cards/fate/minus-two` `cards/fate/miss` `cards/fate/plus-one` …+63 |
+| **70** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `cards/fate/critical` `cards/fate/minus-one` `cards/fate/minus-two` `cards/fate/miss` `cards/fate/plus-one` …+65 |
 | **9** | 1 | set down on nothing, carried a long way among other things | `items/beggars-bowl` `items/cairn-stone` `items/cracked-spyglass` `items/locked-casket` `items/loose-cobble` …+4 |
 | **7** | 1 | an object that means nothing except in trained hands | `features/good-aim` `features/good-name` `features/hard-hands` `features/light-step` `features/quick-eye` …+2 |
 | **7** | 1 | a small dark bottle, labelled, a residue dried at the lip | `items/assassins-tincture` `items/black-lotus` `items/blade-venom` `items/drowsing-oil` `items/grave-cap-extract` …+2 |
@@ -11996,7 +12128,7 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **4** | 1 | a thing that says who somebody is before they speak | `items/fine-clothes` `items/gaming-set` `items/signet-ring` `items/travelling-cloak` |
 | **3** | 1 | worn unevenly, and the wear is the subject | `items/boots-of-the-long-step` `items/hollow-boots` `items/pilgrims-shoes` |
 | **2** | 1 | pulled toward something against the will | `cards/starter/taunt` `signatures/strength/play-to-the-crowd` |
-| **25** | — | the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol | `conditions/blessed` `conditions/burdened` `conditions/burning` `conditions/compelled` `conditions/cursed` …+20 |
+| **26** | — | the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol | `conditions/blessed` `conditions/burdened` `conditions/burning` `conditions/compelled` `conditions/cursed` …+21 |
 | **15** | — | the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all | `nodes/origin/echterhof-born` `nodes/origin/furnace-stock` `nodes/origin/hyrlock` `nodes/origin/kelp-bay` `nodes/origin/regensburg` …+10 |
 | **14** | — | what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame | `injuries/bad-leg` `injuries/compelled-step` `injuries/hexed-blood` `injuries/hollow-eyes` `injuries/lost-eye` …+9 |
 | **11** | — |  | `backs/action` `backs/fate` `backs/ritual` `backs/skill` `backs/item` …+6 |

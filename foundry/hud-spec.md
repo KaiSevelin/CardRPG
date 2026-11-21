@@ -806,6 +806,95 @@ one that vanished on every click into empty canvas would be unusable.
 
 ---
 
+## 7a. How far they can move  **[BUILT 2026-11-21]**
+
+The one thing on the board this system paints. A staged Move colours the squares it reaches.
+
+**Why it exists, and why it is paint rather than a rule.** [core-rules.md](../rules/core-rules.md)
+§12 used to call unresolved movement the largest remaining engine gap, and the ruling closed it the
+other way: **movement stays a sentence the table applies, as long as it is clear to the player how
+far they can move.** The number has been on the card's face since phase 1 and Foundry's ruler has
+charged double over difficult ground since phase 3; what neither could do is answer *which squares*,
+which is the question actually being asked when somebody is choosing between Advance and a Strike.
+
+| It does | It does not |
+|---|---|
+| Colour the squares a staged Move reaches | Move a figure, or refuse a drag |
+| Charge each square what the ground costs | Spend a Move, or hold one to spend |
+| Use the value the card's own face prints | Compute a second value of its own |
+| Come off when *from here* stops being true | Stay up as a stale answer nobody can date |
+
+**Two shades, because there are two answers.** *You can reach that* and *you can reach that and it
+is the whole card* are different things to a player with one Move in hand, so a square that cost
+more than its distance — one where ground took something — is painted differently.
+`CARDRPG.reachColour` holds both, beside every other number argued about at a table.
+
+**It is drawn on render and nowhere else.** Staging, unstaging, Clear, Play, shifting a stack,
+putting a slate back, a condition arriving on somebody else's turn: every route into the play area
+ends in a render, so one line there is right where eight handlers would each have had a copy and the
+ninth route, added later, would have been missed. The consequence worth stating is that **the paint
+can never disagree with the faces**, because it is read off the same numbers in the same pass.
+
+**What it assumes is one rule.** A square with another figure in it is neither a destination nor a
+route. That is the only one, and the exceptions are real and deliberately not modelled —
+Bodyguard's *figures never block that move*, Burglar's *no enemy blocks your movement in a square
+that holds an obstacle*. A player holding either reads the colours as advice, which is all they ever
+are. `cardrpgReachable` is the hook for anyone who wants a different answer, the same arrangement
+`cardrpgGroundAt` makes for what a square is.
+
+**It needs a square grid**, and refuses to guess on a gridless scene: Foundry cannot paint a square
+highlight where there are no squares, so a walk that answered would be an answer nothing could draw.
+Worth knowing because the smoke world's scene is gridless — every other spatial probe passes
+on it, since forced movement, the watch arc and the ground zones are all pixel arithmetic.
+
+**And underneath it, the thing this game did not have: distance.** Chebyshev was written out in two
+places and both were special cases of it — `neighbours` capped it at 1, `watches` worked it out
+inside the overwatch arc — so nothing could answer *how many squares is that*. `squaresBetween`
+is that answer, counted in whole squares off the token **documents** rather than the placeables,
+which is the third time this codebase has had to learn that a placeable reports its old square until
+a frame has been drawn. Both old callers are refactored onto it, which is the whole reason it is a
+function rather than a line inside the walk.
+
+### 7a.1 How far the target is  **[BUILT 2026-11-21]**
+
+The other half of the same answer, in the line above the Play button. One chip per target: its
+name, and `3/4` once something staged has a reach.
+
+**The gap it closes is the same one and it was worse.** A card that reads *within 4* printed the 4
+and nothing ever compared it to a board, so the question an attack actually turns on — *can I hit
+that from here* — was asked of somebody squinting at a map. It was never a design decision: the
+dialog's own words are `How many, within 3?`, and `squaresBetween` did not exist, so nothing could
+have measured it.
+
+| Staged | The chip reads |
+|---|---|
+| nothing | `Goblin 3` — the distance alone, which is worth knowing while you are still choosing |
+| a Strike, sword in hand | `Goblin 3/1`, marked |
+| the same Strike, bow in hand | `Goblin 3/6` |
+
+**Where the reach comes from, in this order.** The **step's** own range wins, and that order is a
+rule rather than a convenience: *Taste of the Rot* is a Cast at range 1 and means adjacent, so a
+wand with a three-square cast line must not quietly extend it. Eleven steps in the catalogue carry
+a range of 1 and every one of them would be wrong under the other order. With no range on the step
+the **weapon's** line decides, through `rangeOnLine`, which already counts the bonuses a slate
+grants and is the same number the gear panel prints. With neither, **1**: adjacent is what saying
+nothing has always meant here.
+
+A step counts when it carries a range **or** its verb reaches somebody — `strike`, `cast`, `use`.
+Both tests are needed: `defend`, `move` and `ready` are things you do to yourself, and a condition
+laid on somebody at a distance is a step with a range and no verb at all.
+
+**The weapon is the one `#itemFor` will actually use.** Third caller of one call with one spelling,
+which is why that was worth keeping: a reader that picked its own item would print a reach off a
+weapon the turn was not going to be played with.
+
+**Marked, never disabled.** Grey means *you cannot click this* everywhere else in this HUD, and
+this is a measurement rather than a refusal: nothing is gated, Play is not blocked, and there is no
+warning. The engine knows how many squares it is and does not know about the ledge, the dangling
+rope, or the GM who has just said yes.
+
+---
+
 ## 8. What stays on the sheet
 
 Deck building, full inventory and slot management, features, injuries, rests and Spent-card recovery,
@@ -1035,12 +1124,24 @@ this project, in pixels.
   Signatures exist as content for a node to point at. The pane prints the Signature and the
   Tactic with its text, and a Signature the engine cannot work out says so
   ([../rules/way-cards.md](../rules/way-cards.md) §2.2).
-- **[OPEN]** **Spell** grants still create nothing: a formula is a slate like the others, but no
-  node in the built graph grants one and Way of Mind's schools are not authored. Way of Shade's
-  *Half-mage* grants slots rather than formulas, which is the node working as written.
-- **[OPEN]** Nothing has run the pane in Foundry. Two failure modes were fixed by reading rather
-  than by playing — a window id shared between two actors, and a Cytoscape container with no height
-  — and that is not the same as having seen it work.
+- **[DONE 2026-11-21]** **Spell** grants create slates. This entry read *still create nothing*,
+  and gave the reason: no node in the built graph granted a formula, and Way of Mind's schools were
+  not authored. Both have since changed. `grantSpell` makes the document and `takeNode` calls it,
+  and the spell arrives **unprepared** — which is the whole of why it is safe: `slotCost` is zero
+  while a formula is still in the book, so handing a strength-4 formula to a three-slot caster costs
+  nothing and breaks nothing, and the slots that arrive later are what make it castable. A node
+  that handed over a *prepared* spell would be a node that quietly spent the player's budget.
+  **65 nodes grant a formula outright and 27 grant a choice from a school's or a god's list**, off
+  157 authored teachings. Whether it is a formula or a miracle is read off the Way rather than
+  carried on the content, because that distinction simply is the Way. Way of Shade's *Half-mage*
+  still grants slots rather than formulas, which is that node working as written.
+- **[DONE 2026-11-21]** The pane has been run in Foundry. The point this entry made stands exactly
+  as it was written — two failure modes fixed by reading are not the same as having seen it work,
+  and a window id shared between two actors is the kind of fault no amount of reading finds twice
+  — which is what `test/live.mjs` exists for: **54 probes against a real world in a real browser**,
+  two of them this pane's. *the level-up pane* opens it and reads the graph back off the page;
+  *a character is given what their nodes promised* takes a node and checks that every document and
+  every number the node promised actually arrived on the actor.
 - **Touch and small screens.** Five cards plus two panels is tight below about 1000 px.
 
 Card layout is settled in [card-layout.md](card-layout.md), including the bonus-group border that

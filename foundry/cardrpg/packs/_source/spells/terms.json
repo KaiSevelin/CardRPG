@@ -1,0 +1,23 @@
+{
+  "_id": "DpmwxBBipdNJwHMy",
+  "_key": "!items!DpmwxBBipdNJwHMy",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Terms",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/terms.webp",
+  "system": {
+    "strength": 1,
+    "source": "Demonology",
+    "description": "<p>Out of combat: one question to whatever you are indebted to, about what it wants. It answers honestly, because honesty costs it nothing.</p>",
+    "effect": {
+      "timing": "outOfCombat",
+      "text": "one honest answer about what it wants from you"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

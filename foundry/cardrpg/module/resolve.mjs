@@ -22,6 +22,7 @@ import {
 import { expandRoster } from "./monsters.mjs";
 /* Ground phase 1: a square can declare cover, the way a token already could. */
 import { groundFor } from "./ground.mjs";
+import { squaresBetween, isAdjacent } from "./board.mjs";
 import { slateData } from "./setup.mjs";
 import {
   drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards, moveRandom, move,
@@ -787,8 +788,11 @@ export function watches(actor, point, item) {
   const size = canvas.grid.size;
   const dx = (point.x - token.x) / size;
   const dy = (point.y - token.y) / size;
-  const away = Math.max(Math.abs(dx), Math.abs(dy));
-  if (away < 1 || away > reach) return false;
+  /* **[2026-11-21]** `squaresBetween` rather than a third Chebyshev written out by hand. The
+   * offsets stay, because the arc below needs the DIRECTION and not the distance: one is a bearing
+   * and the other is a number of squares, and only the number was duplicated. */
+  const away = squaresBetween(token, { x: point.x, y: point.y, width: 1, height: 1 });
+  if (away === null || away < 1 || away > reach) return false;
 
   const facing = CARDRPG.facings[facingOf(actor)];
   if (!facing) return false;
@@ -810,14 +814,12 @@ export function watches(actor, point, item) {
 export function neighbours(actor) {
   const token = actor?.getActiveTokens?.()[0];
   if (!token || !canvas?.ready) return [];
-  const size = canvas.grid.size;
+  /* **[2026-11-21]** The Chebyshev used to be written out here, capped at 1. It is `isAdjacent`
+   * now (board.mjs), which is the same measure every range in the book is read with -- and the
+   * reason to move it is that this function and `watches` each had their own copy of it, which is
+   * two places for *a diagonal is one square* to stop being true. */
   return canvas.tokens.placeables
-    .filter(other => {
-      if (other === token || !other.actor) return false;
-      const dx = Math.abs(other.x - token.x) / size;
-      const dy = Math.abs(other.y - token.y) / size;
-      return Math.max(dx, dy) <= 1;
-    })
+    .filter(other => other !== token && other.actor && isAdjacent(token, other))
     .map(t => t.actor);
 }
 

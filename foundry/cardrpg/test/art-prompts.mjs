@@ -817,6 +817,7 @@ export const CONDITION_MOTIF = {
   overloaded: "past what can be carried at all", wet: "soaked through",
   offBalance: "weight in the wrong place", marked: "singled out of a crowd",
   judged: "seen, and found wanting",
+  imbued: "something much larger briefly working through a person",
   /*
    * **The second gap, and it is written about armour on purpose.**
    *

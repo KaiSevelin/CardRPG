@@ -217,6 +217,110 @@ export const MIND_POOL = [
   },
 
   /*
+   * --- Demonology, six formulas, and not one of them summons anything ---
+   *
+   * **The summoning is a ritual and this school is what you do afterwards.** Firma.md is flat
+   * about it -- *all summoning of demons and the like is done through rituals* -- so a formula
+   * that put a demon on the board would be this file contradicting the world document in order to
+   * save a card. What the ritual buys is a **debt**, and these six are the ways of spending one.
+   *
+   * **A fourth school off the trunk, beside Blood Magic rather than under it.** Blood Magic is
+   * where the world document put the arrangement -- the demons hold the Third Side and let the
+   * necromancers use it *in exchange for human sacrifices* -- but Poison already holds **Control**
+   * among Blood Magic's children, and siblings differ on both halves of the cell. Demonology is
+   * the school that stops paying in bodies and starts paying on credit, and it is its own root.
+   * See `nodes.mjs`.
+   *
+   * **Control and not Preparation**, which was the only real choice here: Preparation plus a pact
+   * is Spiritualism, and the two would have collided on axis and currency at once. It is also why
+   * the axis was not quietly changed to make room under Blood Magic: a condition an enemy cannot
+   * shrug off is the whole of what a demonologist does to a fight.
+   *
+   * **The debt is the GM's ledger and not a field, and that is deliberate.** `cost` holds Health,
+   * Taint, Strain and skill cards, and none of them is what is owed here -- a thing on the Third
+   * Side does not want a resource with a cap, it wants an obligation with an opinion, and it
+   * compounds. That is the same gap Spiritualism's *a pact* and Glamour's *an elven debt* have
+   * carried since both schools were written, and it is the school rather than a hole in it.
+   */
+  {
+    name: "The Lesser Name", strength: 1, pool: "mind", source: "Demonology",
+    needs: ["a debt that compounds, which no cost field holds"],
+    description: "<p>One of its smaller names, said out loud. The thing that hears it does what "
+      + "you said for a round, and the debt grows by as much as a small name is worth.</p>",
+    effect: { range: 3, condition: "compelled", duration: 1 }
+  },
+  {
+    /*
+     * The school's out-of-combat rung, and the one formula that asks rather than spends. It is
+     * honest because honesty is free to the thing answering: what it wants is not a secret it is
+     * keeping, it is the terms it has been waiting to be asked for.
+     */
+    name: "Terms", strength: 1, pool: "mind", source: "Demonology",
+    needs: ["a debt that compounds, which no cost field holds"],
+    description: "<p>Out of combat: one question to whatever you are indebted to, about what it "
+      + "wants. It answers honestly, because honesty costs it nothing.</p>",
+    effect: {
+      timing: "outOfCombat", text: "one honest answer about what it wants from you"
+    }
+  },
+  {
+    /*
+     * Priced against *Blood Price*, which is the other strength-2 reaching through something: four
+     * damage at three squares past armour for two Health. This one goes one square further and
+     * past a shield instead, and pays a Taint -- the engine's own word for having been touched by
+     * the other side of something.
+     */
+    name: "The Borrowed Hand", strength: 2, pool: "mind", source: "Demonology",
+    needs: ["a debt that compounds, which no cost field holds"],
+    cost: { taint: 1 },
+    description: "<p>Something reaches through for exactly as long as a blow takes. Four damage "
+      + "at four squares, round a shield rather than through it, and the hand is not yours &mdash; "
+      + "which is the entire legal defence and has never once worked.</p>",
+    effect: { verb: "cast", range: 4, mod: 4, ignoresBlock: true }
+  },
+  {
+    name: "The Binding Circle", strength: 2, pool: "mind", source: "Demonology",
+    needs: ["a debt that compounds, which no cost field holds"],
+    description: "<p>Chalk, salt and a name. What is inside it does not leave it. A hold is a "
+      + "contract, and a contract wants attending.</p>",
+    effect: { range: 3, condition: "halted", duration: 2 }
+  },
+  {
+    /*
+     * The school's 4 and its only piece of ground. What it opens is not a gate -- a gate would be
+     * summoning, which this school does not do. It is a hand's width of somewhere else, and what
+     * comes through is the weather.
+     */
+    name: "The Open Door", strength: 4, pool: "mind", source: "Demonology",
+    needs: ["a debt that compounds, which no cost field holds"],
+    description: "<p>A hand's width of the Third Side, here, for three rounds. Lava under the "
+      + "flagstones and an air nothing breathes: what stands in it is burned and slowed, and "
+      + "nothing comes through, because nothing has been asked to.</p>",
+    effect: {
+      verb: "cast", range: 2, area: 2, duration: 3,
+      ground: { shape: "area", effects: ["difficult"], damage: 2 }
+    }
+  },
+  {
+    /*
+     * The school's 5, and the only one of Way of Mind's fives whose price is collected by the GM
+     * rather than printed. That is the ledger arriving: the formula is the moment you stop
+     * choosing what the debt costs.
+     */
+    name: "The Reckoning", strength: 5, pool: "mind", source: "Demonology",
+    needs: ["a debt that compounds, which no cost field holds",
+      "a price the GM collects afterwards, which nothing in the engine can hold"],
+    description: "<p>You call in the whole tab at once and something large enough to settle it "
+      + "attends to one thing. Six damage at six squares, past armour and past a shield. Then the "
+      + "ledger is settled &mdash; out of you, or out of whoever is standing nearest, and the GM "
+      + "chooses which.</p>",
+    effect: {
+      verb: "cast", range: 6, mod: 6, ignoresArmour: true, ignoresBlock: true,
+      text: "and the GM then collects the whole ledger"
+    }
+  },
+
+  /*
    * --- Elemental Magic, five more, and the one that belongs to no sphere ---
    *
    * [FOUND IN CODE] *Flesh of the Earth* is an ACID formula in a school with four spheres --
@@ -774,16 +878,28 @@ export const MIND_POOL = [
      * outclass everything else in the file -- Health 55 to 90 against a Dragon's 50 -- so an
      * open-ended one is not a strength-5 spell, it is the end of the encounter. What a god will
      * actually give is a few rounds, and leaving is part of the bargain.
+     *
+     * **[CHANGED 2026-11-21] And it does not arrive at all any more.** This was a `conjure`, and a
+     * god walking onto the board contradicted the world document in the same way a demonologist
+     * casting a summons would: *all summoning of demons and the like is done through rituals*, and
+     * calling one of the hundred is that kind of work -- days, a recipe and the ritual twist deck,
+     * not a card. The three rounds survive, as the length of the loan rather than of the visit.
+     *
+     * So the god imbues its spiritualist instead, which is the better reading of the school: what
+     * *a pact* buys is not a bodyguard, it is power you are briefly allowed to hold. `imbued`
+     * carries it, and the bonus is on the step because what a particular god lends is the bargain's
+     * business. See `config.mjs`.
      */
-    description: "<p>It is actually here, for three rounds. The GM plays it as an ally and then "
-      + "it goes, and afterwards it takes something the GM chooses &mdash; which is the only "
-      + "honest way to price a favour that large.</p>",
+    description: "<p>It does not come. It fills you &mdash; three rounds of a minor god's own "
+      + "power in your hands, and your Casts land like something much older than you. Then it "
+      + "leaves, and afterwards it takes something the GM chooses, which is the only honest way "
+      + "to price a favour that large.</p>",
     effect: {
-      verb: "conjure",
-      conjure: { creature: "" },
+      condition: "imbued",
       duration: 3,
       targets: "self",
-      text: "a minor god becomes present and fights as an ally for three rounds"
+      bonus: { verb: "cast", value: 3 },
+      text: "and the GM takes something afterwards"
     }
   },
 
@@ -1047,6 +1163,48 @@ export const MIND_SIGNATURES = [
   },
   {
     /*
+     * **The one name the thing did not give up willingly**, which is why it is the Signature and
+     * why it costs three. *The Lesser Name* buys a round; this buys three, and it does not care
+     * what is in the way -- a name is not something you have to see the owner of to say.
+     *
+     * It still summons nothing. What it does is the school's whole claim: for three rounds the
+     * creature is not its own, and afterwards it knows you know.
+     */
+    name: "The True Name", kind: "spell", node: "mind.demonology", strength: 3,
+    source: "Demonology",
+    needs: ["a debt that doubles, which no cost field holds"],
+    description: "<p>The name it carried before it was ever on the Third Side. For three rounds "
+      + "the creature you name does what you tell it, and then it remembers that you know. The "
+      + "debt doubles.</p>",
+    effect: { range: 4, condition: "compelled", duration: 3, ignoresCover: true }
+  },
+  {
+    /*
+     * **The one Signature in Way of Mind that casts nothing**, because the Engineer is a craft and
+     * not a school: specializations.md has listed four crafts with no content since the Way was
+     * written, and this is the first to get a card.
+     *
+     * So it needed a slate with a primary and a secondary, which every other Mind Signature has
+     * deliberately left empty -- a caster's Signature is a prepared spell and a reaction. A craft
+     * has no prepared anything, and a reaction-only card in the hand of somebody who never casts
+     * is a blank.
+     *
+     * **What it claims is `Use` pointed somewhere else.** Use has meant *on yourself* since the
+     * six verbs were written -- forty-six consumables, all drunk by whoever was holding them --
+     * and the Support axis is the one place that is the wrong default. The item is still yours and
+     * still spent; who it helps is the change.
+     */
+    name: "Shim and Wedge", kind: "card", node: "mind.engineer",
+    needs: ["a Use that resolves on somebody else",
+      "Corrode and Blunt repaired with no check, which the Tactic promises and nothing performs"],
+    primary: [{ verb: "use", range: 1, targets: "oneAlly" }],
+    secondary: [{ verb: "ready" }],
+    reaction: "block",
+    text: "Use an item on an adjacent ally instead of on yourself. The item is yours and is spent "
+      + "as normal."
+  },
+  {
+    /*
      * "A line of **your element**" is the oldest piece of prose in this document that is not a
      * rule, and it is NOT in the gap column -- because the mechanism exists. `CARDRPG.elements`
      * and `exclusive: "element"` were built for exactly this; what is missing is a node that
@@ -1120,14 +1278,14 @@ export const MIND_SIGNATURES = [
     name: "The Bargain", kind: "spell", node: "mind.spiritualism", strength: 3,
     source: "Spiritualism",
     needs: [],
-    description: "<p>A minor god acts, once. <strong>The GM decides how</strong>, and that is not "
-      + "a hole in the spell &mdash; it is the spell.</p>",
+    description: "<p>A minor god acts, once, from wherever it is. <strong>The GM decides "
+      + "how</strong>, and that is not a hole in the spell &mdash; it is the spell.</p>",
     effect: {
-      verb: "conjure",
-      /* No name: a minor god is a person with its own opinions, and a spell that told one whom
-       * to fight would have misunderstood the arrangement. */
-      conjure: { creature: "" },
-      text: "it acts once; the GM decides how"
+      targets: "self",
+      /* **No `conjure`.** It never put a body on the board -- a god acting is a god acting, at
+       * whatever distance it happens to be -- and while the verb was on it the engine offered to
+       * build one. What arrives is an outcome, which is the GM's to narrate and nobody's to place. */
+      text: "a minor god acts once, and the GM decides how"
     }
   },
   {
@@ -1210,6 +1368,11 @@ export const MIND_TACTICS = {
     "Indoors you ignore difficult ground, and you know where every door is before you see it.",
   "The Standing Guard":
     "One extra reaction each round, usable only to answer a Cast.",
+  "The Terms Are Binding":
+    "A condition you have put on an enemy cannot be removed by that enemy's own action.",
+  "Nothing Is Scrap":
+    "Corrode on your armour and Blunt on your weapons, and on those of an ally adjacent to you, "
+    + "are repaired at the end of a fight with no check and no kit.",
   "Already Seen":
     "You are never surprised, and at the start of any round you may swap your place in the "
     + "initiative order with a willing ally's."

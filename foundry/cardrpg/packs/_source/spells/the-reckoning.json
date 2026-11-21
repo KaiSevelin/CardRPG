@@ -1,0 +1,27 @@
+{
+  "_id": "a0lEpHGIOzEL6TkJ",
+  "_key": "!items!a0lEpHGIOzEL6TkJ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Reckoning",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-reckoning.webp",
+  "system": {
+    "strength": 5,
+    "source": "Demonology",
+    "description": "<p>You call in the whole tab at once and something large enough to settle it attends to one thing. Six damage at six squares, past armour and past a shield. Then the ledger is settled &mdash; out of you, or out of whoever is standing nearest, and the GM chooses which.</p>",
+    "effect": {
+      "verb": "cast",
+      "range": 6,
+      "mod": 6,
+      "ignoresArmour": true,
+      "ignoresBlock": true,
+      "text": "and the GM then collects the whole ledger"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

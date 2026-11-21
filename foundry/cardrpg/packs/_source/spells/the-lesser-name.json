@@ -1,0 +1,24 @@
+{
+  "_id": "ptSieIFNao5y5W1H",
+  "_key": "!items!ptSieIFNao5y5W1H",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Lesser Name",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-lesser-name.webp",
+  "system": {
+    "strength": 1,
+    "source": "Demonology",
+    "description": "<p>One of its smaller names, said out loud. The thing that hears it does what you said for a round, and the debt grows by as much as a small name is worth.</p>",
+    "effect": {
+      "range": 3,
+      "condition": "compelled",
+      "duration": 1
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

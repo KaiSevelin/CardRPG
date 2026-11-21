@@ -1,0 +1,32 @@
+{
+  "_id": "ZmzjDxBMH5H4Qyeq",
+  "_key": "!items!ZmzjDxBMH5H4Qyeq",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Open Door",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-open-door.webp",
+  "system": {
+    "strength": 4,
+    "source": "Demonology",
+    "description": "<p>A hand's width of the Third Side, here, for three rounds. Lava under the flagstones and an air nothing breathes: what stands in it is burned and slowed, and nothing comes through, because nothing has been asked to.</p>",
+    "effect": {
+      "verb": "cast",
+      "range": 2,
+      "area": 2,
+      "duration": 3,
+      "ground": {
+        "shape": "area",
+        "effects": [
+          "difficult"
+        ],
+        "damage": 2
+      }
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

@@ -457,6 +457,26 @@ CARDRPG.conditions = {
      */
     permanent: true
   },
+  /*
+   * **Imbued: a minor god's power, in you, for as long as it agreed to.**  [BUILT 2026-11-21]
+   *
+   * Spiritualism's two bargains used to `conjure`, and a god arriving as an ally was the wrong
+   * shape twice over. The world document does not have gods walking into fights -- *all summoning
+   * of demons and the like is done through rituals*, and calling one of the hundred is the same
+   * kind of work -- and the gods have numbers now, Health 55 to 90 against a Dragon's 50, so a
+   * body on the board was never a strength-5 spell. It was the end of the encounter.
+   *
+   * **So it does not come. It fills you.** Which is also what the school is: a spiritualist
+   * negotiates with somebody who is actually there, and what they get out of it is power on loan.
+   *
+   * Built as Graven is built, for Graven's reason: the bonus rides on the condition instance
+   * rather than on this config, so what a particular god lends is a property of the bargain and
+   * not of the word. Unlike Graven it HAS a duration, because leaving is part of the arrangement.
+   */
+  imbued: {
+    label: "CARDRPG.Condition.Imbued",
+    icon: "electric"
+  },
   blessed: {
     label: "CARDRPG.Condition.Blessed",
     icon: "aura",
@@ -1019,6 +1039,24 @@ CARDRPG.groundCost = {
    * means for somebody walking.
    */
   impassable: 5
+};
+
+/**
+ * **The two colours the reachable-square highlight paints in.**  [BUILT 2026-11-21]
+ *
+ * Two and not one, because *you can reach that* and *you can reach that and it will cost you the
+ * whole card* are different answers, and the second is the one a player choosing between Advance
+ * and Sprint actually needs. Dear squares are the ones where ground took something on the way.
+ *
+ * Here rather than in `board.mjs` for the reason every other number in this file is here: a colour
+ * argued about on a projector at a table is argued about once.
+ */
+CARDRPG.reachColour = {
+  /* The warm straw the cards are painted on, so the highlight reads as this game's and not as
+   * Foundry's default template blue. */
+  plain: 0xd9b26a,
+  /* Dearer ground, pulled towards the bog green the difficult chip already uses. */
+  dear: 0x6f7a4a
 };
 
 CARDRPG.groundEffects = {
