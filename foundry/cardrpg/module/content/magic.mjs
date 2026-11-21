@@ -126,7 +126,8 @@ export const MINOR_GODS = [
  * service"*: a Cleansing recipe is 300 gold against the Cleansing Draught's 150, and an Unbinding
  * is 1200. **[OPEN]** Those are placed against the equipment ladder by eye and have not been
  * measured against what a party actually earns.
- * `timing: "ritual"` is likewise not new. It has been a timing with a reader (`isRitual`) and five
+ * `timing: "ritual"` is likewise not new. It has been a timing with a reader (`outsideBudget`,
+ * renamed from `isRitual` after this was written) and five
  * users in this file since Household Magic was built, documented as *overnight work and not a thing
  * you hold ready*. A `permanent` timing was removed from config.mjs earlier as "a slot budget
  * wearing a timing's clothes"; this is what the word was actually for.

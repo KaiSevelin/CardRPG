@@ -10856,6 +10856,63 @@ check("and the announcement prints the prose",
  */
 check("the timing vocabulary", Object.keys(CARDRPG.timings).join(", "),
   "reaction, ritual, outOfCombat, beforeFight");
+/*
+ * **And every one of them is a rule the engine reads.**  [BUILT 2026-11-21]
+ *
+ * The check above asks that the vocabulary is what it should be, and the one further down asks that
+ * every value is USED by content -- *a timing nobody writes is a choice in a dropdown and nothing
+ * else*. Between them they missed the fault from the other side for as long as the field existed:
+ * **content wrote all four and the engine read one.** Twenty-three spells carried a timing;
+ * `outsideBudget` read `ritual` to zero its slot cost, which is a fact about the budget and not
+ * about the moment; and nothing stopped an out-of-combat spell being cast mid-fight. Four spells
+ * declared `needs: []` while the only statement of when they could be cast was inert.
+ *
+ * So the vocabulary carries its own rule now, and these are the checks that keep it honest. The
+ * first is the one that matters: a fifth timing added as a bare label fails here rather than
+ * joining the game as decoration.
+ */
+const timingRules = Object.entries(CARDRPG.timings);
+check("timings the engine has no rule for",
+  timingRules.filter(([, r]) => !r.notInFight && !r.notOnYourTurn).map(([k]) => k).join(", ")
+  || "none", "none");
+/* And the flags are these two and no more, because two is all the engine can honestly know: is a
+ * fight running, and whose turn is it. A third would be a claim about the table. */
+check("the flags a timing may carry",
+  [...new Set(timingRules.flatMap(([, r]) => Object.keys(r)))].sort().join(", "),
+  "label, notInFight, notOnYourTurn");
+check("and which timings refuse a cast in a fight",
+  timingRules.filter(([, r]) => r.notInFight).map(([k]) => k).join(", "),
+  "ritual, outOfCombat, beforeFight");
+check("and which refuses one on your own turn",
+  timingRules.filter(([, r]) => r.notOnYourTurn).map(([k]) => k).join(", "), "reaction");
+/* Every label resolves, which is the other half of the inertness: the strings existed and nothing
+ * had ever printed one, so a player could not see that a spell was out-of-combat at all. */
+check("and every one of them has a string to print",
+  timingRules.filter(([, r]) => !lang[r.label]).map(([k]) => k).join(", ") || "none", "none");
+/*
+ * **Read off config, not switched on by name.** A `case "outOfCombat"` in the resolver would be the
+ * fourth place in this project to spell a vocabulary out by hand, and the three before it all
+ * drifted. The guard is one function and the rule is one table.
+ */
+check("the moment is refused by one routine",
+  /export function refusesTiming\(actor, slate/.test(resolveSource) ? "yes" : "no", "yes");
+check("and it reads the rule rather than naming the timings",
+  /CARDRPG\.timings\[timing\]/.test(resolveSource)
+    && !/case "(outOfCombat|beforeFight)"/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **Before the price, which is why the call sits where it does.** `#onPlaySlate` pays for the cast
+ * two lines later, and the comment above that payment already says a refusal inside the resolver
+ * would take the Health and the slot for a cast that never happened. A timing refused afterwards
+ * would do exactly that.
+ */
+check("and it is asked before the cast is paid for",
+  /refusesTiming\(this\.actor, slate[\s\S]{0,220}?await payToCast/.test(traySource)
+    ? "yes" : "no", "yes");
+/* And the player can see it coming: the label is on the card, so a spell nobody may cast yet says
+ * which moment it is waiting for rather than simply refusing when clicked. */
+check("the spell card prints which moment it wants",
+  /game\.i18n\.localize\(rule\.label\)/.test(traySource) ? "yes" : "no", "yes");
+
 check("and the retired one is gone from the step choices",
   [...stepKeys].includes("timing")
     && !/permanent/.test(cardsSource.slice(cardsSource.indexOf("timing: new fields"),
@@ -17446,8 +17503,12 @@ check("and separates mentioned from finished",
 /* The tray has somewhere to cast from, and the book is not clickable. */
 check("the tray offers a spells deck",
   /id: "spells",/.test(traySource) ? "yes" : "no", "yes");
+/* **[2026-11-21] And nor is one whose moment this is not.** The clause grew a second term when the
+ * timings were wired, which is the point of pinning the line rather than the behaviour: `passive`
+ * is the one state this card has for *not clickable, and the tip says why*, and a second greyed
+ * state meaning something subtly different is how two reasons come to look like one. */
 check("and only a prepared spell is clickable",
-  /passive: !prepared,/.test(traySource) ? "yes" : "no", "yes");
+  /passive: !prepared \|\| !!notNow,/.test(traySource) ? "yes" : "no", "yes");
 
 /* -------------------------------------------- */
 
@@ -18492,6 +18553,9 @@ const absentGreps = [
   String.raw`and down is not computed from the updated document :: down: taker\.system\.health\.value - dealt`,
   String.raw`and from the card sheet :: type === "wound" \|\| type === "taint"`,
   String.raw`and from the tray :: c\.type === "wound" \|\| c\.type === "taint"`,
+  /* Read off config, not switched on by name: a fourth hand-spelled vocabulary in the
+   * resolver is a fourth one to drift. */
+  String.raw`and it reads the rule rather than naming the timings :: case "(outOfCombat|beforeFight)"`,
   String.raw`and its rule went with it :: cr-edge__note`,
   String.raw`and neither builds a face by hand any more :: faces: \[\{ name: card\.name \}\]`,
   String.raw`and neither reads an item's tags by hand :: \(item\?\.system\?\.tags \?\? \[\]\)\.includes`,

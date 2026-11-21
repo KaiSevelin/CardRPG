@@ -37,7 +37,7 @@ import {
   liftCondition, resolveForesee, collectBonuses,
   resolveConjure, resolveShape,
   itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore,
-  refusesAction, SKILL_FLOOR,
+  refusesAction, refusesTiming, SKILL_FLOOR,
   readEdge, setEdge, edgeLine,
   /* core-rules 11's push, pull and throw, which nothing could express until today. */
   forceMove
@@ -1196,6 +1196,26 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const cost = slate.system.cost?.health ?? 0;
     const prepared = slate.system.prepared;
+    /*
+     * **The timing, printed and enforced in the same breath.**  [BUILT 2026-11-21]
+     *
+     * The label existed in the lang file and nothing had ever shown it, which is half of why the
+     * field could stay inert for so long: a player could not see that *The Long Masquerade* was an
+     * out-of-combat spell, so nobody noticed it could be cast in a fight.
+     *
+     * A spell the moment refuses is `passive` -- the one state this card already has for *not
+     * clickable, and the tip says why* -- rather than a second greyed state meaning something
+     * subtly different. What changes is the reason, and the reason is the whole of the information.
+     */
+    const timing = slate.system.effect?.timing ?? "";
+    const rule = timing ? CARDRPG.timings[timing] : null;
+    const when = rule ? game.i18n.localize(rule.label) : "";
+    const fight = game.combat?.started ? game.combat : null;
+    const notNow = !rule ? ""
+      : rule.notInFight && fight ? `${when}: not while the fight is on.`
+        : rule.notOnYourTurn && fight && fight.combatant?.actor?.id === this.actor.id
+          ? `${when}: it answers somebody else's turn, and this one is yours.`
+          : "";
     return {
       id: slate.id,
       name: slate.name,
@@ -1204,14 +1224,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       defaultKind: "spell",
       icon: CARDRPG.verbs.cast?.icon ?? null,
       lines: lines.length ? lines : ["\u2014"],
-      /* The book is not clickable: you change what is prepared between fights, never during one. */
-      passive: !prepared,
+      /* The book is not clickable: you change what is prepared between fights, never during one.
+       * Nor is a spell whose moment this is not. */
+      passive: !prepared || !!notNow,
       note: `${slate.system.source || "—"} \u00b7 ${slate.system.strength} slot`
         + `${slate.system.strength === 1 ? "" : "s"}`
-        + (cost ? ` \u00b7 costs ${cost} Health` : ""),
-      tip: prepared
-        ? `Cast it.${cost ? ` It costs ${cost} Health.` : ""}`
-        : "In your book. What is prepared changes between fights, not during one."
+        + (cost ? ` \u00b7 costs ${cost} Health` : "")
+        + (when ? ` \u00b7 ${when}` : ""),
+      tip: !prepared
+        ? "In your book. What is prepared changes between fights, not during one."
+        : notNow || `Cast it.${cost ? ` It costs ${cost} Health.` : ""}`
     };
   }
 
@@ -3502,6 +3524,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
        * that does not happen is the same kind of refusal.
        */
       if (refusesAction(this.actor, { what: `casting ${slate.name}` })) return;
+      /* And the moment, which the card states and nothing used to read. Here for the same reason
+       * and in the same breath: a timing refused after `payToCast` would take the Health and the
+       * slot for a cast that never happened. */
+      if (refusesTiming(this.actor, slate, { what: `casting ${slate.name}` })) return;
       if (!await payToCast(this.actor, slate)) return;
       /*
        * The price is paid before the ward fires, and that is deliberate: *Unmake* stops the spell

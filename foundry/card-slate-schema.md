@@ -98,7 +98,7 @@ prevent.
 
 | Field | Notes |
 |---|---|
-| `timing` | **When** the step may be played: `reaction`, `ritual`, `outOfCombat`, `beforeFight`, `permanent`. 31 steps carried this as a prefix on their prose |
+| `timing` | **When** the step may be played: `reaction`, `ritual`, `outOfCombat`, `beforeFight`. 31 steps carried this as a prefix on their prose, and `permanent` was retired from the list (see below). **[WIRED 2026-11-21]** each value now carries its own rule and the engine refuses a cast at the wrong moment |
 | `delay` | Turns to wait before it happens. `2` is *at the start of your second turn after this*, which three steps said in prose `-` and a delayed effect the engine cannot see is one the table forgets, because the card is in the discard by the time it matters |
 | `ground` | **What the step leaves on the map**: a `shape` (line, area, adjacent, whole map, one square), an `effects` list (cover, difficult ground, shadowed, impassable, a trap) and `damage` a turn. The condition a zone applies is the step's own. **Nothing places it** |
 | `targets` | **Who the step is for**: `self`, `oneEnemy`, `enemiesInRange`, `oneAlly`, `alliesInRange`, `adjacentAllies`, `everyAlly`, `selfAndAllies`, `everyone`. Blank means one enemy, which is what every card has always meant by saying nothing |
@@ -273,6 +273,21 @@ being a restriction on top of it: a timed condition needs a moment to be applied
 what a feature does not have. A feature's permanent condition is **derived** in `activeConditions`
 — gated on the condition's own `permanent` flag — which is why there is no grant-time hook
 and nothing to clean up when the feature is deleted. A tattoo is on you because the tattoo is on you.
+
+**And the other four were read by nothing until 2026-11-21.**  **[WIRED]** Content wrote a timing
+on twenty-three spells, the schema took its choices from the vocabulary, and the suite checked that
+every value was *used* by something — *a timing nobody writes is a choice in a dropdown and nothing
+else*. Nobody had asked the question from the other side, which is the same defect: a value every
+card writes and nothing acts on is also a choice in a dropdown. `ritual` was the one exception and
+only half of one, since `outsideBudget` reads it to zero a slot cost, which is a fact about the
+budget rather than about the moment. **Four spells declared `needs: []`** — *the engine does
+everything for me* — while the only statement of when they could be cast was inert.
+
+Each value carries two possible flags now, and two is all the engine can honestly know: `notInFight`
+(a ritual, out of combat, before the fight) and `notOnYourTurn` (a Reaction). Everything else a
+timing implies — that *Ask the Dead* needs a corpse, that *The Long Masquerade* lasts a day — is
+the table's, and is prose on the card. The label prints on the spell card, which it never had, and
+a spell whose moment this is not is not clickable and says why.
 
 **`timing: "permanent"` is gone** with them. It never said when a step happens; it said *this formula
 can never be prepared*, which is a slot budget in a timing's field. A feature is permanent by having

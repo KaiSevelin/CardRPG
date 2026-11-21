@@ -3655,6 +3655,126 @@ async function probes(page) {
     ];
   });
 
+  /*
+   * **[BUILT 2026-11-21] When a spell may be cast, which the cards had said all along.**
+   *
+   * `timing` was four values content wrote on twenty-three spells and the engine read one of --
+   * `ritual`, and only to zero a slot cost. Nothing stopped an out-of-combat spell being cast in
+   * the middle of a fight, and four spells declared `needs: []` while the only statement of their
+   * moment was inert.
+   *
+   * Driven here because the gate's whole subject is live state: whether a fight is running and
+   * whose turn it is. A stub can be told both and will agree with whatever it was told; a real
+   * combat with a real initiative order can disagree. The matrix is two spells against three
+   * moments, which is the smallest thing that separates the two flags from each other -- a gate
+   * that refused everything during a fight would pass four of the six rows.
+   */
+  await probe("when a spell may be cast", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { hero } = LIVE;
+      const npc = game.actors.find(a => a.type === "npc");
+      const r = await import("/systems/cardrpg/module/resolve.mjs");
+      const { SPELLS, slateFieldsOf } = await import("/systems/cardrpg/module/graph.mjs");
+      const { slateData } = await import("/systems/cardrpg/module/setup.mjs");
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+
+      for (const t of CardRPGTray.openTrays) await t.close();
+      for (const c of [...game.combats]) await c.delete();
+
+      /* One of each kind, prepared, so the gate has something real to refuse. */
+      const make = async name => {
+        const def = SPELLS.get(name);
+        if (!def) return null;
+        const [slate] = await hero.createEmbeddedDocuments("Item",
+          [slateData({ ...slateFieldsOf(def), kind: "formula", prepared: true }, "spell")]);
+        return slate;
+      };
+      const ask = await make("Ask the Dead");          // outOfCombat
+      const hour = await make("The Silent Hour");      // reaction, and no reaction key
+      if (!ask || !hour) {
+        return [["two spells to cast", `${ask ? "" : "Ask the Dead "}${hour ? "" : "The Silent Hour"}`, "both"]];
+      }
+      const timings = [ask.system.effect?.timing, hour.system.effect?.timing].join("/");
+
+      /* 1. No fight at all. Both are castable: a Reaction out of combat is nobody's turn. */
+      const quiet = [r.refusesTiming(hero, ask), r.refusesTiming(hero, hour)].join(",");
+
+      /* A fight, with the hero first in the order so the two flags can be told apart. */
+      const made = [];
+      const place = async (actor, x) => {
+        const [doc] = await canvas.scene.createEmbeddedDocuments("Token",
+          [(await actor.getTokenDocument({ x, y: 1500 })).toObject()]);
+        made.push(doc);
+        return doc;
+      };
+      const ph = await place(hero, 900);
+      const pn = await place(npc, 1100);
+      const combat = await Combat.create({ scene: canvas.scene.id });
+      await combat.createEmbeddedDocuments("Combatant", [
+        { tokenId: ph.id, sceneId: canvas.scene.id, actorId: hero.id, initiative: 20 },
+        { tokenId: pn.id, sceneId: canvas.scene.id, actorId: npc.id, initiative: 10 }
+      ]);
+      await combat.startCombat();
+      const pause = () => new Promise(done => setTimeout(done, 700));
+      await pause();
+
+      /* 2. The fight is on and it is the hero's turn: the out-of-combat spell is refused for being
+       * in a fight at all, and the Reaction for it being their own turn. */
+      const mine = combat.combatant?.actor?.id === hero.id;
+      const ours = [r.refusesTiming(hero, ask), r.refusesTiming(hero, hour)].join(",");
+
+      /* And what the card says while it cannot be cast, read off the tray's own spell panel. */
+      const tray = game.cardrpg.openTray(hero);
+      tray.side = "action";
+      tray.openPile = "spells";
+      await tray.render();
+      /*
+       * The note is in the card's TEXT and the reason is in its tooltip ATTRIBUTE, so both are
+       * read: the first draft read `textContent` alone and reported that a reason printed right
+       * there on the screen was missing. A card says two different things in two different places
+       * and a probe that knows only one of them is a probe about half the card.
+       */
+      const shown = await (async () => {
+        const card = [...document.querySelectorAll(".cr-card--spread")]
+          .find(el => el.textContent.includes("Ask the Dead"));
+        if (!card) return { text: "not shown", tip: "", passive: null };
+        return {
+          text: card.textContent.replace(/\s+/g, " ").trim(),
+          tip: card.getAttribute("data-tooltip") ?? "",
+          passive: card.classList.contains("cr-card--passive")
+        };
+      })();
+
+      /* 3. Somebody else's turn: the Reaction is allowed and the out-of-combat one still is not. */
+      await combat.nextTurn();
+      await pause();
+      const theirs = [r.refusesTiming(hero, ask), r.refusesTiming(hero, hour)].join(",");
+      const whose = combat.combatant?.actor?.id === hero.id ? "still the hero" : "somebody else";
+
+      /* Put the world back. */
+      tray.openPile = null;
+      await combat.delete();
+      for (const doc of made.reverse()) await doc.delete();
+      await hero.deleteEmbeddedDocuments("Item", [ask.id, hour.id]);
+      canvas.tokens?.releaseAll?.();
+      await tray.render();
+
+      return [
+        ["the two spells carry the two timings", timings, "outOfCombat/reaction"],
+        ["out of combat, neither is refused", quiet, "false,false"],
+        ["the fight starts on the hero's turn", mine, true],
+        ["in a fight, on your own turn, both are refused", ours, "true,true"],
+        ["the turn passes to somebody else", whose, "somebody else"],
+        ["and then the Reaction is allowed and the other is not", theirs, "true,false"],
+        ["the card says which moment it wants", shown.text.includes("Out of combat"), true],
+        ["and its tooltip says why it cannot be cast now",
+          shown.tip.includes("not while the fight is on"), true],
+        ["and it is not clickable while that is true", shown.passive, true]
+      ];
+    });
+  });
+
   await probe("the system itself", async () => {
     const rows = await page.evaluate(() => {
       const errors = (globalThis.LIVE_ERRORS ?? []).filter(e => !/favicon|DevTools/.test(e));

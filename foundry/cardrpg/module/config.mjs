@@ -1159,11 +1159,39 @@ CARDRPG.whileStates = {
   upkeep: "CARDRPG.While.Upkeep"
 };
 
+/**
+ * **When a spell may be cast, and what each value means to the engine.**
+ *
+ * **[WIRED 2026-11-21]** These were four label keys. Content wrote them on twenty-three spells, the
+ * schema took its choices from them, the suite checked that every one of them was USED by
+ * something -- *a timing nobody writes is a choice in a dropdown and nothing else* -- and nothing
+ * anywhere read one. Which is the same defect one line up from the other side: a value every card
+ * writes and nothing acts on is also a choice in a dropdown. Four spells declared `needs: []`, *the
+ * engine does everything for me*, while the only statement of when they could be cast was inert.
+ *
+ * `ritual` was the exception and only half of one: `outsideBudget` reads it so a ritual costs no
+ * slots, which is a fact about the BUDGET and not about the moment. Nothing stopped one being cast
+ * in the middle of a fight.
+ *
+ * **Two flags, because two things are all the engine can honestly know**: whether a fight is
+ * running, and whose turn it is. Everything else a timing implies -- that *Ask the Dead* needs a
+ * corpse, that *The Long Masquerade* lasts a day -- is the table's, and is prose on the card.
+ *
+ * - **`notInFight`** -- refused while a fight is on. The three that mean *not now*: a ritual is
+ *   overnight work, *out of combat* says so, and *before the fight* has to be cast before this one
+ *   started, which is the same condition read the other way round.
+ * - **`notOnYourTurn`** -- refused on your own turn. A Reaction answers somebody else, and the HUD
+ *   does not otherwise care whose turn it is, so this is the one place that can be said.
+ *
+ * It is a refusal and not a warning, unlike the two board measurements (core-rules 12). The
+ * difference is that a distance has a ledge and a rope behind it and the engine cannot see them,
+ * where *is a fight running* is a thing the engine knows exactly and the card is unambiguous about.
+ */
 CARDRPG.timings = {
-  reaction: "CARDRPG.Timing.Reaction",
-  ritual: "CARDRPG.Timing.Ritual",
-  outOfCombat: "CARDRPG.Timing.OutOfCombat",
-  beforeFight: "CARDRPG.Timing.BeforeFight"
+  reaction: { label: "CARDRPG.Timing.Reaction", notOnYourTurn: true },
+  ritual: { label: "CARDRPG.Timing.Ritual", notInFight: true },
+  outOfCombat: { label: "CARDRPG.Timing.OutOfCombat", notInFight: true },
+  beforeFight: { label: "CARDRPG.Timing.BeforeFight", notInFight: true }
 };
 /*
  * There was a `permanent` here, and it was a slot budget wearing a timing's clothes: it said *this

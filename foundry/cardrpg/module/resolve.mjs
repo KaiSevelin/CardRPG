@@ -2736,6 +2736,41 @@ export function refusesAction(actor, { half = null, what = "that" } = {}) {
   return false;
 }
 
+/**
+ * **Is this the wrong moment for this spell?**  [BUILT 2026-11-21]
+ *
+ * Beside `refusesAction` and shaped like it -- warn, and return true -- because it is the same kind
+ * of answer at the same point in a turn: something about the state of play means this cannot be
+ * cast, and the player is told which thing.
+ *
+ * The rule is read off `CARDRPG.timings` rather than written here. Four values, two flags, and the
+ * flags are the two things the engine can honestly know: whether a fight is running and whose turn
+ * it is. A fifth timing arrives as a line of config, not as a case in here.
+ *
+ * **`started`, not merely existing.** A combat document created and not begun is not a fight, and
+ * *before the fight* is precisely the window between those two -- gating on the document's
+ * existence would have made the two cards that want it uncastable at the one moment they are for.
+ */
+export function refusesTiming(actor, slate, { what = "that" } = {}) {
+  const timing = slate?.system?.effect?.timing ?? "";
+  const rule = timing ? CARDRPG.timings[timing] : null;
+  if (!rule) return false;
+  const label = game.i18n?.localize(rule.label) ?? timing;
+  const fight = game.combat?.started ? game.combat : null;
+
+  if (rule.notInFight && fight) {
+    ui.notifications?.warn(`${slate.name} is ${label}: ${what} cannot happen while the fight `
+      + "is on.");
+    return true;
+  }
+  if (rule.notOnYourTurn && fight && fight.combatant?.actor?.id === actor?.id) {
+    ui.notifications?.warn(`${slate.name} is a ${label}: it answers somebody else's turn, and `
+      + "this one is yours.");
+    return true;
+  }
+  return false;
+}
+
 export async function resolveAttack(actor, {
   verb = "strike", item, mod = 0, targets = [], step = {}, ammo = null, payload = null
 }) {
