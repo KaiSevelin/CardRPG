@@ -37,7 +37,7 @@ import {
   liftCondition, resolveForesee, collectBonuses,
   resolveConjure, resolveShape,
   itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore,
-  refusesAction, refusesTiming, SKILL_FLOOR,
+  refusesAction, refusesTiming, bookDelayed, healTargets, SKILL_FLOOR,
   readEdge, setEdge, edgeLine,
   /* core-rules 11's push, pull and throw, which nothing could express until today. */
   forceMove
@@ -3007,6 +3007,23 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     if (refusesAction(actor, { half, what: `a ${step.verb}` })) return;
 
     /*
+     * **A step that happens later is booked and not resolved, and that is the whole step.**
+     * [FIXED 2026-11-21]
+     *
+     * `delay` was read by nothing. Two of the five steps that carry one have a verb the engine
+     * performs, so they resolved immediately -- a strength-5 Signature that heals two turns later
+     * healed now -- and the other three announced themselves two, three and four turns early. It
+     * was not an unbuilt field, it was a dropped one, and the card looked like it had worked.
+     *
+     * Before the ground clause, because the ground a delayed step leaves is delayed with it: a
+     * grove that grows in two turns does not put difficult ground down today.
+     */
+    if (step.delay) {
+      await bookDelayed(actor, { step, targets, source });
+      return;
+    }
+
+    /*
      * **Ground first, and beside the verb rather than instead of it.** A step may do both: *Set*
      * is a Ready that leaves a trap, and the Sphere's wall is a Cast that leaves a wall. Putting
      * this inside the switch would have meant a case for every verb that can also leave ground,
@@ -3335,9 +3352,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         return;
       }
 
-      case "heal":
-        await resolveHeal(actor, { amount: step.param ?? 0 });
+      case "heal": {
+        /* **Whoever the step names.**  [FIXED 2026-11-21] This healed the caster and ignored
+         * `targets`, which is right for eight of the ten heals in the game and wrong for the two
+         * that name somebody else. Read through the same helper the delayed clock uses, so the
+         * two routes cannot answer differently. */
+        for (const target of healTargets(actor, step)) {
+          await resolveHeal(actor, { amount: step.param ?? 0, target });
+        }
         return;
+      }
 
       /*
        * Conjuring and shaping both read their own sub-schema rather than the step's bare numbers,

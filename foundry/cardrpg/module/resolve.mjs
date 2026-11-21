@@ -2737,6 +2737,168 @@ export function refusesAction(actor, { half = null, what = "that" } = {}) {
 }
 
 /**
+ * **Who an ally-targeting step is for.**  [BUILT 2026-11-21]
+ *
+ * Allies are figures of the same KIND, which is the same test `neighbours` makes from the other
+ * side: a character's allies are the other characters and a goblin's are the other goblins. It is
+ * crude and it is the game's own line -- there are two sides on this board and nothing in the rules
+ * has ever needed a third.
+ *
+ * **The caster is not among them**, and the vocabulary is what decides that rather than me:
+ * `alliesInRange` is *Every ally in range* and `selfAndAllies` is *You and allies in range*, and
+ * the second value only exists because the first excludes you.
+ *
+ * `within` counts squares, Chebyshev, through `squaresBetween`. An ally nobody has placed is left
+ * out rather than guessed at, which is `neighbours`' rule and for its reason: an unplaced fight has
+ * no geometry, and a step that needs geometry should do nothing rather than invent some.
+ */
+export function alliesOf(actor, { within = null } = {}) {
+  if (!actor || !canvas?.ready) return [];
+  const mine = actor.type;
+  const out = [];
+  for (const token of canvas.tokens?.placeables ?? []) {
+    const other = token.actor;
+    if (!other || other.id === actor.id || other.type !== mine) continue;
+    if (within !== null) {
+      const away = squaresBetween(actor, token.document ?? token);
+      if (away === null || away > within) continue;
+    }
+    if (!out.includes(other)) out.push(other);
+  }
+  return out;
+}
+
+/**
+ * **Who a heal lands on.**  [FIXED 2026-11-21]
+ *
+ * The heal case healed **the caster**, always, and ignored the step's `targets` -- which is right
+ * for eight of the ten heals in the game and wrong for the two that name somebody: *Out of Barren
+ * Ground* is `alliesInRange` within 2 and *The Orchard* is `everyAlly`. Brendan's own Signature
+ * healed the priest and nobody else.
+ *
+ * Found while wiring `delay`, which the same two cards carry, and fixed here rather than in the
+ * delayed path alone: one of the two routes honouring the field and the other not would be worse
+ * than neither doing so.
+ *
+ * Everything else still means the caster, which is what saying nothing has always meant.
+ */
+export function healTargets(actor, step = {}) {
+  if (step.targets === "everyAlly") return alliesOf(actor);
+  if (step.targets === "alliesInRange") return alliesOf(actor, { within: step.range ?? 1 });
+  return [actor];
+}
+
+/* -------------------------------------------- */
+/*  Steps that happen later                     */
+/* -------------------------------------------- */
+
+/** Where a booked step waits. A flag, because it is state about one fight and not about a character. */
+const DUE = "due";
+
+/**
+ * **A step that happens on a later turn, booked instead of resolved.**  [BUILT 2026-11-21]
+ *
+ * `delay` has been a field since the slate schema was written, documented as *`2` is at the start
+ * of your second turn after this*, and **nothing read it.** Five steps carry one. Two of them have
+ * a verb the engine performs, so they resolved **immediately** -- *Out of Barren Ground* is a
+ * strength-5 Signature that heals two turns later and it healed now -- and the other three
+ * announced themselves in chat two, three and four turns early. The delay was not merely unbuilt;
+ * it was silently dropped, and the card looked like it had worked.
+ *
+ * **The clock is the caster's own turns**, which is what the field says and also the only clock
+ * that cannot drift: counting rounds would have had a figure's delay expire early or late depending
+ * on where they sit in the initiative order, and counting real turns needs the order to be stable,
+ * which it is not. Each of the caster's turns takes one off; at nought it is due.
+ *
+ * **Booked with its targets as ids**, because two turns is long enough for a token to be deleted
+ * and an actor that is gone when it comes due should be skipped rather than thrown over.
+ */
+export async function bookDelayed(actor, { step = {}, targets = [], source = null } = {}) {
+  const turns = Math.max(1, Math.trunc(step.delay ?? 0));
+  if (!turns) return false;
+  const booked = {
+    name: source?.name ?? "",
+    verb: step.verb ?? "",
+    param: step.param ?? null,
+    text: step.text ?? "",
+    targets: step.targets ?? "",
+    range: step.range ?? null,
+    who: targets.map(t => t?.id).filter(Boolean),
+    turnsLeft: turns
+  };
+  const queue = [...(actor.getFlag?.("cardrpg", DUE) ?? []), booked];
+  await actor.setFlag("cardrpg", DUE, queue);
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong>: `
+      + `${booked.name ? `<em>${booked.name}</em> is ` : ""}booked for the start of `
+      + `${turns === 1 ? "their next turn" : `their turn in ${turns}`}.</p></div>`
+  });
+  return true;
+}
+
+/**
+ * **The verbs a booked step can perform by itself when it comes due**, and it is one.
+ *
+ * Deliberately a list of one rather than a general dispatcher. The step dispatcher lives in the
+ * tray, where it belongs -- it needs the hand, the staged halves and the equipped items -- and a
+ * second copy of it here, running two turns later with none of that in scope, would be the kind of
+ * duplication this project keeps paying for. So what the clock performs is what needs nothing but
+ * an actor and a number, and everything else is announced in its own words at the right moment,
+ * for a person to perform. That is the same division ground makes for a shape nobody can place.
+ */
+const DUE_VERBS = {
+  heal: async (actor, booked) => {
+    const who = healTargets(actor, booked);
+    /* `(healer, { target })`, so the line in chat is spoken by whoever cast it rather than by the
+     * person being mended -- which matters most for the card that mends somebody else. */
+    for (const target of who.length ? who : [actor]) {
+      await resolveHeal(actor, { amount: booked.param ?? 0, target, source: booked.name });
+    }
+    return who.map(t => t.name).join(", ") || actor.name;
+  }
+};
+
+/**
+ * **One of the caster's turns has started: take one off everything booked, and resolve what is
+ * due.**
+ *
+ * Called from `onTurnStart`, which is once per turn, GM-only and already the clock for conditions
+ * and recharges -- so a booked step ticks on exactly the same beat as everything else that waits.
+ */
+export async function resolveDue(actor) {
+  const queue = actor?.getFlag?.("cardrpg", DUE) ?? [];
+  if (!queue.length) return 0;
+  const keep = [];
+  let fired = 0;
+  for (const booked of queue) {
+    const left = (booked.turnsLeft ?? 1) - 1;
+    if (left > 0) {
+      keep.push({ ...booked, turnsLeft: left });
+      continue;
+    }
+    fired++;
+    const perform = DUE_VERBS[booked.verb];
+    const did = perform ? await perform(actor, booked) : "";
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="cardrpg"><p>${booked.name ? `<em>${booked.name}</em>` : "A step"} comes `
+        + `due for <strong>${actor.name}</strong>`
+        + `${booked.verb ? `: ${booked.verb}${booked.param ? ` ${booked.param}` : ""}` : ""}`
+        + `${did ? ` on ${did}` : ""}`
+        + `${booked.text ? ` &mdash; ${booked.text}` : ""}.</p></div>`
+    });
+  }
+  await actor.setFlag("cardrpg", DUE, keep);
+  return fired;
+}
+
+/** Nothing is owed across a fight, so the queue goes when the fight does. */
+export async function clearDue(actor) {
+  if ((actor?.getFlag?.("cardrpg", DUE) ?? []).length) await actor.setFlag("cardrpg", DUE, []);
+}
+
+/**
  * **Is this the wrong moment for this spell?**  [BUILT 2026-11-21]
  *
  * Beside `refusesAction` and shaped like it -- warn, and return true -- because it is the same kind

@@ -99,7 +99,7 @@ prevent.
 | Field | Notes |
 |---|---|
 | `timing` | **When** the step may be played: `reaction`, `ritual`, `outOfCombat`, `beforeFight`. 31 steps carried this as a prefix on their prose, and `permanent` was retired from the list (see below). **[WIRED 2026-11-21]** each value now carries its own rule and the engine refuses a cast at the wrong moment |
-| `delay` | Turns to wait before it happens. `2` is *at the start of your second turn after this*, which three steps said in prose `-` and a delayed effect the engine cannot see is one the table forgets, because the card is in the discard by the time it matters |
+| `delay` | Turns to wait before it happens. `2` is *at the start of your second turn after this*, which three steps said in prose `-` and a delayed effect the engine cannot see is one the table forgets, because the card is in the discard by the time it matters **[WIRED 2026-11-21]** read by nothing until then: a step carrying one resolved on the spot, so a Signature that heals two turns later healed now. It is booked against the caster's own turns and comes due at nought |
 | `ground` | **What the step leaves on the map**: a `shape` (line, area, adjacent, whole map, one square), an `effects` list (cover, difficult ground, shadowed, impassable, a trap) and `damage` a turn. The condition a zone applies is the step's own. **Nothing places it** |
 | `targets` | **Who the step is for**: `self`, `oneEnemy`, `enemiesInRange`, `oneAlly`, `alliesInRange`, `adjacentAllies`, `everyAlly`, `selfAndAllies`, `everyone`. Blank means one enemy, which is what every card has always meant by saying nothing |
 | `oncePer` | How often it may be played: `fight`, `day`, `pactPerFight`. Three steps said it in prose |
@@ -273,6 +273,18 @@ being a restriction on top of it: a timed condition needs a moment to be applied
 what a feature does not have. A feature's permanent condition is **derived** in `activeConditions`
 — gated on the condition's own `permanent` flag — which is why there is no grant-time hook
 and nothing to clean up when the feature is deleted. A tattoo is on you because the tattoo is on you.
+
+**And `delay` was the same story, found by asking the same question.**  **[WIRED 2026-11-21]**
+Five steps carry one and nothing read the field, so the two with a verb the engine performs resolved
+**immediately** and the other three announced themselves two, three and four turns early. It was not
+an unbuilt field but a **dropped** one, which is worse: the card looked like it had worked.
+
+What made it survivable for so long is that the suite's gap map accepted the field's PRESENCE as
+proof of work — write `delay: 2` and the audit declared *an effect that resolves on a later turn*
+built. Each closer now names the thing the engine must contain for its claim to hold, and four of
+them are pinned as outstanding rather than silenced: `whileState`, `readDeck`, `cost.scale` and
+`cost.taint`. **`payToCast` charges Health and `payToPrepare` charges skill cards, and that is all**
+— taint, strain and scale are collected by nothing.
 
 **And the other four were read by nothing until 2026-11-21.**  **[WIRED]** Content wrote a timing
 on twenty-three spells, the schema took its choices from the vocabulary, and the suite checked that

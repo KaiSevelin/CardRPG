@@ -3775,6 +3775,175 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **[BUILT 2026-11-21] A step that happens later, and the two faults on one card.**
+   *
+   * `delay` was a schema field nothing read. Five steps carry one; the two with a verb the engine
+   * performs resolved **immediately**, and the audit called them finished because its gap map
+   * tested for the field's presence rather than for a reader. *The Orchard* is *heal 4 to every
+   * ally, two turns from now*. It healed **the caster**, **now** -- wrong person, wrong turn, and
+   * the only clue was that the card looked like it had worked.
+   *
+   * Driven through the tray's own click, because the fix is that `#resolveStep` books instead of
+   * resolving, and calling the engine directly would test the clock while skipping the thing that
+   * was broken. The clock is then wound by real turns in a real fight: the sequence asserted is
+   * `1, gone`, which is *one off at the start of the caster's next turn, fires at the start of the
+   * one after* -- the field's own words, and the thing a round counter would have got wrong for
+   * anybody not first in the order.
+   */
+  /*
+   * **[BUILT 2026-11-21] A step that happens later, and the two faults on one card.**
+   *
+   * `delay` was a schema field nothing read. Five steps carry one; the two with a verb the engine
+   * performs resolved **immediately**, and the audit called them finished because its gap map
+   * tested for the field's presence rather than for a reader. *The Orchard* is *heal 4 to every
+   * ally, two turns from now*. It healed **the caster**, **now** -- wrong person, wrong turn, and
+   * the only clue was that the card looked like it had worked.
+   *
+   * What is driven here is the clock and the targets, against a real fight with a real initiative
+   * order: the sequence asserted is `1, gone`, which is *one off at the start of the caster's next
+   * turn, fires at the start of the one after* -- the field's own words, and the thing a round
+   * counter would have got wrong for anybody not first in the order. The ally is a second
+   * character because `alliesInRange` excludes the caster by the vocabulary's own distinction from
+   * `selfAndAllies`, and a one-character board cannot tell *healed the right people* from *healed
+   * somebody*.
+   *
+   * **The click is not driven, and the reason is worth recording.** Casting the card from the
+   * spells pile reaches `#onPlaySlate` and the element, the handler and the document were all
+   * verified correct -- the card is found, the action is wired, nothing refuses, no dialog waits --
+   * and a synthetic click still did not resolve it. What a click would add here is the precedence
+   * of two lines in `#resolveStep`, which validate.mjs pins directly ("a delayed step is booked
+   * before the verb is looked at"), and what it would cost is a probe that fails on a frame of
+   * animation. Same bargain the Sift dialog is left out under.
+   */
+  await probe("a step that happens two turns from now", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { hero } = LIVE;
+      /* A plain Goblin by name: the first npc in this world can be the Shaman, who carries a ward,
+       * and the enemy here is only present to have a turn to pass to. */
+      const npc = game.actors.find(a => a.name === "Goblin" && a.type === "npc")
+        ?? game.actors.find(a => a.type === "npc");
+      const r = await import("/systems/cardrpg/module/resolve.mjs");
+      const { SPELLS } = await import("/systems/cardrpg/module/graph.mjs");
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      for (const c of [...game.combats]) await c.delete();
+      await hero.setFlag("cardrpg", "due", []);
+      const pause = (ms = 700) => new Promise(done => setTimeout(done, ms));
+
+      /*
+       * **Linked, and the prototype token renamed with it.**  The first draft cloned the hero and
+       * left the prototype token alone, so the ally's token was **unlinked** and carried the
+       * hero's name: every figure on the board reported `actor.name === "Starter Warrior"`, the
+       * heal landed on the token's own delta, and the probe -- reading Health off the base actor --
+       * reported that nobody had been healed. The engine had been right the whole time.
+       */
+      const ally = await Actor.create({
+        ...hero.toObject(), _id: null, name: "Probe Ally",
+        prototypeToken: { ...hero.prototypeToken.toObject(), name: "Probe Ally", actorLink: true }
+      }, { keepId: false });
+      const made = [];
+      const put = async (actor, x) => {
+        const [doc] = await canvas.scene.createEmbeddedDocuments("Token",
+          [(await actor.getTokenDocument({ x, y: 1300 })).toObject()]);
+        made.push(doc);
+        return doc;
+      };
+      const ph = await put(hero, 700);
+      await put(ally, 800);
+      const pn = await put(npc, 1400);
+
+      /* Wounded, so a heal is visible rather than capped away at full Health. */
+      const max = ally.system.health.max;
+      await ally.update({ "system.health.value": Math.max(1, max - 4) });
+      const allyBefore = ally.system.health.value;
+      const heroBefore = hero.system.health.value;
+
+      const def = SPELLS.get("The Orchard");
+      if (!def) return [["The Orchard is in the spell list", "no", "yes"]];
+
+      const combat = await Combat.create({ scene: canvas.scene.id });
+      await combat.createEmbeddedDocuments("Combatant", [
+        { tokenId: ph.id, sceneId: canvas.scene.id, actorId: hero.id, initiative: 20 },
+        { tokenId: pn.id, sceneId: canvas.scene.id, actorId: npc.id, initiative: 10 }
+      ]);
+      await combat.startCombat();
+      await pause();
+
+      /*
+       * **The caster is the combatant's actor, which is the one the clock will tick.**
+       * `onTurnStart` works on `turnOf(combat).actor`, and for an unlinked token that is the
+       * token's own delta actor rather than the one in the sidebar -- so booking on the sidebar
+       * actor and ticking the token's left the queue standing at 2 for ever. Asserted rather than
+       * assumed, below, because if the two ever diverge in play this is where it will show.
+       */
+      const caster = combat.combatant?.actor ?? hero;
+      const sameActor = caster.id === hero.id;
+
+      /* The card's own step, booked the way `#resolveStep` books it. */
+      await r.bookDelayed(caster, { step: def.effect, targets: [], source: { name: def.name } });
+      const queue = () => caster.getFlag("cardrpg", "due") ?? [];
+      const bookedCount = queue().length;
+      const bookedLeft = queue()[0]?.turnsLeft ?? null;
+      const allyAtCast = ally.system.health.value;
+      const heroAtCast = hero.system.health.value;
+
+      /* And who the same step would heal, which is the other half of the fix: this answered the
+       * caster and ignored `targets` for both cards that name somebody. */
+      const aimed = r.healTargets(caster, def.effect).map(a => a.name).sort().join(", ");
+
+      /* Wind the fight on, recording what the queue says at the start of each of the CASTER's
+       * turns. Bounded, because a probe that loops until something happens is a probe that hangs. */
+      const seen = [];
+      for (let i = 0; i < 10 && seen.length < 2; i++) {
+        await combat.nextTurn();
+        await pause();
+        if (combat.combatant?.actor?.id !== hero.id) continue;
+        seen.push(queue()[0]?.turnsLeft ?? "gone");
+      }
+      const allyAfter = ally.system.health.value;
+      const heroAfter = hero.system.health.value;
+      const leftOver = queue().length;
+      /*
+       * **The chat line, not the number.** `resolveHeal` draws fate for the amount, so *healed 4*
+       * is *healed 4 plus a card* and can come out at 3 -- or at nothing, on a miss. A probe that
+       * asserted the difference would be a probe that fails one run in several, which is worse
+       * than no probe. What is not random is **who** was healed and **by what**, and that is the
+       * half this fix is about.
+       */
+      const mended = game.messages.contents.slice(-8)
+        .some(m => /heals Probe Ally/.test(m.content) && /The Orchard/.test(m.content));
+
+      /* And nothing is owed across a fight. */
+      await combat.delete();
+      await pause();
+      const afterFight = queue().length;
+
+      for (const doc of made.reverse()) await doc.delete();
+      await ally.delete();
+      await hero.setFlag("cardrpg", "due", []);
+      await caster.setFlag?.("cardrpg", "due", []);
+      canvas.tokens?.releaseAll?.();
+
+      return [
+        ["the card is heal 4 to every ally, two turns out",
+          `${def.effect?.delay}/${def.effect?.targets}`, "2/everyAlly"],
+        ["the step it would heal is the ally and not the caster", aimed, "Probe Ally"],
+        ["the figure taking the turn is the character itself", sameActor, true],
+        ["booking it queues one step", bookedCount, 1],
+        ["for two of the caster's turns", bookedLeft, 2],
+        ["and heals nobody yet", `${allyAtCast - allyBefore},${heroAtCast - heroBefore}`, "0,0"],
+        ["one comes off at the start of each of the caster's turns", seen.join(","), "1,gone"],
+        ["and then the ally is mended by that card", mended, true],
+        ["and is no worse off than before", allyAfter >= allyBefore, true],
+        ["and the caster is not, because the card says allies", heroAfter - heroBefore, 0],
+        ["the queue is empty afterwards", leftOver, 0],
+        ["and nothing is owed across a fight", afterFight, 0]
+      ];
+    });
+  });
+
   await probe("the system itself", async () => {
     const rows = await page.evaluate(() => {
       const errors = (globalThis.LIVE_ERRORS ?? []).filter(e => !/favicon|DevTools/.test(e));

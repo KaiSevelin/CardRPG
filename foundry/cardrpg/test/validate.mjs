@@ -6921,24 +6921,40 @@ const worst = [...gapCounts.entries()].filter(([, n]) => n === most).map(([gap])
 const stepsOfContent = c => [...(c.primary ?? []), ...(c.secondary ?? []), ...(c.sequence ?? []),
   ...(c.effect ? [c.effect] : [])];
 const GAP_CLOSERS = [
-  ["terrain a spell places on the map", c => stepsOfContent(c).some(s => s.ground?.shape)],
+  ["terrain a spell places on the map", c => stepsOfContent(c).some(s => s.ground?.shape),
+    /\bground\?\.shape|layGround\(/],
   ["shadow as a state a square is in",
-    c => stepsOfContent(c).some(s => (s.ground?.effects ?? []).includes("shadowed"))],
+    c => stepsOfContent(c).some(s => (s.ground?.effects ?? []).includes("shadowed")),
+    /* Generic: a zone's properties are filtered against the vocabulary rather than named one by
+     * one, so the reader is that loop and not the word. */
+    /CARDRPG\.groundEffects/],
   ["placing a trap on a square",
-    c => stepsOfContent(c).some(s => (s.ground?.effects ?? []).includes("trap"))],
-  ["a figure a spell puts on the map", c => stepsOfContent(c).some(s => s.verb === "conjure")],
-  ["an effect that resolves on a later turn", c => stepsOfContent(c).some(s => s.delay)],
+    c => stepsOfContent(c).some(s => (s.ground?.effects ?? []).includes("trap")),
+    /springTraps\(/],
+  ["a figure a spell puts on the map", c => stepsOfContent(c).some(s => s.verb === "conjure"),
+    /case "conjure"/],
+  ["an effect that resolves on a later turn", c => stepsOfContent(c).some(s => s.delay),
+    /step\.delay/],
   ["an effect held up by spending a secondary",
-    c => stepsOfContent(c).some(s => /spendSecondary|upkeep/.test(s.whileState ?? ""))],
-  ["reading the top of a fate deck", c => stepsOfContent(c).some(s => s.readDeck)],
-  ["a cost that scales with the allies it covers", c => c.cost?.scale === "perAlly"],
-  ["a spell that taints its caster", c => (c.cost?.taint ?? 0) > 0],
-  ["an enemy that loses a half", c => stepsOfContent(c).some(s => s.condition === "dazed")],
-  ["a reaction that stops an action", c => stepsOfContent(c).some(s => s.condition === "halted")],
+    c => stepsOfContent(c).some(s => /spendSecondary|upkeep/.test(s.whileState ?? "")),
+    /\bwhileState\b/],
+  ["reading the top of a fate deck", c => stepsOfContent(c).some(s => s.readDeck),
+    /\breadDeck\b/],
+  ["a cost that scales with the allies it covers", c => c.cost?.scale === "perAlly",
+    /cost\?\.scale|"perAlly"/],
+  ["a spell that taints its caster", c => (c.cost?.taint ?? 0) > 0, /cost\?\.taint|cost\.taint/],
+  /* Generic again: a step's condition is applied by one routine, so naming the key here would be
+   * testing the engine for a word it has no reason to contain. */
+  ["an enemy that loses a half", c => stepsOfContent(c).some(s => s.condition === "dazed"),
+    /resolveCondition\(/],
+  ["a reaction that stops an action", c => stepsOfContent(c).some(s => s.condition === "halted"),
+    /resolveCondition\(/],
   ["a second secondary for every ally in an area",
-    c => stepsOfContent(c).some(s => s.targets === "alliesInRange")],
+    c => stepsOfContent(c).some(s => s.targets === "alliesInRange"),
+    /"alliesInRange"/],
   ["a ritual, which costs no slots at all",
-    c => stepsOfContent(c).some(s => s.timing === "ritual")],
+    c => stepsOfContent(c).some(s => s.timing === "ritual"),
+    /timing === "ritual"/],
   /*
    * **The gap seven cards named, and what closed it is not a spell.**
    *
@@ -6951,7 +6967,8 @@ const GAP_CLOSERS = [
   ["a permanent formula that is never prepared and carries a bonus",
     c => c.kind === "feature" && !!c.source
       && (stepsOfContent(c).some(s => !!s.bonus?.value)
-        || Object.values(c.grants ?? {}).some(v => v))]
+        || Object.values(c.grants ?? {}).some(v => v)),
+    /bonus\?\.value|CHARACTER_GRANTS/]
 ];
 const rotted = [];
 for (const [gap, isBuilt] of GAP_CLOSERS) {
@@ -6973,6 +6990,71 @@ check("gaps kept by content that has already built them",
  */
 const mute = GAP_CLOSERS.filter(([, isBuilt]) => !audited.some(c => isBuilt(c))).map(([g]) => g);
 check("closers no content in the game can satisfy", mute.join(", ") || "none", "none");
+/*
+ * **And the field each closer depends on is read by something.**  [BUILT 2026-11-21]
+ *
+ * This map's job is to notice when a gap entry has stopped being true, and for a year it could be
+ * satisfied by **the presence of a field** rather than by anything acting on one. Write `delay: 2`
+ * on a card and the audit declared *an effect that resolves on a later turn* built -- while `delay`
+ * existed nowhere but the schema, every delayed step resolved immediately, and three pieces of
+ * content declared `needs: []` on the strength of it. *Out of Barren Ground* is a strength-5
+ * Signature that heals two turns later; it healed now, and the audit called it finished.
+ *
+ * So each closer names the thing the ENGINE must contain for its claim to hold, and the search runs
+ * over the engine with `config.mjs` and the data models **excluded** -- which is the whole point. A
+ * vocabulary entry and a schema field with `choices` are what a dead field looks like; they are
+ * evidence that the word exists, not that anything does it.
+ *
+ * It is a count rather than a list of names on purpose: the predicate and the reader are two
+ * halves of one claim, and a closer with only the first half is the defect, whichever it is.
+ */
+/*
+ * **The data models count, minus the lines that merely declare a field.** The first draft left
+ * `module/data/` out altogether, on the grounds that a schema is where a dead field lives -- and
+ * that threw away `outsideBudget`, a real reader of `timing === "ritual"` that happens to be a
+ * getter on a data model. The distinction is not which file: it is **declaration against use**. A
+ * line carrying `new fields.` is the declaration, and nothing else in these files is one.
+ */
+const ENGINE_SOURCE = [
+  ...fs.readdirSync(path.join(root, "module"))
+    .filter(f => f.endsWith(".mjs") && f !== "config.mjs")
+    .map(f => path.join(root, "module", f)),
+  ...fs.readdirSync(path.join(root, "module", "data"))
+    .filter(f => f.endsWith(".mjs")).map(f => path.join(root, "module", "data", f))
+].map(f => fs.readFileSync(f, "utf8").split("\n").filter(l => !l.includes("new fields."))
+  .join("\n")).join("\n");
+check("gap closers that name no reader at all",
+  GAP_CLOSERS.filter(([, , reads]) => !reads).map(([g]) => g).join(", ") || "none", "none");
+/*
+ * **Four are pinned as outstanding rather than silenced**, because that is the finding and not a
+ * tidy-up. Each names a field that content writes, that this map accepts as proof of work, and that
+ * **nothing in the engine reads** -- so the gap it closes was never built and the pieces declaring
+ * `needs: []` on its strength are overstating. Each wants a decision rather than a patch:
+ *
+ * - **`cost.taint`** is the serious one. `payToCast` charges `cost.health` and `payToPrepare`
+ *   charges `cost.skillCards`, and that is all: **`taint`, `strain` and `scale` are never charged
+ *   by anything.** Four spells say they taint their caster, three say they strain a deck, five
+ *   carry a scale, and casting one of them costs nothing it says it costs. `strain` is not in this
+ *   list only because no closer happens to name it, which is worth remembering before reading the
+ *   count as the whole of the debt.
+ * - **`readDeck`** is probably for deleting. `foresee` already asks whose intent to read and reads
+ *   it, so the field is redundant on the two cards that work and prose on the third.
+ * - **`whileState`** is nine values over eleven cards, most of which the engine could see for
+ *   itself -- hand size, deck size, both hands free -- and three of which carry the rule in prose.
+ *
+ * `delay` was the fifth and is gone from this list as of today, which is what the list is for: it
+ * is a number that should go down and an entry that should be argued with rather than kept.
+ */
+check("and closers whose field nothing in the engine reads",
+  GAP_CLOSERS.filter(([, , reads]) => reads && !reads.test(ENGINE_SOURCE)).map(([g]) => g)
+    .join(" | ") || "none",
+  "an effect held up by spending a secondary | reading the top of a fate deck | "
+  + "a cost that scales with the allies it covers | a spell that taints its caster");
+/* And the rule is not vacuous: most of them DO find a reader, so a regex that matched nothing
+ * everywhere would fail here rather than pass quietly. */
+check("and how many closers are backed by a reader",
+  GAP_CLOSERS.filter(([, , reads]) => reads && reads.test(ENGINE_SOURCE)).length, 10);
+
 /* And how many each one finds, so a closer narrowing to one card is visible rather than silent. */
 check("content each closer recognises",
   GAP_CLOSERS.map(([gap, isBuilt]) => `${audited.filter(c => isBuilt(c)).length}`).join(" "), "8 2 1 3 5 4 4 3 4 6 2 4 7 5");
@@ -7237,6 +7319,39 @@ check("cards with both a requirement and a reaction, which nothing checks",
  * reaches, and the only right answer is the one the click will use. A reader that picked its own
  * item would print a reach off a weapon the turn was not going to be played with.
  */
+/*
+ * **A delayed step is booked before the verb is looked at.**  [BUILT 2026-11-21]
+ *
+ * This is the precedence the fix consists of, and it is two lines apart in one function, so it is
+ * pinned here rather than driven: `delay` used to be read by nothing, so a step carrying one fell
+ * straight through to the switch and resolved on the spot. *Out of Barren Ground* is a strength-5
+ * Signature that heals two turns later; it healed now, and the gap map called it finished because
+ * the card carried the field.
+ *
+ * Checked as an ORDER rather than as two greps, because either line on its own is harmless and the
+ * fault was entirely in which came first.
+ */
+check("a delayed step is booked before the verb is looked at",
+  /if \(step\.delay\) \{[\s\S]{0,200}?bookDelayed\([\s\S]{0,900}?switch \(step\.verb\)/
+    .test(traySource) ? "yes" : "no", "yes");
+/* And the ground of a delayed step waits with it: a grove that grows in two turns does not put
+ * difficult ground down today. The booking is above the ground clause, which says that. */
+check("and its ground waits with it",
+  traySource.indexOf("if (step.delay)") < traySource.indexOf("this.#layGround(step)")
+    ? "yes" : "no", "yes");
+/* The clock is the caster's own turns, ticked where everything else that waits is ticked. */
+check("the clock ticks on the turn hook",
+  /await resolveDue\(actor\);/.test(combatSource) ? "yes" : "no", "yes");
+check("and nothing is owed across a fight",
+  /await clearDue\(actor\);/.test(combatSource) ? "yes" : "no", "yes");
+/* And the heal reads who the step names, through the same helper the clock uses, so the immediate
+ * route and the delayed one cannot answer differently. */
+/* Three: the definition, the clock's use of it, and the tray's. A fourth would be a second
+ * opinion about who a heal is for, which is the thing this replaced. */
+check("both heal routes ask one question who to heal",
+  (resolveSource.match(/healTargets\(/g) ?? []).length
+  + (traySource.match(/healTargets\(/g) ?? []).length, 3);
+
 check("the face, the click and the range display pick through one call",
   (traySource.match(/#itemFor\(step\.verb, half, step\.requires\)/g) ?? []).length, 3);
 /*

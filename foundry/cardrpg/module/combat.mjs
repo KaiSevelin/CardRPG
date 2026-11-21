@@ -14,7 +14,7 @@
 
 import { CARDRPG } from "./config.mjs";
 import { deckOf, moveRandom, move, normalizeDeck, allStacks, available } from "./decks.mjs";
-import { resolveWound, DROPPED } from "./resolve.mjs";
+import { resolveWound, DROPPED, resolveDue, clearDue } from "./resolve.mjs";
 import { expireGround, clearGround, groundFor, imposeGround } from "./ground.mjs";
 
 /* -------------------------------------------- */
@@ -322,6 +322,9 @@ export async function onTurnStart(combat, updateData = null) {
   const ended = turnJustEnded(combat, index, round);
   if (ended?.actor) await tickConditionsCreatedBy(combat, ended.actor, ended.round);
   await tickRecharges(actor);
+  /* And anything this figure booked for a later turn, on the same beat as everything else that
+   * waits: one of their turns has started, so one comes off the count. See `bookDelayed`. */
+  await resolveDue(actor);
 
   if (actor.type === "npc") await revealIntent(actor);
 
@@ -465,6 +468,10 @@ export async function onCombatEnd(combat) {
     const lasting = (actor.system.toObject().conditions ?? [])
       .filter(c => CARDRPG.conditions[c.key]?.noDuration);
     await actor.update({ "system.conditions": lasting });
+
+    /* Nor does anything booked for a turn that is never coming. A grove due in two turns when the
+     * last enemy fell is not a grove the next fight owes anybody. */
+    await clearDue(actor);
 
     if (actor.type === "character") await afterCombat(actor);
   }
