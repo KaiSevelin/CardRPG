@@ -4146,6 +4146,189 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **[BUILT 2026-11-22] A state of your own, read off the real piles.**
+   *
+   * `whileState` was nine values on eleven steps with no reader anywhere, so *The Empty Deck*
+   * promised *you cannot be harmed at all* and nothing knew when that was true. Six of the values
+   * are read by `stateHolds` now and gated by `refusesState`.
+   *
+   * **Nothing here touches the draw pile, and two failed runs are why.** A card dealt out of a
+   * deck stays in the deck flagged `drawn`, and the copy in the hand shares its id -- so a deck
+   * refuses to pass one (*you may not pass a Card which has already been drawn*), and clearing the
+   * flag to force it through puts a second document with that id in the discard, which is the
+   * second error. The deck model is not the thing under test and the game never empties a draw
+   * pile anyway: it deals from one. So this moves the hand and the discard, which is what playing
+   * a turn does.
+   *
+   * **That restraint is what found the real bug.** Reading `cards.size` on a draw pile counts the
+   * loaned-out placeholders, so *hand and draw pile both empty* could never have held in a real
+   * game -- on the one card in the game built on it. `available` is the helper that knows this and
+   * has since the first deal; the engine reads it now. The unit stub had handed the rule a number
+   * and been believed, which is the whole argument for driving a thing in the world it runs in.
+   *
+   * `handAndDeckEmpty` is checked here in the half that discriminates -- an empty hand with a pile
+   * behind it is NOT the state -- and the both-empty half is in validate.mjs, where a draw pile can
+   * be empty without asking Foundry to do something it never does.
+   */
+  await probe("a state of your own, read off the real piles", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { hero } = LIVE;
+      const r = await import("/systems/cardrpg/module/resolve.mjs");
+      const d = await import("/systems/cardrpg/module/decks.mjs");
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      const { SPELLS, slateFieldsOf, spellKindOf } =
+        await import("/systems/cardrpg/module/graph.mjs");
+      const { slateData } = await import("/systems/cardrpg/module/setup.mjs");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      for (const c of [...game.combats]) await c.delete();
+      const pause = (ms = 300) => new Promise(done => setTimeout(done, ms));
+      const scene = canvas.scene;
+
+      const myHand = d.deckOf(hero, "actionHand");
+      const myPile = d.deckOf(hero, "action");
+      const myBin = d.deckOf(hero, "actionDiscard");
+      const held = stack => stack?.cards?.size ?? 0;
+      /* The hand as found, so it can be put back card for card. */
+      const dealt = (myHand?.cards?.contents ?? []).map(c => c.id);
+      const began = dealt.length;
+      if (began < 2) return [[`the hero was dealt a hand to empty (${began})`, "no", "yes"]];
+
+      /* ---- the hand, from three sizes of it ---- */
+      await d.move(myHand, myBin, dealt);
+      await pause();
+      const pairFalse = r.stateHolds(hero, "handAndDeckEmpty");
+      const emptied = [r.stateHolds(hero, "handEmpty"), r.stateHolds(hero, "oneCard")].join(",");
+
+      await d.move(myBin, myHand, dealt.slice(0, 1));
+      await pause();
+      const exactlyOne = [r.stateHolds(hero, "oneCard"), r.stateHolds(hero, "handEmpty")].join(",");
+
+      await d.move(myBin, myHand, dealt.slice(1, 2));
+      await pause();
+      const nowTwo = [held(myHand), r.stateHolds(hero, "oneCard")].join(",");
+
+      /* And the two numbers a draw pile has, which is the bug in one row: the printed contents,
+       * and what is really left to draw. No hard count -- the hand size is the world's business. */
+      const pileReads = d.available(myPile).length < held(myPile)
+        ? "fewer than the deck prints" : `${d.available(myPile).length} of ${held(myPile)}`;
+
+      /* ---- the hands that hold things ---- */
+      const inHand = hero.items.filter(i => i.type === "item" && i.system.equipped
+        && i.system.equippedSlot === "hands").map(i => i.id);
+      const armed = r.stateHolds(hero, "handsEmpty");
+      for (const id of inHand) await hero.items.get(id)?.update({ "system.equipped": false });
+      await pause();
+      const bare = [r.stateHolds(hero, "handsEmpty"), hero.system.handsUsed].join(",");
+
+      /* ---- the deck's own floor, which is the number the sheet shows ---- */
+      const deck = hero.system.actionDeck;
+      const thinNow = r.stateHolds(hero, "thinDeck");
+      const floorReads = `${deck.min}`;
+
+      /* ---- and the board, which is the one state that asks the canvas ---- */
+      const wasGrid = scene.grid.type;
+      if (wasGrid === CONST.GRID_TYPES.GRIDLESS) {
+        await scene.update({ "grid.type": CONST.GRID_TYPES.SQUARE });
+        await new Promise(done => Hooks.once("canvasReady", done));
+      }
+      const made = [];
+      const put = async (actor, x, y) => {
+        const [doc] = await scene.createEmbeddedDocuments("Token",
+          [(await actor.getTokenDocument({ x, y })).toObject()]);
+        made.push(doc);
+        return doc;
+      };
+      /* Linked, because an unlinked clone inherits the prototype's name and every figure on the
+       * board then reads as the hero -- the same trap the price probe records. */
+      const mate = await Actor.create({
+        ...hero.toObject(), _id: null, name: "Probe Beside",
+        prototypeToken: { ...hero.prototypeToken.toObject(), name: "Probe Beside", actorLink: true }
+      }, { keepId: false });
+      await put(hero, 700, 1300);
+      await pause();
+      const alone = r.stateHolds(hero, "noAllyNear");
+      await put(mate, 800, 1300);
+      await pause();
+      const beside = r.stateHolds(hero, "noAllyNear");
+      /* Four squares off is outside the 2 the card names, so the state comes back. */
+      await made[1].update({ x: 1100, y: 1300 });
+      await pause();
+      const farOff = r.stateHolds(hero, "noAllyNear");
+
+      /* ---- the gate, on a real prepared spell ---- */
+      const def = SPELLS.get("Nothing to Carry");
+      if (!def) return [["Nothing to Carry is in the spell list", "no", "yes"]];
+      const [carry] = await hero.createEmbeddedDocuments("Item", [slateData({
+        ...slateFieldsOf(def), kind: spellKindOf(def.pool ?? def.node), prepared: true
+      }, "spell")]);
+      /* Hands are empty at this point, so the state holds and the cast is not refused. */
+      const letThrough = r.refusesState(hero, carry, { what: "casting it" });
+
+      /* ---- and the card says so before it is clicked ---- */
+      const tray = game.cardrpg.openTray(hero);
+      tray.side = "action";
+      tray.openPile = "spells";
+      await tray.render();
+      await pause(400);
+      const faceOf = () => [...(tray.element?.querySelectorAll(".cr-card") ?? [])]
+        .find(el => el.textContent.includes("Nothing to Carry"));
+      const live = faceOf();
+      const printed = /While both hands are empty/.test(live?.textContent ?? "");
+      const litNow = /While both hands are empty \u2014 now/.test(live?.textContent ?? "");
+      const clickableNow = !(live?.classList.contains("cr-card--passive") ?? true);
+
+      /* And a sword back in hand, which must turn the same card off. */
+      for (const id of inHand) {
+        await hero.items.get(id)?.update({ "system.equipped": true, "system.equippedSlot": "hands" });
+      }
+      await tray.render();
+      await pause(400);
+      const refusedArmed = r.refusesState(hero, carry, { what: "casting it" });
+      const greyed = faceOf()?.classList.contains("cr-card--passive") ?? false;
+      const stillPrinted = /While both hands are empty/.test(faceOf()?.textContent ?? "");
+
+      /* ---- and put the world back ---- */
+      tray.openPile = null;
+      await tray.render();
+      await tray.close();
+      await hero.deleteEmbeddedDocuments("Item", [carry.id]);
+      for (const doc of made.reverse()) await doc.delete();
+      await mate.delete();
+      if (scene.grid.type !== wasGrid) {
+        await scene.update({ "grid.type": wasGrid });
+        await new Promise(done => Hooks.once("canvasReady", done));
+      }
+      await d.move(myBin, myHand, dealt.filter(id => myBin.cards?.get(id)));
+      await pause();
+      const restored = held(myHand);
+
+      return [
+        ["an emptied hand is empty, and is not one card", emptied, "true,false"],
+        ["and an empty hand with a pile behind it is not the pair", pairFalse, false],
+        ["one card in hand is exactly one", exactlyOne, "true,false"],
+        ["and two cards are not", nowTwo, "2,false"],
+        ["the pile is counted without the cards on loan", pileReads, "fewer than the deck prints"],
+        ["a sword and a shield are not empty hands", armed, false],
+        ["and nothing held is, by the number the sheet derives", bare, "true,0"],
+        ["a starter deck is not pruned to its floor", thinNow, false],
+        ["and the floor it would have to reach", floorReads, "12"],
+        ["nobody beside you is nobody near", alone, true],
+        ["an ally one square off is near", beside, false],
+        ["and four squares off is not", farOff, true],
+        ["the cast is allowed while the state holds", letThrough, false],
+        ["and refused once your hands are full", refusedArmed, true],
+        ["the card prints the state it waits on", printed, true],
+        ["and marks it while you are in it", litNow, true],
+        ["and is clickable while you are", clickableNow, true],
+        ["and greys once you are not", greyed, true],
+        ["and still says which state, so the rule is readable either way", stillPrinted, true],
+        ["and the hand went back as it was", restored, began]
+      ];
+    });
+  });
+
   await probe("the system itself", async () => {
     const rows = await page.evaluate(() => {
       const errors = (globalThis.LIVE_ERRORS ?? []).filter(e => !/favicon|DevTools/.test(e));

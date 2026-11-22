@@ -105,7 +105,7 @@ prevent.
 | `oncePer` | How often it may be played: `fight`, `day`, `pactPerFight`. Three steps said it in prose |
 | `ignoresArmour` / `ignoresBlock` / `ignoresCover` | All of it, where `ignores` above is a NUMBER of armour points. Block and cover are not armour, and core-rules 5 is explicit that `ignores` comes off armour and never off Block |
 | `readDeck` | Whose fate deck a Read looks at: `own`, `other`, `target`, `all`. `foresee` had a number and never a target |
-| `whileState` | A state of your own the step waits on: hand empty, both hands empty, exactly one card, hand and deck both empty, a thin deck, no ally near, spending a secondary. **Eleven steps, and whole builds rest on them** |
+| `whileState` | A state of your own the step waits on: hand empty, both hands empty, exactly one card, hand and deck both empty, a thin deck, no ally near. **Seven steps, and whole builds rest on them.** Read by `stateHolds`, gated by `refusesState`, printed on the card |
 | `conjure` | `creature`, the roster creature a conjuration fixes (blank = the GM decides), and `upkeep`, what it costs per round it stands |
 | `shape` | `transformation`: the transformation by name (content.mjs) |
 
@@ -327,7 +327,57 @@ conditional price is not that, so the number went back into the card's own text 
 what the engine cannot do — the mirror image of *The Kingmaker's Draught*, whose price is
 **refunded** when the target dies.
 
-Two closers are still pinned as outstanding rather than silenced: `whileState` and `readDeck`.
+One closer is still pinned as outstanding rather than silenced: `readDeck`.
+
+## The state a step waits on, and the three values that were not states [FIXED 2026-11-22]
+
+`whileState` was the other field a reader check caught. Nine values, eleven steps, a select on the
+step sheet, a row in this document — and **no reader anywhere**, so *The Empty Deck* promised *you
+cannot be harmed at all* and the engine neither knew when that was true nor stopped it being
+claimed when it was false. It was worse than inert: the closer map accepted the field's own name as
+proof that *an effect held up by spending a secondary* had been built, so four cards declaring the
+gap in words sat above a field that read as the answer.
+
+**The field went two ways, and that is the finding worth keeping.** Six of the nine values are a
+question about the actor and nothing else, and those are read, shown and gated now:
+
+| Value | What the engine asks |
+|---|---|
+| `handEmpty` | the action hand's size is 0 |
+| `oneCard` | the action hand's size is 1 |
+| `handAndDeckEmpty` | hand and draw pile both 0 |
+| `handsEmpty` | `handsUsed` is 0 — a number the sheet already derived |
+| `thinDeck` | the deck is at or below its own minimum |
+| `noAllyNear` | `alliesOf` finds nobody within 2 |
+
+The other three — `spendSecondary`, `spendSecondaryEachRound`, `upkeep` — were **one rule written
+three ways**: a secondary spent every round to keep a thing standing. That is not a state to look
+up but a price to collect, with a moment it comes due and a consequence for missing it, and nothing
+collects anything per round. Those four cards carry the rule in their own sentences now and name it
+as a gap, which put it in the queue at four mentions on the day it stopped being invisible. **A
+field can be half built and half wished for**, and no count of readers can see that — only reading
+the values can.
+
+Three smaller findings fell out of the wiring:
+
+- **The answer has three values, not two.** A creature owns a deck and a discard and *no hand at
+  all*, so *is your hand empty* has no answer for one. Folded into false the guard would refuse
+  every gated spell in an NPC's hands; folded into true it would make every one of them
+  permanently on. `null` means *cannot say*, and the two callers part company on it: the card
+  prints the rule without greying, and the cast is allowed.
+- **One label named a number the rules forbid.** *While your action deck is 10 cards or fewer*,
+  against an `actionDeckMin` of **12** — so the state could not hold for any legal character, and
+  wiring the label faithfully would have built a card that never works. The floor is the authority,
+  so thin means *pruned as far as the rules allow*: four cards given up out of a starter sixteen.
+- **Steps carrying prose and nothing else went UP, 26 to 30**, for the first time. That is the
+  honest direction: a sentence the engine drops on the floor is bad, and a field it drops on the
+  floor while the audit calls the card finished is worse, because only the first is visible to
+  anybody reading the card.
+
+*The Rumour* came off *content the engine does everything for* — the only piece ever to leave that
+list — and The Yellow rejoined *lists waiting on the engine from end to end*, a god it had left
+two increments earlier because every gap it still named had been built. What it had stopped naming
+was the upkeep.
 
 **And the map's blind spot ran both ways.** Six Poison formulas named *skill cards set aside to pay
 for a formula* as a gap while `payToPrepare` had been collecting it since the price was built —

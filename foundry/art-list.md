@@ -573,7 +573,7 @@ A god's first and defining miracle.
 | ✓ | **The Long Silence** | Ready 2 · / Shake 1 · Only if you did not move this round. Stillness is the whole of the order's method. | `signatures/faith/the-long-silence.webp` |
 | ✓ | **The Order's Shield** | Defend, Block 2 range 1 · / Block 1 range 1 · The Block goes to an adjacent ally and never to you. The order does not defend itself. | `signatures/faith/the-orders-shield.webp` |
 | ✓ | **The Outcast's Due** | strength 3 · Cast blast 1 Compelled (2) | `signatures/faith/the-outcasts-due.webp` |
-| ✓ | **The Rumour** | strength 2 · one enemy type acts as though a named lie were true | `signatures/faith/the-rumour.webp` |
+| ✓ | **The Rumour** | strength 2 · one enemy type acts as though a named lie were true, for as long as you spend a secondary each round on it | `signatures/faith/the-rumour.webp` |
 | ✓ | **The Scourge** | Strike +2 · / Move 2 · Strain 1, paid before the blow lands. The drums, the dance and the whip make the same argument: pay first, strike harder. | `signatures/faith/the-scourge.webp` |
 | ✓ | **The Silent Hour** | strength 2 · range 1 Dazed (1) | `signatures/faith/the-silent-hour.webp` |
 | ✓ | **The Tide Knows** | strength 2 · range 3 an ally draws fate twice on their next action and keeps both | `signatures/faith/the-tide-knows.webp` |
@@ -724,12 +724,12 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 | ✓ | **The Driven Out** | strength 4 · area 3 Compelled (1) and you gain Block 3 for each enemy Compelled | `spells/faith/the-driven-out.webp` |
 | ✓ | **The Grey Hour** | strength 4 · range 1 Halted (1) | `spells/faith/the-grey-hour.webp` |
 | ✓ | **The Land Beneath** | strength 5 · area 2 every enemy within 2 is gone until then. You are Prone | `spells/faith/the-land-beneath.webp` |
-| ✓ | **The Lie That Held** | strength 5 · a lie named before the fight is true | `spells/faith/the-lie-that-held.webp` |
+| ✓ | **The Lie That Held** | strength 5 · a lie named before the fight is true, for as long as you spend a secondary each round | `spells/faith/the-lie-that-held.webp` |
 | ✓ | **The Line Holds** | strength 4 · allies adjacent to you cannot be moved, knocked Prone or Compelled · costs 2 Health | `spells/faith/the-line-holds.webp` |
 | ✓ | **The Mask of the Captain** | strength 4 · one enemy obeys you for a round -- you play its turn | `spells/faith/the-mask-of-the-captain.webp` |
 | ✓ | **The Narrow Path** | strength 1 · your miracles cost 1 slot less (min 1) | `spells/faith/the-narrow-path.webp` |
 | ✓ | **The Orchard** | strength 4 · Heal 4 and sheds one condition | `spells/faith/the-orchard.webp` |
-| ✓ | **The Planted Word** | strength 1 · one enemy type cannot play reactions | `spells/faith/the-planted-word.webp` |
+| ✓ | **The Planted Word** | strength 1 · one enemy type cannot play reactions, for as long as you spend a secondary each round | `spells/faith/the-planted-word.webp` |
 | ✓ | **The Poisoned Well** | strength 4 · Tainting 1 blast 3 fast | `spells/faith/the-poisoned-well.webp` |
 | ✓ | **The Sea Decides** | strength 5 · shuffle every fate deck on the field into one; everyone draws from it | `spells/faith/the-sea-decides.webp` |
 | ✓ | **The Second Face** | strength 1 · Spent: read one enemy's intent card for this round before anyone acts | `spells/faith/the-second-face.webp` |
@@ -742,7 +742,7 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 | ✓ | **The Turning Tide** | strength 2 · range 3 Cursed an ally redraws a fate card and keeps the second. The Cursed is yours | `spells/faith/the-turning-tide.webp` |
 | ✓ | **The War Drum** | strength 4 · area 2 every ally within 2 takes their whole turn again, now · costs 3 Strain | `spells/faith/the-war-drum.webp` |
 | ✓ | **The Weight of It** | strength 2 · range 6 a Judged enemy's armor counts 0 against everyone until your next turn | `spells/faith/the-weight-of-it.webp` |
-| ✓ | **The Whole Cloth** | strength 4 · one enemy type believes the party are its own | `spells/faith/the-whole-cloth.webp` |
+| ✓ | **The Whole Cloth** | strength 4 · one enemy type believes the party are its own, for as long as you spend a secondary each round | `spells/faith/the-whole-cloth.webp` |
 | ✓ | **Undertow** | strength 2 · Cast range 3 blast 2 Wet (1) every target is moved 1 square you choose | `spells/faith/undertow.webp` |
 | ✓ | **Valtor's Own** | strength 5 · for the rest of the fight you play a primary and two secondaries each turn · costs 1 Strain | `spells/faith/valtors-own.webp` |
 | ✓ | **What Does Not Die** | strength 3 · drop to 1 instead of 0, and lose a spell slot for good | `spells/faith/what-does-not-die.webp` |

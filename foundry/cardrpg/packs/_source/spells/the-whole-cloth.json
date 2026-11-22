@@ -14,8 +14,7 @@
     "source": "The Yellow",
     "description": "<p>While you keep paying a half every round, one whole kind of enemy believes the party are its own. Stop paying and the room remembers.</p>",
     "effect": {
-      "whileState": "spendSecondaryEachRound",
-      "text": "one enemy type believes the party are its own"
+      "text": "one enemy type believes the party are its own, for as long as you spend a secondary each round"
     },
     "kind": "miracle",
     "prepared": false

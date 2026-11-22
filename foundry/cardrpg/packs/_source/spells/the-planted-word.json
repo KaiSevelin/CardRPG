@@ -14,8 +14,7 @@
     "source": "The Yellow",
     "description": "<p>Name one enemy type before the fight. While you spend a secondary each round, that type cannot play reactions.</p>",
     "effect": {
-      "whileState": "spendSecondary",
-      "text": "one enemy type cannot play reactions"
+      "text": "one enemy type cannot play reactions, for as long as you spend a secondary each round"
     },
     "kind": "miracle",
     "prepared": false

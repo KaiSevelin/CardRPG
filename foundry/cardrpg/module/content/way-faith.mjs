@@ -116,12 +116,22 @@ export const FAITH_SIGNATURES = [
     effect: { verb: "tainting", param: 2, range: 1 }
   },
   {
+    /*
+     * **The upkeep came out of the field and went back into the sentence.**  [FIXED 2026-11-22]
+     *
+     * This wrote `whileState: "upkeep"`, which read as *the engine knows when this is standing*
+     * and was the opposite: nothing collected the secondary, nothing dropped the lie when it went
+     * unpaid, and `needs: []` on top of that claimed the card was finished. The six states the
+     * field holds now are questions about your hands and your piles; an upkeep is a price, and a
+     * price nobody collects is the one thing a cost field must not pretend to be.
+     */
     name: "The Rumour", kind: "spell", node: "faith.yellow", strength: 2, source: "The Yellow",
-    needs: [],
+    needs: ["an upkeep: a secondary spent each round to keep an effect standing"],
     description: "<p>Name a lie before the fight. One enemy type acts as if it were true, for as "
       + "long as you keep spending a secondary on it.</p>",
     effect: {
-      whileState: "upkeep", text: "one enemy type acts as though a named lie were true"
+      text: "one enemy type acts as though a named lie were true, for as long as you spend a "
+        + "secondary each round on it"
     }
   },
   {
@@ -264,8 +274,12 @@ export const FAITH_POOL = [
     effect: { range: 3, condition: "dazed", duration: 1, resist: "presence", dc: 7 }
   },
   {
+    /* **The distance is measured now and the repetition is not.**  [FIXED 2026-11-22]
+     * `noAllyNear` asks `alliesOf` within 2, which is the gap this card named -- and what is left
+     * is a heal that comes round at the start of every turn for as long as the state holds.
+     * `delay` books ONE turn; nothing books every turn, and the gap says that instead. */
     name: "Alone on the Road", strength: 1, pool: "faith", source: "Vulpet",
-    needs: ["an effect that reads how far away your allies are"],
+    needs: ["an effect that repeats at the start of every turn"],
     description: "<p>While no ally is within 2 squares, heal 2 at the start of your turn. The only "
       + "healing a priest of hers can ever receive.</p>",
     effect: {
@@ -310,16 +324,22 @@ export const FAITH_POOL = [
   },
   {
     name: "The Planted Word", strength: 1, pool: "faith", source: "The Yellow",
-    needs: [],
+    /* The reactions half is built -- `reactionsFor` is what offers one and a type it refuses is a
+     * filter -- and it is the upkeep that nothing holds, which is why the gap names the price and
+     * not the effect. [FIXED 2026-11-22] */
+    needs: ["an upkeep: a secondary spent each round to keep an effect standing"],
     description: "<p>Name one enemy type before the fight. While you spend a secondary each round, "
       + "that type cannot play reactions.</p>",
     effect: {
-      whileState: "spendSecondary", text: "one enemy type cannot play reactions"
+      text: "one enemy type cannot play reactions, for as long as you spend a secondary each round"
     }
   },
   {
     name: "Stand Where I Stand", strength: 1, pool: "faith", source: "Vax",
-    needs: ["a floor under an ally's Health"],
+    /* Was *a floor under an ally's Health*, which is the same mechanism as *Nothing Left to
+     * Take*'s floor under your own wearing a second name -- and two names for one job is how a
+     * queue comes to be ordered by what got written down first. [2026-11-22] */
+    needs: ["a floor under a figure's Health"],
     cost: { health: 2 },
     description: "<p>Allies adjacent to you cannot be reduced below 1 Health until your next "
       + "turn. His miracles are paid in yours.</p>",
@@ -744,12 +764,12 @@ export const FAITH_POOL = [
   },
   {
     name: "The Whole Cloth", strength: 4, pool: "faith", source: "The Yellow",
-    needs: ["an enemy that counts you as an ally"],
+    needs: ["an enemy that counts you as an ally", "an upkeep: a secondary spent each round to keep an effect standing"],
     description: "<p>While you keep paying a half every round, one whole kind of enemy believes "
       + "the party are its own. Stop paying and the room remembers.</p>",
     effect: {
-      whileState: "spendSecondaryEachRound",
-      text: "one enemy type believes the party are its own"
+      text: "one enemy type believes the party are its own, for as long as you spend a secondary "
+        + "each round"
     }
   },
   {
@@ -759,12 +779,17 @@ export const FAITH_POOL = [
      * that is not a gap -- it is the largest thing in the twelve gods and it is all table.
      */
     name: "The Lie That Held", strength: 5, pool: "faith", source: "The Yellow",
-    needs: [],
+    /* **The lie is table and the upkeep is not.**  [FIXED 2026-11-22] The note above stands: there
+     * is nothing for the engine to do about a fight run as though a lie had always been true. The
+     * secondary paid every round to keep it standing is a different thing entirely -- a price, with
+     * a moment it comes due and a consequence for missing it -- and that half was hidden behind a
+     * state field nothing read, which is how a 5 that edits the fiction came to declare itself
+     * finished. */
+    needs: ["an upkeep: a secondary spent each round to keep an effect standing"],
     description: "<p>Name the lie before the fight. While you spend a secondary each round it is "
       + "true, and the GM runs the fight as though it always had been.</p>",
     effect: {
-      whileState: "spendSecondaryEachRound",
-      text: "a lie named before the fight is true"
+      text: "a lie named before the fight is true, for as long as you spend a secondary each round"
     }
   },
 

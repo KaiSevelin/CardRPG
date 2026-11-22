@@ -14,8 +14,7 @@
     "source": "The Yellow",
     "description": "<p>Name a lie before the fight. One enemy type acts as if it were true, for as long as you keep spending a secondary on it.</p>",
     "effect": {
-      "whileState": "upkeep",
-      "text": "one enemy type acts as though a named lie were true"
+      "text": "one enemy type acts as though a named lie were true, for as long as you spend a secondary each round on it"
     },
     "kind": "miracle",
     "prepared": false

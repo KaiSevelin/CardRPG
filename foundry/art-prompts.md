@@ -5591,7 +5591,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Eas
 File: `signatures/faith/the-rumour.webp`
 
 ```text
-SUBJECT. "The Rumour" — strength 2 · one enemy type acts as though a named lie were true
+SUBJECT. "The Rumour" — strength 2 · one enemy type acts as though a named lie were true, for as long as you spend a secondary each round on it
 
 Draw a mouth at an ear and a hand cupped round the words, both heads cropped at the brow so neither face is readable. The listener's eye is the one thing drawn in full, and it has already believed it.
 
@@ -7332,7 +7332,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/faith/the-lie-that-held.webp`
 
 ```text
-SUBJECT. "The Lie That Held" — strength 5 · a lie named before the fight is true
+SUBJECT. "The Lie That Held" — strength 5 · a lie named before the fight is true, for as long as you spend a secondary each round
 
 Draw a plank laid across a gap with nothing under its far end and nothing holding it up, a boot's whole weight in the middle of it and not a trace of bend in the wood. Drawn from the knee down, the gap filling the lower half in ink, and the top of the frame empty.
 ```
@@ -7390,7 +7390,7 @@ Draw breath coming back -- a chest filling again, a hand steady that was not ste
 File: `spells/faith/the-planted-word.webp`
 
 ```text
-SUBJECT. "The Planted Word" — strength 1 · one enemy type cannot play reactions
+SUBJECT. "The Planted Word" — strength 1 · one enemy type cannot play reactions, for as long as you spend a secondary each round
 
 Name one enemy type before the fight. While you spend a secondary each round, that type cannot play reactions.
 
@@ -7546,7 +7546,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/faith/the-whole-cloth.webp`
 
 ```text
-SUBJECT. "The Whole Cloth" — strength 4 · one enemy type believes the party are its own
+SUBJECT. "The Whole Cloth" — strength 4 · one enemy type believes the party are its own, for as long as you spend a secondary each round
 
 While you keep paying a half every round, one whole kind of enemy believes the party are its own. Stop paying and the room remembers.
 

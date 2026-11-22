@@ -37,7 +37,8 @@ import {
   liftCondition, resolveForesee, collectBonuses,
   resolveConjure, resolveShape,
   itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore,
-  refusesAction, refusesTiming, bookDelayed, healTargets, SKILL_FLOOR,
+  refusesAction, refusesTiming, refusesState, stateHolds, stateWords,
+  bookDelayed, healTargets, SKILL_FLOOR,
   /* One strain dialog, one price. A spell pays the same cards a card half does. */
   askStrain, spellPrice, priceWords,
   readEdge, setEdge, edgeLine,
@@ -1231,6 +1232,23 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         : rule.notOnYourTurn && fight && fight.combatant?.actor?.id === this.actor.id
           ? `${when}: it answers somebody else's turn, and this one is yours.`
           : "";
+    /*
+     * **The state the step waits on, printed and gated the same way.**  [BUILT 2026-11-22]
+     *
+     * This is the `timing` shape one field along, and for the same reason: *The Empty Deck* reads
+     * *you cannot be harmed at all* and is worth a slot for about one turn in a fight, and a
+     * player could not see from the card whether this was that turn. Nine values sat in a dropdown
+     * and on eleven cards with nothing reading one.
+     *
+     * `stateHolds` answers `true`, `false` or **`null` for cannot say** -- a creature has no hand
+     * -- and only `false` greys the card. A gate that fires on *I do not know* would hide a spell
+     * for a reason the player cannot act on, which is worse than printing the rule and trusting
+     * them to read it.
+     */
+    const state = slate.system.effect?.whileState ?? "";
+    const whileWords = state ? stateWords(state) : "";
+    const held = state ? stateHolds(this.actor, state) : null;
+    const notYet = held === false ? `${whileWords}, and you are not.` : "";
     return {
       id: slate.id,
       name: slate.name,
@@ -1240,15 +1258,18 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       icon: CARDRPG.verbs.cast?.icon ?? null,
       lines: lines.length ? lines : ["\u2014"],
       /* The book is not clickable: you change what is prepared between fights, never during one.
-       * Nor is a spell whose moment this is not. */
-      passive: !prepared || !!notNow,
+       * Nor is a spell whose moment this is not, nor one whose state you are not in. */
+      passive: !prepared || !!notNow || !!notYet,
       note: `${slate.system.source || "—"} \u00b7 ${slate.system.strength} slot`
         + `${slate.system.strength === 1 ? "" : "s"}`
         + (costs ? ` \u00b7 costs ${costs}` : "")
-        + (when ? ` \u00b7 ${when}` : ""),
+        + (when ? ` \u00b7 ${when}` : "")
+        /* The gate is printed whether or not it holds, and marked when it does: a card that says
+         * nothing while the state is true is a card the player has to remember the rule for. */
+        + (whileWords ? ` \u00b7 ${whileWords}${held === true ? " \u2014 now" : ""}` : ""),
       tip: !prepared
         ? "In your book. What is prepared changes between fights, not during one."
-        : notNow || `Cast it.${costs ? ` It costs ${costs}.` : ""}`
+        : notNow || notYet || `Cast it.${costs ? ` It costs ${costs}.` : ""}`
     };
   }
 
@@ -3537,6 +3558,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
        * and in the same breath: a timing refused after `payToCast` would take the Health and the
        * slot for a cast that never happened. */
       if (refusesTiming(this.actor, slate, { what: `casting ${slate.name}` })) return;
+      /* And the state, which is the third question of the same kind and in the same place. These
+       * steps do NOTHING outside their state -- the whole effect is behind the gate -- so a cast
+       * made outside it is a slot and a price spent on nothing at all. */
+      if (refusesState(this.actor, slate, { what: `casting ${slate.name}` })) return;
       if (!await payToCast(this.actor, slate)) return;
       /*
        * The price is paid before the ward fires, and that is deliberate: *Unmake* stops the spell

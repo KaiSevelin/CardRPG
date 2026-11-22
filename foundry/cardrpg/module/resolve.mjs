@@ -3166,6 +3166,128 @@ export async function clearDue(actor) {
   if ((actor?.getFlag?.("cardrpg", DUE) ?? []).length) await actor.setFlag("cardrpg", DUE, []);
 }
 
+/* -------------------------------------------- */
+/*  A state of your own that a step waits on    */
+/* -------------------------------------------- */
+
+/**
+ * **`whileState`: the gate on a step, and what the engine can see of it.**  [BUILT 2026-11-22]
+ *
+ * Nine values over eleven steps, a dropdown on the step sheet, a column in the schema document,
+ * and **no reader anywhere** -- so *The Empty Deck* said *you cannot be harmed at all* and the
+ * engine neither knew when that was true nor ever stopped it being claimed when it was false.
+ * Four cards declared the gap in words (*a rule that reads your own hand being empty*, *empty
+ * hands as a state the engine can read*) while the field above those words read as the answer.
+ *
+ * **Six of the nine values are a question about the actor and nothing else**, which is the whole
+ * reason the field is worth having: hand size, draw pile, both hands, deck size, who is standing
+ * near. The other three were an *upkeep* -- a secondary spent every round to keep a thing
+ * standing -- which is not a state the engine can read but a price it would have to collect, and
+ * those four cards carry their rule in prose now with the gap named. A table of six is the field;
+ * a table of nine was the field plus a wish.
+ *
+ * The rules live in a table rather than a switch for the reason `COST_SCALES` and `ALLY_REACH`
+ * do: the vocabulary is in `config.mjs`, so a tenth state should be a line of config and a line
+ * here, and a value with no rule is then visibly missing rather than quietly false.
+ */
+const WHILE_STATES = {
+  handEmpty: actor => withSize(actor, "actionHand", n => n === 0),
+  /*
+   * `handsUsed`, not `handsFree === 2`: capacity is a derived number that a lost hand and *The
+   * Hand Given* are both meant to change, and *both hands are empty* is a statement about what is
+   * in them. Asking for two free hands would have made the one-handed character uncastable on the
+   * school written for giving a hand up.
+   */
+  handsEmpty: actor => (actor?.system?.handsUsed ?? null) === null
+    ? null : actor.system.handsUsed === 0,
+  oneCard: actor => withSize(actor, "actionHand", n => n === 1),
+  handAndDeckEmpty: actor => {
+    const hand = withSize(actor, "actionHand", n => n === 0);
+    const pile = withSize(actor, "action", n => n === 0);
+    return hand === null || pile === null ? null : hand && pile;
+  },
+  /*
+   * **The deck's own floor, and the label used to name a number the rules forbid.**
+   *
+   * `CARDRPG.While.ThinDeck` read *10 cards or fewer* and `actionDeckMin` is **12**, so the state
+   * could not hold for any legal character: wiring the label faithfully would have built a card
+   * that never works. The floor is the authority -- the label was written against an older one --
+   * so thin means *pruned as far as the rules allow*, which a sixteen-card starter reaches by
+   * giving up four cards. That is a real price for a real discount, which is what the card says
+   * it is buying.
+   */
+  thinDeck: actor => {
+    const deck = actor?.system?.actionDeck;
+    return deck?.min ? deck.size <= deck.min : null;
+  },
+  /*
+   * The only one that asks the board rather than the sheet, so it is the only one that can be
+   * asked when there is no board. Off the canvas `alliesOf` finds nobody, and nobody near is what
+   * this state means -- true by accident rather than by measurement, which is the right way round:
+   * a priest of Vulpet alone in a corridor with no scene loaded is alone.
+   */
+  noAllyNear: actor => alliesOf(actor, { within: 2 }).length === 0
+};
+
+/**
+ * A pile's size, or `null` when this actor has no such pile -- a creature has no hand.
+ *
+ * **Through `available`, not `cards.size`.**  A card dealt out of a deck stays in the deck flagged
+ * `drawn`, and the copy in your hand is the real one, so a draw pile's `cards.size` is the deck's
+ * whole printed contents and not the number of cards left to draw -- it would have made *hand and
+ * draw pile both empty* a state that can never hold, on the one card in the game built on it. The
+ * helper that knows this has existed since the first deal and says so in its own comment; the live
+ * probe is what found that this was not using it.
+ */
+function withSize(actor, which, ask) {
+  const id = actor?.system?.decks?.[which];
+  const stack = id ? game.cards?.get(id) : null;
+  return stack ? ask(available(stack).length) : null;
+}
+
+/**
+ * **Does that state hold for this actor right now?** `true`, `false`, or `null` for *cannot say*.
+ *
+ * The third answer is not fastidiousness. These states are read off a player's hands and piles,
+ * and a creature has neither -- it owns a deck and a discard and no hand at all. Folded into
+ * `false` it would make every gated spell refuse itself in an NPC's hands; folded into `true` it
+ * would make every one of them always on. Unreadable is its own answer, and the two callers treat
+ * it differently: the card prints the gate without greying it, and the cast is not refused.
+ */
+export function stateHolds(actor, which) {
+  const rule = WHILE_STATES[which];
+  if (!actor || !rule) return null;
+  const held = rule(actor);
+  return held === null || held === undefined ? null : !!held;
+}
+
+/** The phrase off the vocabulary, which is the card's own words and not a second wording. */
+export function stateWords(which) {
+  const key = CARDRPG.whileStates[which];
+  return key ? (game.i18n?.localize(key) ?? which) : "";
+}
+
+/**
+ * **Is this spell's state not the state you are in?**
+ *
+ * Beside `refusesTiming` and shaped like it, and called from the same three lines of the tray for
+ * the same reason: these steps have no effect at all while their state is false -- *you cannot be
+ * harmed*, *you may Strike with no item* -- so a cast made outside the state is a slot and a
+ * price paid for nothing. The timing increment settled where that guard goes; this one only adds
+ * the third question.
+ *
+ * Refused on `false` alone. `null` means the engine cannot see this actor's hand, and a guard that
+ * fires on *I do not know* is a guard that stops the game over its own blind spot.
+ */
+export function refusesState(actor, slate, { what = "that" } = {}) {
+  const which = slate?.system?.effect?.whileState ?? "";
+  if (!which) return false;
+  if (stateHolds(actor, which) !== false) return false;
+  ui.notifications?.warn(`${slate.name} only does anything ${stateWords(which).toLowerCase()}: `
+    + `${what} would cost you the slot and do nothing.`);
+  return true;
+}
+
 /**
  * **Is this the wrong moment for this spell?**  [BUILT 2026-11-21]
  *

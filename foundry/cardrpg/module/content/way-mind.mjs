@@ -697,13 +697,19 @@ export const MIND_POOL = [
    * Those are two gaps with two names on purpose; one word covering both would be the kind of merge
    * that finishes neither card.
    *
+   * **[FIXED 2026-11-22] Both are read now, and separately**, which is what keeping them apart
+   * bought: `handEmpty`, `handAndDeckEmpty` and `handsEmpty` are three rules in `WHILE_STATES`, and
+   * `handsUsed` -- a number the sheet already derived -- answers the second. What each card then
+   * DOES is still prose, and each names that now rather than the state: a floor under a figure's
+   * Health, a figure that cannot be harmed, a bare Strike, a bonus a state switches on. Four cards
+   * that looked blocked on one thing were blocked on two, and the shared one is the one built.
+   *
    * The price is parts of your body, and unlike a secret or a debt this one the engine does keep:
    * hands are what hold items.
    */
   {
     name: "Empty Hand", strength: 1, pool: "mind", source: "Asceticism",
-    needs: ["empty hands as a state the engine can read",
-      "a Strike made with no item, at your own Might"],
+    needs: ["a Strike made with no item, at your own Might"],
     description: "<p>No weapon, and no need of one. It is not a better Strike than a sword; it is "
       + "a Strike you cannot be parted from.</p>",
     effect: {
@@ -712,7 +718,12 @@ export const MIND_POOL = [
   },
   {
     name: "Nothing to Carry", strength: 1, pool: "mind", source: "Asceticism",
-    needs: ["empty hands as a state the engine can read"],
+    /* The state is read; the two things it switches on are not. The bonus is deliberately NOT
+     * written as a `bonus` field: a spell's bonus was made a condition on purpose (the Graven
+     * line, resolve.mjs), and a bonus a state turns on and off again is a third shape that
+     * neither a standing slate bonus nor a condition with a duration holds. */
+    needs: ["a standing bonus a state of your own switches on and off",
+      "immunity to a named condition, which nothing grants"],
     description: "<p>Nothing in either hand, and nothing anybody can take out of them. The bonus "
       + "to Casts is incidental; the point is that Disarm stops being a word.</p>",
     effect: {
@@ -749,9 +760,14 @@ export const MIND_POOL = [
     /*
      * The same gap *Nothing Left to Take* named, and deliberately the same STRING: a rule that can
      * read an empty hand finishes both, which is the test for whether two gaps are one.
+     *
+     * **[FIXED 2026-11-22] It did finish both, and neither card is done.** `handAndDeckEmpty` and
+     * `handEmpty` are read, which is exactly what the shared string asked for -- and the two cards
+     * then wanted different things behind the gate, so the shared string is gone and each names
+     * its own. The test was right; what it proved is that these were two gaps stacked, not one.
      */
     name: "The Empty Deck", strength: 4, pool: "mind", source: "Asceticism",
-    needs: ["a rule that reads your own hand being empty"],
+    needs: ["a figure that cannot be harmed at all"],
     description: "<p>Nothing in your hand, nothing left to draw, and nothing anybody can do to "
       + "you. It is the shortest window in the game and it is absolute.</p>",
     effect: {
@@ -1273,7 +1289,9 @@ export const MIND_SIGNATURES = [
   {
     name: "Nothing Left to Take", kind: "spell", node: "mind.asceticism", strength: 1,
     source: "Asceticism",
-    needs: ["a rule that reads your own hand being empty"],
+    /* The same string *Stand Where I Stand* carries, because it is the same rule pointed at
+     * yourself rather than at the man beside you. [2026-11-22] */
+    needs: ["a floor under a figure's Health"],
     description: "<p>There is nothing in your hand and nothing left to lose, and the second "
       + "follows from the first.</p>",
     effect: {

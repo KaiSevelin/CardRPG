@@ -4895,9 +4895,13 @@ check("Signatures the engine does everything for", built.join(", "),
   + "Nothing Gets Through, Interpose, Blood Price, Call the Unquiet, Wall of the Sphere, Wither, "
   + "The Bargain, Hearth and Home, Unmake, The Reading, "
   + "Breath of the Spirit, The Outcast's Due, Out of Barren Ground, The Silent Hour, "
-  + "The First Taste, The Rumour, The Writ, The Order's Shield, The Scourge");
+  /* *The Rumour* came OFF this list on 2026-11-22, which is the only direction it has ever gone
+   * in reverse. It declared `needs: []` on the strength of `whileState: "upkeep"` -- a field
+   * nothing read, naming a price nothing collected -- so a Signature whose whole mechanism was
+   * unbuilt has been reporting itself finished for as long as the column has existed. */
+  + "The First Taste, The Writ, The Order's Shield, The Scourge");
 const gaps = sigs.filter(sg => sg.needs?.length).map(sg => `${sg.name}: ${sg.needs.join("; ")}`);
-check("Signatures with a named gap", gaps.length, 27);
+check("Signatures with a named gap", gaps.length, 28);
 /*
  * `needs` is a LIST, and that is the lesson of the Health cost. It was the largest gap in the game
  * at six pieces of content; building it finished exactly ONE, because every other one wanted a
@@ -6547,14 +6551,23 @@ check("and mean list weight in slots",
  * rather than a balance fault -- but it is the difference a player would feel first.
  */
 /* Five: Tattoo Magic rejoined them when its seven cards named the slot they spend for good. */
+/*
+ * **Seven, and The Yellow came BACK.**  [2026-11-22] Its four lie miracles all wrote an upkeep
+ * into `whileState`, two of them with `needs: []` on top, so the god whose every card waits on an
+ * upkeep nobody collects read as the god with three finished cards. The note below says The Yellow
+ * came off this list "in the sweep: every gap they still named had been built" -- which was true,
+ * and the gaps they *stopped* naming were the ones that mattered. A list this god leaves and
+ * rejoins is the clearest argument in the file for checking the closers against the engine.
+ */
 check("lists waiting on the engine from end to end",
-  listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).length, 6);
+  listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).length, 7);
 check("and which they are",
   listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).map(([s]) => s).sort().join(", "),
   /* Fagar and The Grey are finished now: the two cards holding them back were describing
    * conditions -- The Second Thought was Dazed all along, and The Silent Hour wanted Halted. */
   /* Necromancy and The Yellow came off this list in the sweep: every gap they still named had
-   * been built, one of them two increments earlier. */
+   * been built, one of them two increments earlier. **The Yellow is back as of 2026-11-22**, for
+   * the reason above: what it had stopped naming was an upkeep hidden in a state field. */
   /* Brendan went too, and it is the neatest of them: the comment above its three miracles has
    * always said "all three resolve on a turn that has not happened", which is `delay` named in
    * prose a month before the field existed. */
@@ -6563,7 +6576,7 @@ check("and which they are",
   /* Demonology joined on the day it was written, and will stay until something holds a debt that
    * compounds. All seven formulas name it, which is the school: the price is an obligation with an
    * opinion rather than a quantity with a cap, and no `cost` field is that. */
-  "Asceticism, Demonology, Shadow Magic, Tattoo Magic, The First, Vax");
+  "Asceticism, Demonology, Shadow Magic, Tattoo Magic, The First, The Yellow, Vax");
 check("the list the engine runs best",
   listsBySource.map(([s, l]) => [s, l.filter(x => x.needs?.length).length / l.length])
     .sort((a, b) => a[1] - b[1])[0][0], "Spiritualism");
@@ -6860,8 +6873,14 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 103);
-check("content with a named gap", audited.filter(c => c.needs.length).length, 119);
+/*
+ * **103 to 100, and the three did not break.**  [2026-11-22] *The Rumour*, *The Planted Word* and
+ * *The Lie That Held* each declared `needs: []` while their only mechanism was an upkeep in a
+ * field nothing read. Three pieces left this count because the count was wrong, which is the one
+ * reason it is allowed to fall.
+ */
+check("content the engine does everything for", workingCards, 100);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 122);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -6876,7 +6895,10 @@ for (const card of audited) {
  * sleep* against an engine with no sleep that empties a fate deck. Naming it is what keeps the
  * overcharge from being a silent one.
  */
-check("distinct gaps across all content", gapCounts.size, 105);
+/* 105 to 106: four gaps' worth of strings came off (three closed by the state reader, and *a
+ * floor under an ally's Health* merged into the floor under anybody's) and two arrived -- the
+ * upkeep, and a heal that repeats every turn. [2026-11-22] */
+check("distinct gaps across all content", gapCounts.size, 106);
 /*
  * Two different questions, and the list is what lets them be asked apart.
  *
@@ -6935,9 +6957,30 @@ const GAP_CLOSERS = [
     /case "conjure"/],
   ["an effect that resolves on a later turn", c => stepsOfContent(c).some(s => s.delay),
     /step\.delay/],
-  ["an effect held up by spending a secondary",
-    c => stepsOfContent(c).some(s => /spendSecondary|upkeep/.test(s.whileState ?? "")),
-    /\bwhileState\b/],
+  /*
+   * **Three closers where there was one, and the one was the wrong half.**  [BUILT 2026-11-22]
+   *
+   * The entry here was *an effect held up by spending a secondary*, asking content for an upkeep
+   * value in `whileState` and asking the engine for the word `whileState`. Both halves were
+   * wrong in the same direction. The upkeep is not a state the engine can look up but a price it
+   * would have to collect every round, so those four cards carry it in prose now and name it as a
+   * gap -- and the word `whileState` was never a reader, which is how a field on eleven cards
+   * with no reader at all satisfied this map for as long as it existed.
+   *
+   * What the engine does read is six states of the actor, and these are the three gaps the cards
+   * NAMED and that reading them closes. Three entries rather than one because the three strings
+   * were three different asks -- a card hand, a pair of hands, a distance -- and the school that
+   * wrote two of them says in as many words that merging them would finish neither card.
+   */
+  ["empty hands as a state the engine can read",
+    c => stepsOfContent(c).some(s => s.whileState === "handsEmpty"),
+    /WHILE_STATES|stateHolds\(/],
+  ["a rule that reads your own hand being empty",
+    c => stepsOfContent(c).some(s => ["handEmpty", "handAndDeckEmpty"].includes(s.whileState)),
+    /WHILE_STATES|stateHolds\(/],
+  ["an effect that reads how far away your allies are",
+    c => stepsOfContent(c).some(s => s.whileState === "noAllyNear"),
+    /WHILE_STATES|stateHolds\(/],
   ["reading the top of a fate deck", c => stepsOfContent(c).some(s => s.readDeck),
     /\breadDeck\b/],
   /* The rule table rather than the field's spelling: `scaledCost` is what every amount goes
@@ -7058,29 +7101,32 @@ const ENGINE_SOURCE = [
 check("gap closers that name no reader at all",
   GAP_CLOSERS.filter(([, , reads]) => !reads).map(([g]) => g).join(", ") || "none", "none");
 /*
- * **Two are pinned as outstanding rather than silenced**, because that is the finding and not a
- * tidy-up. Each names a field that content writes, that this map accepts as proof of work, and that
+ * **One is pinned as outstanding rather than silenced**, because that is the finding and not a
+ * tidy-up. It names a field that content writes, that this map accepts as proof of work, and that
  * **nothing in the engine reads** -- so the gap it closes was never built and the pieces declaring
- * `needs: []` on its strength are overstating. Each wants a decision rather than a patch:
+ * `needs: []` on its strength are overstating. It wants a decision rather than a patch:
  *
  * - **`readDeck`** is probably for deleting. `foresee` already asks whose intent to read and reads
  *   it, so the field is redundant on the two cards that work and prose on the third.
- * - **`whileState`** is nine values over eleven cards, most of which the engine could see for
- *   itself -- hand size, deck size, both hands free -- and three of which carry the rule in prose.
  *
- * **It was four this morning.** `cost.taint` and `cost.scale` came off it the way `delay` did the
- * day before: `payToCast` charges all four purses now and `scaledCost` works out the amount, so a
- * spell that says it taints its caster taints them and *The Shield Line* bills a Health a man
- * instead of a Health a line. `cost.strain` was never on this list at all -- no closer happened to
- * name it -- which is worth remembering before reading the count as the whole of the debt, and is
- * why the sweep went through the schema rather than through this list.
+ * **It was four yesterday morning and two yesterday night.** `cost.taint` and `cost.scale` came
+ * off it the way `delay` did the day before: `payToCast` charges all four purses and `scaledCost`
+ * works out the amount, so a spell that says it taints its caster taints them and *The Shield
+ * Line* bills a Health a man instead of a Health a line. `cost.strain` was never on this list at
+ * all -- no closer happened to name it -- which is worth remembering before reading the count as
+ * the whole of the debt, and is why that sweep went through the schema rather than through here.
+ *
+ * **`whileState` went two ways at once**, which is the shape to expect of the ones that are left:
+ * six of its nine values are a question about the actor and are read and gated now, and the other
+ * three were an upkeep wearing a state's clothes. A field can be half built and half wished for,
+ * and a count of readers cannot see the difference -- only reading the values can.
  */
 check("and how many closers are backed by a reader",
-  GAP_CLOSERS.filter(([, , reads]) => reads && reads.test(ENGINE_SOURCE)).length, 13);
+  GAP_CLOSERS.filter(([, , reads]) => reads && reads.test(ENGINE_SOURCE)).length, 16);
 
 /* And how many each one finds, so a closer narrowing to one card is visible rather than silent. */
 check("content each closer recognises",
-  GAP_CLOSERS.map(([gap, isBuilt]) => `${audited.filter(c => isBuilt(c)).length}`).join(" "), "8 2 1 3 5 4 4 3 3 7 6 2 4 7 5");
+  GAP_CLOSERS.map(([gap, isBuilt]) => `${audited.filter(c => isBuilt(c)).length}`).join(" "), "8 2 1 3 5 2 2 1 4 3 3 7 6 2 4 7 5");
 /*
  * And the map does not rot either: a gap nobody names and nobody has built is a line in this list
  * describing nothing. Two are allowed to be unnamed, because closing them is what emptied them --
@@ -7091,7 +7137,12 @@ const CLOSED_OUTRIGHT = ["placing a trap on a square", "a reaction that stops an
   /* **[2026-11-21] And the one that was closed outright before anybody mapped it.** Six Poison
    * formulas named it while `payToPrepare` collected it; mapping it is what emptied it. */
   "skill cards set aside to pay for a formula",
-  "terrain a spell places on the map", "an effect held up by spending a secondary",
+  "terrain a spell places on the map",
+  /* **[2026-11-22] And the three the state reader emptied.** Each was named by content that still
+   * exists and still waits on something -- a bare Strike, a Health floor, a heal that repeats --
+   * so the cards did not go, only this part of what they were waiting for. */
+  "empty hands as a state the engine can read", "a rule that reads your own hand being empty",
+  "an effect that reads how far away your allies are",
   "reading the top of a fate deck", "a cost that scales with the allies it covers",
   "an effect that resolves on a later turn", "a second secondary for every ally in an area",
   "a ritual, which costs no slots at all",
@@ -7129,7 +7180,11 @@ const topOfQueue = [...queue].filter(([, n]) => n >= 4)
  * formula* -- paid once, when the formula is learned -- and nothing charges anything at learning.
  * The engine does the casting half of their sentence and not the half they are waiting on.
  */
-check("the gaps four or more pieces of content wait on", topOfQueue.join(" | "), "8 a spell slot spent for good | 6 a debt that compounds, which no cost field holds | 5 a condition applied to an area | 5 a spell that taints its caster | 5 a Wild that leaves the fate deck when you sleep | 4 an enemy that attacks its own side");
+/* **[2026-11-22] And one arrived rather than leaving.** *An upkeep: a secondary spent each round
+ * to keep an effect standing* enters at four -- all four of The Yellow's lie miracles -- and it
+ * was in the game the whole time, written as a `whileState` value that read as built. The queue
+ * gained an entry because the audit got more honest, not because anything was written. */
+check("the gaps four or more pieces of content wait on", topOfQueue.join(" | "), "8 a spell slot spent for good | 6 a debt that compounds, which no cost field holds | 5 a condition applied to an area | 5 a spell that taints its caster | 5 a Wild that leaves the fate deck when you sleep | 4 an enemy that attacks its own side | 4 an upkeep: a secondary spent each round to keep an effect standing");
 
 check("the gap mentioned by the most content", `${worst.join("; ")} (${most})`,
   "a spell slot spent for good (8)");
@@ -7160,7 +7215,7 @@ check("the gap that would finish the most content",
  * re-counted -- which is the only way a number here is allowed to fall.
  */
 check("gaps that would finish exactly one piece of content",
-  [...finishes.values()].filter(n => n === 1).length, 61);
+  [...finishes.values()].filter(n => n === 1).length, 62);
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.
@@ -11058,8 +11113,23 @@ check("and it reads the rule rather than naming the timings",
  * would do exactly that.
  */
 check("and it is asked before the cast is paid for",
-  /refusesTiming\(this\.actor, slate[\s\S]{0,220}?await payToCast/.test(traySource)
+  /refusesTiming\(this\.actor, slate[\s\S]{0,600}?await payToCast/.test(traySource)
     ? "yes" : "no", "yes");
+/*
+ * **And the state guard joined that queue, so the order is pinned as an order.**  [2026-11-22]
+ *
+ * The window above was 220 characters and the comment explaining the new guard overran it, which
+ * is a check that fails when the code is EXPLAINED rather than when it breaks -- the same fault as
+ * a closer naming a string literal. Three questions and a payment, in that sequence, is the thing
+ * that matters: all three refuse before anything is spent, and the order between the three is
+ * free.
+ */
+const castGuards = ["refusesAction(this.actor", "refusesTiming(this.actor",
+  "refusesState(this.actor", "await payToCast(this.actor"]
+  .map(fragment => traySource.indexOf(fragment));
+check("every guard on a cast is asked, and before the price",
+  castGuards.every((at, k) => at >= 0 && (k === 0 || at > castGuards[k - 1])) ? "in order"
+    : castGuards.join(","), "in order");
 /* And the player can see it coming: the label is on the card, so a spell nobody may cast yet says
  * which moment it is waiting for rather than simply refusing when clicked. */
 check("the spell card prints which moment it wants",
@@ -11146,7 +11216,13 @@ for (const [what, count, read] of [
   ["go straight through armour, Block or cover", 13,
     s => s.st.ignoresArmour || s.st.ignoresBlock || s.st.ignoresCover],
   ["name whose fate deck they Read", 4, s => s.st.readDeck],
-  ["wait on a state of the player's own", 11, s => s.st.whileState]
+  /*
+   * **Eleven to seven, and the four that left were not built.**  [2026-11-22] They carried the
+   * upkeep values -- a secondary spent each round -- which is a price and not a state, so their
+   * rule went back into their own sentences with the gap named. The seven that stayed are read by
+   * `stateHolds` and gated by `refusesState`.
+   */
+  ["wait on a state of the player's own", 7, s => s.st.whileState]
 ]) {
   check(`steps that ${what}`, everyStep.filter(read).length, count);
 }
@@ -11759,9 +11835,19 @@ check("and that it leaves Health and conditions alone",
  * are features now and a feature is permanent by having no gate to pass, so the word was retired
  * and the three steps are left carrying what they always really carried: a sentence.
  */
+/*
+ * **26 to 30, and up is the honest direction here.**  [2026-11-22]
+ *
+ * This number has only ever gone down, because every increment before this one moved a rule out of
+ * a sentence and into a field. The four upkeep cards went the other way: the field they carried
+ * was read by nothing and *counted by the audit as the gap being closed*, so a card whose whole
+ * mechanism was unbuilt reported itself finished. A sentence the engine drops on the floor is bad;
+ * a field the engine drops on the floor while the audit calls it built is worse, because only the
+ * first is visible to anybody reading the card.
+ */
 check("and steps that carry prose and nothing else",
   proseLeft.filter(s => Object.keys(s.st).filter(k => k !== "text" && s.st[k] !== null
-    && s.st[k] !== "" && !(typeof s.st[k] === "object")).length === 0).length, 26);
+    && s.st[k] !== "" && !(typeof s.st[k] === "object")).length === 0).length, 30);
 
 /* ---- the compendium packs ship the content, and ship today's ---- */
 
@@ -17647,6 +17733,261 @@ check("and where each of them lands", taintKinds.join(" | "),
   globalThis.canvas = savedCanvas;
 }
 
+/* -------------------------------------------- */
+
+/*
+ * **A state of your own, which eleven steps named and nothing read.**  [BUILT 2026-11-22]
+ *
+ * `whileState` was nine values, a dropdown on the step sheet, a row in the schema document, and no
+ * reader anywhere -- so *The Empty Deck* promised *you cannot be harmed at all* and the engine
+ * neither knew when that was true nor stopped it being claimed when it was false. Worse than inert:
+ * `GAP_CLOSERS` accepted the field as proof that *an effect held up by spending a secondary* had
+ * been built, and four cards declaring the gap in words sat above a field that read as the answer.
+ *
+ * The field went two ways. Six values are a question about the actor -- hand, draw pile, hands,
+ * deck size, who is near -- and those are read and gated. The other three were an **upkeep**, a
+ * secondary spent every round to keep a thing standing, which is not a state to look up but a
+ * price to collect; those four cards carry it in prose with the gap named, and the three values
+ * are out of the vocabulary. **A field can be half built and half wished for**, and no count of
+ * readers can see that -- only reading the values can.
+ */
+check("the state is read by one routine",
+  /export function stateHolds\(actor, which\)/.test(resolveSource) ? "yes" : "no", "yes");
+check("and refused by one beside it",
+  /export function refusesState\(actor, slate/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **The three-valued answer, which is the whole of why this guard is safe to add.** A creature owns
+ * a deck and a discard and **no hand at all**, so *is your hand empty* has no answer for one.
+ * Folded into `false` the guard would refuse every gated spell in an NPC's hands; folded into
+ * `true` it would make every one of them permanently on. `null` is the third answer and the two
+ * callers part company on it: the card prints the rule without greying, and the cast is allowed.
+ */
+check("and a state the engine cannot see refuses nothing",
+  /if \(stateHolds\(actor, which\) !== false\) return false;/.test(resolveSource) ? "yes" : "no",
+  "yes");
+check("and the reader says so rather than guessing",
+  /`true`, `false`, or `null` for \*cannot say\*/.test(resolveSource) ? "yes" : "no", "yes");
+
+/*
+ * **Every value the vocabulary offers has a rule, and the engine invents none.** The same pair of
+ * questions the timings and the cost scales are held to, read off the table's own keys in both
+ * directions: a tenth state added as a bare label would otherwise join the game as a dropdown
+ * entry that is silently never true, which is the exact defect this whole increment is about.
+ */
+const statesAt = resolveSource.indexOf("const WHILE_STATES = {");
+const statesEnd = resolveSource.indexOf("\n};", statesAt);
+check("the engine's table of states was found", statesAt >= 0 && statesEnd > statesAt, true);
+const whileRules = [...resolveSource.slice(statesAt, statesEnd).matchAll(/^  (\w+): /gm)]
+  .map(m => m[1]);
+check("states the engine has a rule for", whileRules.slice().sort().join(", "),
+  Object.keys(CARDRPG.whileStates).sort().join(", "));
+check("and the vocabulary offers no state the engine cannot answer",
+  Object.keys(CARDRPG.whileStates).filter(k => !whileRules.includes(k)).join(", ") || "none",
+  "none");
+/* And the three that were not states are gone from the vocabulary rather than left unruled. */
+check("the upkeep values are out of the vocabulary",
+  ["spendSecondary", "spendSecondaryEachRound", "upkeep"]
+    .filter(k => k in CARDRPG.whileStates).join(", ") || "none", "none");
+check("and no step still writes one",
+  everyStep.filter(s => /spendSecondary|upkeep/.test(s.st.whileState ?? "")).length, 0);
+check("and the four that did name the gap instead",
+  audited.filter(c => (c.needs ?? [])
+    .includes("an upkeep: a secondary spent each round to keep an effect standing"))
+    .map(c => c.name).sort().join(", "),
+  "The Lie That Held, The Planted Word, The Rumour, The Whole Cloth");
+/* And their rule is in their own sentence now, which is the point of calling it prose. */
+check("and each says so on its face",
+  audited.filter(c => (c.needs ?? [])
+    .includes("an upkeep: a secondary spent each round to keep an effect standing"))
+    .filter(c => stepsOfContent(c).some(st => /secondary each round/.test(st.text ?? ""))).length,
+  4);
+
+/*
+ * **The label named a number the rules forbid.**  [FIXED 2026-11-22]
+ *
+ * `CARDRPG.While.ThinDeck` read *10 cards or fewer* and `actionDeckMin` is **12**, so the state
+ * could not hold for any legal character and wiring the label faithfully would have built a card
+ * that never works. The floor is the authority -- the label was written against an older one -- so
+ * thin means *pruned as far as the rules allow*, which a sixteen-card starter reaches by giving up
+ * four cards. The two numbers are checked against each other here so neither can drift alone.
+ */
+check("the thin-deck label no longer names a number",
+  /\d/.test(lang["CARDRPG.While.ThinDeck"] ?? "") ? lang["CARDRPG.While.ThinDeck"] : "no number",
+  "no number");
+check("and the rule reads the deck's own floor",
+  /deck\?\.min \? deck\.size <= deck\.min/.test(resolveSource) ? "yes" : "no", "yes");
+check("and the floor a starter deck has to prune to", CARDRPG.defaults.actionDeckMin, 12);
+
+/*
+ * **The six rules, driven.** Each one is a question about a stub actor and there is no way to tell
+ * a right answer from a plausible one by reading the table: *exactly one card* and *empty* are one
+ * character apart, and `handsUsed` against `handsFree` is the difference between a card that works
+ * for a one-handed character and one that does not.
+ */
+{
+  const savedGame = globalThis.game;
+  const savedCanvas = globalThis.canvas;
+  const piles = {};
+  globalThis.game = {
+    i18n: { localize: key => ({
+      "CARDRPG.While.HandEmpty": "While your hand is empty",
+      "CARDRPG.While.HandsEmpty": "While both hands are empty"
+    }[key] ?? key) },
+    cards: { get: id => piles[id] ?? null }
+  };
+  globalThis.canvas = { ready: false, tokens: { placeables: [] } };
+  const state = await import("../module/resolve.mjs");
+  /*
+   * **A stack is a `Cards` document with a TYPE, and the type is the whole of this.**  A deck keeps
+   * a card it has dealt out, flagged `drawn`, and the copy in the hand shares its id -- so a draw
+   * pile's `cards.size` is the deck's printed contents and not what is left to draw. `available`
+   * is the helper that knows, and the first version of this stub handed the rule a bare `size` and
+   * so could not tell that the rule was reading the wrong number. The live world told it instead.
+   *
+   * `decks` names the piles this actor HAS, and leaving one out is how a creature is modelled:
+   * `game.cards.get` then answers null and the rule has nothing to measure.
+   */
+  const stack = (kind, cards) => ({
+    type: kind,
+    cards: { size: cards.length, contents: cards, filter: f => cards.filter(f) }
+  });
+  const who = ({ hand = 0, left = 0, loaned = 0, hands = 0, deck = 16, decks = null } = {}) => {
+    piles.hand = stack("hand", Array.from({ length: hand }, () => ({ drawn: true })));
+    piles.pile = stack("deck", [
+      ...Array.from({ length: left }, () => ({ drawn: false })),
+      ...Array.from({ length: loaned }, () => ({ drawn: true }))
+    ]);
+    return {
+      id: "who", name: "Who", type: "character",
+      system: {
+        handsUsed: hands,
+        actionDeck: { size: deck, min: 12 },
+        decks: decks ?? { actionHand: "hand", action: "pile" }
+      },
+      getActiveTokens: () => []
+    };
+  };
+  const holds = (which, options) => state.stateHolds(who(options), which);
+
+  check("an empty hand is empty", holds("handEmpty", { hand: 0, left: 5 }), true);
+  check("and a hand of one is not", holds("handEmpty", { hand: 1 }), false);
+  check("exactly one card is exactly one", holds("oneCard", { hand: 1 }), true);
+  check("and nought is not one", holds("oneCard", { hand: 0 }), false);
+  check("and two are not one either", holds("oneCard", { hand: 2 }), false);
+  /* Both halves of the hardest one: an empty hand with cards left to draw is not this state. */
+  check("hand and pile both empty", holds("handAndDeckEmpty", { hand: 0, left: 0 }), true);
+  check("and an empty hand with a pile behind it is not",
+    holds("handAndDeckEmpty", { hand: 0, left: 7 }), false);
+  check("and a hand with an empty pile behind it is not either",
+    holds("handAndDeckEmpty", { hand: 2, left: 0 }), false);
+  /*
+   * **And the row that was the bug.** A draw pile holding nothing but the placeholders of cards
+   * already dealt out has nothing left to draw, and `cards.size` says sixteen. Read that way the
+   * state could never hold for anybody -- on the one card in the game built on it, a strength-4
+   * formula whose window is the shortest in the game and is supposed to be absolute.
+   */
+  check("a draw pile of nothing but cards on loan is empty",
+    holds("handAndDeckEmpty", { hand: 0, left: 0, loaned: 16 }), true);
+  check("and one real card among them is not",
+    holds("handAndDeckEmpty", { hand: 0, left: 1, loaned: 15 }), false);
+  check("both hands empty is nothing held", holds("handsEmpty", { hands: 0 }), true);
+  check("and one sword is not nothing", holds("handsEmpty", { hands: 1 }), false);
+  /* The deck floor, from both sides of it and from the one square it actually turns on. */
+  check("a deck pruned to the floor is thin", holds("thinDeck", { deck: 12 }), true);
+  check("and a starter deck is not", holds("thinDeck", { deck: 16 }), false);
+  check("and one card above the floor is not", holds("thinDeck", { deck: 13 }), false);
+  /* Off the canvas nobody is near, which is what the state means rather than a failure to look. */
+  check("and no ally near, with no board to look at", holds("noAllyNear", {}), true);
+
+  /* The third answer, which is the one that keeps this guard out of an NPC's way. */
+  check("a creature with no hand cannot be asked",
+    holds("handEmpty", { decks: { action: "pile" } }), null);
+  check("and a value the engine has never heard of is not a refusal",
+    state.stateHolds(who(), "whileTheMoonIsFull"), null);
+  check("and nor is an actor that is not there", state.stateHolds(null, "handEmpty"), null);
+
+  /*
+   * And the refusal, through the same door the tray uses. A spell with no state is never refused --
+   * most spells have none -- and one whose state is false is, with the card's own words in the
+   * warning rather than a second phrasing.
+   */
+  const warned = [];
+  globalThis.ui = { notifications: { warn: line => warned.push(line) } };
+  const gated = which => ({ name: "The Empty Hand", system: { effect: { whileState: which } } });
+  check("a spell with no state is cast",
+    state.refusesState(who({ hands: 1 }), { name: "Plain", system: { effect: {} } }), false);
+  check("and one whose state holds is cast",
+    state.refusesState(who({ hands: 0 }), gated("handsEmpty")), false);
+  check("and one whose state does not is refused",
+    state.refusesState(who({ hands: 2 }), gated("handsEmpty")), true);
+  check("and the warning uses the card's own words",
+    /while both hands are empty/.test(warned.at(-1) ?? "") ? "yes" : "no", "yes");
+  check("and says what it would have cost",
+    /would cost you the slot and do nothing/.test(warned.at(-1) ?? "") ? "yes" : "no", "yes");
+  check("and a creature is not refused for having no hand",
+    state.refusesState(who({ decks: { action: "pile" } }), gated("handEmpty")), false);
+
+  delete globalThis.ui;
+  globalThis.game = savedGame;
+  globalThis.canvas = savedCanvas;
+}
+
+/*
+ * And the schema document names each state and what the engine asks of it, read off the vocabulary
+ * rather than typed in a second time -- a table of six in a document beside a table of six in the
+ * engine is two tables, and one of them goes stale quietly.
+ */
+check("the schema document names every state the engine reads",
+  Object.keys(CARDRPG.whileStates).filter(k => !cardSchemaDoc.includes(`\`${k}\``)).join(", ")
+  || "none", "none");
+check("and names the three it stopped offering",
+  ["spendSecondary", "spendSecondaryEachRound", "upkeep"]
+    .filter(k => !cardSchemaDoc.includes(`\`${k}\``)).join(", ") || "none", "none");
+check("and says why they were not states",
+  /not a state to look\nup but a price to collect/.test(cardSchemaDoc) ? "yes" : "no", "yes");
+
+/* And the three are gone from the places that could still offer them: a value left in the config
+ * is a value the step sheet still puts in the dropdown, and one left in the lang file is a label
+ * waiting for it. The step template reads the table, so it needs no grep of its own. */
+/* **The TABLE, not the file.** The first version of this grep read the whole of `config.mjs` and
+ * found `spendSecondaryEachRound` -- in the comment explaining why it had been removed. The same
+ * trap `ENGINE_SOURCE` fell into yesterday from the other direction, and the fourth time prose
+ * about a field has answered a question about the field. [2026-11-22] */
+const whileTable = configSource.slice(configSource.indexOf("CARDRPG.whileStates = {"),
+  configSource.indexOf("};", configSource.indexOf("CARDRPG.whileStates = {")));
+check("the vocabulary table was found", whileTable.includes("handEmpty"), true);
+check("the upkeep values are gone from the vocabulary",
+  /spendSecondary|upkeep/.test(whileTable) ? "still there" : "gone", "gone");
+check("and their labels went with them",
+  Object.keys(lang).filter(k => /^CARDRPG\.While\.(SpendSecondary|Upkeep)/.test(k)).join(", ")
+  || "gone", "gone");
+check("and the label that named a forbidden number is gone",
+  /10 cards or fewer/.test(JSON.stringify(lang)) ? "still there" : "gone", "gone");
+
+/*
+ * **And the state is on the card before it is clicked**, which is the half the player sees. The
+ * config comment has said since the vocabulary was written that *a condition the software can read
+ * is a condition it can SHOW*, and for eleven cards it showed none of them: *The Empty Deck* is
+ * worth a slot for about one turn in a fight and nothing on the card said whether this was it.
+ */
+check("the spell card prints the state the step waits on",
+  /const whileWords = state \? stateWords\(state\) : "";/.test(traySource) ? "yes" : "no", "yes");
+check("and marks it when it is true right now",
+  /held === true \? " \\u2014 now" : ""/.test(traySource) ? "yes" : "no", "yes");
+/* Printed either way: a card silent while the state holds is a card whose rule must be remembered
+ * rather than read. */
+check("and prints it even when it does not hold",
+  /whileWords \? ` \\u00b7 \$\{whileWords\}/.test(traySource) ? "yes" : "no", "yes");
+check("and the words come off the vocabulary rather than the tray",
+  /export function stateWords\(which\)/.test(resolveSource)
+    && /CARDRPG\.whileStates\[which\]/.test(resolveSource) ? "yes" : "no", "yes");
+/* And nothing greys the card on the third answer, which would hide a spell for a reason the
+ * player cannot act on. */
+check("the card greys only on a state that is really false",
+  /const notYet = held === false \?/.test(traySource) ? "yes" : "no", "yes");
+
+/* -------------------------------------------- */
+
 /*
  * **And the price is on the card before it is clicked**, which is the other half of a working
  * field. The spell card printed `costs N Health` and nothing else: *The Charge* said *2 slots* and
@@ -17981,9 +18322,20 @@ check("the tray offers a spells deck",
 /* **[2026-11-21] And nor is one whose moment this is not.** The clause grew a second term when the
  * timings were wired, which is the point of pinning the line rather than the behaviour: `passive`
  * is the one state this card has for *not clickable, and the tip says why*, and a second greyed
- * state meaning something subtly different is how two reasons come to look like one. */
+ * state meaning something subtly different is how two reasons come to look like one.
+ *
+ * **[2026-11-22] A third term, for the state.** The clause is read out rather than matched whole,
+ * so the check is on the SHAPE: one `passive`, fed by every reason there is. A fourth reason will
+ * arrive and should not break this; a fourth greyed field beside `passive` still will.
+ */
+const greyClause = /passive: !prepared(?: \|\| !![A-Za-z]+)+,/.exec(traySource)?.[0] ?? "none";
 check("and only a prepared spell is clickable",
-  /passive: !prepared \|\| !!notNow,/.test(traySource) ? "yes" : "no", "yes");
+  greyClause.includes("!prepared") ? "yes" : "no", "yes");
+check("and every reason it is not reaches the same state",
+  greyClause, "passive: !prepared || !!notNow || !!notYet,");
+/* And each reason reaches the tip too, so the card never greys without saying why. */
+check("and the tip says which reason it was",
+  /: notNow \|\| notYet \|\| `Cast it\./.test(traySource) ? "yes" : "no", "yes");
 
 /* -------------------------------------------- */
 

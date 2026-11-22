@@ -1140,12 +1140,21 @@ CARDRPG.readDecks = {
  * **A state of your own that a step waits on**, which eleven steps described in prose.
  *
  * Every value is a phrase off a card rather than a category invented for the table, and the list
- * is long because the cards are specific: *while your hand is empty* and *while your hand is
- * exactly one card* are two different builds, and a Way is built on each.
+ * is specific because the cards are: *while your hand is empty* and *while your hand is exactly
+ * one card* are two different builds, and a Way is built on each.
  *
- * Most of these the engine can see for itself -- hand size, deck size, whether both hands are free,
- * whether an ally is near -- which is the point: a condition the software can read is a condition
- * it can SHOW, and a card whose whole design is an empty hand should say so on its face.
+ * All six the engine can see for itself -- hand size, draw pile, whether both hands are empty,
+ * deck size, whether an ally is near -- which is the point: a condition the software can read is a
+ * condition it can SHOW, and a card whose whole design is an empty hand should say so on its face.
+ * `stateHolds` is the reader and `refusesState` is the gate (resolve.mjs).
+ *
+ * **It was nine, and the other three were not states.**  [FIXED 2026-11-22] `spendSecondary`,
+ * `spendSecondaryEachRound` and `upkeep` were one rule written three ways -- *a secondary spent
+ * every round to keep a thing standing* -- which is not something the engine can look up but a
+ * price it would have to collect every round and drop the effect when you stop. The four cards
+ * that wrote them carry the rule in prose and name that gap. A value nothing can read is a choice
+ * in a dropdown and nothing else, which is the lesson `timing` taught from the other side; here it
+ * was worse, because the audit counted the field as the gap being closed.
  */
 CARDRPG.whileStates = {
   handEmpty: "CARDRPG.While.HandEmpty",
@@ -1153,10 +1162,7 @@ CARDRPG.whileStates = {
   oneCard: "CARDRPG.While.OneCard",
   handAndDeckEmpty: "CARDRPG.While.HandAndDeckEmpty",
   thinDeck: "CARDRPG.While.ThinDeck",
-  noAllyNear: "CARDRPG.While.NoAllyNear",
-  spendSecondary: "CARDRPG.While.SpendSecondary",
-  spendSecondaryEachRound: "CARDRPG.While.SpendSecondaryEachRound",
-  upkeep: "CARDRPG.While.Upkeep"
+  noAllyNear: "CARDRPG.While.NoAllyNear"
 };
 
 /**
