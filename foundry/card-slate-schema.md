@@ -281,10 +281,60 @@ an unbuilt field but a **dropped** one, which is worse: the card looked like it 
 
 What made it survivable for so long is that the suite's gap map accepted the field's PRESENCE as
 proof of work — write `delay: 2` and the audit declared *an effect that resolves on a later turn*
-built. Each closer now names the thing the engine must contain for its claim to hold, and four of
-them are pinned as outstanding rather than silenced: `whileState`, `readDeck`, `cost.scale` and
-`cost.taint`. **`payToCast` charges Health and `payToPrepare` charges skill cards, and that is all**
-— taint, strain and scale are collected by nothing.
+built. Each closer now names the thing the engine must contain for its claim to hold, and that is
+what found the price ledger.
+
+### The four purses, and the three nothing opened  **[FIXED 2026-11-21]**
+
+`payToCast` charged `cost.health` and `wilds`. **`cost.taint`, `cost.strain` and `cost.scale` were
+read by no code path at all** — three spells said they tainted their caster and did not, three
+said they strained a deck and did not, and the five whose price scales were charged the rate instead
+of the bill: *The Shield Line* billed one Health for a line of four men. The schema said so in as
+many words, in a doc block that outlived its truth by three fields: *Health and nothing else, for
+now*.
+
+| Field | Charged by | When |
+|---|---|---|
+| `health` | `payToCast` | at casting, with a floor of 1 |
+| `taint` | `payToCast`, through `resolveTaint` | at casting, into the body or the head |
+| `strain` | `payToCast`, through `askStrain` | at casting, cards out of the action hand |
+| `scale` | `scaledCost`, for the three above | whenever an amount is worked out |
+| `skillCards` | `payToPrepare` | at preparing, and only there |
+
+Three things fell out of the wiring that the field names alone do not say.
+
+**A scale either multiplies the amount or replaces it.** `perAlly` is a rate — *this much, per
+man covered* — and the `1` written beside `halfCurrent` and `wholeHand` is the schema's minimum
+and means nothing, because the amount IS whatever you are holding. As multipliers they would have
+made *The Last Drop* cost half a Health. A scale also never creates a price the card did not write:
+zero stays zero whatever the rule says, which is what lets one scale sit beside four currencies and
+charge only the one the card names.
+
+**Which deck a Taint goes into is the slate's own `kind`.** core-rules 8 splits Taint in two —
+body taint rides in the action deck, mind taint in the skill deck — and a spell's price lands
+exactly on that line: a god's price is paid in the body and a formula's in the head. No new field
+and no list of schools in the engine.
+
+**Strain is asked for in one place.** The tray has asked for the cards a card half costs since
+halves were built; the asking moved to `askStrain` and a spell asks it too, because a second dialog
+would have been a second set of rules about what may be spent. The hand is counted before anything
+is asked, nothing is charged until the picking is done, and a bill that IS the whole hand opens no
+dialog at all — choosing four cards out of four, one at a time, is not a decision.
+
+And one card came OUT of the field: *Taste of the Rot* pays its Taint **only on a Miss**, which the
+working field would have charged on every cast. A cost field means *what casting this costs*, and a
+conditional price is not that, so the number went back into the card's own text with a gap naming
+what the engine cannot do — the mirror image of *The Kingmaker's Draught*, whose price is
+**refunded** when the target dies.
+
+Two closers are still pinned as outstanding rather than silenced: `whileState` and `readDeck`.
+
+**And the map's blind spot ran both ways.** Six Poison formulas named *skill cards set aside to pay
+for a formula* as a gap while `payToPrepare` had been collecting it since the price was built —
+six mentions, which put it at the joint top of the queue, and the rot check could not see it because
+**nothing had mapped `cost.skillCards` at all**. A gap is only checked against the engine if
+somebody thought to map it. The queue is a claim about what to build next, so a finished job sitting
+in it is worse than a missing one.
 
 **And the other four were read by nothing until 2026-11-21.**  **[WIRED]** Content wrote a timing
 on twenty-three spells, the schema took its choices from the vocabulary, and the suite checked that

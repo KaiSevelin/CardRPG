@@ -694,6 +694,10 @@ export class SlateSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       approaches: CARDRPG.approaches,
       elements: CARDRPG.elements,
       reactions: CARDRPG.reactions,
+      /* The three prices that started doing something on 2026-11-21 and had nowhere to be edited:
+       * a field the engine charges and the sheet cannot set is the same half-built shape from the
+       * other side. */
+      costScales: CARDRPG.costScales,
       verbs: CARDRPG.verbs,
       conditions: CARDRPG.conditions,
       drain: describeDrain(slate),

@@ -157,18 +157,18 @@ export class SpellSlateData extends SlateData {
       effect: stepField(),
 
       /*
-       * What casting it costs, over and above the slot it occupies.
-       *
        * **Six pieces of content were waiting on this one field** and the audit named it the largest
        * gap in the game: three of Blood Magic's formulas and three of Vax's miracles. Two Ways
        * arrived at the same mechanism from opposite ends -- a mage spending their own substance to
        * buy power, and a war god who counts his priest's blood first -- which is the clearest sign
        * a thing belongs in the schema rather than on a card.
        *
-       * Health and nothing else, for now. Strain and Spent are costs a CARD HALF pays
-       * (data/cards.mjs) and a spell is not a card half; Valtor's *every miracle costs Strain 1* is
-       * an obedience, and obediences are the GM's. This is the one price the engine can charge,
-       * because Health is a number it already keeps.
+       * **This block used to end "Health and nothing else, for now"**, and that sentence outlived
+       * its truth by three fields: `taint`, `strain` and `scale` were added beside it and the note
+       * went on saying a spell could not pay in cards. It is kept as a dated note rather than
+       * deleted because it is the reason the three were collected by nothing for so long -- the
+       * schema said the engine charged one price, so nobody went looking for the other three.
+       * [FIXED 2026-11-21] `payToCast` charges all four.
        */
       /*
        * **What casting it costs you**, beyond the slot its strength fills.
@@ -181,6 +181,20 @@ export class SpellSlateData extends SlateData {
        * The step does NOT get a cost of its own, deliberately. A price in two places is a spell
        * that can be charged for twice, by two readers, and `costs` on a card half is already the
        * other half of this idea for a card that is not a spell.
+       *
+       * **What charges what**, so this cannot drift again:
+       *
+       * | Field | Charged by | When |
+       * |---|---|---|
+       * | `health` | `payToCast` | at casting, with a floor of 1 |
+       * | `taint` | `payToCast`, through `resolveTaint` | at casting, into the body or the head |
+       * | `strain` | `payToCast`, through `askStrain` | at casting, cards out of the action hand |
+       * | `scale` | `scaledCost`, for all three above | whenever an amount is worked out |
+       * | `skillCards` | `payToPrepare` | at preparing, and only there |
+       *
+       * `scale` deliberately does not reach `skillCards`: the Poison school's price is the
+       * formula's strength, which is a number the card already knows, and a rate makes no sense of
+       * it. No spell writes both.
        */
       cost: new fields.SchemaField({
         health: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),

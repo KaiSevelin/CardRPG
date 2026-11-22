@@ -7200,7 +7200,7 @@ Draw footing lost, landing 3 squares from the one who threw it; pulled toward so
 File: `spells/faith/taste-of-the-rot.webp`
 
 ```text
-SUBJECT. "Taste of the Rot" — strength 1 · Cast +1 range 1 Off Balance (1) the Taint only on a Miss · costs 1 Taint
+SUBJECT. "Taste of the Rot" — strength 1 · Cast +1 range 1 Off Balance (1) on a Miss, 1 Taint for the caster
 
 One adjacent enemy: 1 damage and Off-Balance, no save. A Miss costs you a Taint, which is the god being paid whether or not it worked.
 

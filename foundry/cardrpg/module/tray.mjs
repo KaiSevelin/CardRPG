@@ -38,6 +38,8 @@ import {
   resolveConjure, resolveShape,
   itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore,
   refusesAction, refusesTiming, bookDelayed, healTargets, SKILL_FLOOR,
+  /* One strain dialog, one price. A spell pays the same cards a card half does. */
+  askStrain, spellPrice, priceWords,
   readEdge, setEdge, edgeLine,
   /* core-rules 11's push, pull and throw, which nothing could express until today. */
   forceMove
@@ -1194,7 +1196,20 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     if (e.range) lines.push(`Range ${e.range}`);
     if (e.text) lines.push(e.text);
 
-    const cost = slate.system.cost?.health ?? 0;
+    /*
+     * **The whole price, through the one call that charges it.**  [FIXED 2026-11-21]
+     *
+     * This read `cost.health` and nothing else, which was accurate while Health was the only price
+     * collected and became a lie the moment three more were: a card that says *1 slot* for *The
+     * Charge* is a card that does not mention the two cards it is about to take out of your hand.
+     * The Wild was invisible here too, and had been since Shadow Magic's price was built.
+     *
+     * `spellPrice` is what `payToCast` charges, so the card cannot promise a different bill from
+     * the one the click presents -- including a scaled price, which moves as the line forms.
+     */
+    const price = spellPrice(this.actor, slate);
+    const words = priceWords(price);
+    const costs = words.length ? words.join(", ") : "";
     const prepared = slate.system.prepared;
     /*
      * **The timing, printed and enforced in the same breath.**  [BUILT 2026-11-21]
@@ -1229,11 +1244,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       passive: !prepared || !!notNow,
       note: `${slate.system.source || "—"} \u00b7 ${slate.system.strength} slot`
         + `${slate.system.strength === 1 ? "" : "s"}`
-        + (cost ? ` \u00b7 costs ${cost} Health` : "")
+        + (costs ? ` \u00b7 costs ${costs}` : "")
         + (when ? ` \u00b7 ${when}` : ""),
       tip: !prepared
         ? "In your book. What is prepared changes between fights, not during one."
-        : notNow || `Cast it.${cost ? ` It costs ${cost} Health.` : ""}`
+        : notNow || `Cast it.${costs ? ` It costs ${costs}.` : ""}`
     };
   }
 
@@ -2873,6 +2888,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * playing are not other cards, so a half can never pay for itself, and a hand too thin to cover
    * the bill refuses the turn rather than part-paying it -- the same shape as an unpaid Ready.
    *
+   * **The asking moved to `askStrain` and a spell asks it too.**  [2026-11-21] `cost.strain` on a
+   * spell slate was read by nothing, so Valtor's three miracles cost a priest no cards at all.
+   * Fixing that with a second dialog would have been a second set of rules about what may be spent
+   * -- the player picks here and at random in Catch Breath, and which of those applies is exactly
+   * the kind of thing two copies come to disagree about. So this keeps what belongs to a turn (what
+   * is owed, what is being played, what the refusal advises) and the cards are asked for once.
+   *
    * The player picks which cards go. Catch Breath recovers at random because choosing there would
    * be a free upgrade; here the choosing IS the cost, and taking it away would leave a flat tax
    * with no decision in it.
@@ -2884,16 +2906,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       n + (hand?.cards.get(cardId)?.system.costFor?.(half)?.strain ?? 0), 0);
     if (!owed) return true;
 
-    const playing = new Set(this.staged.map(s => s.cardId));
-    const payable = (hand?.cards.contents ?? []).filter(c => !playing.has(c.id));
-    if (payable.length < owed) {
-      ui.notifications.warn(
-        `This turn strains ${owed}, and your hand holds ${payable.length} other `
-        + `card${payable.length === 1 ? "" : "s"}. Stage something cheaper, or draw first.`);
-      return false;
-    }
-
-    const picked = await CardRPGTray.#payStrain(payable, owed);
+    const picked = await askStrain(this.actor, owed, {
+      exclude: this.staged.map(s => s.cardId),
+      what: "this turn",
+      advice: "Stage something cheaper, or draw first."
+    });
     if (!picked) return false;
 
     const names = picked.map(id => cardName(hand.cards.get(id))).join(", ");
@@ -2904,38 +2921,6 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         + `discarding <em>${names}</em>.</p></div>`
     });
     return true;
-  }
-
-  /**
-   * Ask for the cards one at a time, rather than as a form with a count to police.
-   *
-   * One card per prompt means the dialog cannot be answered wrongly: there is no way to tick three
-   * boxes when the bill is two, and no way to confirm having ticked none. Backing out of any
-   * prompt cancels the whole turn, because a half-paid cost is not a cost.
-   *
-   * @returns {Promise<string[]|null>} the chosen card ids, or null if the player backed out.
-   */
-  static async #payStrain(cards, owed) {
-    const left = [...cards];
-    const picked = [];
-
-    for (let i = 1; i <= owed; i++) {
-      const chosen = await foundry.applications.api.DialogV2.wait({
-        window: { title: `Strain ${owed}` },
-        content: `<div class="cardrpg"><p>Discard a card from your hand to pay for this turn `
-          + `(${i} of ${owed}). It goes to the discard, so a Catch Breath brings it back.</p></div>`,
-        buttons: [
-          ...left.map(c => ({ action: c.id, label: cardName(c) })),
-          { action: "cancel", label: "Don't play", callback: () => null }
-        ],
-        modal: true,
-        rejectClose: false
-      });
-      if (!chosen) return null;
-      picked.push(chosen);
-      left.splice(left.findIndex(c => c.id === chosen), 1);
-    }
-    return picked;
   }
 
   /**

@@ -6860,8 +6860,8 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 100);
-check("content with a named gap", audited.filter(c => c.needs.length).length, 122);
+check("content the engine does everything for", workingCards, 103);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 119);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -6940,18 +6940,40 @@ const GAP_CLOSERS = [
     /\bwhileState\b/],
   ["reading the top of a fate deck", c => stepsOfContent(c).some(s => s.readDeck),
     /\breadDeck\b/],
+  /* The rule table rather than the field's spelling: `scaledCost` is what every amount goes
+   * through, and `COST_SCALES` is where the three rules live. Asking for `cost?.scale` would have
+   * been asking the engine to spell a field it reads once and hands to a table. */
   ["a cost that scales with the allies it covers", c => c.cost?.scale === "perAlly",
-    /cost\?\.scale|"perAlly"/],
+    /COST_SCALES|scaledCost\(/],
   ["a spell that taints its caster", c => (c.cost?.taint ?? 0) > 0, /cost\?\.taint|cost\.taint/],
+  /*
+   * **The entry whose ABSENCE was the defect.**  [BUILT 2026-11-21]
+   *
+   * The other direction of the same fault this map was extended to catch. A closer with a reader
+   * that nothing reads is a gap believed closed; a cost with no closer at all is a gap believed
+   * OPEN -- and six Poison formulas named *skill cards set aside to pay for a formula* while
+   * `payToPrepare` had been setting them aside since the price was built. Six mentions made it the
+   * joint-largest piece of work in the game, and the rot check could not see it, because a gap is
+   * only checked against the engine if somebody thought to map it.
+   *
+   * Found by asking the opposite question of the one that found `delay`: not *does the engine read
+   * what content writes*, but *does the column know what the engine already charges*. The whole
+   * price ledger was gone through from both ends because of it.
+   */
+  ["skill cards set aside to pay for a formula", c => (c.cost?.skillCards ?? 0) > 0,
+    /cost\?\.skillCards|cost\.skillCards/],
   /* Generic again: a step's condition is applied by one routine, so naming the key here would be
    * testing the engine for a word it has no reason to contain. */
   ["an enemy that loses a half", c => stepsOfContent(c).some(s => s.condition === "dazed"),
     /resolveCondition\(/],
   ["a reaction that stops an action", c => stepsOfContent(c).some(s => s.condition === "halted"),
     /resolveCondition\(/],
+  /* Was `"alliesInRange"`, which the engine stopped spelling the moment the three ally-naming
+   * values went into one table -- and a closer that names a string literal is a closer that fails
+   * when the engine is tidied rather than when it breaks. `ALLY_REACH` is the reader. */
   ["a second secondary for every ally in an area",
     c => stepsOfContent(c).some(s => s.targets === "alliesInRange"),
-    /"alliesInRange"/],
+    /ALLY_REACH/],
   ["a ritual, which costs no slots at all",
     c => stepsOfContent(c).some(s => s.timing === "ritual"),
     /timing === "ritual"/],
@@ -7014,50 +7036,51 @@ check("closers no content in the game can satisfy", mute.join(", ") || "none", "
  * that threw away `outsideBudget`, a real reader of `timing === "ritual"` that happens to be a
  * getter on a data model. The distinction is not which file: it is **declaration against use**. A
  * line carrying `new fields.` is the declaration, and nothing else in these files is one.
+ *
+ * **And the comments come out too.**  [FIXED 2026-11-21] This read the files whole, so a doc block
+ * explaining a field counted as something reading it -- and the very comment written to explain
+ * that `cost.taint` was charged by nothing would have satisfied the check that `cost.taint` is
+ * charged. Prose about a field is exactly as dead as a declaration of it, which is the same lesson
+ * one line up and the reason this list is a filter rather than a file name.
  */
+const CODE_ONLY = line => {
+  const bare = line.trim();
+  return !line.includes("new fields.")
+    && !(bare.startsWith("*") || bare.startsWith("/*") || bare.startsWith("//"));
+};
 const ENGINE_SOURCE = [
   ...fs.readdirSync(path.join(root, "module"))
     .filter(f => f.endsWith(".mjs") && f !== "config.mjs")
     .map(f => path.join(root, "module", f)),
   ...fs.readdirSync(path.join(root, "module", "data"))
     .filter(f => f.endsWith(".mjs")).map(f => path.join(root, "module", "data", f))
-].map(f => fs.readFileSync(f, "utf8").split("\n").filter(l => !l.includes("new fields."))
-  .join("\n")).join("\n");
+].map(f => fs.readFileSync(f, "utf8").split("\n").filter(CODE_ONLY).join("\n")).join("\n");
 check("gap closers that name no reader at all",
   GAP_CLOSERS.filter(([, , reads]) => !reads).map(([g]) => g).join(", ") || "none", "none");
 /*
- * **Four are pinned as outstanding rather than silenced**, because that is the finding and not a
+ * **Two are pinned as outstanding rather than silenced**, because that is the finding and not a
  * tidy-up. Each names a field that content writes, that this map accepts as proof of work, and that
  * **nothing in the engine reads** -- so the gap it closes was never built and the pieces declaring
  * `needs: []` on its strength are overstating. Each wants a decision rather than a patch:
  *
- * - **`cost.taint`** is the serious one. `payToCast` charges `cost.health` and `payToPrepare`
- *   charges `cost.skillCards`, and that is all: **`taint`, `strain` and `scale` are never charged
- *   by anything.** Four spells say they taint their caster, three say they strain a deck, five
- *   carry a scale, and casting one of them costs nothing it says it costs. `strain` is not in this
- *   list only because no closer happens to name it, which is worth remembering before reading the
- *   count as the whole of the debt.
  * - **`readDeck`** is probably for deleting. `foresee` already asks whose intent to read and reads
  *   it, so the field is redundant on the two cards that work and prose on the third.
  * - **`whileState`** is nine values over eleven cards, most of which the engine could see for
  *   itself -- hand size, deck size, both hands free -- and three of which carry the rule in prose.
  *
- * `delay` was the fifth and is gone from this list as of today, which is what the list is for: it
- * is a number that should go down and an entry that should be argued with rather than kept.
+ * **It was four this morning.** `cost.taint` and `cost.scale` came off it the way `delay` did the
+ * day before: `payToCast` charges all four purses now and `scaledCost` works out the amount, so a
+ * spell that says it taints its caster taints them and *The Shield Line* bills a Health a man
+ * instead of a Health a line. `cost.strain` was never on this list at all -- no closer happened to
+ * name it -- which is worth remembering before reading the count as the whole of the debt, and is
+ * why the sweep went through the schema rather than through this list.
  */
-check("and closers whose field nothing in the engine reads",
-  GAP_CLOSERS.filter(([, , reads]) => reads && !reads.test(ENGINE_SOURCE)).map(([g]) => g)
-    .join(" | ") || "none",
-  "an effect held up by spending a secondary | reading the top of a fate deck | "
-  + "a cost that scales with the allies it covers | a spell that taints its caster");
-/* And the rule is not vacuous: most of them DO find a reader, so a regex that matched nothing
- * everywhere would fail here rather than pass quietly. */
 check("and how many closers are backed by a reader",
-  GAP_CLOSERS.filter(([, , reads]) => reads && reads.test(ENGINE_SOURCE)).length, 10);
+  GAP_CLOSERS.filter(([, , reads]) => reads && reads.test(ENGINE_SOURCE)).length, 13);
 
 /* And how many each one finds, so a closer narrowing to one card is visible rather than silent. */
 check("content each closer recognises",
-  GAP_CLOSERS.map(([gap, isBuilt]) => `${audited.filter(c => isBuilt(c)).length}`).join(" "), "8 2 1 3 5 4 4 3 4 6 2 4 7 5");
+  GAP_CLOSERS.map(([gap, isBuilt]) => `${audited.filter(c => isBuilt(c)).length}`).join(" "), "8 2 1 3 5 4 4 3 3 7 6 2 4 7 5");
 /*
  * And the map does not rot either: a gap nobody names and nobody has built is a line in this list
  * describing nothing. Two are allowed to be unnamed, because closing them is what emptied them --
@@ -7065,6 +7088,9 @@ check("content each closer recognises",
  * Hour's, and both cards are finished.
  */
 const CLOSED_OUTRIGHT = ["placing a trap on a square", "a reaction that stops an action",
+  /* **[2026-11-21] And the one that was closed outright before anybody mapped it.** Six Poison
+   * formulas named it while `payToPrepare` collected it; mapping it is what emptied it. */
+  "skill cards set aside to pay for a formula",
   "terrain a spell places on the map", "an effect held up by spending a secondary",
   "reading the top of a fate deck", "a cost that scales with the allies it covers",
   "an effect that resolves on a later turn", "a second secondary for every ally in an area",
@@ -7092,7 +7118,18 @@ for (const c of audited) {
 const topOfQueue = [...queue].filter(([, n]) => n >= 4)
   .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
   .map(([gap, n]) => `${n} ${gap}`);
-check("the gaps four or more pieces of content wait on", topOfQueue.join(" | "), "8 a spell slot spent for good | 6 a debt that compounds, which no cost field holds | 6 skill cards set aside to pay for a formula | 5 a condition applied to an area | 5 a spell that taints its caster | 5 a Wild that leaves the fate deck when you sleep | 4 an enemy that attacks its own side");
+/*
+ * **[2026-11-21] Two came off this list in one increment and neither was built today.** *Skill
+ * cards set aside to pay for a formula* was six mentions of a price `payToPrepare` had always
+ * charged, and it sat at the joint top of the queue because nothing had mapped it. The queue is a
+ * claim about what to build next, so a finished job in it is worse than a missing one.
+ *
+ * *A spell that taints its caster* stays at five, and that is deliberate rather than overlooked:
+ * `payToCast` taints a caster now, but Necromancy's five formulas are priced *a bound Taint per
+ * formula* -- paid once, when the formula is learned -- and nothing charges anything at learning.
+ * The engine does the casting half of their sentence and not the half they are waiting on.
+ */
+check("the gaps four or more pieces of content wait on", topOfQueue.join(" | "), "8 a spell slot spent for good | 6 a debt that compounds, which no cost field holds | 5 a condition applied to an area | 5 a spell that taints its caster | 5 a Wild that leaves the fate deck when you sleep | 4 an enemy that attacks its own side");
 
 check("the gap mentioned by the most content", `${worst.join("; ")} (${most})`,
   "a spell slot spent for good (8)");
@@ -7123,7 +7160,7 @@ check("the gap that would finish the most content",
  * re-counted -- which is the only way a number here is allowed to fall.
  */
 check("gaps that would finish exactly one piece of content",
-  [...finishes.values()].filter(n => n === 1).length, 59);
+  [...finishes.values()].filter(n => n === 1).length, 61);
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.
@@ -17311,7 +17348,7 @@ check("an unprepared spell cannot be cast",
   /if \(!slate\?\.system\?\.prepared\)/.test(resolveSource) ? "yes" : "no", "yes");
 /* The floor is 1, not 0: 0 Health is Unconscious, so a self-killing cost is refused, not survived. */
 check("the cost may not take you below 1 Health",
-  /if \(cost && health - cost < 1\)/.test(resolveSource) ? "yes" : "no", "yes");
+  /if \(price\.health && health - price\.health < 1\)/.test(resolveSource) ? "yes" : "no", "yes");
 
 /*
  * ---- and the Wild, which is the other price and was collected by nothing ----
@@ -17322,11 +17359,12 @@ check("the cost may not take you below 1 Health",
  * that was never declared: a field, content that fills it, and nothing in between.
  */
 check("casting reads the Wild price",
-  /const wilds = slate\.system\.wilds \?\? 0;/.test(resolveSource) ? "yes" : "no", "yes");
-check("and a spell that charges neither price charges nothing",
-  /if \(!cost && !wilds\) return true;/.test(resolveSource) ? "yes" : "no", "yes");
+  /wilds: Math\.max\(0, Math\.trunc\(slate\?\.system\?\.wilds \?\? 0\)\)/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("and a spell that charges nothing at all charges nothing",
+  /if \(!priceTotal\(price\)\) return true;/.test(resolveSource) ? "yes" : "no", "yes");
 check("and the Wild goes into the fate deck",
-  /await addFateCards\(actor, \{ special: "wild", count: wilds \}\)/.test(resolveSource)
+  /await addFateCards\(actor, \{ special: "wild", count: price\.wilds \}\)/.test(resolveSource)
     ? "yes" : "no", "yes");
 /*
  * **Permanent, which is the difference between a price and a cost.** `addFateCards` writes a
@@ -17335,7 +17373,7 @@ check("and the Wild goes into the fate deck",
  * five in for good.
  */
 check("the Wild is not a temporary card",
-  /special: "wild", count: wilds \}\)(?![\s\S]{0,40}temporary)/.test(resolveSource)
+  /special: "wild", count: price\.wilds \}\)(?![\s\S]{0,40}temporary)/.test(resolveSource)
     ? "yes" : "no", "yes");
 /*
  * And a refused cast charges NOTHING. The order is the whole of it: a caster who cannot afford the
@@ -17343,19 +17381,309 @@ check("the Wild is not a temporary card",
  */
 /* Both ends are located first: an indexOf that found nothing is -1, and -1 is less than
  * everything, so an ordering check on a string that moved would pass by accident. */
-const refusalAt = resolveSource.indexOf("if (cost && health - cost < 1)");
+const refusalAt = resolveSource.indexOf("if (price.health && health - price.health < 1)");
 const wildAt = resolveSource.indexOf('await addFateCards(actor, { special: "wild"');
 check("both ends of the order were found", refusalAt >= 0 && wildAt >= 0, true);
 check("the Health is refused before either price is paid", refusalAt < wildAt, true);
-check("and one message names both prices",
-  /\$\{added\} Wild<\/strong> \$\{added === 1 \? "card" : "cards"\} into the fate deck/
+check("and one message names every price",
+  /\$\{price\.wilds\} Wild \$\{price\.wilds === 1 \? "card" : "cards"\} into the fate deck/
     .test(resolveSource) ? "yes" : "no", "yes");
 /* And does not promise "for good", which is true of one formula in seven. */
+/* Located first: an indexOf that found nothing is -1, and `slice(-1)` is the last character of
+ * the file, which contains no promise about anything and would pass this in silence. */
+const payLine = resolveSource.indexOf("const paid = priceWords(");
+check("the wording of the price was found", payLine >= 0, true);
 check("the message makes no promise about how long they stay",
-  /for good/.test(resolveSource.slice(resolveSource.indexOf("const paid = ["))) ? "no" : "yes",
-  "yes");
+  /for good/.test(resolveSource.slice(payLine)) ? "no" : "yes", "yes");
 check("and paying is what gates the effect",
   /if \(!await payToCast\(this\.actor, slate\)\) return;/.test(traySource) ? "yes" : "no", "yes");
+/*
+ * ---- and the three prices that were collected by NOTHING ----  [FIXED 2026-11-21]
+ *
+ * `cost.health` was charged and `wilds` was charged. The other three were a column in the schema
+ * and a dropdown in the spell sheet: **`taint` on four spells, `strain` on three, `scale` on five,
+ * and no code path anywhere read any of them.** A priest cast *The Charge* for free, a necromancer
+ * borrowed a hand at no cost to his head, and *The Shield Line* billed one Health for a line of
+ * four men.
+ *
+ * Found from the audit's side rather than the engine's: the gap map was made to name, for each
+ * closer, the thing the ENGINE must contain. Three of the four it could not find were these.
+ *
+ * **Greps for the wiring, arithmetic for the rules.** `scaledCost` is three rules over four
+ * currencies and a grep cannot check a multiplication, so the module is imported and asked --
+ * which it can be, because the price functions name `canvas` and `game` only inside themselves.
+ */
+check("the payment reads every purse the schema has",
+  ["health", "taint", "strain", "wilds"]
+    .filter(purse => !new RegExp(`price\\.${purse}\\b`).test(resolveSource)).join(", ") || "none",
+  "none");
+check("the Taint is dealt by the one function that deals Taint",
+  /await resolveTaint\(actor, \{\s*\n\s*amount: price\.taint, target: actor, flavour: price\.flavour/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/* Quietly, because `resolveTaint` announces a Tainting and this is a price, not an attack on the
+ * person who cast it. One message per casting. */
+check("and quietly, so the cast says what it cost once",
+  /source: slate\.name, quiet: true/.test(resolveSource) ? "yes" : "no", "yes");
+check("and the Taint function can be quiet at all",
+  /quiet = false \}\)/.test(resolveSource) && /if \(!quiet\) \{/.test(resolveSource) ? "yes" : "no",
+  "yes");
+check("the Strain is taken out of the hand",
+  /if \(strained\.length\) await discardCards\(actor, strained\);/.test(resolveSource)
+    ? "yes" : "no", "yes");
+/*
+ * **And the order, which is the whole of not charging for a cast that did not happen.** The cards
+ * are CHOSEN before anything is taken, because the dialog can be backed out of; a caster who says
+ * *don't play* after the Health was spent has paid for nothing. Both ends are located first: an
+ * indexOf that found nothing is -1, and -1 is less than everything.
+ */
+const askAt = resolveSource.indexOf("await askStrain(actor, price.strain");
+const spendAt = resolveSource.indexOf('await actor.update({ "system.health.value": health - price.health })');
+check("both ends of the strain order were found", askAt >= 0 && spendAt >= 0, true);
+check("the cards are chosen before the Health is spent", askAt < spendAt, true);
+check("and backing out of the dialog cancels the cast",
+  /if \(strained === null\) return false;/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **One strain dialog for both callers.** The tray has asked for these cards since card halves
+ * were built; a second copy for spells would have been a second set of rules about what may be
+ * spent, and this project's hand-spelled vocabularies have drifted every single time. So the
+ * asking moved to `askStrain` and the tray delegates -- keeping what belongs to a turn, which is
+ * what is owed, what is being played, and what the refusal advises.
+ */
+check("the tray asks the shared question",
+  /const picked = await askStrain\(this\.actor, owed, \{/.test(traySource) ? "yes" : "no", "yes");
+check("and excludes the halves being played, which cannot pay for themselves",
+  /exclude: this\.staged\.map\(s => s\.cardId\)/.test(traySource) ? "yes" : "no", "yes");
+/*
+ * **And the tray's own behaviour did not change with the move**, which is the thing a shared
+ * function is most likely to do by accident. The shortcut for a bill with nothing to choose is
+ * opt-in: a spell is clicked off a card that prints its price, and a turn's Strain is printed on
+ * cards already staged where this dialog is the only place it can still be refused.
+ */
+check("a cast agrees to the bill by being clicked",
+  /agreed: true/.test(resolveSource) ? "yes" : "no", "yes");
+check("and the shortcut asks for that agreement",
+  /if \(agreed && spare\.length === want\) return spare\.map/.test(resolveSource) ? "yes" : "no",
+  "yes");
+check("and the tray does not claim it",
+  /await askStrain\(this\.actor, owed, \{[\s\S]{0,200}?agreed/.test(traySource) ? "it does" : "no",
+  "no");
+check("and a prepared spell excludes nothing, being in no hand",
+  /Nothing is\s*\n\s* \* excluded: a prepared spell is not in your hand/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("the tray's own strain dialog is gone",
+  /#payStrain/.test(traySource) ? "still there" : "gone", "gone");
+check("and it no longer counts the payable cards itself",
+  /const payable = \(hand\?\.cards\.contents \?\? \[\]\)/.test(traySource)
+    ? "still there" : "gone", "gone");
+
+/*
+ * **Which deck a spell's Taint goes into, and the rule is the slate's own kind.** core-rules 8
+ * splits Taint in two -- body taint rides in the action deck, mind taint in the skill deck -- and a
+ * spell's price lands exactly on that line. `kind` is `miracle` or `formula`, derived from the Way
+ * that taught it, so a god's price is paid in the body and a formula's in the head. No new field
+ * and no list of schools in the engine.
+ */
+check("a miracle taints the body and a formula the head",
+  /return slate\?\.system\?\.kind === "miracle" \? "body" : "mind";/.test(resolveSource)
+    ? "yes" : "no", "yes");
+const taintKinds = [...graph.SPELLS.values()].filter(sp => sp.cost?.taint)
+  .map(sp => `${sp.name}: ${graph.spellKindOf(sp.pool ?? sp.node) === "miracle" ? "body" : "mind"}`)
+  .sort();
+check("and where each of them lands", taintKinds.join(" | "),
+  "The Borrowed Hand: mind | The First Taste: body | The Slow Failure: body");
+
+/*
+ * **The arithmetic, for real.** Three scales, and the shape of the table is the finding: `perAlly`
+ * MULTIPLIES the amount and the other two REPLACE it. The `1` written beside `halfCurrent` and
+ * `wholeHand` is the schema's minimum and means nothing -- as multipliers they would have made
+ * *The Last Drop* cost half a Health and *Valtor's Own* strain one card.
+ */
+{
+  const savedGame = globalThis.game;
+  const savedCanvas = globalThis.canvas;
+  globalThis.game = {
+    i18n: { localize: key => ({
+      "CARDRPG.CostScale.PerAlly": "per ally affected",
+      "CARDRPG.CostScale.HalfCurrent": "half your current, rounded up",
+      "CARDRPG.CostScale.WholeHand": "your whole hand"
+    }[key] ?? key) },
+    cards: { get: () => ({ cards: { size: 4, contents: [] } }) }
+  };
+  /* An actor with a hand of four and whatever Health is asked for, plus however many allies are
+   * standing next to them. Allies are same-type figures on the canvas, which is `alliesOf`' rule. */
+  /*
+   * **Standing AROUND the caster, not walking away from one.** The first version of this stub put
+   * the allies in a row -- one square, two squares, three -- and then expected an adjacent step to
+   * bill for all three. It billed for one, correctly, and the stub was the thing that was wrong.
+   * `line: true` is the row, kept for the two checks that are about reach rather than about count.
+   */
+  const RING = [[1, 0], [0, 1], [1, 1], [-1, 0], [0, -1], [-1, -1], [1, -1], [-1, 1]];
+  const caster = (health, allies = 0, { line = false } = {}) => {
+    const actor = {
+      id: "caster", name: "Caster", type: "character",
+      system: { health: { value: health, max: 10 }, decks: { actionHand: "hand" } },
+      getActiveTokens: (linked = false, document = false) => (document ? [token] : [])
+    };
+    const token = { id: "t0", actor, x: 500, y: 500, width: 1, height: 1 };
+    const beside = Array.from({ length: allies }, (_, n) => {
+      const mate = { id: `ally${n}`, name: `Ally ${n}`, type: "character", system: {} };
+      const [di, dj] = line ? [0, n + 1] : RING[n % RING.length];
+      const doc = {
+        id: `at${n}`, actor: mate, x: 500 + dj * 100, y: 500 + di * 100, width: 1, height: 1
+      };
+      mate.getActiveTokens = (linked = false, document = false) => (document ? [doc] : []);
+      return { document: doc, actor: mate };
+    });
+    globalThis.canvas = {
+      ready: true,
+      grid: {
+        size: 100, isGridless: false,
+        getOffset: ({ x, y }) => ({ i: Math.floor(y / 100), j: Math.floor(x / 100) }),
+        getCenterPoint: ({ i, j }) => ({ x: j * 100 + 50, y: i * 100 + 50 }),
+        getTopLeftPoint: ({ i, j }) => ({ x: j * 100, y: i * 100 })
+      },
+      tokens: { placeables: [{ document: token, actor }, ...beside] }
+    };
+    return actor;
+  };
+  const price = await import("../module/resolve.mjs");
+
+  /*
+   * **Every scale the vocabulary offers has a rule, and the engine invents none.** The same pair of
+   * questions the timings are held to, and for the reason the timings taught: a fourth scale added
+   * as a bare label would otherwise join the game as a dropdown entry that charges the flat number,
+   * which is silence rather than an error. Read off the table's own keys, both directions.
+   */
+  const tableAt = resolveSource.indexOf("const COST_SCALES = {");
+  const tableEnd = resolveSource.indexOf("\n};", tableAt);
+  check("the engine's table of scales was found", tableAt >= 0 && tableEnd > tableAt, true);
+  const ruled = [...resolveSource.slice(tableAt, tableEnd).matchAll(/^  (\w+): /gm)]
+    .map(m => m[1]);
+  check("scales the engine has a rule for", ruled.sort().join(", "),
+    Object.keys(CARDRPG.costScales).sort().join(", "));
+  check("and the vocabulary offers no scale the engine cannot work out",
+    Object.keys(CARDRPG.costScales).filter(key => !ruled.includes(key)).join(", ") || "none",
+    "none");
+
+  const line = n => ({ targets: "adjacentAllies" });
+  check("per ally, for a line of three", price.scaledCost(1, { scale: "perAlly", actor: caster(10, 3), step: line() }), 3);
+  check("and for a line of one", price.scaledCost(2, { scale: "perAlly", actor: caster(10, 1), step: line() }), 2);
+  /* Nobody beside you is nothing to pay, which is also nothing to gain: the step covers no one. */
+  check("and for nobody at all", price.scaledCost(2, { scale: "perAlly", actor: caster(10, 0), step: line() }), 0);
+  /* An ally two squares away is outside an adjacent step and inside an area-2 one, which is the
+   * reach coming off the step rather than off the name. */
+  check("an ally out of reach is not billed for",
+    price.scaledCost(1, { scale: "perAlly", actor: caster(10, 2, { line: true }),
+      step: { targets: "alliesInRange", range: 1 } }), 1);
+  /* `area` where the other two miracles say `range`: the step puts the number in whichever field
+   * its shape wanted, and to an ally both mean the same distance. */
+  check("and the same board inside a reach of two",
+    price.scaledCost(1, { scale: "perAlly", actor: caster(10, 2, { line: true }),
+      step: { targets: "alliesInRange", area: 2 } }), 2);
+
+  check("half of what is left, rounded up", price.scaledCost(1, { scale: "halfCurrent", actor: caster(7) }), 4);
+  check("and of an even number", price.scaledCost(1, { scale: "halfCurrent", actor: caster(8) }), 4);
+  /* The floor refuses this one at 1 Health, which is the card's own sentence: *you will not be
+   * standing afterwards* is a promise about standing. */
+  check("and at one, which the floor then refuses", price.scaledCost(1, { scale: "halfCurrent", actor: caster(1) }), 1);
+  check("the whole hand", price.scaledCost(1, { scale: "wholeHand", actor: caster(10) }), 4);
+  /* A scale is not a licence to invent a price: zero stays zero however many allies are standing
+   * there, which is what lets one scale sit beside four currencies and charge only the named one. */
+  check("a scale over nothing charges nothing",
+    price.scaledCost(0, { scale: "wholeHand", actor: caster(10) }), 0);
+  check("and an unknown scale charges the bare number",
+    price.scaledCost(3, { scale: "nonsense", actor: caster(10) }), 3);
+
+  /* The five scaled spells, priced off their own content against a board of two allies. */
+  const slateOf = sp => ({
+    name: sp.name,
+    system: {
+      cost: sp.cost ?? {}, effect: sp.effect ?? {}, wilds: sp.wilds ?? 0, prepared: true,
+      kind: graph.spellKindOf(sp.pool ?? sp.node)
+    }
+  });
+  const billed = [...graph.SPELLS.values()].filter(sp => sp.cost?.scale).sort((a, b) => a.name.localeCompare(b.name))
+    .map(sp => `${sp.name}: ${price.priceWords(price.spellPrice(caster(7, 2), slateOf(sp))).join(" + ")}`);
+  check("what the five scaled spells actually charge", billed.join(" | "),
+    "The Last Drop: 4 Health (half your current, rounded up) | "
+    + "The Line Holds: 4 Health (per ally affected) | "
+    + "The Red Hour: 2 Health (per ally affected) | "
+    + "The Shield Line: 2 Health (per ally affected) | "
+    + "Valtor's Own: Strain 4 (your whole hand)");
+  /* And a scaled price that comes to nothing prints its RULE off the bare amount, so the spell pile
+   * can say what a line with nobody in it would cost rather than saying the spell is free. */
+  const empty = [...graph.SPELLS.values()].find(sp => sp.name === "The Shield Line");
+  check("a line with nobody in it still prints the rule",
+    price.priceWords(price.spellPrice(caster(7, 0), slateOf(empty))).join(" + "),
+    "1 Health (per ally affected)");
+  check("and charges nothing for it",
+    price.priceTotal(price.spellPrice(caster(7, 0), slateOf(empty))), 0);
+
+  /* The flat prices, which is every other spell that charges anything: the words are what both the
+   * chat line and the card in the spell pile print, so one list is checked and not two. */
+  const flat = [...graph.SPELLS.values()]
+    .filter(sp => !sp.cost?.scale && (sp.cost?.taint || sp.cost?.strain))
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map(sp => `${sp.name}: ${price.priceWords(price.spellPrice(caster(7), slateOf(sp))).join(" + ")}`);
+  check("what the Taint and the Strain charge", flat.join(" | "),
+    "The Borrowed Hand: 1 mind Taint | The Charge: Strain 2 | The First Taste: 1 body Taint | "
+    + "The Slow Failure: 2 body Taint | The War Drum: Strain 3");
+  /* Both prices on one spell, which no card writes and the engine must still be able to say. */
+  check("two purses at once",
+    price.priceWords(price.spellPrice(caster(7),
+      { system: { cost: { health: 2, taint: 1 }, wilds: 3, kind: "formula" } })).join(" + "),
+    "2 Health + 1 mind Taint + 3 Wild cards into the fate deck");
+
+  /* Who a step covers, which is the question the price and the heal now ask once between them. */
+  check("a heal that names allies lands on them, not the caster",
+    price.healTargets(caster(7, 2), { targets: "everyAlly" }).map(a => a.name).join(", "),
+    "Ally 0, Ally 1");
+  check("and one that names nobody lands on the caster",
+    price.healTargets(caster(7, 2), { verb: "heal" }).map(a => a.name).join(", "), "Caster");
+  check("and the third ally-naming value is not left out of either",
+    price.alliesCovered(caster(7, 1), { targets: "adjacentAllies" }).length, 1);
+
+  globalThis.game = savedGame;
+  globalThis.canvas = savedCanvas;
+}
+
+/*
+ * **And the price is on the card before it is clicked**, which is the other half of a working
+ * field. The spell card printed `costs N Health` and nothing else: *The Charge* said *2 slots* and
+ * not a word about the two cards it was about to take, and the Wild had been invisible there since
+ * Shadow Magic's price was built. Both now come off `spellPrice`, so what a player is shown and
+ * what they are charged cannot differ.
+ */
+check("the spell card prices itself through the payment's own call",
+  /const price = spellPrice\(this\.actor, slate\);\s*\n\s*const words = priceWords\(price\);/
+    .test(traySource) ? "yes" : "no", "yes");
+check("and the note prints the whole of it",
+  /\(costs \? ` \\u00b7 costs \$\{costs\}` : ""\)/.test(traySource) ? "yes" : "no", "yes");
+check("and so does the tip",
+  /It costs \$\{costs\}\./.test(traySource) ? "yes" : "no", "yes");
+/*
+ * And the document says all of it, beside the code that does it. Four increments running the break
+ * test has caught a decision written into a document with no check behind it.
+ */
+check("the schema document names what charges each purse",
+  ["`health` | `payToCast`", "`taint` | `payToCast`, through `resolveTaint`",
+    "`strain` | `payToCast`, through `askStrain`", "`scale` | `scaledCost`",
+    "`skillCards` | `payToPrepare`"]
+    .filter(row => !cardSchemaDoc.includes(`| ${row}`)).join(" / ") || "none", "none");
+check("and that a scale either multiplies or replaces",
+  cardSchemaDoc.includes("either multiplies the amount or replaces it") ? "yes" : "no", "yes");
+check("and that a scale invents no price",
+  cardSchemaDoc.includes("never creates a price the card did not write") ? "yes" : "no", "yes");
+check("and which deck a Taint lands in, and why",
+  cardSchemaDoc.includes("a god's price is paid in the body and a formula's in the head")
+    ? "yes" : "no", "yes");
+check("and the blind spot that ran the other way",
+  cardSchemaDoc.includes("somebody thought to map it") ? "yes" : "no", "yes");
+
+check("and the card no longer reads one purse of four",
+  /const cost = slate\.system\.cost\?\.health \?\? 0;/.test(traySource)
+    ? "still there" : "gone", "gone");
+
 
 /* The content side. */
 /*
@@ -17480,6 +17808,19 @@ const strayCostKeys = new Set();
 for (const spell of graph.SPELLS.values()) {
   for (const key of Object.keys(spell.cost ?? {})) if (!costFields.has(key)) strayCostKeys.add(key);
 }
+/*
+ * **And every one of them can be edited**, which is the other half of a field that does something.
+ * The sheet offered Health and the Wild and nothing else: three prices the engine now charges had
+ * no control at all, which is the same half-built shape as a charged field with no reader, seen
+ * from the GM's side. `scale` is a select off the vocabulary, so a fourth scale appears there by
+ * itself. [FIXED 2026-11-21]
+ */
+check("cost fields the sheet cannot set",
+  [...costFields].filter(key => !slateTemplate.includes(`name="system.cost.${key}"`))
+    .sort().join(", ") || "none", "none");
+check("and the scale is offered off the vocabulary rather than listed by hand",
+  /selectOptions costScales selected=system\.cost\.scale/.test(slateTemplate) ? "yes" : "no",
+  "yes");
 check("cost keys not in the spell schema",
   strayCostKeys.size ? [...strayCostKeys].join(", ") : "none", "none");
 /* And every field of it is written by a spell: one nobody writes is a column of zeroes. */
@@ -17594,7 +17935,26 @@ check("and it says where the cards go back to",
 /* And the other two currencies, which were prose on six spells until this increment. */
 const taintCost = [...graph.SPELLS.values()].filter(s => s.cost?.taint);
 check("spells that cost Taint",
-  taintCost.map(s => s.name).sort().join(", "), "Taste of the Rot, The Borrowed Hand, The First Taste, The Slow Failure");
+  taintCost.map(s => s.name).sort().join(", "),
+  "The Borrowed Hand, The First Taste, The Slow Failure");
+/*
+ * **And *Taste of the Rot* is not among them any more.**  [FIXED 2026-11-21]
+ *
+ * It wrote `cost.taint` beside a note saying the trigger stayed prose, which was harmless for
+ * exactly as long as nothing charged the field. `payToCast` charges it at every cast now, and this
+ * card's Taint is owed *only on a Miss* -- so the working field would have billed a priest for the
+ * casts that land. A cost field means *what casting this costs*; a conditional price is not that,
+ * and it went back into the card's own text with a gap naming what the engine cannot do.
+ *
+ * This is the shape of the whole increment in one card: a field nothing read could hold anything,
+ * and the moment something read it, what it held had to be true.
+ */
+check("the one whose Taint is conditional keeps it in words",
+  [...graph.SPELLS.values()].find(s => s.name === "Taste of the Rot")?.cost?.taint ?? "none",
+  "none");
+check("and names the gap instead",
+  ([...graph.SPELLS.values()].find(s => s.name === "Taste of the Rot")?.needs ?? []).join(", "),
+  "a price charged only when the action misses");
 const strainCost = [...graph.SPELLS.values()].filter(s => s.cost?.strain);
 check("spells that cost Strain",
   strainCost.map(s => s.name).sort().join(", "),
@@ -18670,6 +19030,9 @@ const absentGreps = [
   String.raw`and from the tray :: c\.type === "wound" \|\| c\.type === "taint"`,
   /* Read off config, not switched on by name: a fourth hand-spelled vocabulary in the
    * resolver is a fourth one to drift. */
+  /* One dialog asks for the cards a Strain costs, and the tray's copy went with it: a spell
+   * pays the same cards a card half does, and two copies would be two sets of rules. */
+  String.raw`and it no longer counts the payable cards itself :: const payable = \(hand\?\.cards\.contents \?\? \[\]\)`,
   String.raw`and it reads the rule rather than naming the timings :: case "(outOfCombat|beforeFight)"`,
   String.raw`and its rule went with it :: cr-edge__note`,
   String.raw`and neither builds a face by hand any more :: faces: \[\{ name: card\.name \}\]`,
@@ -18698,6 +19061,9 @@ const absentGreps = [
   String.raw`and taking a node asks for no award :: levels\?\.pending`,
   String.raw`and the caption that repeated them is gone :: cr-edge__note`,
   String.raw`and the card itself is no longer transparent :: \.cardrpg \.cr-card--passive \{ opacity`,
+  /* The spell card prices itself through `spellPrice` now, so it cannot print one purse of
+   * four and leave the player to find out about the other three at the click. */
+  String.raw`and the card no longer reads one purse of four :: const cost = slate\.system\.cost\?\.health \?\? 0;`,
   String.raw`and the chain is gone :: if \(effect === "taint"\)`,
   /* The challenge's one-twist boolean, replaced by a ledger that can name several people. */
   String.raw`and the challenge no longer keeps a boolean of its own :: owed: (!!move\.twist|false|!!live\.owed)`,
@@ -18715,6 +19081,7 @@ const absentGreps = [
   String.raw`and the sentence that was false is gone :: closes every other god permanently`,
   String.raw`and the template no longer asks which kind it is :: \{\{#if isWound\}\}`,
   String.raw`and the token is not given a file of its own :: texture: \{ src: (?!art \})`,
+  String.raw`and the tray does not claim it :: await askStrain\(this\.actor, owed, \{[\s\S]{0,200}?agreed`,
   String.raw`and the tray keeps no loop of its own :: for \(const card of cards\) \{\s*\n\s*if \(isReserved`,
   String.raw`and the two retired vocabularies are gone from config :: conjureSources|conjureSides`,
   String.raw`and the unpatched line is gone :: Object\.create\(Array\.prototype\)`,
@@ -18752,6 +19119,7 @@ const absentGreps = [
   String.raw`the tray builds no call dialog of its own :: CARDRPG\.Check\.CallTitle`,
   /* Only a character counts cards for a passive score, which is what having a skill deck means.
    * The gate used to be "owns any stack", and a creature owns four. */
+  String.raw`the tray's own strain dialog is gone :: #payStrain`,
   String.raw`which a creature's schema has not got :: intent: new fields\.DocumentIdField\(\)[\s\S]{0,40}skill`,
   String.raw`while nothing applies one at grant time :: createItem[\s\S]{0,200}resolveCondition`,
 ].join(" | ");

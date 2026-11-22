@@ -3944,6 +3944,208 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **[FIXED 2026-11-21] A bill paid out of three purses that were never opened.**
+   *
+   * `cost.taint`, `cost.strain` and `cost.scale` were schema fields with content behind them and no
+   * reader anywhere: four spells said they tainted their caster and did not, three said they
+   * strained a deck and did not, and the five whose price scales were charged the rate rather than
+   * the bill -- *The Shield Line* billed one Health for a line of four.
+   *
+   * What is driven here is the part a grep cannot see: **where the cards end up.** A Taint is a
+   * card in a pile, and which pile depends on whether a god or a formula asked for it (core-rules
+   * 8); a Strain is cards out of the hand and into the discard. Those are four documents moving
+   * between six stacks, and the arithmetic in validate.mjs cannot tell a right answer from a
+   * plausible one.
+   *
+   * **`payToCast` is called rather than clicked**, for the reason the delayed step records at
+   * length: a synthetic click on a card in the spells pile never reaches `#onPlaySlate`, and the
+   * precedence that a click would add is pinned in validate.mjs instead. The card's own NOTE is
+   * read off the real DOM though, which is the half of a price that the player sees before paying
+   * it -- and the half that stayed wrong for longest, since the spell card printed `costs N Health`
+   * and nothing else while three other purses were being taken from.
+   *
+   * **The scene is squared for the duration.** `perAlly` has to count who is standing beside you,
+   * and the smoke world's scene is gridless, so the one price that depends on the board cannot be
+   * measured on it. Same precondition the reach probe makes, and put back the same way.
+   */
+  await probe("a bill paid out of three purses", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { hero } = LIVE;
+      const r = await import("/systems/cardrpg/module/resolve.mjs");
+      const { SPELLS, slateFieldsOf, spellKindOf } = await import("/systems/cardrpg/module/graph.mjs");
+      const { slateData } = await import("/systems/cardrpg/module/setup.mjs");
+      const { deckOf } = await import("/systems/cardrpg/module/decks.mjs");
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      for (const c of [...game.combats]) await c.delete();
+      const scene = canvas.scene;
+      const pause = (ms = 400) => new Promise(done => setTimeout(done, ms));
+
+      /* A hand free, because a prepared spell is gestured and the Warrior holds sword and shield. */
+      const held = hero.items.filter(i => i.type === "item" && i.system.equipped
+        && i.system.equippedSlot === "hands").map(i => i.id);
+      for (const id of held) await hero.items.get(id)?.update({ "system.equipped": false });
+
+      const wasGrid = scene.grid.type;
+      if (wasGrid === CONST.GRID_TYPES.GRIDLESS) {
+        await scene.update({ "grid.type": CONST.GRID_TYPES.SQUARE });
+        await new Promise(done => Hooks.once("canvasReady", done));
+      }
+
+      /* Two allies, standing either side: `perAlly` bills per man and one man cannot tell a rate
+       * from a total. A linked clone, because an unlinked one inherits the prototype's name and
+       * every figure on the board then reads as the hero. */
+      const ally = name => Actor.create({
+        ...hero.toObject(), _id: null, name,
+        prototypeToken: { ...hero.prototypeToken.toObject(), name, actorLink: true }
+      }, { keepId: false });
+      const mates = [await ally("Probe Left"), await ally("Probe Right")];
+      const made = [];
+      const put = async (actor, x, y) => {
+        const [doc] = await scene.createEmbeddedDocuments("Token",
+          [(await actor.getTokenDocument({ x, y })).toObject()]);
+        made.push(doc);
+        return doc;
+      };
+      const row = 1300;
+      await put(hero, 700, row);
+      await put(mates[0], 600, row);
+      await put(mates[1], 800, row);
+      await pause();
+
+      const give = async name => {
+        const def = SPELLS.get(name);
+        if (!def) return null;
+        const [slate] = await hero.createEmbeddedDocuments("Item", [slateData({
+          ...slateFieldsOf(def), kind: spellKindOf(def.pool ?? def.node), prepared: true
+        }, "spell")]);
+        return slate;
+      };
+      const slates = [];
+      for (const name of ["The Shield Line", "The First Taste", "The Borrowed Hand",
+        "Valtor's Own", "The War Drum"]) {
+        const slate = await give(name);
+        if (!slate) return [[`${name} is in the spell list`, "no", "yes"]];
+        slates.push(slate);
+      }
+      const [line, firstTaste, borrowed, valtor, drum] = slates;
+
+      const taintIn = which =>
+        (deckOf(hero, which)?.cards?.contents ?? []).filter(c => c.type === "taint");
+      const sizeOf = which => deckOf(hero, which)?.cards?.size ?? 0;
+      const said = () => game.messages.contents.at(-1)?.content ?? "";
+      const full = hero.system.health.max;
+
+      /* ---- the scale: a Health a man, for two men ---- */
+      await hero.update({ "system.health.value": full });
+      const paidLine = await r.payToCast(hero, line);
+      await pause();
+      const afterLine = hero.system.health.value;
+      const lineSaid = /2 Health \(per ally affected\)/.test(said());
+
+      /* And the same spell with the line gone: nobody covered is nothing to pay. */
+      for (const doc of made.slice(1)) await doc.delete();
+      made.length = 1;
+      await pause();
+      await hero.update({ "system.health.value": full });
+      const paidAlone = await r.payToCast(hero, line);
+      const afterAlone = hero.system.health.value;
+
+      /* ---- the Taint, and which pile it lands in ---- */
+      const bodyBefore = taintIn("actionDiscard").length;
+      const mindBefore = taintIn("skillDiscard").length;
+      await r.payToCast(hero, firstTaste);
+      await pause();
+      const bodyAfter = taintIn("actionDiscard").length;
+      const tasteSaid = /1 body Taint/.test(said());
+      await r.payToCast(hero, borrowed);
+      await pause();
+      const mindAfter = taintIn("skillDiscard").length;
+      const handSaid = /1 mind Taint/.test(said());
+      /* The card's own source, so a Taint in a pile can be traced to the spell that put it there. */
+      const sourced = taintIn("actionDiscard").some(c => c.system.source === "The First Taste");
+
+      /* ---- the Strain: cards out of the hand ---- */
+      const hand = deckOf(hero, "actionHand");
+      const handBefore = sizeOf("actionHand");
+      const discardBefore = sizeOf("actionDiscard");
+      /* `wholeHand` is the one bill with no choosing in it, so no dialog opens and the probe can
+       * drive it. A flat Strain against a fuller hand asks which cards, and that dialog is left
+       * undriven for the same reason the Sift one is. */
+      const paidValtor = await r.payToCast(hero, valtor);
+      await pause();
+      const handAfter = sizeOf("actionHand");
+      const discardAfter = sizeOf("actionDiscard");
+      const valtorSaid = /Strain \d+ \(your whole hand\)/.test(said());
+
+      /* ---- and a price that cannot be paid is refused, having taken nothing ---- */
+      await hero.update({ "system.health.value": full });
+      const healthBefore = hero.system.health.value;
+      const refused = await r.payToCast(hero, drum);
+      const healthKept = hero.system.health.value === healthBefore;
+      const handKept = sizeOf("actionHand") === handAfter;
+
+      /* ---- and the price is on the card before it is clicked ---- */
+      await put(mates[0], 600, row);
+      await pause();
+      const tray = game.cardrpg.openTray(hero);
+      tray.side = "action";
+      tray.openPile = "spells";
+      await tray.render();
+      await pause(300);
+      /* The note is in the card's TEXT, which is the lesson the timing probe paid for: a card says
+       * things in two places and the note is the one that is not an attribute. */
+      const card = [...document.querySelectorAll(".cr-card--spread")]
+        .find(el => el.textContent.includes("The Shield Line"));
+      const note = card ? card.textContent.replace(/\s+/g, " ").trim() : "not shown";
+
+      /* ---- and put the world back ---- */
+      tray.openPile = null;
+      await tray.render();
+      await tray.close();
+      for (const slate of slates) await hero.deleteEmbeddedDocuments("Item", [slate.id]);
+      for (const doc of made.reverse()) await doc.delete();
+      for (const mate of mates) await mate.delete();
+      for (const id of held) {
+        await hero.items.get(id)?.update({ "system.equipped": true, "system.equippedSlot": "hands" });
+      }
+      const taints = [...taintIn("actionDiscard"), ...taintIn("skillDiscard")].map(c => c.id);
+      if (taints.length) {
+        for (const which of ["actionDiscard", "skillDiscard"]) {
+          const stack = deckOf(hero, which);
+          const mine = (stack?.cards?.contents ?? []).filter(c => c.type === "taint").map(c => c.id);
+          if (mine.length) await stack.deleteEmbeddedDocuments("Card", mine);
+        }
+      }
+      await hero.update({ "system.health.value": full });
+      if (scene.grid.type !== wasGrid) {
+        await scene.update({ "grid.type": wasGrid });
+        await new Promise(done => Hooks.once("canvasReady", done));
+      }
+
+      return [
+        ["a Health a man, for a line of two", paidLine && full - afterLine, 2],
+        ["and the chat line shows the working", lineSaid, true],
+        ["the same spell with nobody beside you", paidAlone && full - afterAlone, 0],
+        ["a god's Taint goes into the action discard", bodyAfter - bodyBefore, 1],
+        ["and says which deck it is", tasteSaid, true],
+        ["a formula's goes into the skill discard", mindAfter - mindBefore, 1],
+        ["and says so too", handSaid, true],
+        ["and the card knows what put it there", sourced, true],
+        ["the whole hand, strained", paidValtor && handBefore > 0 && handAfter, 0],
+        ["and every card of it in the discard", discardAfter - discardBefore, handBefore],
+        ["and the chat line names the scale", valtorSaid, true],
+        ["a Strain the hand cannot cover is refused", refused, false],
+        ["and the refusal costs no Health", healthKept, true],
+        ["and takes no cards", handKept, true],
+        ["the card in the pile prints the whole price",
+          /costs 1 Health \(per ally affected\)/.test(note), true]
+      ];
+    });
+  });
+
   await probe("the system itself", async () => {
     const rows = await page.evaluate(() => {
       const errors = (globalThis.LIVE_ERRORS ?? []).filter(e => !/favicon|DevTools/.test(e));

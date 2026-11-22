@@ -713,7 +713,7 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 | ✓ | **Nobody's Friend** | strength 2 · range 3 until your next turn no ally may Heal, Interpose for, or redirect a hit from one enemy | `spells/faith/nobodys-friend.webp` |
 | ✓ | **Stand Where I Stand** | strength 1 · range 1 adjacent allies cannot be reduced below 1 Health · costs 2 Health | `spells/faith/stand-where-i-stand.webp` |
 | ✓ | **Steady the Hand** | strength 1 · Shake 1 range 3 Compelled | `spells/faith/steady-the-hand.webp` |
-| ✓ | **Taste of the Rot** | strength 1 · Cast +1 range 1 Off Balance (1) the Taint only on a Miss · costs 1 Taint | `spells/faith/taste-of-the-rot.webp` |
+| ✓ | **Taste of the Rot** | strength 1 · Cast +1 range 1 Off Balance (1) on a Miss, 1 Taint for the caster | `spells/faith/taste-of-the-rot.webp` |
 | ✓ | **The Air Between** | strength 4 · until your next turn every ally may take one extra reaction per trigger | `spells/faith/the-air-between.webp` |
 | ✓ | **The Amber District** | strength 5 · until the fight ends every adjacent ally shares your armor and Block, and damage dealt to them is dealt to you instead | `spells/faith/the-amber-district.webp` |
 | ✓ | **The Body Made Clean** | strength 5 · every ally is healed to full and every condition is Lifted and Shaken off. Your action deck is 6 cards for the rest of the day | `spells/faith/the-body-made-clean.webp` |

@@ -285,16 +285,27 @@ export const FAITH_POOL = [
     effect: { range: 1, text: "a Judged adjacent enemy acts last this round" }
   },
   {
+    /*
+     * **The Taint came OUT of the field when the field started working.** [FIXED 2026-11-21]
+     *
+     * `cost.taint` was written here beside a note saying the trigger stays prose, which was safe
+     * for exactly as long as nothing charged it. `payToCast` charges it now, at every cast -- and
+     * this card's price is owed *only on a Miss*, so the working field would have billed a priest
+     * for the two casts in three that land. A cost field means *what casting this costs*, and a
+     * conditional price is not that.
+     *
+     * So the number goes back into the card's own text, where the table applies it, and the gap is
+     * named rather than hidden: nothing in the engine can charge after an outcome is known. That is
+     * a real mechanism -- *The Kingmaker's Draught* wants its mirror image, a price REFUNDED when
+     * the target dies -- and the two of them are the same piece of work from opposite ends.
+     */
     name: "Taste of the Rot", strength: 1, pool: "faith", source: "The Purple",
-    needs: [],
+    needs: ["a price charged only when the action misses"],
     description: "<p>One adjacent enemy: 1 damage and Off-Balance, no save. A Miss costs you a "
       + "Taint, which is the god being paid whether or not it worked.</p>",
-    cost: { taint: 1 },
     effect: {
       verb: "cast", range: 1, mod: 1, condition: "offBalance", duration: 1,
-      /* The trigger stays prose: the price is only paid on a Miss, and when a cost is conditional
-       * it is the condition the engine cannot read rather than the number. */
-      text: "the Taint only on a Miss"
+      text: "on a Miss, 1 Taint for the caster"
     }
   },
   {

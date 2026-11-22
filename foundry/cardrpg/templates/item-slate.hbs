@@ -39,6 +39,24 @@
         <input type="number" name="system.wilds" value="{{system.wilds}}" min="0"
                data-tooltip="Shadow Magic's price: a permanent Wild in your own fate deck.">
       </label>
+      <label class="cr-stat">Taint to cast
+        <input type="number" name="system.cost.taint" value="{{system.cost.taint}}" min="0"
+               data-tooltip="Into the caster's own deck: the body for a miracle, the head for a formula.">
+      </label>
+      <label class="cr-stat">Strain to cast
+        <input type="number" name="system.cost.strain" value="{{system.cost.strain}}" min="0"
+               data-tooltip="Cards out of the action hand, the player's choice. They come back on a rest.">
+      </label>
+      <label class="cr-stat">Skill cards to prepare
+        <input type="number" name="system.cost.skillCards" value="{{system.cost.skillCards}}" min="0"
+               data-tooltip="Set aside at preparing, not at casting. The Poison school's whole price.">
+      </label>
+      <label class="cr-stat">How the price is worked out
+        <select name="system.cost.scale">
+          <option value="">&mdash; a flat amount</option>
+          {{selectOptions costScales selected=system.cost.scale localize=true}}
+        </select>
+      </label>
       <label class="cr-stat">Element
         <select name="system.element">
           <option value="">&mdash;</option>

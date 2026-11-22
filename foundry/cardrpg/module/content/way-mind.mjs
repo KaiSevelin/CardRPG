@@ -412,11 +412,18 @@ export const MIND_POOL = [
    *
    * Everything else in this school is a condition with a saving throw, which is the oldest
    * finished part of the engine. Four of the six need nothing else at all.
+   *
+   * **And those four are finished, which this column went on denying for four increments.**
+   * [FIXED 2026-11-21] `payToPrepare` has set these cards aside since the Poison price was built;
+   * all six formulas went on naming *skill cards set aside to pay for a formula* as a gap, and the
+   * audit's own rot check could not see it because its map had no entry for `cost.skillCards` --
+   * a gap is only checked against the engine if somebody thought to map it. Six mentions made this
+   * the joint-largest piece of work in the game, and it had been done all along.
    */
   {
     name: "Slick", strength: 1, pool: "mind", source: "Poison",
     cost: { skillCards: 1 },
-    needs: ["skill cards set aside to pay for a formula"],
+    needs: [],
     description: "<p>Oil of something. No save: a man whose feet have gone is not resisting "
       + "anything.</p>",
     effect: { range: 3, condition: "offBalance", duration: 1 }
@@ -424,7 +431,7 @@ export const MIND_POOL = [
   {
     name: "The Quick Dose", strength: 3, pool: "mind", source: "Poison",
     cost: { skillCards: 3 },
-    needs: ["skill cards set aside to pay for a formula"],
+    needs: [],
     description: "<p>Adjacent, because it has to go in them. Two rounds, two damage a round, and "
       + "armour is no part of the conversation.</p>",
     effect: {
@@ -439,7 +446,7 @@ export const MIND_POOL = [
      */
     name: "The Long Dose", strength: 1, pool: "mind", source: "Poison",
     cost: { skillCards: 1 },
-    needs: ["skill cards set aside to pay for a formula"],
+    needs: [],
     description: "<p>No damage at all. Three rounds of a man who cannot use his off hand, which "
       + "in a fight is worse than three damage and lasts longer.</p>",
     effect: {
@@ -450,7 +457,7 @@ export const MIND_POOL = [
   {
     name: "The Grey Sickness", strength: 2, pool: "mind", source: "Poison",
     cost: { skillCards: 2 },
-    needs: ["skill cards set aside to pay for a formula"],
+    needs: [],
     description: "<p>Not a poison. A disease, which is the difference between a bad afternoon and "
       + "something still with them next week.</p>",
     effect: {
@@ -460,7 +467,7 @@ export const MIND_POOL = [
   {
     name: "The Shared Cup", strength: 4, pool: "mind", source: "Poison",
     cost: { skillCards: 4 },
-    needs: ["skill cards set aside to pay for a formula", "a condition applied to an area"],
+    needs: ["a condition applied to an area"],
     description: "<p>Everyone who drank. Three rounds of it, over three squares, and the save is "
       + "the only mercy in the formula.</p>",
     effect: {
@@ -476,8 +483,7 @@ export const MIND_POOL = [
      */
     name: "The Kingmaker's Draught", strength: 5, pool: "mind", source: "Poison",
     cost: { skillCards: 5 },
-    needs: ["skill cards set aside to pay for a formula",
-      "a price refunded when the target dies carrying the condition"],
+    needs: ["a price refunded when the target dies carrying the condition"],
     description: "<p>Three rounds of three, no save, and no cost at all if it finishes him. If it "
       + "does not, you have paid five cards for an angry survivor who knows your face.</p>",
     effect: {

@@ -13,16 +13,13 @@
     "strength": 1,
     "source": "The Purple",
     "description": "<p>One adjacent enemy: 1 damage and Off-Balance, no save. A Miss costs you a Taint, which is the god being paid whether or not it worked.</p>",
-    "cost": {
-      "taint": 1
-    },
     "effect": {
       "verb": "cast",
       "range": 1,
       "mod": 1,
       "condition": "offBalance",
       "duration": 1,
-      "text": "the Taint only on a Miss"
+      "text": "on a Miss, 1 Taint for the caster"
     },
     "kind": "miracle",
     "prepared": false

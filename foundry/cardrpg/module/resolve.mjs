@@ -263,6 +263,220 @@ export async function payToPrepare(actor, slate) {
   return true;
 }
 
+/* -------------------------------------------- */
+/*  What a spell costs                          */
+/* -------------------------------------------- */
+
+/**
+ * **How a scaled price works itself out.**  [BUILT 2026-11-21]
+ *
+ * `cost.scale` has been a field with three values and a dropdown in the spell sheet since the
+ * variable prices came out of prose, and **nothing read it**: five spells carry one, and every one
+ * of them was charged the bare number beside it. *The Last Drop* asks half of what you have left
+ * and took one Health; *Valtor's Own* asks your whole hand and took a single card; *The Shield
+ * Line* bills a Health a man and charged one for a line of four.
+ *
+ * Three rules, and the shape of the table is the finding: **one of them multiplies the amount and
+ * two replace it.** `perAlly` is *this much, per man covered*, so the number on the card is a rate.
+ * `halfCurrent` and `wholeHand` are not rates at all -- the card's `1` beside them is the schema's
+ * minimum and means nothing, because the amount IS whatever you are holding. Writing them as
+ * multipliers would have made *The Last Drop* cost half a Health.
+ *
+ * **A scale never creates a price the card did not write.** Zero stays zero whatever the rule says,
+ * which is what lets one scale sit beside four currencies and charge only the one the card names.
+ *
+ * `perAlly` counts off the board, so a fight nobody has placed charges nothing -- the same bargain
+ * `alliesOf` makes everywhere else. The price prints in chat either way, so a table playing without
+ * tokens can see what it was not charged for.
+ */
+const COST_SCALES = {
+  perAlly: (base, actor, step) => base * alliesCovered(actor, step).length,
+  halfCurrent: (_base, actor) => Math.ceil((actor?.system?.health?.value ?? 0) / 2),
+  wholeHand: (_base, actor) => deckOf(actor, "actionHand")?.cards?.size ?? 0
+};
+
+/** One amount, scaled. An unknown scale charges the bare number rather than nothing. */
+export function scaledCost(base, { scale = "", actor = null, step = {} } = {}) {
+  const n = Math.max(0, Math.trunc(base ?? 0));
+  if (!n) return 0;
+  const rule = COST_SCALES[scale];
+  return rule ? Math.max(0, Math.trunc(rule(n, actor, step))) : n;
+}
+
+/**
+ * **Which deck a spell's Taint goes into, read off what kind of spell it is.**
+ *
+ * core-rules 8 splits Taint in two: **body** taint is poison and disease and rides in the action
+ * deck, **mind** taint is dark magic and horrors and rides in the skill deck. A spell's own price
+ * lands on exactly that line, and the slate already knows which side it is on -- `kind` is
+ * `miracle` or `formula`, derived from the Way that taught it (graph.mjs).
+ *
+ * So a god's price is paid in the body and a formula's in the head: The Purple's priests taste the
+ * rot, and Demonology's borrowed hand costs the caster's mind. No new field, no list of schools in
+ * the engine, and the spells that charge it come out right.
+ */
+export function taintFlavour(slate) {
+  return slate?.system?.kind === "miracle" ? "body" : "mind";
+}
+
+/** The purses a cast is paid out of, in the order the message says them. */
+const PURSES = [
+  ["health", n => `${n} Health`],
+  ["taint", (n, price) => `${n} ${price.flavour} Taint`],
+  ["strain", n => `Strain ${n}`]
+];
+
+/**
+ * **What casting this costs, right now**, as one answer for the three readers who need it: the
+ * payment, the chat line, and the card in the spell pile.
+ *
+ * It has to be *right now* rather than a stored number, because two of the three scales depend on
+ * the state of the table -- how many allies are standing beside you, how many cards are in your
+ * hand. That is also why the spell card works it out on every render: a player watching their line
+ * form watches *The Shield Line* get dearer, which is the rule the card prints.
+ *
+ * `wilds` is in here and is never scaled. specializations.md prices Shadow Magic at *a Wild card
+ * per spell cast*, which is per cast and not per anything else.
+ */
+export function spellPrice(actor, slate) {
+  const cost = slate?.system?.cost ?? {};
+  const step = slate?.system?.effect ?? {};
+  const scale = cost.scale || "";
+  const of = base => scaledCost(base, { scale, actor, step });
+  return {
+    scale,
+    flavour: taintFlavour(slate),
+    health: of(cost.health),
+    taint: of(cost.taint),
+    strain: of(cost.strain),
+    wilds: Math.max(0, Math.trunc(slate?.system?.wilds ?? 0)),
+    /* The bare numbers too, so a price that scales to nothing can still print its rule. */
+    base: {
+      health: Math.max(0, Math.trunc(cost.health ?? 0)),
+      taint: Math.max(0, Math.trunc(cost.taint ?? 0)),
+      strain: Math.max(0, Math.trunc(cost.strain ?? 0))
+    }
+  };
+}
+
+/** What a cast takes between all four purses. Nothing, for a spell that charges nothing. */
+export function priceTotal(price) {
+  return (price?.health ?? 0) + (price?.taint ?? 0) + (price?.strain ?? 0) + (price?.wilds ?? 0);
+}
+
+/**
+ * **The price in words, once**, for the chat line and for the card that is about to be clicked.
+ *
+ * Two renderings of one price is how a card comes to promise something the payment does not take.
+ * This is the same list in both places, and the only difference is that chat wraps each phrase in
+ * bold.
+ *
+ * A scaled price names its rule as well as its number -- *2 Health (per ally affected)* -- because
+ * the number alone is unaccountable: a player charged 2 for a spell whose card says 1 wants to be
+ * told why, and a GM reading the log wants to be able to check it. **And a scale that comes to
+ * nothing prints its rule anyway**, off the bare amount, so the spell pile says *1 Health (per ally
+ * affected)* for a line with nobody in it rather than saying the spell is free.
+ */
+export function priceWords(price) {
+  const phrase = price?.scale
+    ? ` (${game.i18n.localize(CARDRPG.costScales[price.scale] ?? price.scale)})`
+    : "";
+  const counted = (price?.health ?? 0) + (price?.taint ?? 0) + (price?.strain ?? 0);
+  const words = [];
+  for (const [purse, say] of PURSES) {
+    const n = !counted && price?.scale ? (price.base?.[purse] ?? 0) : (price?.[purse] ?? 0);
+    if (n) words.push(say(n, price) + phrase);
+  }
+  if (price?.wilds) {
+    words.push(`${price.wilds} Wild ${price.wilds === 1 ? "card" : "cards"} into the fate deck`);
+  }
+  return words;
+}
+
+/**
+ * **Strain: a price paid in cards, asked for in one place.**  [BUILT 2026-11-21]
+ *
+ * Strain is *discard that many OTHER cards from your hand* (core-rules 1208), and the hand is the
+ * action hand whether a card half printed the cost or a miracle did. The tray has asked for those
+ * cards since card halves were built; `cost.strain` on a spell was read by nothing, so Valtor's
+ * three miracles -- *Strain 2, and the whole line moves at once* -- cost a priest nothing at all.
+ *
+ * Moved out of the tray rather than copied, which is the only reason this is a shared function: a
+ * second dialog asking the same question would be a second set of rules about what may be spent,
+ * and the pair would drift the way this project's hand-spelled vocabularies always have.
+ *
+ * **The hand is counted before anything is asked**, and a hand too thin refuses rather than
+ * part-paying. **Nothing is charged until the picking is done**, because the dialog can be backed
+ * out of and a half-paid cost is not a cost.
+ *
+ * One card per prompt, so the dialog cannot be answered wrongly -- there is no way to tick three
+ * boxes when the bill is two, and backing out of any prompt cancels the lot.
+ *
+ * **`agreed` is for a bill the payer has already said yes to**, and it exists because the two
+ * callers are not in the same position. A spell is clicked off a card that prints its price, so
+ * *Valtor's Own* asking a player to choose four cards out of four, one at a time, would be calling
+ * a formality a decision. A turn's Strain is printed on cards already staged and this dialog is the
+ * only place it can still be refused -- so the tray does NOT pass it, and a hand with exactly
+ * enough in it is asked exactly as it always was. Writing the shortcut in unconditionally is the
+ * kind of quiet change to a working path that this suite exists to catch.
+ *
+ * @returns {Promise<string[]|null>} the card ids to discard, or null if it cannot or will not be
+ *   paid -- in which case this has already said why.
+ */
+export async function askStrain(actor, owed,
+  { exclude = [], what = "this", advice = "", agreed = false } = {}) {
+  const want = Math.max(0, Math.trunc(owed ?? 0));
+  if (!want) return [];
+  const skip = new Set(exclude);
+  const hand = deckOf(actor, "actionHand");
+  const spare = (hand?.cards?.contents ?? []).filter(c => !skip.has(c.id));
+  if (spare.length < want) {
+    ui.notifications.warn(`Strain ${want} for ${what}: your hand holds `
+      + `${spare.length} other card${spare.length === 1 ? "" : "s"}.${advice ? ` ${advice}` : ""}`);
+    return null;
+  }
+  /* Nothing to choose between, for a payer who has already agreed: the bill is everything that
+   * could pay it, and a prompt with one button is not a question. */
+  if (agreed && spare.length === want) return spare.map(c => c.id);
+
+  const left = [...spare];
+  const picked = [];
+  for (let i = 1; i <= want; i++) {
+    const chosen = await foundry.applications.api.DialogV2.wait({
+      window: { title: `Strain ${want}` },
+      content: `<div class="cardrpg"><p>Discard a card from your hand to pay for ${what} `
+        + `(${i} of ${want}). It goes to the discard, so a Catch Breath brings it back.</p></div>`,
+      buttons: [
+        ...left.map(c => ({ action: c.id, label: cardName(c) })),
+        { action: "cancel", label: "Don't play", callback: () => null }
+      ],
+      modal: true,
+      rejectClose: false
+    });
+    if (!chosen) return null;
+    picked.push(chosen);
+    left.splice(left.findIndex(c => c.id === chosen), 1);
+  }
+  return picked;
+}
+
+/**
+ * **Pay for casting a prepared spell: four currencies, and three of them were collected by
+ * nothing.**  [FIXED 2026-11-21]
+ *
+ * `cost.health` was charged and `wilds` was charged. `cost.taint`, `cost.strain` and `cost.scale`
+ * were read by no code path at all -- so the spells that say they taint their caster did not, the
+ * three that strain a deck did not, and the five whose price scales were charged the rate instead
+ * of the bill. Found by asking each entry of the audit's gap map to name the thing in the ENGINE
+ * that makes its claim true, which is a question the map had never been asked from that side.
+ *
+ * **Everything affordable is checked before anything is taken.** The order was already this way for
+ * Health against Wilds, with the reason written beside it; it matters more now that there are four
+ * purses and one of them opens a dialog. A caster who cannot cover the Strain must not have spent
+ * the Health, and one who backs out of the dialog must not have spent anything.
+ *
+ * @returns {boolean} whether it was cast, so the caller knows not to resolve the effect
+ */
 export async function payToCast(actor, slate) {
   if (!slate?.system?.prepared) {
     ui.notifications.warn(`${slate?.name ?? "That spell"} is in your book, not in your head.`);
@@ -286,62 +500,82 @@ export async function payToCast(actor, slate) {
       + `${slate.name} with. A prepared spell is gestured, and both hands are full.`);
     return false;
   }
-  const cost = slate.system.cost?.health ?? 0;
+
   /*
-   * **The second price, and the engine collected nothing for it until now.** `wilds` has been a
-   * field since *Step Through* needed somewhere to put Shadow Magic's price, seven formulas carry
-   * it, the spell sheet edits it -- and no code path read it, so a shadow mage cast for free. It
-   * was found by asking which fields of the slate anything reads, which is the same question that
-   * found `passiveScore` reading a deck that did not exist.
-   *
-   * `addFateCards` without `temporary` is the right call -- `temporary` means *removed when drawn*,
-   * which is Blessed and Cursed (core-rules 6) and not this. A Wild stays in the deck and fires
-   * every time it comes up, which is what makes this a price rather than a cost.
-   *
-   * **And it stays too long.** specializations.md 2 prices the school at *a Wild card per spell
-   * cast, until you sleep*, and nothing in this engine takes a card out of a fate deck at a long
-   * rest -- the boundary exists for slates recharging, not for decks. So the charge is correct for
-   * *Become the Shadow*, whose five are explicitly **for good**, and heavier than written for the
-   * other six. Collecting the price and overstating it is a smaller wrong than collecting nothing,
-   * and the gap is on those six formulas by name rather than hidden here.
+   * **The whole bill, worked out once.** The card in the spell pile prints this same object, so
+   * what a player was shown before clicking and what they are charged afterwards cannot differ.
    */
-  const wilds = slate.system.wilds ?? 0;
-  if (!cost && !wilds) return true;
+  const price = spellPrice(actor, slate);
+  if (!priceTotal(price)) return true;
 
   /*
    * You may not kill yourself casting. The floor is 1 rather than 0 because 0 Health is
    * Unconscious (core-rules 8) and a spell that knocks its own caster out before it resolves is a
    * rule nobody wrote -- so the cost is refused, not survived.
    *
-   * Checked BEFORE either price is paid, because a refused cast must charge nothing: a caster who
+   * Checked BEFORE any price is paid, because a refused cast must charge nothing: a caster who
    * cannot afford the Health would otherwise have bought the Wilds and not the spell.
    */
   const health = actor.system.health?.value ?? 0;
-  if (cost && health - cost < 1) {
-    ui.notifications.warn(
-      `${slate.name} costs ${cost} Health and you have ${health}. That is not a price, it is a death.`);
+  if (price.health && health - price.health < 1) {
+    ui.notifications.warn(`${slate.name} costs ${price.health} Health and you have ${health}. `
+      + "That is not a price, it is a death.");
     return false;
   }
 
-  if (cost) await actor.update({ "system.health.value": health - cost });
+  /*
+   * **The cards are chosen before any price is paid, and the choosing can be refused.** Nothing is
+   * excluded: a prepared spell is not in your hand, so unlike a card half it cannot be asked to
+   * pay for itself.
+   */
+  const strained = price.strain
+    ? await askStrain(actor, price.strain, {
+      what: slate.name,
+      advice: "Draw first, or cast something cheaper.",
+      /* Clicking a card that prints `Strain 4 (your whole hand)` is the agreement. */
+      agreed: true
+    })
+    : [];
+  if (strained === null) return false;
+
+  /* The names while the cards are still in the hand: they are about to be somewhere else. */
+  const names = strained
+    .map(id => cardName(deckOf(actor, "actionHand")?.cards?.get(id)))
+    .filter(name => name && name !== "?");
+
+  if (price.health) await actor.update({ "system.health.value": health - price.health });
   /* There is no refusal for a Wild. It cannot kill you; it only makes you less sure of yourself. */
-  const added = wilds ? await addFateCards(actor, { special: "wild", count: wilds }) : 0;
+  const added = price.wilds
+    ? await addFateCards(actor, { special: "wild", count: price.wilds })
+    : 0;
+  /*
+   * **Quietly**, because `resolveTaint` announces a Tainting and this is a price. The cards, the
+   * pile and the flavour are its business and the wording is not: one message per casting, and
+   * *Caster: Tainting 1* above *Caster pays 1 body Taint* would read as the spell having gone off
+   * on the person who cast it.
+   */
+  if (price.taint) {
+    await resolveTaint(actor, {
+      amount: price.taint, target: actor, flavour: price.flavour, source: slate.name, quiet: true
+    });
+  }
+  if (strained.length) await discardCards(actor, strained);
 
   /*
-   * One message for both, because two messages would read as two castings. A spell that charges
-   * nothing says nothing -- the early return above -- so this only ever prints a real price.
+   * One message for all four, because four messages would read as four castings. A spell that
+   * charges nothing says nothing -- the early return above -- so this only ever prints a real
+   * price.
    */
   /* No "for good" in the wording: only one formula's Wilds are, and the message would be making
    * a promise about the other six that the rules do not make. */
-  const paid = [
-    cost ? `<strong>${cost} Health</strong>` : null,
-    added ? `<strong>${added} Wild</strong> ${added === 1 ? "card" : "cards"} into the fate deck`
-      : null
-  ].filter(Boolean).join(" and ");
+  const paid = priceWords({ ...price, wilds: added })
+    .map(word => `<strong>${word}</strong>`).join(" and ");
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
     content: `<div class="cardrpg"><p><strong>${actor.name}</strong> pays ${paid} `
-      + `for <em>${slate.name}</em>.</p></div>`
+      + `for <em>${slate.name}</em>.</p>`
+      + (names.length ? `<p>Out of the hand: <em>${names.join("</em>, <em>")}</em>.</p>` : "")
+      + "</div>"
   });
   return true;
 }
@@ -1033,7 +1267,11 @@ export async function resolveWound(target, { reason = "", injuryMode = 0 } = {})
   if (reason === DROPPED) await resolveInjury(target, { mode: injuryMode, cause: reason });
   return true;
 }
-export async function resolveTaint(actor, { amount = 1, target, flavour = "body", fast = false, source = "" }) {
+export async function resolveTaint(actor,
+  /* `quiet` is for a price rather than an effect: `payToCast` says what a cast cost in one line of
+   * its own, and a second message announcing Tainting on the caster would read as the spell having
+   * gone off on them. The cards, the pile and the flavour are still this function's business. */
+  { amount = 1, target, flavour = "body", fast = false, source = "", quiet = false }) {
   if (!target) return null;
   const which = flavour === "mind"
     ? (fast ? "skillHand" : "skillDiscard")
@@ -1063,13 +1301,15 @@ export async function resolveTaint(actor, { amount = 1, target, flavour = "body"
     if (before - n <= 0) await resolveWound(target, { reason: DROPPED });
   }
 
-  await ChatMessage.create({
-    speaker: ChatMessage.getSpeaker({ actor }),
-    content: `<div class="cardrpg"><p><strong>${target.name}</strong>: Tainting <strong>${n}</strong> `
-      + `&mdash; ${n} ${flavour} Taint into the ${fast ? "hand" : "discard"}`
-      + (dealt ? `, resolving at once for <strong>${dealt}</strong> past armor` : "")
-      + `.</p></div>`
-  });
+  if (!quiet) {
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="cardrpg"><p><strong>${target.name}</strong>: Tainting <strong>${n}</strong> `
+        + `&mdash; ${n} ${flavour} Taint into the ${fast ? "hand" : "discard"}`
+        + (dealt ? `, resolving at once for <strong>${dealt}</strong> past armor` : "")
+        + `.</p></div>`
+    });
+  }
   return { amount: n, flavour, fast, dealt };
 }
 
@@ -2769,6 +3009,34 @@ export function alliesOf(actor, { within = null } = {}) {
 }
 
 /**
+ * **The vocabulary's three ally-naming values, each with the reach it means.** [BUILT 2026-11-21]
+ *
+ * Two readers want this set for unrelated reasons -- a heal wants to know whose Health to mend, and
+ * `perAlly` wants to know how many men the caster is being billed for -- and they are the same
+ * question. Asking it twice is how *The Shield Line* would come to cover a different line than it
+ * charges for.
+ *
+ * `adjacentAllies` is `alliesInRange` with the reach written into the name, which is why it is a
+ * value and not a second field. `alliesInRange` takes its number from `range`, or from `area` for
+ * the two miracles that say *every ally within 2* as an area -- the step puts the number in
+ * whichever field its shape wanted, and both mean the same distance here.
+ *
+ * `everyAlly` has no reach at all, which is `null` rather than a large number: a party split across
+ * a building is still a party.
+ */
+const ALLY_REACH = {
+  everyAlly: () => null,
+  adjacentAllies: () => 1,
+  alliesInRange: step => step.range ?? step.area ?? 1
+};
+
+/** Which allies a step covers. Nobody, for a step that names no allies. */
+export function alliesCovered(actor, step = {}) {
+  const reach = ALLY_REACH[step.targets ?? ""];
+  return reach ? alliesOf(actor, { within: reach(step) }) : [];
+}
+
+/**
  * **Who a heal lands on.**  [FIXED 2026-11-21]
  *
  * The heal case healed **the caster**, always, and ignored the step's `targets` -- which is right
@@ -2780,12 +3048,12 @@ export function alliesOf(actor, { within = null } = {}) {
  * delayed path alone: one of the two routes honouring the field and the other not would be worse
  * than neither doing so.
  *
- * Everything else still means the caster, which is what saying nothing has always meant.
+ * Everything else still means the caster, which is what saying nothing has always meant -- and
+ * *everything else* is now read off the one table rather than by naming two of the three values
+ * here, which is what left `adjacentAllies` healing the caster instead of the line.
  */
 export function healTargets(actor, step = {}) {
-  if (step.targets === "everyAlly") return alliesOf(actor);
-  if (step.targets === "alliesInRange") return alliesOf(actor, { within: step.range ?? 1 });
-  return [actor];
+  return ALLY_REACH[step.targets ?? ""] ? alliesCovered(actor, step) : [actor];
 }
 
 /* -------------------------------------------- */
