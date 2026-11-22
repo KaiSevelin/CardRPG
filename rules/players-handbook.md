@@ -802,8 +802,9 @@ upright is a promise to spend four or five of the cards you can still play. If y
 turn that card back upright before you end your turn. There is a button that does the whole hand at
 once, either way.
 
-Cards you draw at the start of a round arrive upright. What goes sideways is the set you already
-chose not to play.
+**Your hand stands back up at the start of your round.** Everything you draw arrives upright, and
+so does everything you kept. You decide again each round, from a clean hand, and nothing you held
+last round is still holding itself this one.
 
 ---
 

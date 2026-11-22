@@ -253,6 +253,22 @@
   background: var(--cardrpg-rule);
 }
 
+/* A card whose only remaining decision is its reaction takes the click anywhere: already
+ * turned, or every half spent for the turn. */
+.cardrpg .cr-card--toggles { cursor: pointer; }
+
+/*
+ * **Armed: this reaction will fire.**
+ *
+ * The orientation says it already, but only to someone with an upright card beside it to compare
+ * against -- a hand that is entirely held, or down to its last card, gives no comparison at all.
+ * So the row says which it is in a word, and the marker carries the weight: full ink for a
+ * reaction that will spend itself, the dim default for one that will not.
+ */
+.cardrpg .cr-half--armed .cr-half__marker { color: var(--cardrpg-ink); }
+
+.cardrpg .cr-half__state { opacity: 0.65; font-size: 0.9em; }
+
 /* Blocked halves are greyed in place, never hidden, so the player learns why. */
 .cardrpg .cr-half--blocked {
   color: var(--cardrpg-blocked);

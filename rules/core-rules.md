@@ -254,7 +254,12 @@ rolls.
   card in hand.
 - **Both halves still play.** Sideways is about the ⚡ row and nothing else.
 - Turning a card is **free**, and legal at any time, including in the middle of someone else's turn.
-- It clears when the card **leaves your hand**. Everything you draw arrives upright.
+- It clears when the card **leaves your hand**, and **your whole hand comes upright when your
+  round begins.** **[RULED 2026-11-22]** Everything you draw arrives upright, and so does everything
+  you kept: the declaration below is made for the round you are in, and a round that has ended
+  takes its declarations with it. Otherwise the end-of-turn default compounds — a hand held at
+  the end of one turn is still held through the next, and a player who never pressed anything
+  would find their defence quietly gone two rounds later.
 - **When your turn's actions are done, what is left in your hand turns sideways by itself.**
   **[RULED 2026-11-12]** A reaction costs a point of stamina (§8) and the engine reacts for you off
   whatever is upright, so an armed hand was a standing order to spend the number that decides how

@@ -771,8 +771,9 @@ the row that says what the card would do is the button that stops it doing it:
 ┌─────────┐ ┌─────────┐ ┌─────────┐    ┌─────────┐
 │ STRIKE  │ │ SHIELD  │ │ ADVANCE │    │ ADVANCE │  <- turned sideways,
 │ P Str 4 │ │ P Def 2 │ │ P Mov 3 │    │ R Side  │     rotated in its own slot
-│ S [Mov1]│ │ S [Mov1]│ │ S [Mov2]│    │  held   │
+│ S [Mov1]│ │ S [Mov1]│ │ S [Mov2]│    │ — held  │
 │ R Parry │ │ R Block │ │ R Side  │    └─────────┘
+│ — armed│ │ — armed│ │ — armed│
 └─────────┘ └─────────┘ └─────────┘
 ```
 
@@ -780,6 +781,51 @@ the row that says what the card would do is the button that stops it doing it:
 - A reaction a **drawback** has taken away is greyed in place, never hidden — Plate takes the
   Sidestep, and a player who cannot see what it took will believe it took nothing.
 - Hovering the row says what fires it and what it costs.
+
+#### 6.1a Both states are written, and the card is its own switch  **[BUILT 2026-11-22]**
+
+**The row says *armed* or *held* in words.** Orientation alone is a comparison, and a comparison
+needs something to compare against: a hand held entirely, or down to its last card, offers none.
+*Armed* is also not merely *not held* — a reaction a drawback switched off will not fire either, so
+three states, and the two that do nothing must not both read like the one that does. Blocked keeps
+the struck-through grey and gets neither word.
+
+**When the reaction is all a card has left, the whole card is that switch.** Two ways a card gets
+there, and the common one is the turn running out: a turn is a primary and a secondary
+(core-rules §3), so once both are played the rest of the hand can do exactly one thing each, and
+asking the player to find a strip of text at the bottom of a card is asking them to aim at the
+smallest target on it for the only move it has left. The other way is a card already turned —
+rotated, the ⚡ row is a sliver of vertical text, and on an intruder or a switched-off reaction it
+is not a button at all, so *Hold all* could turn either down and nothing could turn it back. A
+one-way gesture is the worst kind to leave in a hand.
+
+**Not while a half is still playable.** An upright, playable card is one you are reading and
+clicking to play, and making all of it a switch would arm and disarm it by accident. Its halves
+keep their own buttons and win the click by being nearer the pointer, so a held card still plays
+both halves (core-rules §3). Nor when the reaction is blocked and the card is upright: that is a
+card with no decision on it at all, and offering a switch would invent one.
+
+#### 6.1b A turn is a primary and a secondary, and the tray has to count  **[FIXED 2026-11-22]**
+
+core-rules §3 has always said it, and the only thing enforcing it was the staging tray holding at
+most one of each — which playing then emptied. So the budget lasted exactly as long as the staging
+did: play two cards and the rest of the hand was offered as though the turn had not happened. **A
+five-card hand was five actions.**
+
+Booked per half rather than as one *played* flag, because a turn that spent only its primary still
+has its secondary to spend. Keyed by `round:turn` and compared rather than cleared, as the deal
+already is, so there is no hook to forget. Out of combat every turn is the same turn, which is
+deliberate and matches the deal: a scene with no initiative has no second turn to deal into.
+
+The chooser and the renderer ask **one predicate**, so a half that cannot be staged is a half that
+does not look playable. A face offering what the handler will refuse is the same defect as a face
+promising a number the resolver will not deliver.
+
+**And a round stands the whole hand up** (core-rules §3). The end-of-turn disarm is a default for a
+turn that is over; the next round is a fresh question, and a declaration does not carry across one.
+Without that the default compounds — a hand held at the end of one turn was still held through the
+next, under a row of upright new ones, because clearing the flag was a thing that happened to cards
+that MOVED and a kept card never moves.
 
 **The count is public.** How many upright cards a character holds goes beside Stunned and Dazed as a
 flag, for the same reason hand size is public (§7): with reactions automatic it is the most

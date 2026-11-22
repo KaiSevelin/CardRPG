@@ -135,6 +135,19 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     this.flipped = new Set();
     /** The round:turn a hand was last dealt, so the deck goes inert until the next turn. */
     this.dealtAt = null;
+    /*
+     * **What this turn has already played.**  **[BUILT 2026-11-22]**
+     *
+     * A turn is one primary and one secondary (core-rules 3), and the only thing enforcing it was
+     * `staged` holding at most one of each -- which `#onPlay` then emptied. So the turn's budget
+     * lasted exactly as long as the staging did: play two cards, and the tray offered the rest of
+     * the hand as though nothing had happened. A five-card hand was five actions.
+     *
+     * Keyed by turn and compared rather than cleared, exactly as `dealtAt` is: there is no hook to
+     * forget, and a turn that never comes round again simply never matches.
+     */
+    this.playedAt = null;
+    this.spentHalves = { primary: false, secondary: false };
     /**
      * **Which deck this window is playing from**, or null to follow the mode.  [BUILT 2026-11-14]
      *
@@ -1925,6 +1938,25 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
+   * **Has this turn already played that half?**
+   *
+   * Asked by the chooser and by the renderer, so a half that cannot be staged is a half that does
+   * not look playable. Two readers, one predicate: a face that offers what the handler will refuse
+   * is the same defect as a face promising a number the resolver will not deliver.
+   *
+   * Out of combat every turn is the same turn, which is deliberate and matches `dealtAt`: the hand
+   * is dealt once there too, and a scene with no initiative has no second turn to deal into.
+   */
+  #halfSpent(name) {
+    if (this.playedAt !== CardRPGTray.#turnKey(game.combat)) return false;
+    /* Exhausted is one CARD per turn, not one of each half, so the first played takes both. */
+    if (this.actor.system.exhausted) {
+      return this.spentHalves.primary || this.spentHalves.secondary;
+    }
+    return !!this.spentHalves[name];
+  }
+
+  /**
    * Fold resolution steps 1-3 into the face: item base, card modifier, features. Steps 4-6 need a
    * target, so they wait until the half is played.
    */
@@ -2110,8 +2142,12 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       }
 
       const explains = detail.join(" ");
+      /* NOT `spent`: that is this half's Spent cost, bound from `costFor` above. One block, one
+       * meaning per name -- the collision is a SyntaxError here and would have been a wrong
+       * answer anywhere the two scopes did not overlap. */
+      const usedUp = this.#halfSpent(name);
       const blocked = icons.some(i => blockedIcons.has(i))
-        || (name === "secondary" && dazed) || !!unmet;
+        || (name === "secondary" && dazed) || !!unmet || usedUp;
 
       return {
         name,
@@ -2133,25 +2169,69 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
          * A playable half gets its detail here instead, which is the whole of the long register:
          * the face says what it does, and the tooltip says what that means.
          */
-        tip: unmet
-          ? `Needs ${unmet} in hand. Ready something that is, or play the other half.`
-            + (explains ? ` ${explains}` : "")
-          : blocked
-            ? "Blocked right now. The other half may still be playable, and Brace never is."
+        tip: usedUp
+          ? (this.actor.system.exhausted
+              ? "Exhausted: one card a turn, and you have played it."
+              : `Your ${name} is spent this turn. The card stays in your hand, and its reaction `
+                + "is still yours to arm or hold.")
+          : unmet
+            ? `Needs ${unmet} in hand. Ready something that is, or play the other half.`
               + (explains ? ` ${explains}` : "")
-            : explains,
+            : blocked
+              ? "Blocked right now. The other half may still be playable, and Brace never is."
+                + (explains ? ` ${explains}` : "")
+              : explains,
         staged: this.staged.some(s => s.cardId === card.id && s.half === name)
       };
     };
 
+    /*
+     * **`reserved` sits on the card and not on its reaction row.**  **[FIXED 2026-11-22]**
+     *
+     * The template turned a card sideways off `card.reaction.reserved`, and an intruder has no
+     * reaction row -- so a Wound was the one card in the hand that `reserveHand` turned and the
+     * renderer drew upright. That is precisely the lie the stacks note argues against: *Hold all*
+     * reported a hand that was not all held. Being turned is a fact about the piece of card, so
+     * both shapes of card carry it.
+     */
     if (isIntruder(card)) {
-      return { id: card.id, name: cardName(card), harm: true, art: artOf(card), halves: [] };
+      const down = isReserved(card);
+      return {
+        id: card.id, name: cardName(card), harm: true, art: artOf(card),
+        reserved: down, toggles: down, halves: [],
+        toggleTip: "Turned sideways. Click anywhere on it to stand it back up."
+      };
     }
+    const reserved = isReserved(card);
+    const halves = [half("primary", card.system.primary),
+      half("secondary", card.system.secondary)];
+    const reaction = this.#reactionRow(card);
+    /*
+     * **When there is nothing left to play, the only decision is the reaction** -- so the whole
+     * card becomes that switch.  **[BUILT 2026-11-22]**
+     *
+     * Once the turn's two halves are spent the rest of the hand can do exactly one thing, and
+     * asking a player to find a strip of text at the bottom of a card to do it is asking them to
+     * aim at the smallest target on the card for the only move it has left. A card already turned
+     * counts too, for the older reason: rotated, that strip is a sliver of vertical text, and on
+     * an intruder or a blocked reaction it is not a button at all.
+     *
+     * Not when a half is still playable: an upright, playable card is one you are reading and
+     * clicking to play, and making all of it a switch would arm and disarm it by accident. And
+     * not when the reaction is blocked and the card is upright -- there is no decision there to
+     * offer, only a card that can do nothing at all.
+     */
+    const toggles = reserved || (!reaction.blocked && halves.every(h => h.blocked));
     return {
       id: card.id,
       name: cardName(card),
       harm: false,
       art: artOf(card),
+      reserved,
+      toggles,
+      toggleTip: reserved
+        ? "Turned sideways: it will not react. Click anywhere on it to stand it back up."
+        : "Nothing left to play on this card. Click anywhere on it to hold its reaction back.",
       /*
        * **What the card IS**, for the tooltip on its name. The halves below say what it does and
        * the icons say it again in pictures; neither answers the question a player asks when they
@@ -2159,8 +2239,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
        * so a card the table has never seen still has a sentence.
        */
       blurb: CARD_BLURBS[cardName(card)] ?? "",
-      halves: [half("primary", card.system.primary), half("secondary", card.system.secondary)],
-      reaction: this.#reactionRow(card)
+      halves,
+      reaction
     };
   }
 
@@ -2193,19 +2273,44 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       label,
       reserved,
       blocked: gone,
+      /*
+       * **Armed is not simply "not reserved".** A reaction a drawback has switched off will not
+       * fire either, and a row marked armed beside a Plate harness that took the Sidestep would
+       * be the card promising something the armour has already refused. Three states, and the
+       * two that do nothing must not both read as the one that does.
+       */
+      armed: !gone && !reserved,
       tip: gone
         ? `${label} is switched off by what you are wearing. The card is still yours to play.`
         : reserved
           ? `Turned sideways: ${label} will NOT fire. It still counts toward your hand and both `
             + `halves still play. Click to turn it back upright.`
-          : `${label} fires by itself when ${trigger}, if the hit would Wound you or drop you. `
-            + `The card goes to your discard. Click to turn it sideways and keep it.`
+          : `Armed: ${label} fires by itself when ${trigger}, if the hit would Wound you or drop `
+            + `you. The card goes to your discard and costs 1 stamina. Click to turn it sideways `
+            + `and keep it.`
     };
   }
 
   /**
    * Turn a card sideways, or back upright. Free, and legal at any time -- including in the middle
    * of somebody else's turn, which is the whole point of a standing decision.
+   *
+   * **While a card is down, the whole card is the way back up.**  **[BUILT 2026-11-22]**
+   *
+   * Turning one back took hitting the reaction row, which on a rotated card is a strip of
+   * vertical text about a tenth of what is on the table -- and on two kinds of card it did not
+   * exist at all. A Wound has no reaction row, and a reaction a drawback has switched off is
+   * printed as dead text rather than a button, so both could be turned sideways by *Hold all* and
+   * neither could be turned back. The card itself carries the action while it is down, so the
+   * gesture that is hardest to undo gets the biggest target.
+   *
+   * **Only while it is down**, and the halves keep their own. An upright card is one you are
+   * reading and clicking to play, and making all of it a switch would arm and disarm it by
+   * accident; a sideways card still plays both halves (core-rules 3), so those stay buttons and
+   * win the click by being nearer the pointer than the card is.
+   *
+   * So this is reached from two elements and must not assume the richer one: an intruder has no
+   * reaction row, and `reserveCard` asks the card nothing but its flag.
    */
   static async #onReserve(event, target) {
     const hand = deckOf(this.actor, "actionHand");
@@ -2214,6 +2319,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     await reserveCard(card);
     this.render();
   }
+
 
   /**
    * **Turn the whole hand sideways, or bring it all back upright.**
@@ -2423,6 +2529,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     if (this.staged.some(s => s.cardId === cardId)) {
       return ui.notifications.warn("Both halves must come from different cards.");
+    }
+    /* The face is already greyed, so this is the second route in -- a stale window, a macro, a
+     * click that landed as the render swapped. Refused with the reason rather than ignored. */
+    if (this.#halfSpent(half)) {
+      return ui.notifications.warn(this.actor.system.exhausted
+        ? "Exhausted: one card a turn, and you have played it."
+        : `Your ${half} is spent this turn.`);
     }
     if (this.staged.length && this.actor.system.exhausted) {
       return ui.notifications.warn("Exhausted: one card per turn.");
@@ -3034,6 +3147,18 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           + `<em>${burned.map(c => cardName(c)).join(", ")}</em> — out until a rest.</p></div>`
       });
     }
+    /*
+     * **Book the halves before clearing them.**  **[BUILT 2026-11-22]**
+     *
+     * `#resetPlay` empties `staged`, which was the only thing holding the turn to one primary and
+     * one secondary -- so the budget survived exactly as long as the staging did, and a hand of
+     * five was five actions. Recorded per half rather than as one *played* flag, because a turn
+     * that spent only its primary still has its secondary to spend.
+     */
+    const turn = CardRPGTray.#turnKey(game.combat);
+    if (this.playedAt !== turn) this.spentHalves = { primary: false, secondary: false };
+    for (const { half } of this.staged) this.spentHalves[half] = true;
+    this.playedAt = turn;
     /* The turn's actions are done, so the hand stops being an automatic bill against stamina. */
     await this.#disarmHand();
     this.#resetPlay();

@@ -7723,7 +7723,8 @@ check("callers that ask the same predicate for a bonus's tag",
  * said "needs ranged in hand" on a button that fired the dagger.
  */
 check("an unmet requirement blocks the half",
-  /const blocked = icons\.some[\s\S]{0,80}\|\| !!unmet;/.test(traySource) ? "yes" : "no", "yes");
+  /const blocked = icons\.some[\s\S]{0,90}\|\| !!unmet \|\| usedUp;/.test(traySource)
+    ? "yes" : "no", "yes");
 check("and something sets it",
   /if \(need && !item\) unmet = need;/.test(traySource) ? "yes" : "no", "yes");
 
@@ -9686,6 +9687,154 @@ check("core-rules states the new default",
   /what is left in your hand turns sideways by itself/.test(coreRules) ? "yes" : "no", "yes");
 check("and the handbook says it in the player's words",
   /the rest of your hand turns sideways on its own/.test(handbook) ? "yes" : "no", "yes");
+/*
+ * **A round begins with the hand on its feet.**  **[FIXED 2026-11-22]**
+ *
+ * `move` clears the flag at the one chokepoint every card passes through, and the check above
+ * pins that -- which made *everything you draw arrives upright* true of the cards that ARRIVE and
+ * false of the cards that stay. A turn ends by turning the whole hand sideways, so a leftover was
+ * still sideways a round later, standing in a row of upright new ones.
+ *
+ * Nothing here could have caught it, and the shape of the miss is worth keeping: every check
+ * about the flag asked about a card that moved, because clearing-on-move was the rule. The card
+ * that never moves is the one the rule forgot, and it took a person looking at five cards to see
+ * that three of them were lying down.
+ *
+ * So the pin is on the hand and not on the card: the refill brings EVERY card up, before it deals.
+ */
+const refillBody = bodyOf(decksSource, "export async function refill(actor,");
+check("a refill brings the whole hand upright",
+  /const roused = await reserveHand\(actor, false\);/.test(refillBody) ? "yes" : "no", "yes");
+/* Before the deal, or the cards drawn into a hand would be stood up and the survivors left down
+ * for the length of one more round -- the same bug, one round shorter. */
+check("and it does so before it deals",
+  refillBody.indexOf("reserveHand(actor, false)") < refillBody.indexOf("moveRandom(deck, hand, 1)")
+    ? "before" : "after", "before");
+check("and the count comes back with the deal",
+  /drawn, short, roused,/.test(refillBody) ? "yes" : "no", "yes");
+/* Both documents, because a default nobody can read about is a default that surprises -- the same
+ * reason the disarm is written in both, two bullets above this one. */
+check("core-rules states that a round stands the hand up",
+  /your whole hand comes upright when your/.test(coreRules) ? "yes" : "no", "yes");
+check("and the handbook says it in the player's words",
+  /Your hand stands back up at the start of your round/.test(handbook) ? "yes" : "no", "yes");
+/*
+ * **Turned is a fact about the card, not about its reaction row.**  **[FIXED 2026-11-22]**
+ *
+ * The template rotated a card off `card.reaction.reserved`, and an intruder is built without a
+ * reaction row -- so a Wound was the one card in hand that `reserveHand` turned and the renderer
+ * drew upright, which is exactly the lie the *Hold all* note argues against. Both shapes of card
+ * carry it now, and the template asks the card.
+ */
+/* Asked of the card builder and not of the file: `#reactionRow` binds `reserved` from the same
+ * call, so the bare pattern is answerable in two places and pins neither. */
+const renderCardBody = bodyOf(traySource, "#renderCard(card, blockedIcons, dazed)");
+check("both shapes of card say whether they are turned",
+  /const down = isReserved\(card\);/.test(renderCardBody)
+    && /const reserved = isReserved\(card\);/.test(renderCardBody) ? "yes" : "no", "yes");
+check("the template turns the card off the card",
+  /\{\{#if card\.reserved\}\} cr-card--reserved\{\{\/if\}\}/.test(trayTemplate) ? "yes" : "no",
+  "yes");
+/*
+ * **While it is down, the whole card is the way back up.**
+ *
+ * The reaction row is a sliver of vertical text once the card is rotated, and on two kinds of card
+ * it is not a button at all: an intruder has no row, and a reaction a drawback switched off is
+ * printed as dead text. Either could be turned down by *Hold all* and neither could be turned back
+ * -- a one-way gesture, which is the worst kind to leave in a hand.
+ */
+check("a card with nothing left to play carries the action itself",
+  /\{\{#if card\.toggles\}\}data-action="reserve" data-card-id="\{\{card\.id\}\}"/
+    .test(trayTemplate) ? "yes" : "no", "yes");
+/*
+ * **Turned, or every half spent.** Those are the two ways a card's only remaining decision is its
+ * reaction, and the second is the one a player meets every turn: the turn's two halves go, and the
+ * rest of the hand can do exactly one thing each.
+ */
+check("and it is both ways a card runs out of moves",
+  /const toggles = reserved \|\| \(!reaction\.blocked && halves\.every\(h => h\.blocked\)\);/
+    .test(traySource) ? "yes" : "no", "yes");
+/* And only while it is down: an upright card is one you are reading and clicking to play, so the
+ * whole of it being a switch would arm and disarm it by accident. */
+check("and only while it is down",
+  (trayTemplate.match(/data-action="reserve"/g) ?? []).length, 2);
+/*
+ * **Armed is not simply "not held".**  **[BUILT 2026-11-22]**
+ *
+ * Three states and two of them do nothing: a reaction a drawback has switched off will not fire
+ * either, and a row marked armed beside the Plate that took the Sidestep would have the card
+ * promising what the armour already refused.
+ */
+check("the row knows the difference between three states",
+  /armed: !gone && !reserved,/.test(traySource) ? "yes" : "no", "yes");
+check("and both states are said in words",
+  /— held/.test(trayTemplate) && /— armed/.test(trayTemplate) ? "yes" : "no", "yes");
+check("the armed marker is the one that carries ink",
+  /\.cr-half--armed \.cr-half__marker \{ color: var\(--cardrpg-ink\); \}/.test(css)
+    ? "yes" : "no", "yes");
+check("and such a card looks clickable",
+  /\.cardrpg \.cr-card--toggles \{ cursor: pointer; \}/.test(css) ? "yes" : "no", "yes");
+check("the template no longer asks a reaction row whether its card is turned",
+  /card\.reaction\.reserved/.test(trayTemplate) ? "it does" : "no", "no");
+/* And the spec carries all three, because the HUD is specified before it is built and the three
+ * are a rule, a gesture and a readout rather than three tweaks. */
+check("the spec writes both words",
+  /#### 6\.1a Both states are written, and the card is its own switch/.test(hudSpec)
+    ? "yes" : "no", "yes");
+check("and says when a card becomes its own switch",
+  hudSpec.includes("When the reaction is all a card has left, the whole card is that switch")
+    ? "yes" : "no", "yes");
+check("and that a playable half keeps its own button",
+  hudSpec.includes("Not while a half is still playable") ? "yes" : "no", "yes");
+check("and that a round stands the whole hand up",
+  hudSpec.includes("And a round stands the whole hand up") ? "yes" : "no", "yes");
+/*
+ * **A turn is a primary and a secondary, and nothing counted.**  **[FIXED 2026-11-22]**
+ *
+ * core-rules has said it since the rules were written; the only thing enforcing it was `staged`
+ * holding at most one of each, and `#onPlay` emptied `staged`. So the budget lasted exactly as
+ * long as the staging did: play two cards and the rest of the hand was offered again. A five-card
+ * hand was five actions, in a game whose economy is two.
+ *
+ * The miss is the familiar one for this project: the rule was written, the vocabulary existed, and
+ * nothing read it. What makes it worse than most is that the engine ALREADY believed the turn was
+ * over at that line -- it disarms the hand there, on the comment *the turn's actions are done*.
+ */
+check("core-rules says what a turn is",
+  /A turn is a primary and a secondary/.test(coreRules) ? "yes" : "no", "yes");
+/* The pair, not the record alone: `#onPlay` rebuilds the same object when the turn rolls over,
+ * so the bare line is answerable in two places and pins neither. */
+check("the tray keeps what the turn has spent",
+  /this\.playedAt = null;\s*\n\s*this\.spentHalves = \{ primary: false, secondary: false \};/
+    .test(traySource) ? "yes" : "no", "yes");
+/* Keyed and compared rather than cleared, exactly as the deal is, so there is no hook to forget. */
+check("and it is keyed by the turn, like the deal",
+  /if \(this\.playedAt !== CardRPGTray\.#turnKey\(game\.combat\)\) return false;/.test(traySource)
+    ? "yes" : "no", "yes");
+/* Exhausted is one CARD a turn (core-rules 8), so the first half played takes the other with it. */
+check("exhausted spends both halves at once",
+  /if \(this\.actor\.system\.exhausted\) \{\s*\n\s*return this\.spentHalves\.primary \|\| this\.spentHalves\.secondary;/
+    .test(traySource) ? "yes" : "no", "yes");
+/*
+ * **Booked before the reset, or it books nothing.** `#resetPlay` empties `staged`, which is the
+ * list being read -- the order is the whole of the fix, so it is the order that is pinned.
+ */
+const playBody = bodyOf(traySource, "static async #onPlay()");
+check("playing books the halves it played",
+  /for \(const \{ half \} of this\.staged\) this\.spentHalves\[half\] = true;/.test(playBody)
+    ? "yes" : "no", "yes");
+check("and books them before it clears the staging",
+  playBody.indexOf("this.spentHalves[half] = true") < playBody.indexOf("this.#resetPlay()")
+    ? "before" : "after", "before");
+/*
+ * **One predicate, two readers.** A face that offers what the handler refuses is the same defect
+ * as a face promising a number the resolver will not deliver -- so the chooser and the renderer
+ * ask the same question rather than each deciding.
+ */
+check("the chooser and the face ask one predicate",
+  (traySource.match(/#halfSpent\(/g) ?? []).length, 3);
+check("and the chooser refuses a spent half",
+  /if \(this\.#halfSpent\(half\)\) \{/.test(traySource) ? "yes" : "no", "yes");
 /*
  * **And the breath's refusals no longer describe the retired rule.** Three strings promised cards
  * out of the discard -- the tray's warning, the Breath tooltip and the discard pile's tip -- and a
@@ -20210,6 +20359,9 @@ const absentGreps = [
   String.raw`the panel no longer summons the dialog :: data-action="callCheck"`,
   String.raw`the sheet reads level out rather than storing it :: name="system\.level"`,
   String.raw`the tactic no longer promises a reaction draw :: advantage\*\* on reactions`,
+  /* Turned is a fact about the piece of card, and an intruder has no reaction row to ask:
+   * off the row, a Wound was the one card `Hold all` turned and the renderer drew upright. */
+  String.raw`the template no longer asks a reaction row whether its card is turned :: card\.reaction\.reserved`,
   /* The tray built one of its own before the board existed; two forms writing one scene
    * flag is the divergence found months later as "the other one does not do that". */
   String.raw`the tray builds no call dialog of its own :: CARDRPG\.Check\.CallTitle`,

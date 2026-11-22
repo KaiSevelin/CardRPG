@@ -350,7 +350,16 @@ async function settle(page) {
      */
     const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
     for (const tray of CardRPGTray.openTrays) {
-      if (tray.actor?.type !== "npc") tray.side = "action";
+      if (tray.actor?.type === "npc") continue;
+      tray.side = "action";
+      /*
+       * **And the turn's budget.**  [2026-11-22] A spent turn greys out every half in the hand,
+       * so a probe that plays one and walks away hands the next probe a hand it cannot stage
+       * from -- which reads exactly like the renderer being broken. Out of combat every turn is
+       * the same turn, so nothing else would ever clear it.
+       */
+      tray.playedAt = null;
+      tray.spentHalves = { primary: false, secondary: false };
     }
   });
 }
@@ -447,6 +456,148 @@ async function probes(page) {
         ["and what is left in hand goes sideways", LIVE.uprightCards(hero).length, 0]
       ];
     }, before);
+  });
+
+  /*
+   * **And the next round stands it back up.**
+   *
+   * The bug this probe exists for was found by a person looking at their hand, which is the part
+   * worth recording. `move` clears the flag on every card it moves and a check pinned that, so
+   * *everything you draw arrives upright* was true of the arrivals and false of the survivors: a
+   * turn ends by turning the whole hand sideways, and the leftovers came back down a round later
+   * under a row of upright new ones. Every check about the flag had asked about a card that moved.
+   *
+   * So this holds a hand the player cannot have refilled past -- a FULL one, where the refill
+   * deals nothing at all -- because a probe that drew five new cards would pass on the arrivals
+   * and never ask about the three that stayed.
+   */
+  await probe("a round stands the hand back up", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { hero } = LIVE;
+      const hand = LIVE.deckOf(hero, "actionHand");
+      const size = hand.cards.size;
+      const held = await LIVE.reserveHand(hero, true);
+      const downBefore = hand.cards.contents.filter(c => LIVE.isReserved(c)).length;
+      const { drawn, roused } = await LIVE.refill(hero);
+      const downAfter = hand.cards.contents.filter(c => LIVE.isReserved(c)).length;
+      return [
+        ["a full hand was turned down", held === size && downBefore === size, true],
+        ["the refill deals nothing into a full hand", drawn, 0],
+        ["and it stands every one of them up anyway", downAfter, 0],
+        ["counting what it stood up", roused, size],
+        ["so the whole hand can react again", LIVE.uprightCards(hero).length, size]
+      ];
+    });
+  });
+
+  /*
+   * **A card already down is a click target all over, and the row says which way it is.**
+   *
+   * Turning one back took hitting the reaction row, which on a rotated card is a sliver of
+   * vertical text -- and on an intruder, which has no row, there was nothing to hit at all. The
+   * card body is clicked here rather than the button, because the button was never the problem.
+   */
+  await probe("a turned card is its own switch", async () => {
+    await settle(page);
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      await tray.render();
+    });
+    await page.waitForSelector(".cr-card .cr-half--reaction", { timeout: 20000 });
+
+    const reserveTargets = () => page.locator("[data-action=reserve]").count();
+    const upWhenUp = await reserveTargets();
+    const armed = await page.locator(".cr-card .cr-half--reaction").first().innerText();
+
+    await page.click("[data-action=reserveAll]");
+    await page.waitForSelector(".cr-card--reserved", { timeout: 10000 });
+    const downTargets = await reserveTargets();
+    const heldText = await page.locator(".cr-card--reserved .cr-half--reaction").first().innerText();
+
+    /* The NAME, not the reaction button: the whole card is the claim being tested. */
+    const before = await page.evaluate(() => LIVE.uprightCards(LIVE.hero).length);
+    await page.locator(".cr-card--reserved .cr-card__name").first().click();
+    await page.waitForFunction(n => LIVE.uprightCards(LIVE.hero).length === n + 1, before,
+      { timeout: 10000 }).catch(() => {});
+    const after = await page.evaluate(() => LIVE.uprightCards(LIVE.hero).length);
+
+    await settle(page);
+    return [
+      ["an upright row says it is armed", /armed/i.test(armed), true],
+      ["and a turned one says it is held", /held/i.test(heldText), true],
+      ["a turned hand offers more to click than an upright one", downTargets > upWhenUp, true],
+      ["and clicking the card body alone stands it up", after - before, 1]
+    ];
+  });
+
+  /*
+   * **A turn is a primary and a secondary, and the tray has to count.**
+   *
+   * core-rules has said it since the rules were written, and the only thing enforcing it was the
+   * staging list holding at most one of each -- which playing then emptied. A five-card hand was
+   * five actions. Two halves of this: that playing books what it played, and that a booked half
+   * is dead on the face as well as in the handler.
+   */
+  await probe("a spent turn leaves only the reaction", async () => {
+    await settle(page);
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      await tray.render();
+    });
+    await page.waitForSelector(".cr-card .cr-half--reaction", { timeout: 20000 });
+
+    const playable = () => page.locator(".cr-hud__hand [data-action=stage]").count();
+    const switches = () => page.locator(".cr-hud__hand .cr-card--toggles").count();
+    const openHalves = await playable();
+    const openSwitches = await switches();
+
+    /* Booked directly rather than by playing a turn: these probes run out of combat, where the
+     * turn key is the constant the tray compares against, and what is under test here is what a
+     * booked turn DOES -- the booking itself is pinned on the order of two lines offline. */
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.playedAt = "no-combat";
+      tray.spentHalves = { primary: true, secondary: true };
+      await tray.render();
+    });
+    await page.waitForFunction(
+      () => document.querySelectorAll(".cr-hud__hand [data-action=stage]").length === 0,
+      null, { timeout: 10000 }).catch(() => {});
+    const spentHalves = await playable();
+    const spentSwitches = await switches();
+    const tips = await page.evaluate(() =>
+      [...document.querySelectorAll(".cr-hud__hand .cr-half--blocked [data-tooltip]")]
+        .map(el => el.getAttribute("data-tooltip") ?? ""));
+
+    /* Clicking the body of one still toggles it, which is the only move it has left. */
+    const upBefore = await page.evaluate(() => LIVE.uprightCards(LIVE.hero).length);
+    await page.locator(".cr-hud__hand .cr-card--toggles .cr-card__name").first().click();
+    await page.waitForFunction(n => LIVE.uprightCards(LIVE.hero).length === n - 1, upBefore,
+      { timeout: 10000 }).catch(() => {});
+    const upAfter = await page.evaluate(() => LIVE.uprightCards(LIVE.hero).length);
+
+    await settle(page);
+    await page.evaluate(async () => {
+      /* settle restores state; the screen still shows what the spent turn drew. */
+      await game.cardrpg.openTray(LIVE.hero).render();
+    });
+    await page.waitForFunction(
+      () => document.querySelectorAll(".cr-hud__hand [data-action=stage]").length > 0,
+      null, { timeout: 10000 }).catch(() => {});
+    const backAgain = await playable();
+    return [
+      ["a fresh turn has halves to play", openHalves > 0, true],
+      ["and no card is a switch while they can be played", openSwitches, 0],
+      ["a spent turn leaves not one half clickable", spentHalves, 0],
+      ["and every one of those cards becomes a switch", spentSwitches > 0, true],
+      ["the face says why it is dead",
+        tips.some(t => /spent this turn|Exhausted/.test(t)) || tips.slice(0, 2).join(" ~ "), true],
+      ["clicking one holds its reaction", upBefore - upAfter, 1],
+      ["and the next turn gives the halves back", backAgain, openHalves]
+    ];
   });
 
   /*

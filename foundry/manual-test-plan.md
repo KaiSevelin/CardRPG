@@ -433,6 +433,89 @@ fallback, not a wildcard.
 
 ---
 
+# 2b. Held and armed  **[new 2026-11-22]**
+
+**Why manual:** found by playing, not by a check. Three of five cards were lying on their side a
+round after anyone touched them, and every automated check about the sideways flag had asked about
+a card that MOVED.
+
+The rules:
+
+1. A card turned sideways is **held**: it will not react. Both halves still play.
+2. When your turn's actions are done, what is left turns sideways **by itself**.
+3. **Your whole hand stands back up when your round begins.** A declaration is for the round you
+   made it in.
+4. While a card is down, **clicking anywhere on it** stands it up.
+5. The reaction row says **armed** or **held** in words, not only by which way the card lies.
+
+## 2b.1 A round stands the hand back up
+
+**This is the one to run first.** It is the bug.
+
+**Do.** Press **Hold all** so the whole hand lies sideways. Now end your turn and start the next
+one, or just press the refill.
+
+**Expect.** **Every card upright**, the ones you kept as much as the ones you drew.
+
+**The failure to watch for is partial**, which is what made it hard to see: new cards arrive
+upright whatever happens, so a hand of five with three leftovers reads as *mostly fine* with three
+cards on their side. Count them. If any card that was in your hand before the draw is still
+sideways after it, that is the bug not fixed.
+
+> It compounds, which is why it matters. Your turn ends and the hand goes down; next round only the
+> new cards come up; the round after that, fewer still. A player who never pressed anything would
+> find their defence quietly gone.
+
+## 2b.2 The whole card is the switch, when the reaction is all that is left
+
+**Do.** Press **Hold all**. Click a sideways card **on its picture or its name** — not on the
+reaction strip at the edge.
+
+**Expect.** That card stands up. Only that one.
+
+**Then click one of its halves while it is down.** That still **stages the half**, because a held
+card still plays: sideways is about the ⚡ row and nothing else.
+
+**And the two cards that had no way back.** A **Wound** in hand has no reaction row at all, and a
+reaction your armour switched off is printed as dead grey text rather than a button — so *Hold all*
+could turn either one down and nothing could turn it back. Get a Wound into your hand, press
+**Hold all**, and check you can stand it up again by clicking it.
+
+## 2b.2a A spent turn, and the rest of the hand
+
+**Do.** Play a primary and a secondary — a normal turn. Now look at the three cards still in hand.
+
+**Expect.**
+
+- **Both halves on every one of them are greyed out**, and hovering says *your primary is spent
+  this turn*. Before today they were still clickable, and you could play them: a five-card hand
+  was five actions, which is not the game.
+- **The reaction row is still live**, because the one decision you have left on those cards is
+  whether they fire.
+- **Clicking anywhere on such a card toggles armed/held.** Picture, name, a greyed half — all of
+  it, because the card has exactly one move left and that is it.
+
+**Then end the turn and start the next one.** The halves come back, and the hand stands upright
+(2b.1). Out of combat there is no next turn, so the halves stay spent until a fight starts or you
+reopen the tray — the same way the deck only deals once out of combat.
+
+**If you are Exhausted**, it is **one card** a turn, not one of each half: play either half and
+both are gone.
+
+## 2b.3 The row says which it is
+
+**Do.** Look at the ⚡ row on an upright card, then on a held one.
+
+**Expect.** **Brace — armed** upright, **Brace — held** when down, and the marker at the left of
+an armed row is darker than a held one.
+
+**Put on Plate**, which takes the Sidestep away. That row reads **Sidestep** struck through and
+grey, with **neither word**: it is not armed, because it will not fire, and it is not held, because
+nobody held it. Three states, three looks. A blocked row reading *armed* would be the card
+promising something the armour already refused.
+
+---
+
 # 3. What the other person sees
 
 Open a second browser as a player who owns the Starter Warrior, with the first as GM.

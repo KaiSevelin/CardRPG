@@ -410,7 +410,13 @@
       {{#each cards as |card|}}
         {{!-- `--cr-art` is the only thing art needs: the rim is the border and the art is the
               background inside it, so a card with no picture needs no different markup. --}}
-        <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}{{#if card.sole}} cr-card--sole{{/if}}{{#if card.reaction.reserved}} cr-card--reserved{{/if}}"
+        {{!-- The whole card is the switch when the reaction is all it has left: turned already,
+              or every half spent. The reaction row is a sliver of vertical text once rotated, and
+              on an intruder or a blocked reaction it is not a button at all. A card with a half
+              still to play keeps its buttons, which win the click by being nearer the pointer. --}}
+        <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}{{#if card.sole}} cr-card--sole{{/if}}{{#if card.reserved}} cr-card--reserved{{/if}}{{#if card.toggles}} cr-card--toggles{{/if}}"
+             {{#if card.toggles}}data-action="reserve" data-card-id="{{card.id}}"
+             data-tooltip="{{card.toggleTip}}"{{/if}}
              {{#if card.art}}style="--cr-art: {{crArt card.art}}"{{/if}}>
           <div class="cr-card__name"{{#if card.blurb}} data-tooltip="{{card.blurb}}"{{/if}}>{{card.name}}</div>
           {{#if card.harm}}
@@ -447,14 +453,19 @@
               themselves (core-rules 3); what the player decides, in advance, is whether this card
               is available to fire at all.
             --}}
-            <div class="cr-half cr-half--reaction{{#if card.reaction.blocked}} cr-half--blocked{{/if}}">
+            <div class="cr-half cr-half--reaction{{#if card.reaction.blocked}} cr-half--blocked{{/if}}{{#if card.reaction.armed}} cr-half--armed{{/if}}">
               <span class="cr-half__marker">{{crIcon ../config.halfIcons.reaction}}</span>
               {{#if card.reaction.blocked}}
                 <span data-tooltip="{{card.reaction.tip}}">{{card.reaction.label}}</span>
               {{else}}
+                {{!-- Both states are said in words, not by orientation alone: a card read on its
+                      own gives no angle to compare against, and "will it fire?" is the only
+                      question this row answers. --}}
                 <button type="button" class="cr-half__play" data-action="reserve"
                         data-card-id="{{card.id}}" data-tooltip="{{card.reaction.tip}}">
-                  {{card.reaction.label}}{{#if card.reaction.reserved}} — held{{/if}}
+                  {{card.reaction.label}}
+                  {{#if card.reserved}}<span class="cr-half__state">— held</span>
+                  {{else}}<span class="cr-half__state">— armed</span>{{/if}}
                 </button>
               {{/if}}
             </div>

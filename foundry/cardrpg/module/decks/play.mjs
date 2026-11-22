@@ -7,7 +7,9 @@
 
 import { CARDRPG } from "../config.mjs";
 import { afterDrawing, costsTheSlot, drawEffect } from "./intruders.mjs";
-import { allStacks, available, deckOf, move, moveRandom, normalizeDeck } from "./stacks.mjs";
+import {
+  allStacks, available, deckOf, move, moveRandom, normalizeDeck, reserveHand
+} from "./stacks.mjs";
 
 /**
  * Take a card out of the game entirely, wherever it happens to be sitting.
@@ -68,6 +70,9 @@ export async function removeCard(actor, card) {
  * rather than four, and a second Taint behind it cost nothing at all because the loop had already
  * gone. The shortfall is counted now and the refill carries on, which is what core-rules 8 says:
  * *you don't draw a replacement, so your hand is one card short* -- one per dose.
+ *
+ * **And the hand comes upright first**, because a round is a fresh question. See the note on
+ * `roused` below.
  */
 export async function refill(actor, { handlers = {} } = {}) {
   const deck = deckOf(actor, "action");
@@ -78,6 +83,25 @@ export async function refill(actor, { handlers = {} } = {}) {
   // Repair every pile, not just the deck: each one is where a copy of a deck card might be.
   const stacks = allStacks(actor);
   for (const stack of stacks) await normalizeDeck(stack, stacks);
+
+  /*
+   * **The hand comes up before it is filled.**  **[FIXED 2026-11-22]**
+   *
+   * `move` clears `reserved` on every card it moves, which made *everything you draw arrives
+   * upright* true of the cards that arrive and false of the cards that stay. A turn ends by
+   * turning the whole hand sideways (`#disarmHand`), so the leftovers were still sideways a round
+   * later, under a row of upright new ones -- the player's hand slowly going down and staying down
+   * while nobody said so.
+   *
+   * The disarm is a default for a turn that is OVER. A refill is the next turn beginning, and
+   * core-rules 3 makes it a fresh question: you declare what you will spend each round, and the
+   * declaration does not carry. So it is cleared here, at the start of the round, for the whole
+   * hand rather than for the cards that happened to move.
+   *
+   * Counted and returned rather than announced: the cards visibly stand up, and the one thing
+   * worth a notification is the disarm, which is the direction that costs the player something.
+   */
+  const roused = await reserveHand(actor, false);
 
   const size = actor.system.handSize?.max ?? CARDRPG.defaults.handSize;
   let drawn = 0;
@@ -129,7 +153,7 @@ export async function refill(actor, { handlers = {} } = {}) {
   }
 
   return {
-    drawn, short,
+    drawn, short, roused,
     taint: resolved.taint ?? 0,
     fear: resolved.fear ?? 0,
     rage: resolved.rage ?? 0
