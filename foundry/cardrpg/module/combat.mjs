@@ -13,7 +13,7 @@
  */
 
 import { CARDRPG } from "./config.mjs";
-import { deckOf, moveRandom, move, normalizeDeck, allStacks, available } from "./decks.mjs";
+import { deckOf, moveRandom, moveTop, move, normalizeDeck, allStacks, available } from "./decks.mjs";
 import { resolveWound, DROPPED, resolveDue, clearDue } from "./resolve.mjs";
 import { expireGround, clearGround, groundFor, imposeGround } from "./ground.mjs";
 
@@ -98,7 +98,10 @@ export class CardRPGCombat extends Combat {
       await deck.shuffle({ chatNotification: false });
     }
 
-    const drawn = await moveRandom(deck, discard, need);
+    /* Off the top, like every other fate draw [2026-11-22]. **Initiative is a fate draw**, so a
+     * Read before the fight aims it -- and a draw that still picked at random here would have been
+     * the one place an arranged order was quietly ignored. */
+    const drawn = await moveTop(deck, discard, need);
     if (!drawn.length) return 0;
 
     const rank = CARDRPG.fateValueOf;

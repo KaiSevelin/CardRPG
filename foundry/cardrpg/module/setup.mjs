@@ -163,12 +163,26 @@ async function makeCards(name, type, tag, cards = [], back = "", ownership = nul
   const art = back ? backOf(back) : "";
   const existing = findExisting(game.cards, tag);
   if (existing) return resync(existing, tag, cards, art);
-  return Cards.create({
+  const made = await Cards.create({
     name, type, cards,
     ...(art ? { img: art } : {}),
     ...(ownership ? { ownership } : {}),
     ...stamp(tag, cards)
   });
+  /*
+   * **A deck is shuffled the moment it is built.**  [FIXED 2026-11-22]
+   *
+   * Nothing shuffled a new deck, which did not matter for as long as every draw picked at random:
+   * the cards came out of `moveRandom` in a random order whatever order they were in. Fate and
+   * initiative draw off the TOP now, so an unshuffled deck would deal its twenty faces in the
+   * order this file wrote them -- the first draw of a new world always the same card -- until the
+   * first reshuffle, which is up to twenty draws away. `reshuffleFate` has always shuffled; this is
+   * the one moment it could not reach.
+   */
+  if (made?.type === "deck" && made.cards?.size) {
+    await made.shuffle({ chatNotification: false });
+  }
+  return made;
 }
 
 /** Expand a card definition's `copies` into that many Card documents. */

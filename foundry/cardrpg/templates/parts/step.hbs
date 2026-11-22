@@ -100,6 +100,7 @@
       Ignores cover
     </label>
     <label>Reads
+      <input type="number" name="{{path}}.read" value="{{step.read}}" min="1" step="1">
       <select name="{{path}}.readDeck">
         <option value="">&mdash;</option>
         {{#each config.readDecks}}

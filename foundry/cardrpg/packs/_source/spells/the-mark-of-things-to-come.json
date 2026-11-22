@@ -17,8 +17,8 @@
       "range": 99,
       "condition": "marked",
       "duration": 1,
-      "readDeck": "target",
-      "text": "and Read 1"
+      "read": 1,
+      "readDeck": "target"
     },
     "kind": "formula",
     "prepared": false

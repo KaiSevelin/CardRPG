@@ -4329,6 +4329,133 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **[BUILT 2026-11-22] A Read that aims a draw.**
+   *
+   * `readDeck` named whose fate deck a Read looks at and nothing read it, while the two formulas
+   * whose Read is the whole action wrote `verb: "foresee"` beside it -- a **different keyword**,
+   * which reveals an NPC type's intent card. And the field could not have been wired first, because
+   * a fate deck had no order: every draw went through `moveRandom`.
+   *
+   * **The row this probe exists for is the fifth one.** Arranging the top of a deck and then
+   * drawing from it is the only thing that proves a Read does anything at all, and it crosses three
+   * routines that each have a plausible wrong version: `reorderTop` could move the block up the
+   * deck, `topOf` could read the wrong end, and `moveTop` could hand its cards back in the order
+   * `Cards#pass` felt like. A grep sees none of that and the unit stub sees it in a stack it made
+   * up; this draws a real card off a real Cards document and checks it is the one that was put on
+   * top.
+   *
+   * **The reorder dialog is not driven**, the same bargain the Sift dialog and the delayed step are
+   * left under: it is modal, and what it decides is an order this probe arranges directly instead.
+   * `resolveRead` IS driven, through the Read of 1 that core-rules 6 says opens no dialog at all --
+   * so the whole path runs, deck choice included.
+   */
+  await probe("a Read, and the draw it aims", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { hero } = LIVE;
+      const r = await import("/systems/cardrpg/module/resolve.mjs");
+      const d = await import("/systems/cardrpg/module/decks.mjs");
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      const npc = game.actors.find(a => a.type === "npc");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      for (const c of [...game.combats]) await c.delete();
+      const pause = (ms = 400) => new Promise(done => setTimeout(done, ms));
+
+      const fate = d.deckOf(hero, "fate");
+      const theirs = d.deckOf(npc, "fate");
+      if (!fate || !theirs) return [["both sides have a fate deck", "no", "yes"]];
+
+      /* ---- the top of a deck is the front of its order ---- */
+      const top3 = d.topOf(fate, 3).map(c => d.cardName(c));
+      const sorted = d.topOf(fate, 3).map(c => c.sort);
+      const inOrder = sorted.every((n, k) => k === 0 || n >= sorted[k - 1]);
+      const readsThree = d.topOf(fate, 3).length;
+
+      /* ---- an order put back is an order kept ---- */
+      const was = d.topOf(fate, 3).map(c => c.id);
+      await d.reorderTop(fate, [was[2], was[0], was[1]]);
+      await pause();
+      const nowTop = d.topOf(fate, 3).map(c => c.id);
+      const arranged = nowTop.join(",") === [was[2], was[0], was[1]].join(",");
+      /* And the card BELOW what was read has not moved, because a Read arranges what it looked at
+       * and may not bring a card up the deck. */
+      const fourth = d.topOf(fate, 4)[3];
+      const stillFourth = !!fourth && !was.includes(fourth.id);
+
+      /* ---- and the draw takes the card that was put on top ---- */
+      const wanted = d.cardName(fate.cards.get(nowTop[0]));
+      const drew = await d.drawFate(hero, 0);
+      await pause();
+      const drewWanted = d.cardName(drew.drawn[0]) === wanted;
+      /* Which is the whole mechanic in one line: the order a Read arranges is the order the cards
+       * come off in. Under `moveRandom` this row would pass one time in twenty. */
+
+      /* ---- a Read, through the routine, on somebody else's deck ---- */
+      const place = async (actor, x) =>
+        (await canvas.scene.createEmbeddedDocuments("Token",
+          [(await actor.getTokenDocument({ x, y: 1600 })).toObject()]))[0];
+      const ph = await place(hero, 1000);
+      const pn = await place(npc, 1200);
+      const combat = await Combat.create({ scene: canvas.scene.id });
+      await combat.createEmbeddedDocuments("Combatant", [
+        { tokenId: ph.id, sceneId: canvas.scene.id, actorId: hero.id, initiative: 20 },
+        { tokenId: pn.id, sceneId: canvas.scene.id, actorId: npc.id, initiative: 10 }
+      ]);
+      await combat.startCombat();
+      await pause(700);
+
+      /* `other` is every fate deck in the fight but your own, which is where *a Divinator may never
+       * read their own* lives. One NPC type in this fight, so one deck and no dialog. */
+      const theirTopWas = d.topOf(theirs, 1).map(c => d.cardName(c)).join("");
+      const myTopWas = d.topOf(fate, 1).map(c => c.id).join("");
+      const before = game.messages.size;
+      const done = await r.resolveRead(hero, { step: { read: 1, readDeck: "other" }, targets: [] });
+      await pause();
+      const whose = done.map(x => x.whose).join(", ");
+      const sawTheirs = done.some(x => x.names.join("") === theirTopWas);
+      const myTopKept = d.topOf(fate, 1).map(c => c.id).join("") === myTopWas;
+      /* Two messages: the cards to the player and the GM, and a line the table can see saying a
+       * Read happened without saying what it found. */
+      const said = game.messages.contents.slice(-2);
+      const whispered = (said[0]?.whisper ?? []).length > 0;
+      const open = (said[1]?.whisper ?? []).length === 0;
+      const openIsQuiet = !new RegExp(theirTopWas.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+        .test(said[1]?.content ?? "");
+      const spoke = game.messages.size - before;
+
+      /* And a Read with nobody else in the fight finds no deck rather than reading your own. */
+      for (const c of [...game.combats]) await c.delete();
+      await pause();
+      const alone = await r.resolveRead(hero, { step: { read: 1, readDeck: "other" }, targets: [] });
+
+      /* ---- and put the world back ---- */
+      for (const doc of [pn, ph]) await doc.delete();
+      /* The drawn card back into the deck, and both decks shuffled: a probe that leaves a fate
+       * deck one card short leaves the next probe's odds different from the one before it. */
+      await d.reshuffleFate(hero);
+      await d.reshuffleFate(npc);
+      await pause();
+
+      return [
+        ["the top of a fate deck reads three", readsThree, 3],
+        ["and they come back in the deck's own order", inOrder, true],
+        ["and they are real cards", top3.every(n => n && n !== "?"), true],
+        ["an order put back is the order kept", arranged, true],
+        ["and the card below them did not move", stillFourth, true],
+        ["and the draw takes the card put on top", drewWanted, true],
+        ["a Read reaches somebody else's deck", whose, npc.system.kind || npc.name],
+        ["and sees what is really on it", sawTheirs, true],
+        ["and never touches your own", myTopKept, true],
+        ["the cards are whispered", whispered, true],
+        ["and the table is told a Read happened", open, true],
+        ["without being told what it found", openIsQuiet, true],
+        ["and that is two messages, not three", spoke, 2],
+        ["and with nobody else in the fight, no deck is read", alone.length, 0]
+      ];
+    });
+  });
+
   await probe("the system itself", async () => {
     const rows = await page.evaluate(() => {
       const errors = (globalThis.LIVE_ERRORS ?? []).filter(e => !/favicon|DevTools/.test(e));

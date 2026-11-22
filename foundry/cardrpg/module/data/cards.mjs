@@ -192,10 +192,22 @@ export function stepField() {
     ignoresBlock: new fields.BooleanField({ initial: false }),
     ignoresCover: new fields.BooleanField({ initial: false }),
     /*
-     * **Whose fate deck a Read looks at** (core-rules 6). `foresee` has always had a number and
-     * never a target, so *Read 3 on any one fate deck except your own* and *on your own fate deck*
-     * were the same step as far as the engine could tell.
+     * **A Read: how many cards, and whose deck.**  (core-rules 6)  **[WIRED 2026-11-22]**
+     *
+     * `readDeck` named whose deck for a fortnight with nothing reading it, and the two cards whose
+     * Read was the whole action wrote `verb: "foresee"` beside it -- which is a **different
+     * keyword**. Foresee looks at an NPC type's intent card; Read looks at the top of a fate deck
+     * and puts the cards back in any order. So those two formulas revealed an enemy's intent
+     * instead, their `param` was ignored, and both declared `needs: []`.
+     *
+     * Two fields rather than a verb, because core-rules 6 calls Read a named effect and a Read can
+     * be the **whole action** (*The Reading*) or **the smaller half of one** (*The Mark of Things
+     * to Come*, where it rides on a Mark that has its own step). A rider has no verb slot to put it
+     * in, which is the same reason `ground` is beside the verb rather than inside it.
      */
+    read: new fields.NumberField({
+      required: false, nullable: true, integer: true, min: 1, initial: null
+    }),
     readDeck: new fields.StringField({
       required: false, blank: true, initial: "",
       choices: [...Object.keys(CARDRPG.readDecks), ""]

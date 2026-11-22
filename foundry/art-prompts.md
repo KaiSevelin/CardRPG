@@ -5282,11 +5282,11 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of M
 File: `signatures/mind/the-reading.webp`
 
 ```text
-SUBJECT. "The Reading" — strength 2 · Foresee 3
+SUBJECT. "The Reading" — strength 2
 
 Three cards down somebody else's luck. Never your own — a diviner who could stack their own deck would be a damage school wearing a robe.
 
-Draw the moment before a thing happens, shown twice.
+Draw that line literally: the one moment it describes, and nothing else in frame.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Mediterranean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
@@ -6609,7 +6609,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-mark-of-things-to-come.webp`
 
 ```text
-SUBJECT. "The Mark of Things to Come" — strength 2 · range 99 Marked (1) and Read 1
+SUBJECT. "The Mark of Things to Come" — strength 2 · range 99 Marked (1)
 
 Marked at any range, and you know what its luck is about to do. The condition lands by itself; the reading is the half that does not.
 
@@ -6657,7 +6657,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-open-book.webp`
 
 ```text
-SUBJECT. "The Open Book" — strength 4 · every ally draws fate with advantage, and Read 2
+SUBJECT. "The Open Book" — strength 4 · every ally draws fate with advantage
 
 For one round the whole party is lucky and you can see why. Two cards down each of their decks, and a better draw on top of it.
 
@@ -6895,11 +6895,11 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/where-it-will-land.webp`
 
 ```text
-SUBJECT. "Where It Will Land" — strength 1 · Foresee 1
+SUBJECT. "Where It Will Land" — strength 1
 
 Somebody else's deck, one card down. The cheapest certainty in the game, and never your own: the seer is blind to themselves.
 
-Draw the moment before a thing happens, shown twice.
+Draw that line literally: the one moment it describes, and nothing else in frame.
 ```
 
 ### Wrong Face

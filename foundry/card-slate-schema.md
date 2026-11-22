@@ -104,7 +104,8 @@ prevent.
 | `targets` | **Who the step is for**: `self`, `oneEnemy`, `enemiesInRange`, `oneAlly`, `alliesInRange`, `adjacentAllies`, `everyAlly`, `selfAndAllies`, `everyone`. Blank means one enemy, which is what every card has always meant by saying nothing |
 | `oncePer` | How often it may be played: `fight`, `day`, `pactPerFight`. Three steps said it in prose |
 | `ignoresArmour` / `ignoresBlock` / `ignoresCover` | All of it, where `ignores` above is a NUMBER of armour points. Block and cover are not armour, and core-rules 5 is explicit that `ignores` comes off armour and never off Block |
-| `readDeck` | Whose fate deck a Read looks at: `own`, `other`, `target`, `all`. `foresee` had a number and never a target |
+| `read` | How many cards a Read looks at. Four steps, two of which are the whole action and two of which ride on one |
+| `readDeck` | Whose fate deck a Read looks at: `other`, `target`, `all`. Read by `resolveRead`, and `other` is where *a Divinator may never read their own* lives |
 | `whileState` | A state of your own the step waits on: hand empty, both hands empty, exactly one card, hand and deck both empty, a thin deck, no ally near. **Seven steps, and whole builds rest on them.** Read by `stateHolds`, gated by `refusesState`, printed on the card |
 | `conjure` | `creature`, the roster creature a conjuration fixes (blank = the GM decides), and `upkeep`, what it costs per round it stands |
 | `shape` | `transformation`: the transformation by name (content.mjs) |
@@ -189,7 +190,7 @@ varied half stays prose.**
 > condition. Seven of the nine carry prose, because what Demonology spends is a debt that
 > compounds and no `cost` field holds an obligation with an opinion.
 
-**116 steps still carry prose, 26 of them prose alone** `-` the same first number as before, which
+**115 steps still carry prose, 30 of them prose alone** `-` the same first number as before, which
 is not a failure to make progress, and a second number that went **up** by five. That is honest
 rather than a regression: `timing: "permanent"` was the only field on five of the Graven steps, and
 it was a slot budget wearing a timing's clothes rather than a rule about when anything happens. Nine
@@ -327,7 +328,54 @@ conditional price is not that, so the number went back into the card's own text 
 what the engine cannot do — the mirror image of *The Kingmaker's Draught*, whose price is
 **refunded** when the target dies.
 
-One closer is still pinned as outstanding rather than silenced: `readDeck`.
+**Every closer in the map now names a reader and finds one**, which has never been true before.
+The check is asked as *all of them* rather than as a number, so a closer added without a reader
+fails on the day it is added instead of becoming a number somebody repins.
+
+## Read N, and the keyword it had been doing instead [BUILT 2026-11-22]
+
+`readDeck` was the last field pinned as outstanding, and the note beside it said it was probably
+for deleting, on the grounds that `foresee` already asks whose deck to read. That was wrong, and
+wrong in a way worth keeping: **Foresee and Read are two keywords** (core-rules 6). Foresee looks
+at an NPC type's **intent card**; Read looks at the top N of a **fate deck** and puts the cards
+back in any order.
+
+The two formulas whose Read is the whole action wrote `verb: "foresee"` beside `readDeck`. So *The
+Reading* — *three cards down somebody else's luck* — revealed one enemy's intent instead, its
+`param: 3` dropped on the floor, and it declared `needs: []`. A field read by nothing is quiet; a
+field read by nothing next to a verb pointing at a different mechanic is a card that does the wrong
+thing and reports itself finished.
+
+**And the field could not have been wired first.** A fate deck had no order: every draw went
+through `moveRandom`, so there was no top to look at and nothing an arrangement could change — on a
+mechanic whose own rule is *the reshuffle is the fence: an order you arranged survives only until
+the first swing card is drawn*. That sentence had been describing something the engine did not
+have. Both fate draws come off the top of a shuffled deck now:
+
+| | |
+|---|---|
+| **Same odds** | A shuffled deck's top card is a random card, so the distribution under every draw in the game is unchanged. What is new is that the deck *has* an order |
+| **Two draws, not one** | `drawFate` is one; **initiative is a fate draw too** and `CardRPGCombat` does its own. A Read before the fight aims the initiative draw, and that second draw is the one place an arranged order would have been silently ignored |
+| **The first shuffle** | Nothing shuffled a *new* deck, which never mattered while draws were random. Off the top it would deal twenty faces in the order the setup file writes them — the first draw of a new world always the same card — until the deck first ran dry, up to twenty draws later |
+
+Three fields do the work: `read` (how many), `readDeck` (whose), and nothing else. It is two fields
+rather than a verb because a Read can be the whole action or **the smaller half of one** — *The
+Mark of Things to Come* is a Mark that also reads, and a rider has no verb slot to put it in. That
+is the same argument the `ground` clause makes, and the Read sits beside the verb for the same
+reason.
+
+Every clause of the rule is the document's own, and each is pinned against it rather than against
+my memory of it: **Read 1 is just looking**, so no dialog opens and there is no order to arrange;
+**a short deck reads what is there**; **who knows is the player**, so the cards are whispered while
+the table is told only that a Read happened; and **the fence needs no code**, because a Miss or a
+Critical already reshuffles. *A Divinator may never read their own deck* lives in the `other` value
+rather than in engine code that would have to remember whose school it was serving.
+
+One more thing the ordering turned up, in the audit rather than in the game: a check that matched
+**900 characters between the delay booking and the verb switch** broke when the Read clause went in
+between — a pin that fails when a step gains a neighbour rather than when the precedence breaks.
+That is the third span-matched pin to cry wolf in two days, so it asks for the order of five
+fragments now instead of a window.
 
 ## The state a step waits on, and the three values that were not states [FIXED 2026-11-22]
 

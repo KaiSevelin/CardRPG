@@ -548,7 +548,7 @@ Eleven, not twelve: *Step Through* is in the Shadow formulas below.
 | ✓ | **Nothing Left to Take** | strength 1 · you cannot be reduced below 1 Health | `signatures/mind/nothing-left-to-take.webp` |
 | ✓ | **Shim and Wedge** | Use range 1 · / Ready · Use an item on an adjacent ally instead of on yourself. The item is yours and is spent as normal. | `signatures/mind/shim-and-wedge.webp` |
 | ✓ | **The Bargain** | strength 3 · a minor god acts once, and the GM decides how | `signatures/mind/the-bargain.webp` |
-| ✓ | **The Reading** | strength 2 · Foresee 3 | `signatures/mind/the-reading.webp` |
+| ✓ | **The Reading** | strength 2 | `signatures/mind/the-reading.webp` |
 | ✓ | **The True Name** | strength 3 · range 4 Compelled (3) | `signatures/mind/the-true-name.webp` |
 | ✓ | **Unmake** | strength 2 · a Cast you have survived before does not resolve | `signatures/mind/unmake.webp` |
 | ✓ | **Wall of the Sphere** | strength 2 · range 3 area 3 of your element | `signatures/mind/wall-of-the-sphere.webp` |
@@ -662,11 +662,11 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 | ✓ | **The Long Preparation** | strength 1 · name one enemy type: your Casts against it are +2 all fight | `spells/mind/the-long-preparation.webp` |
 | ✓ | **The Long Step** | strength 1 · Move +4 through anything, if you begin and end in shadow | `spells/mind/the-long-step.webp` |
 | ✓ | **The Long Table** | strength 3 · the party sheds every Wound and all rest tokens return | `spells/mind/the-long-table.webp` |
-| ✓ | **The Mark of Things to Come** | strength 2 · range 99 Marked (1) and Read 1 | `spells/mind/the-mark-of-things-to-come.webp` |
+| ✓ | **The Mark of Things to Come** | strength 2 · range 99 Marked (1) | `spells/mind/the-mark-of-things-to-come.webp` |
 | ✓ | **The Mended Seam** | strength 1 · Repair 1 repair one item overnight, including corroded armour | `spells/mind/the-mended-seam.webp` |
 | ✓ | **The Mirror** | strength 3 · Spent: a Cast aimed at you resolves against its own caster | `spells/mind/the-mirror.webp` |
 | ✓ | **The Nine Names** | strength 1 · a minor god names who here it is angry with | `spells/mind/the-nine-names.webp` |
-| ✓ | **The Open Book** | strength 4 · every ally draws fate with advantage, and Read 2 | `spells/mind/the-open-book.webp` |
+| ✓ | **The Open Book** | strength 4 · every ally draws fate with advantage | `spells/mind/the-open-book.webp` |
 | ✓ | **The Open Door** | strength 4 · Cast range 2 area 2 | `spells/mind/the-open-door.webp` |
 | ✓ | **The Quick Dose** | strength 3 · Cast Poisoned 2 (2) · costs 3 skill cards set aside | `spells/mind/the-quick-dose.webp` |
 | ✓ | **The Reckoning** | strength 5 · Cast +6 range 6 ignores armour ignores Block and the GM then collects the whole ledger | `spells/mind/the-reckoning.webp` |
@@ -686,7 +686,7 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 | ✓ | **The Whole Thread** | strength 5 · the GM shows the enemy's intent cards for the whole fight, in order | `spells/mind/the-whole-thread.webp` |
 | ✓ | **Turn Aside** | strength 2 · range 3 one ally's Block counts double against this attack | `spells/mind/turn-aside.webp` |
 | ✓ | **Unmake the Ground** | strength 5 · all fight | `spells/mind/unmake-the-ground.webp` |
-| ✓ | **Where It Will Land** | strength 1 · Foresee 1 | `spells/mind/where-it-will-land.webp` |
+| ✓ | **Where It Will Land** | strength 1 | `spells/mind/where-it-will-land.webp` |
 | ✓ | **Wrong Face** | strength 2 · Cast Dazed (2) | `spells/mind/wrong-face.webp` |
 
 ## Miracles — Way of Faith pool

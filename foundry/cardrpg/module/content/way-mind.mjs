@@ -1080,16 +1080,23 @@ export const MIND_POOL = [
   /*
    * --- Divination, five more, and the school that pays in somebody else's turn ---
    *
-   * `foresee` is a declared verb and reading a fate deck is not built (the same gap *The Reading*
-   * named), so four of the six carry one string between them. The prophecy half is the GM's and is
-   * not a gap: a prophecy the player does not get to read is not something the engine could keep.
+   * **[FIXED 2026-11-22] Reading a fate deck is built, and two of these cards were doing something
+   * else entirely.** *Where It Will Land* and *The Reading* wrote `verb: "foresee"` beside
+   * `readDeck`, and Foresee is a **different keyword**: it looks at an NPC type's intent card
+   * (core-rules 6), which is what they did -- their `param` ignored, their deck field read by
+   * nothing, and `needs: []` on top. Read is two fields now, `read` and `readDeck`, and `foresee`
+   * keeps the one card that always meant it, Shade's *Point Man*.
+   *
+   * The prophecy half is still the GM's and is not a gap: a prophecy the player does not get to
+   * read is not something the engine could keep.
    */
   {
     name: "Where It Will Land", strength: 1, pool: "mind", source: "Divination",
     needs: [],
     description: "<p>Somebody else's deck, one card down. The cheapest certainty in the game, and "
       + "never your own: the seer is blind to themselves.</p>",
-    effect: { verb: "foresee", param: 1, readDeck: "other" }
+    /* Read 1, which core-rules 6 says is just looking: no order to arrange, so no dialog. */
+    effect: { read: 1, readDeck: "other" }
   },
   {
     name: "The Mark of Things to Come", strength: 2, pool: "mind", source: "Divination",
@@ -1097,10 +1104,10 @@ export const MIND_POOL = [
     description: "<p>Marked at any range, and you know what its luck is about to do. The "
       + "condition lands by itself; the reading is the half that does not.</p>",
     effect: {
-      range: 99, condition: "marked", duration: 1, readDeck: "target",
-      /* The Read rides on the Mark rather than being the action, so the amount stays prose:
-       * `foresee` is not this step's verb and giving it one would change what the card does. */
-      text: "and Read 1"
+      range: 99, condition: "marked", duration: 1,
+      /* The Read rides on the Mark rather than being the action, which is why the amount is a
+       * field beside the condition and not a verb: this step's verb is already spoken for. */
+      read: 1, readDeck: "target"
     }
   },
   {
@@ -1119,9 +1126,10 @@ export const MIND_POOL = [
     description: "<p>For one round the whole party is lucky and you can see why. Two cards down "
       + "each of their decks, and a better draw on top of it.</p>",
     effect: {
-      duration: 1, readDeck: "all",
+      duration: 1, read: 2, readDeck: "all",
       targets: "everyAlly",
-      text: "every ally draws fate with advantage, and Read 2"
+      /* The advantage is the half that is still prose, and the gap above names it. */
+      text: "every ally draws fate with advantage"
     }
   },
   {
@@ -1351,7 +1359,7 @@ export const MIND_SIGNATURES = [
     needs: [],
     description: "<p>Three cards down somebody else's luck. Never your own &mdash; a diviner who "
       + "could stack their own deck would be a damage school wearing a robe.</p>",
-    effect: { verb: "foresee", param: 3, readDeck: "other" }
+    effect: { read: 3, readDeck: "other" }
   }
 ];
 

@@ -26,6 +26,8 @@ import { squaresBetween, isAdjacent } from "./board.mjs";
 import { slateData } from "./setup.mjs";
 import {
   drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards, moveRandom, move,
+  /* A Read is an order, so it needs the top of a stack and a way to put cards back in one. */
+  topOf, reorderTop,
   /* A reaction is a card played, so it costs stamina (core-rules 8). */
   spendStamina,
   available,
@@ -2862,6 +2864,210 @@ export async function heckle(actor, enemy, option) {
       + `<strong>${enemy.name}</strong>: it draws fate with disadvantage.</p></div>`
   });
   return { key: "heckle", card: option.card };
+}
+
+/* -------------------------------------------- */
+/*  Read N                                      */
+/* -------------------------------------------- */
+
+/**
+ * **Whose fate deck a Read may look at.**  [BUILT 2026-11-22]
+ *
+ * One rule per value of `CARDRPG.readDecks`, in a table for the reason `COST_SCALES` and
+ * `ALLY_REACH` are: the vocabulary lives in config, so a fourth kind of Read is a line there and a
+ * line here, and a value with no rule is visibly missing rather than quietly nothing.
+ *
+ * **`other` is the restriction, not a filter for tidiness.** A Divinator may never read their own
+ * deck (specializations.md) and every card in the game that writes this field is a Divination
+ * formula, so the rule belongs in the value the card chose rather than in engine code that would
+ * have to remember whose school it was serving.
+ */
+const READ_DECKS = {
+  other: (actor) => fateStacksInFight().filter(f => f.stack.id !== fateIdOf(actor)),
+  target: (actor, targets) => targets.map(fateOf).filter(f => f),
+  /* Everyone the step covers, through the one routine that answers that for a price and a heal:
+   * *The Open Book* says `everyAlly`, and a Divinator is never among their own allies for this
+   * purpose because they may not read themselves -- the vocabulary got that right by accident and
+   * `selfAndAllies` is the value that would have been wrong. */
+  all: (actor, targets, step) => {
+    const covered = alliesCovered(actor, step);
+    return (covered.length ? covered : targets).map(fateOf).filter(f => f);
+  }
+};
+
+/** An actor's fate deck, with the name to print beside it. */
+function fateOf(who) {
+  const stack = who ? deckOf(who, "fate") : null;
+  return stack ? { stack, whose: who.name, id: who.id } : null;
+}
+
+/** The id of an actor's fate deck, for keeping your own out of a list. */
+function fateIdOf(who) {
+  return who?.system?.decks?.fate ?? null;
+}
+
+/**
+ * Every fate deck in the fight, one entry per deck.
+ *
+ * **Deduped by the deck, not by the figure**: a creature's fate deck is shared across its variants
+ * and across every goblin of that type (core-rules 6), so eight goblins are one deck and offering
+ * eight identical choices would be offering the same deck eight times.
+ */
+function fateStacksInFight() {
+  const seen = new Map();
+  for (const combatant of game.combat?.combatants ?? []) {
+    const who = combatant.actor;
+    const found = fateOf(who);
+    if (!found || seen.has(found.stack.id)) continue;
+    seen.set(found.stack.id, {
+      ...found,
+      /* An NPC is read as its TYPE, which is what a shared deck means. */
+      whose: who.type === "npc" ? (who.system.kind || who.name) : who.name
+    });
+  }
+  return [...seen.values()];
+}
+
+/**
+ * **Read N: look at the top N cards of one fate deck and put them back in any order** (core-rules
+ * 6).  [BUILT 2026-11-22]
+ *
+ * The field `readDeck` sat in the schema naming whose deck, read by nothing, while the two cards
+ * whose Read is the whole action wrote `verb: "foresee"` -- a different keyword, which looks at an
+ * NPC type's intent card. So *The Reading* said *three cards down somebody else's luck* and
+ * revealed one enemy's intent instead, its `param: 3` ignored, declaring `needs: []`.
+ *
+ * Every rule in this function is core-rules 6's own:
+ *
+ * - **Read 1 is just looking.** "Looking at one card and putting it back is just looking, so the
+ *   cheap version needs no keyword of its own" -- so no dialog opens, because an order of one is
+ *   not a decision. That is the same bargain the whole-hand Strain takes.
+ * - **A short deck reads what is there.** Fewer than N cards left is not a failure.
+ * - **Who knows: you do.** The cards are whispered to the player and the GM, and saying what you
+ *   saw is a decision at the table. The chat line the others see says a Read happened and not what
+ *   it found.
+ * - **The reshuffle is the fence**, which needs no code: a Miss or a Critical already reshuffles,
+ *   so an arranged order survives until the first swing card. That sentence is also the reason the
+ *   fate draw had to come off the top before any of this could mean anything.
+ */
+export async function resolveRead(actor, { step = {}, targets = [] } = {}) {
+  const n = Math.max(1, Math.trunc(step.read ?? 0));
+  if (!n) return [];
+  /* A Read with no deck named is a card that was written wrong rather than a player who did
+   * something wrong, so it says so plainly instead of guessing at a deck. The suite refuses the
+   * combination too, so this is the backstop and not the check. */
+  const rule = READ_DECKS[step.readDeck ?? ""];
+  if (!rule) {
+    ui.notifications?.warn("This Read does not say whose fate deck it looks at.");
+    return [];
+  }
+  const found = rule(actor, targets, step);
+  if (!found.length) {
+    ui.notifications?.info(step.readDeck === "target"
+      ? "Target whose fate deck you are reading."
+      : "No fate deck here to read.");
+    return [];
+  }
+
+  /*
+   * One deck is read, unless the card says every deck it covers. *The Open Book* reads two cards
+   * down each ally's deck and that is the whole of its 4; *The Reading* reads one deck of several
+   * and the player chooses which, because choosing the deck is the decision the card buys.
+   */
+  const decks = step.readDeck === "all" ? found : [await pickDeck(found)];
+  const done = [];
+  for (const deck of decks.filter(d => d)) {
+    const read = await readOneDeck(actor, deck, n);
+    if (read) done.push(read);
+  }
+  return done;
+}
+
+/** Which deck, when a card leaves it to the player. One deck needs no dialog. */
+async function pickDeck(found) {
+  if (found.length === 1) return found[0];
+  const pick = await foundry.applications.api.DialogV2.wait({
+    window: { title: game.i18n.localize("CARDRPG.Read.Title") },
+    content: `<div class="cardrpg"><p>Whose fate deck do you read?</p></div>`,
+    buttons: [
+      ...found.map(f => ({ action: f.stack.id, label: f.whose })),
+      { action: "cancel", label: "None", callback: () => null }
+    ],
+    modal: true,
+    rejectClose: false
+  });
+  return found.find(f => f.stack.id === pick) ?? null;
+}
+
+/**
+ * One deck, read and arranged.
+ *
+ * The order comes back as a number per card rather than as drag-and-drop, which is a dialog this
+ * project can check: **the picked order is the order they go back in**, ties broken by where they
+ * already were, so a player who sets two cards to the same slot gets a legal order rather than an
+ * error. A Read is not allowed to fail because the form was filled in oddly.
+ */
+async function readOneDeck(actor, { stack, whose }, n) {
+  const seen = topOf(stack, n);
+  if (!seen.length) {
+    ui.notifications?.info(`${whose}'s fate deck has nothing left to read.`);
+    return null;
+  }
+  const esc = foundry.utils.escapeHTML;
+  const names = seen.map(card => esc(cardName(card)));
+
+  let order = seen.map(c => c.id);
+  /* Read 1 is just looking (core-rules 6), so the dialog that arranges an order does not open. */
+  if (seen.length > 1) {
+    const slots = seen.map((card, k) => `<li><label>`
+      + `<select name="slot" data-card="${card.id}">`
+      + seen.map((_, j) => `<option value="${j}"${j === k ? " selected" : ""}>${j + 1}</option>`)
+        .join("")
+      + `</select> ${esc(cardName(card))}</label></li>`).join("");
+    const picked = await foundry.applications.api.DialogV2.wait({
+      window: { title: `${game.i18n.localize("CARDRPG.Read.Title")} ${seen.length}` },
+      content: `<div class="cardrpg cr-read"><p class="cr-note">`
+        + `The top of ${esc(whose)}'s fate deck, top first. Number them however you want them to `
+        + `come off: 1 is the next card drawn.</p>`
+        + `<ul class="cr-read__cards">${slots}</ul></div>`,
+      buttons: [
+        { action: "set",
+          label: "Put them back",
+          /* `querySelectorAll`, not `form.elements.slot`: one select of that name hands back the
+           * element rather than a list, which is the trap the Sift dialog records -- and a Read 2
+           * has two, so this one would have survived it and a Read of 1 never opens. */
+          callback: (ev, button) => [...button.form.querySelectorAll('select[name="slot"]')]
+            .map(sel => ({ id: sel.dataset.card, slot: Number(sel.value) })) },
+        { action: "keep", label: "Leave them", callback: () => null }
+      ],
+      modal: true,
+      rejectClose: false
+    });
+    if (Array.isArray(picked)) {
+      const was = new Map(order.map((id, k) => [id, k]));
+      order = picked.slice()
+        .sort((a, b) => a.slot - b.slot || was.get(a.id) - was.get(b.id))
+        .map(p => p.id);
+      await reorderTop(stack, order);
+    }
+  }
+
+  /* Who knows: you do. The whisper carries the cards and their order; the open line says only that
+   * a Read happened, so the table learns what the player chooses to tell them. */
+  const inOrder = order.map(id => esc(cardName(stack.cards.get(id) ?? { name: "?" })));
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    whisper: ChatMessage.getWhisperRecipients("GM").concat(game.user.id),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> reads `
+      + `<strong>${seen.length}</strong> off <strong>${esc(whose)}</strong>'s fate deck: `
+      + `${inOrder.join(", ")}</p></div>`
+  });
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> reads `
+      + `<strong>${seen.length}</strong> off <strong>${esc(whose)}</strong>'s fate deck.</p></div>`
+  });
+  return { whose, names, order };
 }
 
 /**

@@ -322,6 +322,7 @@
   "CARDRPG.Target.Everyone": "Everyone on the field",
   "CARDRPG.Limit.Day": "Once a day",
   "CARDRPG.Limit.PactPerFight": "Once per pact per fight",
+  "CARDRPG.Read.Title": "Read",
   "CARDRPG.Read.Other": "Any one deck but your own",
   "CARDRPG.Read.Target": "The target's deck",
   "CARDRPG.Read.All": "Every deck",

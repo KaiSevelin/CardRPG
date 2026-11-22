@@ -14,8 +14,7 @@
     "source": "Divination",
     "description": "<p>Three cards down somebody else's luck. Never your own &mdash; a diviner who could stack their own deck would be a damage school wearing a robe.</p>",
     "effect": {
-      "verb": "foresee",
-      "param": 3,
+      "read": 3,
       "readDeck": "other"
     },
     "kind": "formula",

@@ -37,7 +37,7 @@ import {
   liftCondition, resolveForesee, collectBonuses,
   resolveConjure, resolveShape,
   itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore,
-  refusesAction, refusesTiming, refusesState, stateHolds, stateWords,
+  refusesAction, refusesTiming, refusesState, stateHolds, stateWords, resolveRead,
   bookDelayed, healTargets, SKILL_FLOOR,
   /* One strain dialog, one price. A spell pays the same cards a card half does. */
   askStrain, spellPrice, priceWords,
@@ -3036,6 +3036,20 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
      * which is every verb.
      */
     if (step.ground?.shape) await this.#layGround(step);
+
+    /*
+     * **A Read sits beside the verb, like the ground does.**  [BUILT 2026-11-22]
+     *
+     * Core-rules 6 makes Read a named effect rather than an icon, and two of the four steps that
+     * carry one have a verb of their own: *The Mark of Things to Come* is a Mark that also reads,
+     * *The Open Book* grants advantage and also reads. A case in the switch would have needed one
+     * per verb that can also read, which is the argument the ground clause already makes.
+     *
+     * Before the switch rather than after, because every case returns -- and the order does not
+     * matter to any of the four: a Read looks at a deck, and nothing the same step does changes
+     * which cards are on top of it.
+     */
+    if (step.read) await resolveRead(actor, { step, targets });
 
     switch (step.verb) {
       case "strike":

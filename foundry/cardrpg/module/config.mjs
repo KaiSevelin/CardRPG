@@ -1116,11 +1116,16 @@ CARDRPG.limits = {
 };
 
 /**
- * **Whose fate deck a Read looks at** (core-rules 6).
+ * **Whose fate deck a Read looks at** (core-rules 6).  **[WIRED 2026-11-22]**
  *
  * Four steps carried this in prose and two of them carried it as a rider on something else, which
  * is why the field is here rather than inside the foresee effect: a Read can be the action or it
  * can be the smaller half of one.
+ *
+ * `resolveRead` is the reader and these three are its rules. **`other` is the rule that matters**:
+ * a Divinator may never read their own deck (specializations.md), and every card that writes this
+ * value is a Divination formula -- so the restriction is in the value rather than in a line of
+ * engine code that has to remember whose school it is looking at.
  */
 /*
  * **`own` was dropped on 2026-11-07, and what it cost is worth recording.** It had exactly one user

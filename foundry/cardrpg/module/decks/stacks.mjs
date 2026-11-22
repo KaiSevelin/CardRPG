@@ -50,6 +50,63 @@ export function available(stack) {
 }
 
 /**
+ * **The top of a stack, in the order it will come off.**  [BUILT 2026-11-22]
+ *
+ * `available` says WHICH cards are really there and says nothing about order; this says which are
+ * on top. Foundry orders a stack by `sort` and its own `TOP` draw mode means the lowest -- so the
+ * top is the front of that order, and a shuffle is Foundry assigning new `sort` values.
+ *
+ * Nothing needed this while every draw was random. **Read N** (core-rules 6) is *look at the top N
+ * cards of one fate deck and put them back in any order*, which is a sentence about an order, and
+ * `readDeck` sat in the schema for a fortnight naming whose deck a Read looks at while fate was
+ * drawn with `moveRandom` -- so there was no top to look at and no order to arrange.
+ */
+export function topOf(stack, n = 1) {
+  return available(stack)
+    .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
+    .slice(0, Math.max(0, n));
+}
+
+/**
+ * Draw `n` off the top. Returns the cards **in the order they were on the deck**.
+ *
+ * The order of the return is not a nicety: a plain fate draw uses `drawn[0]` and an advantage draw
+ * compares two, so a draw that handed back its two cards the other way round would quietly use the
+ * second card as the first. `Cards#pass` makes no promise about the order of what it returns, so
+ * the ids are put back in the order they were asked for rather than trusted.
+ *
+ * **Distributionally this is the same as `moveRandom` on a shuffled deck**, which is what makes it
+ * safe to swap underneath every fate draw in the game: `reshuffleFate` has always shuffled, and a
+ * new deck is shuffled when it is built. What changes is that the deck now HAS an order, so an
+ * order a player arranged is the order the cards come off in.
+ */
+export async function moveTop(from, to, n = 1) {
+  if (!from || !to || n <= 0) return [];
+  const want = topOf(from, n).map(c => c.id);
+  if (!want.length) return [];
+  const moved = await move(from, to, want);
+  const byId = new Map(moved.map(c => [c.id, c]));
+  return want.map(id => byId.get(id)).filter(c => c);
+}
+
+/**
+ * **Put these cards back in this order**, keeping them where they are in the stack.
+ *
+ * The `sort` values they already hold are collected and dealt back out in the new order, so the
+ * block of cards stays exactly where it was and only their order within it changes. Writing fresh
+ * numbers instead would have to guess at a gap that does not collide with the rest of the deck,
+ * and a Read is not allowed to move a card up the deck -- only to arrange the ones it looked at.
+ */
+export async function reorderTop(stack, ids = []) {
+  const cards = ids.map(id => stack?.cards?.get(id)).filter(c => c);
+  if (cards.length < 2) return cards;
+  const slots = cards.map(c => c.sort ?? 0).sort((a, b) => a - b);
+  await stack.updateEmbeddedDocuments("Card",
+    cards.map((card, k) => ({ _id: card.id, sort: slots[k] })));
+  return cards;
+}
+
+/**
  * Move `n` random cards from one pile to another. Returns the cards that moved.
  *
  * Cards.pass marks a card `drawn` when it leaves a deck and refuses to pass it again, which is what

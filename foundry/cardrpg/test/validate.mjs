@@ -849,13 +849,171 @@ for (const item of content.ITEMS) if (item.shot) steps.push(item.shot);
  * mean the Blast never happened. Reading the field names out of stepField() keeps this honest
  * without duplicating the list here.
  */
+/* -------------------------------------------- */
+/*  Two tools, instead of a character span       */
+/* -------------------------------------------- */
+
+/*
+ * **A span of characters is the wrong way to ask either question this suite keeps asking.**
+ * [BUILT 2026-11-22]
+ *
+ * Fifty-odd checks in this file matched `A[\s\S]{0,N}B` against a module, and every one of them
+ * meant one of exactly two things: *B is inside the block A opens*, or *A happens before B*.
+ * Neither is a fact about character counts, and a width is a **third** claim nobody intended --
+ * that the code between them is no longer than N -- which fails when somebody writes a comment.
+ *
+ * It had cried wolf three times in two days before this went in: the delayed step's precedence
+ * (900 characters, broken by the Read clause), the timing guard before the price (220, broken by
+ * the comment explaining the state guard), and the tray's strain claim (200). Three false alarms
+ * on three correct commits, each costing a repin, and a width that is nearly spent also *passes*
+ * while being one comment from failing -- so the measure at the end of this file reports the
+ * headroom, and these two helpers are what the spans turn into.
+ *
+ * `bodyOf` is the stronger of the two and not merely the safer: *inside this if-block* is what the
+ * check meant, and a span would be answered by B sitting after the block entirely.
+ */
+
+/**
+ * The body of the brace-block that `opener` starts, or `""` when it cannot be found.
+ *
+ * Braces are counted with strings, template literals and comments skipped, because every one of
+ * them can hold an unbalanced brace -- `"{"`, `` `${x}` ``, and a commented-out block are all in
+ * these files. A regex literal can too, in principle; none of the blocks this is used on contains
+ * one, and a mis-slice shows up as the check failing rather than as a check that passes wrongly.
+ */
+function bodyOf(source, opener) {
+  const at = source.indexOf(opener);
+  if (at < 0) return "";
+  /*
+   * **The brace that opens the BLOCK, not the first brace after the name.**
+   *
+   * `export async function startChallenge({ progressMax = 5, ... })` -- the first brace there is a
+   * destructured parameter list, so the first draft of this sliced the ARGUMENTS and reported the
+   * GM guard as missing from a function that opens with it. If a parenthesis comes before the
+   * brace it is the signature, so it is skipped to its own close first.
+   */
+  let from = source.indexOf("{", at);
+  const paren = source.indexOf("(", at);
+  if (paren >= 0 && (from < 0 || paren < from)) {
+    let open = 0;
+    let j = paren;
+    for (; j < source.length; j++) {
+      if (source[j] === "(") open++;
+      else if (source[j] === ")" && !--open) break;
+    }
+    from = source.indexOf("{", j);
+  }
+  if (from < 0) return "";
+  let depth = 0;
+  let i = from;
+  const end = source.length;
+  while (i < end) {
+    const c = source[i];
+    const two = source.slice(i, i + 2);
+    if (two === "//") { i = source.indexOf("\n", i); if (i < 0) break; continue; }
+    if (two === "/*") { i = source.indexOf("*/", i); if (i < 0) break; i += 2; continue; }
+    if (c === '"' || c === "'" || c === "`") {
+      i++;
+      while (i < end && source[i] !== c) i += source[i] === "\\" ? 2 : 1;
+      i++;
+      continue;
+    }
+    if (c === "{") depth++;
+    else if (c === "}") {
+      depth--;
+      if (!depth) return source.slice(from + 1, i);
+    }
+    i++;
+  }
+  /* Braces that never close give nothing rather than the rest of the file, which is checked
+   * below: a helper whose failure mode is *everything after here* would answer every question
+   * asked of it with yes. */
+  return "";
+}
+
+/**
+ * Do these fragments appear in this order, each one after the last?
+ *
+ * Returns `"in order"` or the indexes, so a failure says which fragment is missing (`-1`) or out of
+ * place rather than only that something is wrong. This is the form the delayed step's precedence
+ * and the three guards on a cast already use, written once.
+ */
+function inOrder(source, fragments) {
+  /*
+   * **Each one is looked for AFTER the last, which is not the same as looking each one up.**
+   * The first draft took `indexOf` of every fragment independently and reported the deck-floor
+   * check as out of order -- wrongly: `DialogV2.prompt` occurs twice in that file and the earlier
+   * one is before the floor is read, so comparing first occurrences compared two different
+   * prompts. A span never had this bug, because a span searches forward by construction. The
+   * planted example below gained a repeated fragment the moment this was found.
+   */
+  const found = [];
+  let from = 0;
+  for (const fragment of fragments) {
+    const at = source.indexOf(fragment, from);
+    found.push(at);
+    if (at < 0) break;
+    from = at + fragment.length;
+  }
+  return found.length === fragments.length && found.every(at => at >= 0)
+    ? "in order" : found.join(",");
+}
+
+/*
+ * **Both run over a planted example before they are run over the modules**, which is this file's
+ * oldest lesson aimed at its newest tools: with nothing to find, a helper that always says yes and
+ * one that works are the same helper.
+ */
+const PLANTED = `function f() {\n  if (a) {\n    warn("inside");\n  }\n  return "}";\n}\n`
+  + `after("outside");\n`;
+check("a block's body is the block, not the rest of the file",
+  bodyOf(PLANTED, "if (a)").trim(), 'warn("inside");');
+check("and what follows the block is not in it",
+  /after/.test(bodyOf(PLANTED, "if (a)")) ? "in it" : "outside", "outside");
+check("and a brace inside a string does not close it",
+  /return/.test(bodyOf(PLANTED, "function f()")) ? "yes" : "no", "yes");
+check("and an opener that is not there finds nothing", bodyOf(PLANTED, "while (b)"), "");
+/* A destructured parameter list, which is the case that caught this: the arguments are not the
+ * body, and a slice of them answers every question about the body with no. */
+const PARAMS = `export async function g({ a = 1, b = 2 } = {}) {\n  guard();\n}\n`;
+check("and a function's parameters are not its body",
+  bodyOf(PARAMS, "export async function g").trim(), "guard();");
+check("and braces that never close find nothing", bodyOf("if (a) {\n  one();\n", "if (a)"), "");
+check("fragments in order read as in order",
+  inOrder(PLANTED, ["function f()", "if (a)", "after("]), "in order");
+/* A fragment that occurs twice: the second one is the one that counts when it comes after. */
+check("and a repeated fragment is found after the one before it",
+  inOrder(`one();
+mark();
+two();
+mark();
+`, ["two();", "mark();"]), "in order");
+check("and not before it",
+  inOrder(`mark();
+one();
+`, ["one();", "mark();"]) === "in order" ? "in order" : "out of order",
+  "out of order");
+/* The diagnostic's SHAPE, not the offsets it happens to print: pinning two literal character
+ * positions in a planted string would be the exact brittleness these helpers exist to retire, one
+ * level up. */
+const wrongWay = inOrder(PLANTED, ["after(", "if (a)"]);
+check("and fragments out of order do not",
+  wrongWay === "in order" ? "in order" : "out of order", "out of order");
+check("and the answer says where each one was",
+  /^-?\d+(,-?\d+)+$/.test(wrongWay) ? "yes" : "no", "yes");
+check("and a fragment that is absent is reported missing",
+  inOrder(PLANTED, ["function f()", "nowhere"]).endsWith(",-1") ? "yes" : "no", "yes");
+
 const cardsSource = fs.readFileSync(path.join(root, "module/data/cards.mjs"), "utf8");
 const stepBlock = cardsSource.slice(cardsSource.indexOf("export function stepField()"));
 const stepKeys = new Set(
   [...stepBlock.slice(0, stepBlock.indexOf("\n}")).matchAll(/^    ([a-zA-Z]+):/gm)].map(m => m[1])
 );
-/* 30 since 2026-11-16: `shove`, core-rules 11's push, pull and throw as one signed number. */
-check("stepField keys read from source", stepKeys.size, 30);
+/* 30 since 2026-11-16: `shove`, core-rules 11's push, pull and throw as one signed number.
+ * **31 since 2026-11-22**: `read`, the amount a Read looks at. `readDeck` said whose deck for a
+ * fortnight with no field for how many, which is why the two cards whose Read is the whole action
+ * put the amount in `param` beside a verb that means something else. */
+check("stepField keys read from source", stepKeys.size, 31);
 
 const strayKeys = new Set();
 for (const step of steps) {
@@ -4596,9 +4754,13 @@ check("prune is implemented", /export async function prune\(actor\)/.test(graphS
  * first and then spends itself in two places -- it refuses outright only when there is nothing
  * else to offer, and otherwise it withholds the deck's own cards from the list.
  */
+/* **This was the worst of them: 2528 characters used of 2600.** [2026-11-22] A pin with seventy
+ * characters of headroom across two thousand is a pin that fails on the next comment written
+ * anywhere between the two lines, and it would have reported the deck floor as unread. */
 check("it reads the deck floor before asking",
-  /const floored = cards\.length <= \(actor\.system\.actionDeck\?\.min[\s\S]{0,2600}DialogV2\.prompt/
-    .test(graphSource) ? "yes" : "no", "yes");
+  inOrder(graphSource,
+    ["const floored = cards.length <= (actor.system.actionDeck?.min", "DialogV2.prompt"]),
+  "in order");
 check("and only the deck's own cards are withheld by it",
   /floored \? \[\] : byName\(cards\)/.test(graphSource) ? "yes" : "no", "yes");
 
@@ -5307,16 +5469,19 @@ check("every Tactic has text", graph.tacticOf(crossed)?.text?.length > 20, true)
 check("the feature schema carries the armour doubling",
   /armor: new fields\.SchemaField\(\{\s*\n\s*doubleWhenOverloaded/.test(itemSource)
     ? "yes" : "no", "yes");
+/*
+ * **The widest span in the file, and the right answer was written beside it.**  [FIXED 2026-11-22]
+ *
+ * This was `{0,1200}`, with a comment saying the window *widened on 2026-11-12* because Overloaded's
+ * stamina clause moved in between -- and admitting that the check which matters is the index
+ * comparison below, *which no amount of text can fool*. Two checks of the same claim, one of them
+ * known to be fragile and kept anyway. The fragile one is gone; the claim is unchanged.
+ *
+ * After, not before: the tier is itself derived from weight, so the order is the whole correctness.
+ */
 check("the actor applies it after the encumbrance tier",
-  /* The window widened on 2026-11-12: Overloaded's own stamina clause now sits between the tier
-   * and this, which is the same ordering requirement for the same reason. The check that matters
-   * is "and not before it" below -- an index comparison, which no amount of text can fool. */
-  /this\.encumbrance = CharacterData\.encumbranceTier[\s\S]{0,1200}doubleWhenOverloaded/
-    .test(actorModel) ? "yes" : "no", "yes");
-/* After, not before: the tier is itself derived from weight, so order is the whole correctness. */
-check("and not before it",
-  actorModel.indexOf("doubleWhenOverloaded")
-    > actorModel.indexOf("this.encumbrance = CharacterData.encumbranceTier") ? "yes" : "no", "yes");
+  inOrder(actorModel,
+    ["this.encumbrance = CharacterData.encumbranceTier", "doubleWhenOverloaded"]), "in order");
 check("only the Ironclad's Signature claims it",
   sigs.filter(sg => sg.armor?.doubleWhenOverloaded).map(sg => sg.name).join(", "),
   "Nothing Gets Through");
@@ -6981,8 +7146,15 @@ const GAP_CLOSERS = [
   ["an effect that reads how far away your allies are",
     c => stepsOfContent(c).some(s => s.whileState === "noAllyNear"),
     /WHILE_STATES|stateHolds\(/],
-  ["reading the top of a fate deck", c => stepsOfContent(c).some(s => s.readDeck),
-    /\breadDeck\b/],
+  /*
+   * **The amount, and the rule table rather than the field's spelling.**  [2026-11-22] This asked
+   * content for `readDeck` and the engine for the word `readDeck`, and the word was in the schema
+   * and in a dropdown and nowhere else -- the same half-question that let `whileState` pass. What
+   * makes a step a Read is that it looks at a number of cards, so the predicate asks for the
+   * amount and the reader named is where the three kinds of Read live.
+   */
+  ["reading the top of a fate deck", c => stepsOfContent(c).some(s => s.read),
+    /READ_DECKS|resolveRead\(/],
   /* The rule table rather than the field's spelling: `scaledCost` is what every amount goes
    * through, and `COST_SCALES` is where the three rules live. Asking for `cost?.scale` would have
    * been asking the engine to spell a field it reads once and hands to a table. */
@@ -7101,28 +7273,43 @@ const ENGINE_SOURCE = [
 check("gap closers that name no reader at all",
   GAP_CLOSERS.filter(([, , reads]) => !reads).map(([g]) => g).join(", ") || "none", "none");
 /*
- * **One is pinned as outstanding rather than silenced**, because that is the finding and not a
- * tidy-up. It names a field that content writes, that this map accepts as proof of work, and that
- * **nothing in the engine reads** -- so the gap it closes was never built and the pieces declaring
- * `needs: []` on its strength are overstating. It wants a decision rather than a patch:
+ * **Nothing is pinned as outstanding any more**, and the list of what came off is the point of
+ * keeping this comment. Each entry named a field that content wrote, that this map accepted as
+ * proof of work, and that **nothing in the engine read** -- so the gap it closed had never been
+ * built and the pieces declaring `needs: []` on its strength were overstating.
  *
- * - **`readDeck`** is probably for deleting. `foresee` already asks whose intent to read and reads
- *   it, so the field is redundant on the two cards that work and prose on the third.
+ * **It was four on the morning of 2026-11-21.** `cost.taint` and `cost.scale` came off it the way
+ * `delay` had the day before: `payToCast` charges all four purses and `scaledCost` works out the
+ * amount, so a spell that says it taints its caster taints them and *The Shield Line* bills a
+ * Health a man instead of a Health a line. `cost.strain` was never on this list at all -- no closer
+ * happened to name it -- which is worth remembering before reading the count as the whole of the
+ * debt, and is why that sweep went through the schema rather than through here.
  *
- * **It was four yesterday morning and two yesterday night.** `cost.taint` and `cost.scale` came
- * off it the way `delay` did the day before: `payToCast` charges all four purses and `scaledCost`
- * works out the amount, so a spell that says it taints its caster taints them and *The Shield
- * Line* bills a Health a man instead of a Health a line. `cost.strain` was never on this list at
- * all -- no closer happened to name it -- which is worth remembering before reading the count as
- * the whole of the debt, and is why that sweep went through the schema rather than through here.
- *
- * **`whileState` went two ways at once**, which is the shape to expect of the ones that are left:
- * six of its nine values are a question about the actor and are read and gated now, and the other
- * three were an upkeep wearing a state's clothes. A field can be half built and half wished for,
+ * **`whileState` went two ways at once**, and that is the shape to expect. Six of its nine values
+ * are a question about the actor and are read and gated now; the other three were an upkeep wearing
+ * a state's clothes, and they left the vocabulary. A field can be half built and half wished for,
  * and a count of readers cannot see the difference -- only reading the values can.
+ *
+ * **`readDeck` was the last, and it was not for deleting.** The note here said it probably was, on
+ * the grounds that `foresee` already asks whose deck to read -- which was wrong, and wrong in a way
+ * worth recording: **Foresee and Read are two keywords.** Foresee looks at an NPC type's intent
+ * card; Read looks at the top N of a fate deck and puts them back in any order. The two formulas
+ * whose Read is the whole action wrote `verb: "foresee"` beside `readDeck`, so they did the other
+ * keyword's job, their amount was dropped, and `needs: []` sat on top. What had to be built first
+ * was not the field at all: **a fate deck had no order**, because every draw went through
+ * `moveRandom` -- so there was no top to look at, on a mechanic core-rules 6 describes in terms of
+ * one. Both draws come off the top of a shuffled deck now, which is the same odds and a deck that
+ * can be arranged.
  */
 check("and how many closers are backed by a reader",
-  GAP_CLOSERS.filter(([, , reads]) => reads && reads.test(ENGINE_SOURCE)).length, 16);
+  GAP_CLOSERS.filter(([, , reads]) => reads && reads.test(ENGINE_SOURCE)).length,
+  /* Every one of them, which is the first time this has been true. Asked as *all of them* rather
+   * than as a number, so a closer added without a reader is a failure on the day it is added
+   * instead of a number somebody repins. */
+  GAP_CLOSERS.length);
+check("and which find none", GAP_CLOSERS
+  .filter(([, , reads]) => !reads || !reads.test(ENGINE_SOURCE)).map(([g]) => g).join(", ")
+  || "none", "none");
 
 /* And how many each one finds, so a closer narrowing to one card is visible rather than silent. */
 check("content each closer recognises",
@@ -7423,9 +7610,18 @@ check("cards with both a requirement and a reaction, which nothing checks",
  * Checked as an ORDER rather than as two greps, because either line on its own is harmless and the
  * fault was entirely in which came first.
  */
-check("a delayed step is booked before the verb is looked at",
-  /if \(step\.delay\) \{[\s\S]{0,200}?bookDelayed\([\s\S]{0,900}?switch \(step\.verb\)/
-    .test(traySource) ? "yes" : "no", "yes");
+/*
+ * **[2026-11-22] Pinned as an index order, not as a window.** The window was 900 characters from
+ * the booking to the switch and the Read clause that went in between overran it -- a check that
+ * fails when a step gains a NEIGHBOUR rather than when the precedence breaks, which is the third
+ * time a span-matched pin has cried wolf in two days. What the fix consists of is the order, so
+ * the order is what is asked.
+ */
+const stepOrder = ["if (step.delay)", "bookDelayed(", "this.#layGround(step)",
+  "if (step.read)", "switch (step.verb)"].map(fragment => traySource.indexOf(fragment));
+check("a delayed step is booked before anything else in the step happens",
+  stepOrder.every((at, k) => at >= 0 && (k === 0 || at > stepOrder[k - 1])) ? "yes"
+    : stepOrder.join(","), "yes");
 /* And the ground of a delayed step waits with it: a grove that grows in two turns does not put
  * difficult ground down today. The booking is above the ground clause, which says that. */
 check("and its ground waits with it",
@@ -7463,8 +7659,7 @@ check("the face, the click and the range display pick through one call",
  * every one of them be wrong under the other order.
  */
 check("the staged step's own range is preferred to the weapon's",
-  /let reach = step\.range \?\? null;[\s\S]{0,240}?rangeOnLine\(line, item\)/.test(traySource)
-    ? "yes" : "no", "yes");
+  inOrder(traySource, ["let reach = step.range ?? null;", "rangeOnLine(line, item)"]), "in order");
 check("and the steps that would break under the other order",
   everything.flatMap(c => [...(c.primary ?? []), ...(c.secondary ?? []),
     ...(c.effect ? [c.effect] : [])]).filter(st => st.range === 1).length, 11);
@@ -11428,7 +11623,11 @@ const saidTwice = everyStep.filter(s =>
   || (s.st.whileState && /^while\b/i.test(s.st.text ?? ""))
   || ((s.st.ignoresArmour || s.st.ignoresBlock || s.st.ignoresCover)
     && /\bignoring\b/i.test(s.st.text ?? ""))
-  || (s.st.readDeck && /fate deck/i.test(s.st.text ?? "")));
+  || (s.st.readDeck && /fate deck/i.test(s.st.text ?? ""))
+  /* **And the amount, which is the half that was prose.** [2026-11-22] *The Mark of Things to
+   * Come* said `and Read 1` beside a deck field nothing read, because there was no field for how
+   * many -- so this term would have had nothing to catch until the day the field arrived. */
+  || (s.st.read && /Read \d/i.test(s.st.text ?? "")));
 /* Every ground property is used by a zone, and the list is a LIST because several cards name two
  * or three at once -- a column of booleans could not have said that cheaply. */
 const groundSteps = everyStep.filter(s => s.st.ground?.shape);
@@ -11788,7 +11987,9 @@ const proseLeft = everyStep.filter(s => s.st.text);
  * start and 33 now. A step with prose beside its fields is a step the engine resolves and the
  * table reads; a step with prose alone is one the engine drops on the floor.
  */
-check("steps still carrying prose", proseLeft.length, 116);
+/* 116 to 115: *The Mark of Things to Come* carried `and Read 1` beside a `readDeck` that nothing
+ * read, and the amount is a field now. [2026-11-22] */
+check("steps still carrying prose", proseLeft.length, 115);
 /* And the schema document says the same numbers, read off the same sweep rather than typed into
  * prose a second time: a document that counts the content is a document that goes stale. */
 check("the schema document records what the sweep found",
@@ -12694,8 +12895,8 @@ check("and the panel's sentence is the same answer in words",
     .test(graphSource) ? "yes" : "no", "yes");
 /* Reading ahead is most of what the panel is for, so an unavailable node answers it too. */
 check("an unavailable node still says what it leads to",
-  /if \(state === "available"\) return this\.#pick\(id\);[\s\S]{0,220}this\.#showOpens\(id\);/
-    .test(paneSource) ? "yes" : "no", "yes");
+  inOrder(paneSource,
+    ['if (state === "available") return this.#pick(id);', "this.#showOpens(id);"]), "in order");
 /* A node wears what it hands over: what a node GIVES is the thing worth looking at. */
 check("a node shows the art of what it grants",
   /function artFor\(node\)/.test(paneSource) ? "yes" : "no", "yes");
@@ -13223,7 +13424,10 @@ check("and in the tray it breaks the tie after the half",
  * before a hand is dealt, and guessing then would fill both stacks before the turn began.
  */
 check("the assist reads the staged half's own verbs",
-  /#verbsOf\(half\) \{[\s\S]{0,300}steps\.map\(s => s\.verb\)/.test(traySource) ? "yes" : "no", "yes");
+  /* The DECLARATION, not the first call of it: `this.#verbsOf(half)` appears a hundred lines
+   * earlier, and a slice taken from a call site is a slice of whatever block the call sits in. */
+  /steps\.map\(s => s\.verb\)/.test(bodyOf(traySource, "\n  #verbsOf(half)")) ? "yes" : "no",
+  "yes");
 check("and adds nothing before a half is staged",
   /const verbs = this\.#verbsOf\(half\);\s*\n\s*if \(!verbs\.length\) return \[\.\.\.items, \.\.\.features\];/
     .test(traySource) ? "yes" : "no", "yes");
@@ -13736,8 +13940,10 @@ check("the kinds that need no equipping",
 check("one routine answers for both models",
   (actorsSource.match(/function blockedReactionsOf\(system\)/g) ?? []).length, 1);
 check("and it reads an injury's own list",
-  /for \(const slate of bitingInjuries\(system\)\) \{[\s\S]{0,160}blocksReactions/
-    .test(actorsSource) ? "yes" : "no", "yes");
+  /* Nested, because that loop header occurs three times in the file and the first of them is a
+   * braceless one-liner counting hand slots. Two slices name the routine and then the loop. */
+  /blocksReactions/.test(bodyOf(bodyOf(actorsSource, "function blockedReactionsOf(system)"),
+    "for (const slate of bitingInjuries(system))")) ? "yes" : "no", "yes");
 check("and the one dial on that is the opening round",
   /if \(slate\.system\.firstRoundOnly && round > 1\) continue;/.test(actorsSource)
     ? "yes" : "no", "yes");
@@ -15633,8 +15839,10 @@ check("push offers only cards of that approach",
 /* The hand refills per SCENE, and only the GM knows when one starts. */
 check("the skill hand is four",  CARDRPG.defaults.skillHandSize, 4);
 check("and only the GM starts a scene",
-  /if \(!game\.user\.isGM\) \{[\s\S]{0,120}says when a new scene starts/.test(traySource)
-    ? "yes" : "no", "yes");
+  /* Nested: `if (!game.user.isGM)` guards a dozen handlers in this file, so the routine is named
+   * first and the guard is found inside it. */
+  /says when a new scene starts/.test(bodyOf(bodyOf(traySource, "static async #onDealSkills()"),
+    "if (!game.user.isGM)")) ? "yes" : "no", "yes");
 /* A played card goes to the skill discard, and the push goes with it. */
 check("the played cards go to the skill discard",
   /discardSkillCards\(this\.actor, \[card\.id, \.\.\.\(pushed \? \[pushed\.id\] : \[\]\)\]\)/
@@ -15755,8 +15963,7 @@ check("and the document says why it stands",
 /* The player cannot set a difficulty, and the refusal is a refusal rather than a default: a
  * Normal 5 for an uncalled check would be the same defect wearing a sensible-looking number. */
 check("a player with no call cannot start a check",
-  /if \(!call && !game\.user\.isGM\) \{[\s\S]{0,120}WaitForCall/.test(traySource) ? "yes" : "no",
-  "yes");
+  /WaitForCall/.test(bodyOf(traySource, "if (!call && !game.user.isGM)")) ? "yes" : "no", "yes");
 check("and the dialog asks for a difficulty only when there is no call",
   /!call \? "dc" : null/.test(traySource) ? "yes" : "no", "yes");
 /* The GM's half reaches the arithmetic: the mode that was unreachable is now passed through. */
@@ -16219,8 +16426,8 @@ check("the ritual twist deck is built into a world",
  * draws one.
  */
 check("only the GM may draw one",
-  /export async function drawTwist[\s\S]{0,120}if \(!game\.user\.isGM\) return null;/
-    .test(checksSource) ? "yes" : "no", "yes");
+  /if \(!game\.user\.isGM\) return null;/
+    .test(bodyOf(checksSource, "export async function drawTwist")) ? "yes" : "no", "yes");
 check("nothing draws a twist automatically",
   /drawTwist\(/.test(resolveSource) ? "something does" : "nothing does", "nothing does");
 check("the Partial says one is owed",
@@ -16294,9 +16501,12 @@ check("and each row says who owes it",
   /class="cr-owed__who">\{\{this\.label\}\}/.test(trayTemplate) ? "yes" : "no", "yes");
 /* Withdrawing the obstacle writes off what it cost: a twist owed for a wall the party walked away
  * from is a button left lit over a scene that has moved on. */
+/* An order, and the pattern it replaces had a branch in it for *a comment may sit between these
+ * two lines* -- which is the span bug written out longhand: the check knew the code would grow and
+ * made room for one comment. [2026-11-22] */
 check("withdrawing the call forgives the debts",
-  /await scene\.unsetFlag\("cardrpg", FLAG\);\s*\n(?:\s*\/\*[\s\S]{0,200}?\*\/\s*\n)?\s*await forgiveDebts\(\);/
-    .test(checksSource) ? "yes" : "no", "yes");
+  inOrder(checksSource,
+    ['await scene.unsetFlag("cardrpg", FLAG);', "await forgiveDebts();"]), "in order");
 check("and so does ending the challenge",
   /await scene\.unsetFlag\("cardrpg", CHALLENGE\);\s*\n\s*await forgiveDebts\(\);/
     .test(checksSource) ? "yes" : "no", "yes");
@@ -16323,8 +16533,8 @@ check("and it matches the document's table",
 check("a challenge is a scene's state",
   /const CHALLENGE = "challenge";/.test(checksSource) ? "yes" : "no", "yes");
 check("only the GM starts one",
-  /export async function startChallenge[\s\S]{0,200}if \(!game\.user\.isGM \|\| !scene\) return null;/
-    .test(checksSource) ? "yes" : "no", "yes");
+  /if \(!game\.user\.isGM \|\| !scene\) return null;/
+    .test(bodyOf(checksSource, "export async function startChallenge")) ? "yes" : "no", "yes");
 /*
  * **And only the GM's client records a result**, which is not a policy but a fact about Foundry: a
  * scene flag is the GM's to write and a player resolves their own check. So the outcome travels as
@@ -16397,8 +16607,8 @@ check("a difficulty may be a word or a number",
 /* A player clicking one gets a reminder, not a call: step 1 is still the GM's, and an enricher is
  * a shortcut for the person who was always allowed to take it. */
 check("a player clicking an enriched check cannot call it",
-  /if \(!game\.user\.isGM\) \{[\s\S]{0,120}CARDRPG\.Check\.GMCalls/.test(enrichSource)
-    ? "yes" : "no", "yes");
+  /CARDRPG\.Check\.GMCalls/.test(bodyOf(enrichSource, "if (!game.user.isGM)")) ? "yes" : "no",
+  "yes");
 /* One delegated listener, because enriched text turns up in journals, chat, items and tooltips. */
 check("one listener serves every rendered button",
   /document\.addEventListener\("click"/.test(enrichSource) ? "yes" : "no", "yes");
@@ -17964,6 +18174,205 @@ check("and their labels went with them",
 check("and the label that named a forbidden number is gone",
   /10 cards or fewer/.test(JSON.stringify(lang)) ? "still there" : "gone", "gone");
 
+/* -------------------------------------------- */
+
+/*
+ * **Read N, and the keyword it had been doing instead.**  [BUILT 2026-11-22]
+ *
+ * `readDeck` named whose fate deck a Read looks at, read by nothing, for a fortnight -- and the
+ * defect was not that the field was idle. **Foresee and Read are two keywords** (core-rules 6):
+ * Foresee looks at an NPC type's intent card, Read looks at the top N of a fate deck and puts them
+ * back in any order. The two formulas whose Read is the whole action wrote `verb: "foresee"` beside
+ * `readDeck`, so *The Reading* -- *three cards down somebody else's luck* -- revealed one enemy's
+ * intent, its `param: 3` dropped on the floor, declaring `needs: []`.
+ *
+ * And the field could not have been wired first, because **a fate deck had no order**: every draw
+ * went through `moveRandom`, so there was no top to look at and no order to arrange, on a mechanic
+ * whose own rule is *the reshuffle is the fence -- an order you arranged survives only until the
+ * first swing card is drawn*. That sentence had been describing something the engine did not have.
+ */
+check("a Read is resolved by one routine",
+  /export async function resolveRead\(actor, \{ step = \{\}, targets = \[\] \} = \{\}\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+check("and the three kinds of Read live in one table",
+  /const READ_DECKS = \{/.test(resolveSource) ? "yes" : "no", "yes");
+/* Every value the vocabulary offers has a rule and the engine invents none -- the third vocabulary
+ * held to this pair of questions, after the cost scales and the states. */
+const readsAt = resolveSource.indexOf("const READ_DECKS = {");
+const readsEnd = resolveSource.indexOf("\n};", readsAt);
+check("the engine's table of Reads was found", readsAt >= 0 && readsEnd > readsAt, true);
+const readRules = [...resolveSource.slice(readsAt, readsEnd).matchAll(/^  (\w+):/gm)].map(m => m[1]);
+check("kinds of Read the engine has a rule for", readRules.slice().sort().join(", "),
+  Object.keys(CARDRPG.readDecks).sort().join(", "));
+check("and the vocabulary offers none it cannot answer",
+  Object.keys(CARDRPG.readDecks).filter(k => !readRules.includes(k)).join(", ") || "none", "none");
+
+/*
+ * **The two keywords stay apart, from both ends.** This is the check that would have caught the
+ * original defect: a step that reads a fate deck is not a step that foresees an intent, and the one
+ * card that always meant Foresee still means it.
+ */
+check("no step both foresees and reads",
+  everyStep.filter(s => s.st.verb === "foresee" && (s.st.read || s.st.readDeck)).length, 0);
+check("and Foresee still has the card that meant it",
+  everyStep.filter(s => s.st.verb === "foresee").length, 1);
+check("and it is the one that reads an intent rather than a deck",
+  /look at one NPC type's intent card/.test(resolveSource) ? "yes" : "no", "yes");
+/* And the field pair is never half written: an amount with no deck has nothing to look at, and a
+ * deck with no amount is a card that says whose luck it reads and not how far. */
+check("every Read says how many and whose",
+  everyStep.filter(s => !!s.st.read !== !!s.st.readDeck)
+    .map(s => `${s.card}: ${s.st.read ?? "no amount"}/${s.st.readDeck || "no deck"}`)
+    .join(" | ") || "none", "none");
+check("steps that Read", everyStep.filter(s => s.st.read).length, 4);
+check("and the content that does it",
+  audited.filter(c => stepsOfContent(c).some(st => st.read)).map(c => c.name).sort().join(", "),
+  "The Mark of Things to Come, The Open Book, The Reading, Where It Will Land");
+
+/*
+ * **Both fate draws come off the top, and there are two.** `drawFate` is one; **initiative is a
+ * fate draw** and `CardRPGCombat` does its own, which is the place an arranged order would have
+ * been quietly ignored -- a Read before the fight aims the initiative draw and nothing else would
+ * have known.
+ */
+const fateSource = fs.readFileSync(path.join(root, "module/decks/fate.mjs"), "utf8");
+check("the fate draw comes off the top",
+  /const drawn = await moveTop\(deck, discard, need\);/.test(fateSource) ? "yes" : "no", "yes");
+check("and so does the initiative draw",
+  /const drawn = await moveTop\(deck, discard, need\);/.test(combatSource) ? "yes" : "no", "yes");
+check("and neither draws fate at random any more",
+  [["the fate deck", fateSource], ["initiative", combatSource]]
+    .filter(([, src]) => /moveRandom\(deck, discard, need\)/.test(src))
+    .map(([what]) => what).join(", ") || "none", "none");
+/*
+ * **The same odds, which is what made it safe to change under every draw in the game.** A shuffled
+ * deck's top card is a random card, so this is the identical distribution with an order attached --
+ * and the two places that establish the shuffle are checked, because the argument depends on both.
+ */
+/* Scoped to `reshuffleFate`'s own body: three places in this file shuffle a deck, and a grep that
+ * three of them answer cannot tell which one broke. [2026-11-22] */
+const reshuffleBody = fateSource.slice(fateSource.indexOf("export async function reshuffleFate"));
+check("a reshuffle shuffles",
+  /deck\.shuffle\(/.test(reshuffleBody) ? "yes" : "no", "yes");
+check("and a new deck is shuffled when it is built",
+  /if \(made\?\.type === "deck" && made\.cards\?\.size\)/.test(setupSource) ? "yes" : "no", "yes");
+/* Which was the one moment a reshuffle could not reach: twenty faces in the order this file writes
+ * them, dealt in that order until the deck first ran dry. */
+check("and the reason is recorded where it was missing",
+  /the first draw of a new world always the same card/.test(setupSource) ? "yes" : "no", "yes");
+
+/*
+ * **The order arithmetic, driven.** Three functions, and every one of them is the kind that is easy
+ * to get wrong in a direction no grep can see: which end of a stack is the top, whether a draw
+ * hands its cards back in the order it took them, and whether putting two cards back in a new order
+ * moves them up the deck.
+ */
+{
+  const stacks = await import("../module/decks/stacks.mjs");
+  /* A stack as Foundry keeps one: sort decides the order and a dealt card stays behind, flagged. */
+  const deckOf = rows => {
+    const cards = rows.map(([id, sort, drawn = false]) => ({ id, sort, drawn }));
+    const written = [];
+    return {
+      type: "deck",
+      written,
+      cards: {
+        size: cards.length,
+        contents: cards,
+        filter: f => cards.filter(f),
+        get: id => cards.find(c => c.id === id) ?? null
+      },
+      updateEmbeddedDocuments: async (_type, updates) => {
+        for (const up of updates) {
+          written.push(up);
+          const card = cards.find(c => c.id === up._id);
+          if (card) card.sort = up.sort;
+        }
+        return updates;
+      }
+    };
+  };
+
+  /* The top is the LOW end of `sort`, which is Foundry's own TOP draw mode -- and the deck is
+   * deliberately given out of order, because a stack that happens to be built in sort order cannot
+   * tell a sorted read from an unsorted one. */
+  const deck = deckOf([["c", 300], ["a", 100], ["b", 200], ["d", 400]]);
+  check("the top of a stack is the front of its order",
+    stacks.topOf(deck, 2).map(c => c.id).join(","), "a,b");
+  check("and one card is the first of them", stacks.topOf(deck, 1).map(c => c.id).join(","), "a");
+  check("and asking for more than there is gives what there is",
+    stacks.topOf(deck, 99).length, 4);
+  check("and asking for none gives none", stacks.topOf(deck, 0).length, 0);
+  /* A card already dealt out is not on the deck, which is `available`'s rule and the bug the state
+   * reader had: the placeholder sorts first and would have read as the top card. */
+  const loaned = deckOf([["gone", 50, true], ["a", 100], ["b", 200]]);
+  check("and a card on loan is not on top of it",
+    stacks.topOf(loaned, 2).map(c => c.id).join(","), "a,b");
+
+  /*
+   * The reorder: the cards keep the `sort` values they had between them, dealt out in the new
+   * order. So the block stays where it is in the deck and only its internal order changes -- a
+   * Read arranges what it looked at and may not move a card up the deck.
+   */
+  const put = deckOf([["a", 100], ["b", 200], ["c", 300], ["z", 900]]);
+  await stacks.reorderTop(put, ["c", "a", "b"]);
+  check("a reorder deals the same slots back out in the new order",
+    stacks.topOf(put, 4).map(c => c.id).join(","), "c,a,b,z");
+  check("and takes no card past the ones it looked at",
+    put.cards.get("z").sort, 900);
+  check("and spends no slot it was not given",
+    put.written.map(u => u.sort).sort((x, y) => x - y).join(","), "100,200,300");
+  /* An order of one is not an order, and the dialog that would arrange it never opens. */
+  const one = deckOf([["a", 100], ["b", 200]]);
+  await stacks.reorderTop(one, ["a"]);
+  check("and a single card is left exactly where it was", one.written.length, 0);
+}
+
+/*
+ * **Core-rules 6's own clauses, each of them in the engine.** The rule is short and every sentence
+ * of it is a decision somebody could reasonably have taken the other way, so each is pinned against
+ * the document rather than against my memory of it.
+ */
+const readRule = coreRules.slice(coreRules.indexOf("### Reading a fate deck"),
+  coreRules.indexOf("### Reading a fate deck") + 2200);
+check("the rule was found in the document", readRule.includes("Read N"), true);
+check("a Read of one is just looking, and the rules say so",
+  /Looking at one card and putting it back is just looking/.test(readRule) ? "yes" : "no", "yes");
+check("and the engine opens no dialog for it",
+  /if \(seen\.length > 1\) \{/.test(resolveSource) ? "yes" : "no", "yes");
+check("a short deck reads what is there, and the rules say so",
+  /Fewer than N cards left: read what is there/.test(readRule) ? "yes" : "no", "yes");
+check("and the engine takes what it finds rather than refusing",
+  /const seen = topOf\(stack, n\);/.test(resolveSource) ? "yes" : "no", "yes");
+check("who knows is the player, and the rules say so",
+  /Saying what you saw is a decision at the table, not a rule/.test(readRule) ? "yes" : "no", "yes");
+check("and the cards are whispered",
+  /whisper: ChatMessage\.getWhisperRecipients\("GM"\)\.concat\(game\.user\.id\)[\s\S]{0,400}?fate deck:/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/* And the table is told that a Read happened, which is not the same as being told what it found:
+ * a secret nobody knows was taken is a secret the table cannot play against. */
+check("and the table is told a Read happened",
+  /reads `\s*\n\s*\+ `<strong>\$\{seen\.length\}<\/strong> off <strong>\$\{esc\(whose\)\}<\/strong>'s fate deck\.<\/p>/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/* The fence needs no code, and that is worth stating: a Miss or a Critical already reshuffles. */
+check("the reshuffle is the fence, and the rules say so",
+  /an order you arranged\s*\n?survives only until the first swing card is drawn/.test(readRule)
+    ? "yes" : "no", "yes");
+check("and the engine adds nothing to enforce it",
+  /needs no code: a Miss or a Critical already reshuffles/.test(resolveSource) ? "yes" : "no", "yes");
+/* A Divinator may never read their own, which the `other` value is rather than a line of code. */
+check("and a Divinator never reads their own deck",
+  /other: \(actor\) => fateStacksInFight\(\)\.filter\(f => f\.stack\.id !== fateIdOf\(actor\)\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+check("and no Divination formula asks for any other kind",
+  [...graph.SPELLS.values()]
+    .filter(sp => sp.source === "Divination" && sp.effect?.readDeck)
+    .map(sp => sp.effect.readDeck).sort().join(", "), "all, other, other, target");
+/* One deck per shared deck, not one per figure: a creature's fate deck is shared across its
+ * variants, so eight goblins are one deck and one choice. */
+check("and a shared fate deck is offered once",
+  /Deduped by the deck, not by the figure/.test(resolveSource) ? "yes" : "no", "yes");
+
 /*
  * **And the state is on the card before it is clicked**, which is the half the player sees. The
  * config comment has said since the vocabulary was written that *a condition the software can read
@@ -19290,7 +19699,9 @@ readFiles.set("decksSource", decksSource);
  * reason to open. `iconDoc` is rules/icons.md, the icon spec, which had fallen seven icons behind
  * the folder; `attribution` is the icons own ATTRIBUTION.md, which had not, and is now checked in
  * both directions because CC BY 3.0 is the reason it ships. */
-check("files this suite greps by name", readFiles.size, 82);
+/* 83 since 2026-11-22: `decks/fate.mjs`, which holds the fate draw -- the one file carrying the
+ * difference between a deck that has an order and a deck that has not. */
+check("files this suite greps by name", readFiles.size, 83);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -19334,6 +19745,75 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
  * nothing` names every zero-hit pattern, so a grep that goes quiet is reported by name rather than
  * inferred from a total moving. A count cannot say WHICH, and which is the whole question.
  */
+
+/*
+ * **How much of each character span is already spent.**  [BUILT 2026-11-22]
+ *
+ * This is the fix for the defect that kept finding me, rather than for any one of its instances.
+ * `A[\s\S]{0,N}B` carries a claim nobody intended -- *and the code between them is shorter than N*
+ * -- so the pin fails when somebody writes a comment, on a commit where nothing broke. Three of
+ * them went off in two days: the delayed step's precedence at 900, the timing guard before the
+ * price at 220, the tray's strain claim at 200. Each cost a repin and caught nothing.
+ *
+ * **A span that is nearly spent also passes**, which is why a measure is needed and not just the
+ * eleven repairs beside it: at 2528 characters of 2600 a check is correct today and one comment
+ * from being wrong, and nothing distinguishes it from a healthy one. So each span is run with its
+ * gap captured, and what it actually consumed is compared with what it was given.
+ *
+ * **The threshold is one comment line.** Growth between two anchors arrives as prose at about
+ * eighty characters a line, so a wide span keeps eighty characters of headroom. Narrow spans are
+ * exempt because they match inside a statement rather than bridging two -- `{0,2}` and `{0,4}`
+ * exist in this file and are deliberately snug.
+ *
+ * What a flagged span should become is one of the two helpers at the top: `bodyOf` when the claim
+ * is *B is inside what A opens*, `inOrder` when it is *A before B*. Both say what was meant, and
+ * neither has a width to spend.
+ */
+const SPAN_QUANTIFIER = /(\[[^\]]*\]|\\[sSwWdD]|\.)\{0,(\d+)\}(\??)/g;
+const WIDE_SPAN = 120;
+const SPAN_HEADROOM = 80;
+const spans = [];
+for (const m of selfSource.matchAll(
+  /(\/(?:[^/\\\n]|\\[\s\S]|\[[^\]]*\])+\/[gimsuy]*)\s*\n?\s*\.test\((\w+)\)/g)) {
+  const body = readFiles.get(m[2]);
+  if (body === undefined) continue;
+  const literal = m[1];
+  const source = literal.slice(1, literal.lastIndexOf("/"));
+  if (!/\{0,\d+\}/.test(source)) continue;
+  /* A pattern with a backreference cannot have groups added to it without renumbering them. */
+  if (/\\[1-9]/.test(source)) continue;
+  const flags = literal.slice(literal.lastIndexOf("/") + 1).replace(/g/g, "");
+  const widths = [...source.matchAll(SPAN_QUANTIFIER)].map(q => Number(q[2]));
+  /* Each gap wrapped in a capture group, so what it swallowed can be measured. */
+  const probed = source.replace(SPAN_QUANTIFIER, (_a, set, n, lazy) => `(${set}{0,${n}}${lazy})`);
+  let re = null;
+  try { re = new RegExp(probed, flags); } catch { continue; }
+  const found = re.exec(body);
+  /* A pattern that finds nothing has no span to measure; the zero-hit ledger is what covers it. */
+  if (!found) continue;
+  widths.forEach((width, k) => {
+    const used = (found[k + 1] ?? "").length;
+    spans.push({ check: nameOfCheck(m.index), width, used, left: width - used });
+  });
+}
+/* The measure has something to measure, or it is a check that cannot fail. */
+check("spans this file can measure", spans.length >= 40 ? "enough" : spans.length, "enough");
+const nearlySpent = g => g.width >= WIDE_SPAN && g.left < SPAN_HEADROOM;
+/* Run over a planted pair first, one either side of the line. */
+check("the rule flags a wide span with no headroom",
+  [{ width: 900, used: 860, left: 40 }].filter(nearlySpent).length, 1);
+check("and passes one with room to grow",
+  [{ width: 900, used: 100, left: 800 }].filter(nearlySpent).length, 0);
+check("and leaves a narrow span alone, however snug",
+  [{ width: 40, used: 39, left: 1 }].filter(nearlySpent).length, 0);
+check("wide spans with less than a comment line of headroom",
+  spans.filter(nearlySpent)
+    .map(g => `${g.check} (${g.used} of ${g.width})`).sort().join(" | ") || "none", "none");
+/* And the widest span left in the file, so a new one of these is visible as it arrives rather than
+ * only once it is nearly spent. A span this wide is almost always an order in disguise. */
+check("the widest span left in the file",
+  Math.max(...spans.map(g => g.width)) <= 700 ? "700 or less"
+    : `${Math.max(...spans.map(g => g.width))}`, "700 or less");
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**

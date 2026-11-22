@@ -6,7 +6,9 @@
  */
 
 import { CARDRPG } from "../config.mjs";
-import { allStacks, available, cardName, deckOf, move, moveRandom, normalizeDeck } from "./stacks.mjs";
+import {
+  allStacks, available, cardName, deckOf, move, moveRandom, moveTop, normalizeDeck
+} from "./stacks.mjs";
 /* The face and the back a special fate card wears: the three built here used to wear neither. */
 import { backOf, fateArt } from "./art.mjs";
 
@@ -83,7 +85,17 @@ export async function drawFate(actor, value, mode = 0) {
   const need = mode === 0 ? 1 : 2;
   if (available(deck).length < need) await reshuffleFate(actor);
 
-  const drawn = await moveRandom(deck, discard, need);
+  /*
+   * **Off the top, not at random.**  [FIXED 2026-11-22]
+   *
+   * The same cards with the same odds -- the deck is shuffled when it is built and on every
+   * reshuffle, so the top of a shuffled deck is a random card. What changes is that the deck has an
+   * ORDER, which is what **Read N** arranges (core-rules 6) and what core-rules 6 already assumed
+   * when it said *the reshuffle is the fence: an order you arranged survives only until the first
+   * swing card is drawn*. Drawn at random there was nothing to arrange, so the one thing the rules
+   * say about a Read's limits was describing a mechanic the engine did not have.
+   */
+  const drawn = await moveTop(deck, discard, need);
   if (!drawn.length) return { result: value, drawn: [], used: null, reshuffled: false };
 
   const rank = CARDRPG.fateValueOf;
