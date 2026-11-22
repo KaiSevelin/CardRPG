@@ -268,6 +268,44 @@ async function arm(page) {
     const hero = game.actors.find(a => a.type === "character");
     if (!hero) throw new Error("The world holds no character to probe.");
     globalThis.LIVE = { ...decks, ...resolve, graph, content, CARDRPG: config.CARDRPG, hero };
+
+    /*
+     * **Stage a half, because a stack is an action now.**  [2026-11-22]
+     *
+     * The play panel used to hold every equipped item the moment it was equipped, so a probe
+     * about the panel could open the tray and look. It does not any more: gear joins a stack
+     * when a card above it says what the gear is for. Three probes were reading an empty panel
+     * and two of them said so.
+     *
+     * It returns what it staged, so a probe that finds nothing can say *no Strike in hand*
+     * rather than fail on a selector twenty seconds later.
+     */
+    globalThis.LIVE.stageStrike = async (half = "primary") => {
+      const hand = globalThis.LIVE.deckOf(globalThis.LIVE.hero, "actionHand");
+      const card = hand?.cards?.contents
+        ?.find(c => (c.system[half] ?? []).some(st => st.verb === "strike"));
+      const tray = game.cardrpg.openTray(globalThis.LIVE.hero);
+      tray.side = "action";
+      tray.staged = card ? [{ cardId: card.id, half }] : [];
+      await tray.render();
+      return card?.name ?? null;
+    };
+
+    /*
+     * **And the companion, because staging leaks.**  [2026-11-22]
+     *
+     * A staged half changes what the tray shows beyond its own stack: `#conditionsFor` filters the
+     * conditions to the ones bearing on the staged verbs, so a Strike left staged by one probe put
+     * Graven at the front of the condition cards and the probe three further down -- which asserts
+     * the FIRST condition card is the Dazed it just applied -- failed on a picture it was right
+     * about. A probe that leaves a stack standing is a probe that edits its neighbours.
+     */
+    globalThis.LIVE.unstage = async () => {
+      const tray = game.cardrpg.openTray(globalThis.LIVE.hero);
+      tray.staged = [];
+      tray.waved.clear();
+      await tray.render();
+    };
   });
 }
 
@@ -769,11 +807,7 @@ async function probes(page) {
    */
   await probe("the pictures reach the eye", async () => {
     await settle(page);
-    await page.evaluate(async () => {
-      const tray = game.cardrpg.openTray(LIVE.hero);
-      tray.side = "action";
-      await tray.render();
-    });
+    const staged = await page.evaluate(() => LIVE.stageStrike());
     await page.waitForSelector(".cr-hud__play", { timeout: 20000 });
     const rows = await page.evaluate(async () => {
       const alphaOf = el => {
@@ -810,7 +844,12 @@ async function probes(page) {
       const stacked = [...document.querySelectorAll(".cr-hud__play .cr-card--stacked")];
       const named = stacked.filter(artOn);
       out.push(["a card is staged in the play panel", stacked.length > 0, true]);
-      out.push(["and every one of them wears its picture", named.length, stacked.length]);
+      /* By NAME, not by count. `4 of 5` sends you looking through five cards; the name of the one
+       * that is bare is the whole answer. [2026-11-22] */
+      const bare = stacked.filter(e => !artOn(e))
+        .map(e => e.querySelector(".cr-card__title")?.textContent.trim() || "unnamed");
+      out.push(["and every one of them wears its picture", bare.join(", ") || "all of them",
+        "all of them"]);
 
       const urls = named.map(e => artOn(e).replace(/^url\(['"]?/, "").replace(/['"]?\)$/, ""));
       const codes = await Promise.all(urls.map(u =>
@@ -818,7 +857,11 @@ async function probes(page) {
       out.push(["and the server serves it", [...new Set(codes)].join(",") || "none", "200"]);
       return out;
     });
-    return rows;
+    /* Said rather than assumed: every row below the stack depends on one being there, so a hand
+     * with no Strike in it should report that and not three picture faults. */
+    await page.evaluate(() => LIVE.unstage());
+    return [["a Strike was staged to look at", staged ?? "nothing in hand", staged ?? "a card"],
+      ...rows];
   });
 
   /*
@@ -1086,11 +1129,7 @@ async function probes(page) {
   await probe("the played items name themselves", async () => {
     await page.setViewportSize({ width: 1366, height: 768 });
     await settle(page);
-    await page.evaluate(async () => {
-      const tray = game.cardrpg.openTray(LIVE.hero);
-      tray.side = "action";
-      await tray.render();
-    });
+    await page.evaluate(() => LIVE.stageStrike());
     await page.waitForSelector(".cr-hud__play .cr-card__title", { timeout: 20000 });
     const rows = await page.evaluate(() => {
       const titles = [...document.querySelectorAll(".cr-hud__play .cr-card__title")];
@@ -1109,7 +1148,319 @@ async function probes(page) {
         ["nor clipped from below", squashed.join(", ") || "none", "none"]
       ];
     });
+    await page.evaluate(() => LIVE.unstage());
     await page.setViewportSize({ width: 1600, height: 900 });
+    return rows;
+  });
+
+  /*
+   * **A stack is an action, and the stack is what counts.**  **[BUILT 2026-11-22]**
+   *
+   * Two rules met here and neither could be tested offline.
+   *
+   * The first is what a stack holds: gear used to join one the moment it was equipped, so the
+   * starter Warrior's primary stood with a Longsword, a Wooden Shield and **a Healing Potion** in
+   * it before a hand was dealt. The potion is the row worth having -- nothing about a Strike wants
+   * it, and an engine that put it there was not answering a question anybody asked.
+   *
+   * The second is what a stack MEANS. The tray drew Strong into it with a cross on it, the cross
+   * wrote to a Set, and the Set never left the tray -- so the +1 landed whatever the player
+   * clicked. **The number on the card face is the assertion**, because it is what a player reads
+   * before committing and it is rendered from the same set the resolver is handed. If the face
+   * moves when the cross is clicked, the wiring is real.
+   */
+  await probe("a stack is an action, and the stack is what counts", async () => {
+    const rows = [];
+
+    /* Its own preconditions: later probes unequip weapons, and this one is about what is in hand. */
+    const ready = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      for (const name of ["Longsword", "Wooden Shield", "Healing Potion"]) {
+        const it = hero.items.find(i => i.name === name && i.type === "item");
+        if (it && !it.system.equipped) await it.update({ "system.equipped": true });
+      }
+      const strong = hero.items.find(i => i.name === "Strong" && i.type === "feature");
+      const sword = hero.items.find(i => i.name === "Longsword");
+      return {
+        strongId: strong?.id ?? null,
+        heavy: !!sword?.system.tags?.has?.("heavy"),
+        sword: sword?.system.verbs?.strike?.value ?? null
+      };
+    });
+    rows.push(["the hero holds a heavy sword that strikes",
+      `${ready.sword}, heavy ${ready.heavy}`, "3, heavy true"]);
+    rows.push(["and owns the feature that boosts it", !!ready.strongId, true]);
+
+    /** The names in a play stack, which is most of what this probe reads. */
+    const stackNames = () => page.evaluate(() =>
+      [...document.querySelectorAll(".cr-hud__play .cr-card--stacked")]
+        .map(e => e.querySelector(".cr-card__title")?.textContent.trim())
+        .filter(Boolean).sort().join(", "));
+
+    /* 1. Nothing staged. */
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      tray.staged = [];
+      tray.waved.clear();
+      await tray.render();
+    });
+    await page.waitForSelector(".cr-hud__play", { timeout: 20000 });
+    rows.push(["nothing stands in a stack before a half is staged", await stackNames(), ""]);
+
+    /* 2. A Strike staged: what serves it, and nothing else. */
+    const staged = await page.evaluate(() => LIVE.stageStrike());
+    rows.push(["a Strike is staged", !!staged, true]);
+    const armed = await stackNames();
+    rows.push(["the sword joins it", armed.includes("Longsword"), true]);
+    /* The shield strikes for 1 -- a bash -- so it belongs in a Strike stack and gets an arrow. */
+    rows.push(["and so does the shield, which can bash", armed.includes("Wooden Shield"), true]);
+    rows.push(["and the free feature is in it at last", armed.includes("Strong"), true]);
+    /* **The row this probe exists for.** */
+    rows.push(["and the potion, which strikes nothing, is not",
+      armed.includes("Healing Potion") ? "in the stack" : "out", "out"]);
+
+    /* And the card says what it is worth, rather than *always on* beside a cross that removes it. */
+    const boostNote = await page.evaluate(() => {
+      const card = [...document.querySelectorAll(".cr-hud__play .cr-card--stacked")]
+        .find(e => e.querySelector(".cr-card__title")?.textContent.trim() === "Strong");
+      return card?.querySelector(".cr-note")?.textContent.replace(/\s+/g, " ").trim()
+        ?? "no note";
+    });
+    rows.push(["and the boost card prints its value", boostNote, "+1 in this action"]);
+
+    /** What the staged card promises, as the player reads it. */
+    const faceSays = () => page.evaluate(() => [
+      ...document.querySelectorAll(".cr-hud__play .cr-card--stacked .cr-card__line")
+    ].map(e => e.textContent.replace(/\s+/g, " ").trim()).join(" | ") || "no line");
+
+    /*
+     * 3. **The number, with the feature in the stack and then waved out of it.**
+     *
+     * Read as a DIFFERENCE and not as a figure. The first version of this wanted *Strike 4* --
+     * sword 3 plus Strong 1 -- and got *Strike 6*, because the live hero is carrying a Graven
+     * tattoo worth +2 that an earlier probe put on. The absolute number is a fact about whatever
+     * state the run has reached by here; Strong's own +1 is the claim, and it is the difference
+     * the cross makes.
+     */
+    const strikeOn = text => Number(text.match(/Strike (\d+)/)?.[1] ?? NaN);
+    const withStrong = strikeOn(await faceSays());
+    await page.evaluate(id => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.waved.add(id);
+      return tray.render();
+    }, ready.strongId);
+    const waved = strikeOn(await faceSays());
+    rows.push(["the face prints a number at all", Number.isFinite(withStrong), true]);
+    rows.push(["and waving the feature out moves it by exactly its value",
+      withStrong - waved, 1]);
+    rows.push(["and the card goes with it",
+      (await stackNames()).includes("Strong") ? "still there" : "gone", "gone"]);
+
+    /*
+     * 4. **And the resolver agrees**, which is the half a grep cannot reach: the set the cross
+     * writes to has to arrive at `collectBonuses` through two more hands. Asked of the resolver
+     * directly with the three sets the tray can hand it, so the comparison is about `using` alone
+     * and not about targeting, fate or armor.
+     */
+    const counted = await page.evaluate(() => {
+      const { hero } = LIVE;
+      const sword = hero.items.find(i => i.name === "Longsword");
+      const strong = hero.items.find(i => i.name === "Strong");
+      return {
+        open: LIVE.collectBonuses(hero, "strike", sword, { using: null }).total,
+        held: LIVE.collectBonuses(hero, "strike", sword, { using: new Set([strong.id]) }).total,
+        none: LIVE.collectBonuses(hero, "strike", sword, { using: new Set() }).total
+      };
+    });
+    /* Differences again, and the three of them pin the whole rule: a stack holding the feature
+     * agrees with no stack at all, and one that does not is exactly its value lower. */
+    rows.push(["the stack that holds it agrees with no stack at all",
+      counted.held, counted.open]);
+    rows.push(["and the stack without it is lower by the feature's value",
+      counted.open - counted.none, 1]);
+    /* The condition rides through either way, which is the exemption said out loud: a Graven
+     * tattoo is done to you and has a duration, so declining it is not a move. */
+    rows.push(["and whatever else is on the hero rides through regardless",
+      counted.none >= 0 && counted.none === counted.open - 1, true]);
+
+    /*
+     * **A hand with two Strikes in it, made rather than hoped for.**
+     *
+     * The first version of the two rows below looked for a card with a Strike on its SECONDARY
+     * half, and the starter deck holds exactly one -- *Weapon Swap*, one copy in sixteen -- so a
+     * five-card hand had it about a third of the time. The rows passed on the run they were written
+     * on and reported *no two Strikes in hand* on the next. **A test whose subject depends on the
+     * deal is a test that reports the deal**, so the hand is given the case and handed back after.
+     */
+    const twoStrikes = await page.evaluate(async () => {
+      const cards = LIVE.deckOf(LIVE.hero, "actionHand")?.cards?.contents ?? [];
+      if (cards.length < 2) return { fail: `only ${cards.length} cards in hand` };
+      const [a, b] = cards;
+      const was = [a, b].map(c => ({
+        id: c.id, primary: c.system.primary ?? [], secondary: c.system.secondary ?? []
+      }));
+      await a.update({ "system.primary": [{ verb: "strike" }] });
+      await b.update({ "system.secondary": [{ verb: "strike" }] });
+      return { firstId: a.id, secondId: b.id, was };
+    });
+    if (twoStrikes.fail) {
+      rows.push(["a hand to stage two Strikes from", twoStrikes.fail, "two cards"]);
+      await page.evaluate(() => LIVE.unstage());
+      return rows;
+    }
+    rows.push(["a hand holding a Strike on each side", !!twoStrikes.secondId, true]);
+
+    /*
+     * 5. **Two Strikes, and the feature rides the one clicked first.** The order you click is the
+     * order the halves resolve, so staging the secondary first has to move the feature to it --
+     * the case *the primary* got wrong, and one no offline check could see.
+     */
+    const lead = await page.evaluate(async ({ firstId, secondId }) => {
+      const { hero } = LIVE;
+      const hand = LIVE.deckOf(hero, "actionHand");
+      const first = hand?.cards?.get(firstId);
+      const second = hand?.cards?.get(secondId);
+      if (!first || !second) return { skipped: "the staged cards went missing" };
+      const tray = game.cardrpg.openTray(hero);
+      tray.waved.clear();
+      const whereStrong = async order => {
+        tray.staged = order;
+        await tray.render();
+        /* `data-half` rather than a class: the template writes the half as an attribute, and
+         * sniffing it out of `className` found "secondary" nowhere and reported "primary" for
+         * both. */
+        return [...document.querySelectorAll(".cr-stack[data-half]")]
+          .filter(h => [...h.querySelectorAll(".cr-card__title")]
+            .some(t => t.textContent.trim() === "Strong"))
+          .map(h => h.dataset.half)
+          .join(",") || "nowhere";
+      };
+      const primaryFirst = await whereStrong([
+        { cardId: first.id, half: "primary" },
+        { cardId: second.id, half: "secondary" }
+      ]);
+      const secondaryFirst = await whereStrong([
+        { cardId: second.id, half: "secondary" },
+        { cardId: first.id, half: "primary" }
+      ]);
+      tray.staged = [];
+      await tray.render();
+      return { primaryFirst, secondaryFirst };
+    }, twoStrikes);
+    if (lead.skipped) {
+      rows.push(["two Strikes in one hand to order", lead.skipped, "two of them"]);
+    } else {
+      rows.push(["clicking the primary first puts the feature there",
+        lead.primaryFirst, "primary"]);
+      rows.push(["and clicking the secondary first moves it", lead.secondaryFirst, "secondary"]);
+    }
+
+    /*
+     * 6. **A weapon serves one Strike a turn.**
+     *
+     * The sword went to both Strikes before today, so a sword swung twice was twice the sword.
+     * With the shield put away there is nothing left for the second one but the fist, and the fist
+     * is Light -- so it collects no Strong, which is the balance of the whole rule: the first
+     * Strike is the sword and its feature, the second is a flat 1 and whatever is true of the
+     * character regardless.
+     */
+    const twice = await page.evaluate(async ({ firstId, secondId }) => {
+      const { hero } = LIVE;
+      const shield = hero.items.find(i => i.name === "Wooden Shield");
+      if (shield) await shield.update({ "system.equipped": false });
+      const hand = LIVE.deckOf(hero, "actionHand");
+      const first = hand?.cards?.get(firstId);
+      const second = hand?.cards?.get(secondId);
+      if (!first || !second) return { skipped: "the staged cards went missing" };
+      const tray = game.cardrpg.openTray(hero);
+      tray.waved.clear();
+      tray.staged = [
+        { cardId: first.id, half: "primary" },
+        { cardId: second.id, half: "secondary" }
+      ];
+      await tray.render();
+      /* Per half: the weapons drawn into it, and the Strike number its card prints. */
+      const read = which => {
+        const box = document.querySelector(`.cr-stack[data-half="${which}"]`);
+        const names = [...(box?.querySelectorAll(".cr-card__title") ?? [])]
+          .map(t => t.textContent.trim());
+        const line = [...(box?.querySelectorAll(".cr-card__line") ?? [])]
+          .map(e => e.textContent).join(" ");
+        return { names, strike: Number(line.match(/Strike (\d+)/)?.[1] ?? NaN) };
+      };
+      /* The names of what the hero is actually holding, so the rows below can ask *is a weapon
+       * drawn into this stack* instead of counting cards -- the stack also holds the action card
+       * and any condition bearing on the half, and counting those reported two where the rule
+       * cares about none. */
+      const held = hero.items.filter(i => i.type === "item" && i.system.equipped).map(i => i.name);
+      return { primary: read("primary"), secondary: read("secondary"), held };
+    }, twoStrikes);
+    if (twice.skipped) {
+      rows.push(["two Strikes to spend a weapon across", twice.skipped, "two of them"]);
+    } else {
+      rows.push(["the first Strike takes the sword",
+        twice.primary.names.includes("Longsword"), true]);
+      /* **The row the rule is for.** */
+      rows.push(["and the second cannot have it again",
+        twice.secondary.names.includes("Longsword") ? "it did" : "spent", "spent"]);
+      rows.push(["and no gear at all is drawn into the second",
+        twice.secondary.names.filter(n => twice.held.includes(n)).join(", ") || "none", "none"]);
+      /* The fist is 1 and the sword is 3, so whatever else is true of this hero the first Strike
+       * is strictly the better one -- read as an inequality because the hero's conditions move
+       * both numbers together. */
+      rows.push(["and the fist is the weaker Strike of the two",
+        twice.primary.strike > twice.secondary.strike
+          ? "weaker" : `${twice.primary.strike} against ${twice.secondary.strike}`, "weaker"]);
+    }
+
+    /* The two halves put back as they were dealt, so nothing downstream inherits a Strike this
+     * probe wrote onto somebody else's card. */
+    await page.evaluate(async ({ was }) => {
+      const hand = LIVE.deckOf(LIVE.hero, "actionHand");
+      for (const old of was ?? []) {
+        await hand?.cards?.get(old.id)?.update({
+          "system.primary": old.primary, "system.secondary": old.secondary
+        });
+      }
+      const shield = LIVE.hero.items.find(i => i.name === "Wooden Shield");
+      if (shield) await shield.update({ "system.equipped": true });
+    }, twoStrikes);
+
+    /*
+     * 7. **And a character holding nothing can still Strike**, which was refused outright: the
+     * resolver warned *nothing equipped can strike* while equipment.md had printed the fist's
+     * value since the catalogue was written.
+     */
+    const empty = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      const held = hero.items.filter(i => i.type === "item" && i.system.equipped
+        && (i.system.verbs?.strike?.value ?? null) !== null);
+      for (const i of held) await i.update({ "system.equipped": false });
+      const cards = LIVE.deckOf(hero, "actionHand")?.cards?.contents ?? [];
+      const one = cards.find(c => (c.system.primary ?? []).some(st => st.verb === "strike"));
+      const tray = game.cardrpg.openTray(hero);
+      tray.staged = one ? [{ cardId: one.id, half: "primary" }] : [];
+      await tray.render();
+      const box = document.querySelector(`.cr-stack[data-half="primary"]`);
+      const line = [...(box?.querySelectorAll(".cr-card__line") ?? [])]
+        .map(e => e.textContent).join(" ");
+      const out = {
+        staged: !!one,
+        strike: Number(line.match(/Strike (\d+)/)?.[1] ?? NaN),
+        /* And the fist is what the resolver would be handed, asked of the resolver itself. */
+        fistStrong: LIVE.collectBonuses(hero, "strike", LIVE.BARE_HANDS, { using: null }).total
+      };
+      for (const i of held) await i.update({ "system.equipped": true });
+      return out;
+    });
+    rows.push(["a Strike with empty hands is staged at all", empty.staged, true]);
+    rows.push(["and it prints a number rather than refusing",
+      Number.isFinite(empty.strike), true]);
+    /* Light, so Strong is not in it -- the one number that keeps *Off-Hand Blow* worth printing. */
+    rows.push(["and the fist collects no heavy feature", empty.fistStrong, 0]);
+
+    await page.evaluate(() => LIVE.unstage());
     return rows;
   });
 

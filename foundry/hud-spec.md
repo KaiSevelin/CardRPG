@@ -199,29 +199,100 @@ highest value first.
 
 A passive feature is in no stack and cannot be clicked: it is simply true.
 
-### 3.5.0 The assist: the stack knows what the action is  **[BUILT 2026-11-08]**
+### 3.5.0 A stack is an action  **[BUILT 2026-11-08, REWRITTEN 2026-11-22]**
 
-A stack already filled itself in part: gear is in it because it is in your hand, and a feature
-because it has been spent. Neither of those knows what you are about to do. **Once a half is
-staged, the stack does** — and three things follow, which are the three a player would otherwise
-click every turn with the same answer.
+**A stack is empty until a half is staged, and then it holds the action and what serves it.**
 
-| What arrives | Why | Can it be taken out? |
+That is the reverse of the original rule, which is kept here because the argument for it was
+reasonable and wrong. It said: gear is in a stack because it is in your hand, so a stack stands
+without an action card too — equipping happens long before a hand is dealt, and the panel should
+say what you are holding. What that produced for the starter Warrior was **a Longsword, a Wooden
+Shield and a Healing Potion standing in the primary before the fight began.** The potion is what
+settles it: nothing about a Strike wants a potion, no amount of equipping makes it an action, and
+three cards that are not an action sat in the panel whose only job is to show the action.
+
+The gear was never hidden — the **Items** deck down the left lists all of it, equipped or not, and
+equipping is the character sheet’s job. So what the stack gained by also holding it was nothing,
+and what it lost was the ability to mean *this is the action*.
+
+| What arrives, once a half is staged | Why | Can it be taken out? |
 |---|---|---|
+| **the gear that can do what this half does** | read off the item’s own verbs, so a shield joins a Strike it can bash with and the potion joins neither | **yes**, and the arrow moves it between halves |
 | the **default formula**, on a Cast | a prepared spell is in a spell slot, which is not a stack, so a Cast had nothing in front of it | **yes**, the cross beside its name |
+| **free features** that boost this half | see 3.5.0a — these had never appeared in the panel at all | **yes** |
 | **ready features** that could serve this half | a feature you could use and did not is the commonest thing to forget | **yes** |
 | **conditions that bear on this half** | the one about to stop the action is the thing you most need to see before clicking | **no** |
 
-**Nothing arrives until a half is staged.** A stack standing with no action above it is a state
-the play area supports on purpose, because gear is equipped long before a hand is dealt, and
-guessing then would fill both stacks before the turn begins.
+The one thing that does **not** wait for a half is the record of what was spent: a Drained active
+feature is in the stack to say the ability was used, which is as true before a card is staged as
+after one.
 
-**The default weapon is not in that table, and that is not an inconsistency.** An equipped weapon
-is already in the stack, because it is in your hand. What a default weapon does instead is settle
-**which of two** — and only as a tie-break, after the half you placed a slate on. A player holding
-two swords has the same ambiguity every turn and the default is their standing answer to it; a
-default that outranked a click would be a settings panel overruling a decision just made, so a
-default sword never takes a Strike away from the axe you deliberately put in the primary.
+**The default weapon settles which of two**, and only as a tie-break after the half you placed a
+slate on. A player holding two swords has that ambiguity every turn and the default is their
+standing answer to it; a default that outranked a click would be a settings panel overruling a
+decision just made, so a default sword never takes a Strike away from the axe you deliberately put
+in the primary.
+
+#### 3.5.0a The free features, and the cross that did nothing  **[WIRED 2026-11-22]**
+
+**A feature that costs nothing to use belongs in the stack**, and none of them had ever been in one.
+`#featuresFor` tested `system.ready`, which is *active and not drained* — so a **passive** feature
+failed it by being passive. Strong is +1 damage on a heavy Strike and appeared nowhere in the tray:
+the one number a player wants before committing, *what does this Strike actually do*, was assembled
+out of sight and first printed in the chat card afterwards.
+
+They are **assumed rather than offered**, which is the line between them and an active feature: a
+passive costs nothing, so bringing it in is not a decision anybody would make differently. An
+active one Drains when used and is still offered.
+
+The tag is tested against **the item that will serve**, not against the character, so a hero holding
+a dagger is not shown a +1 that a heavy requirement will refuse. A boost card prints its value
+rather than *Passive — always on*, because a card carrying a cross is a card that can be taken out.
+
+> **And the stack is what counts.** The cross wrote to a set that never left the tray, so the +1
+> landed on every heavy Strike whatever the player clicked — a control that cannot fail, which is
+> worse than no control: it says a decision is yours and then makes it for you. The resolver is now
+> handed the staged set, and **one function builds it** for the three readers that must agree: the
+> stack, the number on the card face, and the action when it is played. A face promising *Strike 4*
+> beside a chat card delivering 3 is the defect all of this is for.
+>
+> *No* set means *count everything*, which is what a creature, a macro and a replayed flag want.
+> An **empty** set means *these, and there are none*, which is what the second Strike of a turn
+> says. Items are exempt: the bonus-carrying slots are mostly worn — a ring, a cloak, a pendant —
+> and nothing worn ever enters a stack.
+
+#### 3.5.0b The lead half: the first card you clicked  **[BUILT 2026-11-22]**
+
+A bonus that applies once has to apply to something, and **the primary was the wrong answer.** The
+order you click is the order the halves resolve (3.4), so a player who staged a secondary Strike and
+then a primary one was told the feature rode with the half going second. It rides with the card
+carrying the swing, which is the first one clicked.
+
+#### 3.5.0c A weapon serves one Strike a turn  **[BUILT 2026-11-22]**
+
+Two Strikes in a turn is a hand the starter deck can deal, and the engine handed **the same sword to
+both**, so a sword swung twice was simply twice the sword. *Off-Hand Blow* is written **Strike /
+Strike −1** — *two hands, two strikes, and the second is the weaker for it* (way-cards §3.1) — and
+two hands means two things in them.
+
+So what an earlier staged half took is spent, by click order again, and neither the chooser nor the
+stack will offer it to the later half. A sword and a shield become a Strike with each; a sword alone
+becomes a Strike and then a fist.
+
+**Bare hands**, which equipment.md §Weapons has printed since the catalogue was written — *Light,
+Melee, 1* — and which nothing had ever read. A Strike with no item was refused outright, so the
+rules said an unarmed specialist strikes for 1 while the game said *nothing equipped can strike*.
+
+It is **not a document**, because you do not own your hands: an Item would take a slot, carry a
+weight and a price, be unequippable, and need writing into every world that already exists. It is a
+frozen profile the chooser falls back to, and it is the answer for a character holding nothing at
+all as well as for the second Strike of a turn. A kit requirement it does not meet still refuses,
+and still says which requirement.
+
+**Light is the balance of it.** Strong is +1 on a *heavy* Strike, so the fist collects nothing from
+it: the first Strike is the sword and its feature, the second is a flat 1 and whatever is true of
+the character regardless. A fist at 0 would make *Off-Hand Blow* worthless and a heavy fist would
+make it free.
 
 Set either with the **star** on a slate in the panel. It is a toggle, because the second useful
 gesture after *this one from now on* is *actually, ask me* — and a character with two swords and no

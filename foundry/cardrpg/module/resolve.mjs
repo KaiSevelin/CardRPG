@@ -76,6 +76,50 @@ export function requireText(requires) {
 }
 
 /* -------------------------------------------- */
+/*  Bare hands                                  */
+/* -------------------------------------------- */
+
+/**
+ * **What a Strike uses when nothing is left to use.**  [BUILT 2026-11-22]
+ *
+ * equipment.md has had the row since the catalogue was written -- *Bare hands, Light, Melee, 1* --
+ * and nothing in the engine had ever read it. `resolveAttack` refused a Strike with no item at all,
+ * which made two true sentences contradict each other: the rules say an unarmed specialist strikes
+ * for 1, and the game said *nothing equipped can strike*.
+ *
+ * **It is not a document, because you do not own your hands.** An Item would appear in the Items
+ * deck, take a slot, carry a weight, be unequippable, and need writing into every world that
+ * already exists. What bare hands are is the ABSENCE of a weapon, so they are a profile the
+ * resolver falls back to, frozen so nothing can batter or edit them.
+ *
+ * **Light on purpose**, and that is the whole balance of it: Strong is +1 on a *heavy* Strike, so
+ * the fist gets nothing from it. A sword in the first Strike of a turn is 3 and a +1; the second,
+ * with the sword already swung, is a flat 1.
+ *
+ * It carries no `valueFor`, so `resolveAttack` falls through to the printed line -- which is right,
+ * since the thing `valueFor` exists for is a weapon that has been battered down, and a fist is not
+ * a thing that breaks.
+ */
+export const BARE_HANDS = Object.freeze({
+  id: "bare-hands",
+  name: "Bare hands",
+  type: "item",
+  system: Object.freeze({
+    tags: new Set(["light", "melee"]),
+    verbs: Object.freeze({ strike: Object.freeze({ value: 1, range: 1 }) }),
+    availableVerbs: Object.freeze(["strike"]),
+    allowedSlots: Object.freeze(["hands"]),
+    /* Equipped and in the hands, because that is exactly where they are. The slot matters: a
+     * `worn` or `stows` slot would have made the fist a thing that gives nothing from there. */
+    equipped: true,
+    equippedSlot: "hands",
+    group: "",
+    drained: false,
+    isTwoHanded: false
+  })
+});
+
+/* -------------------------------------------- */
 /*  Bonuses                                     */
 /* -------------------------------------------- */
 
@@ -85,9 +129,33 @@ export function requireText(requires) {
  * Ungrouped bonuses all apply: a group caps stacking between bonuses of the same kind, and a slate
  * with no group isn't making a capped contribution in the first place.
  *
+ * **`using` is the staged stack, and it is what makes the stack mean something.**  [WIRED 2026-11-22]
+ *
+ * This function used to read the whole character: every feature it owned, every turn, whatever the
+ * tray was showing. The tray meanwhile drew a stack of the features bearing on the half you had
+ * staged and gave each one a cross to take it out -- and the cross did nothing at all, because the
+ * set it wrote to never left the tray. **A control that cannot fail is worse than no control**: it
+ * tells the player a decision is theirs and then makes it for them, and the chat card afterwards
+ * reports a bonus they thought they had declined.
+ *
+ * So the caller may now name which features are in play. `null` means *every feature this actor
+ * owns*, which is what an NPC, a macro and a replayed flag all want: they have no stack, and a
+ * creature's bonuses are simply true. A **Set** -- including an empty one -- means *these and no
+ * others*, and an empty Set is the honest answer for the second of two Strikes in one turn, which
+ * is why it must not be read as *no opinion*.
+ *
+ * **It filters features alone.** An item's bonus is already gated by being equipped and out of a
+ * stowing slot, and the slots that carry bonuses are mostly `worn` -- a ring, a cloak, a pendant --
+ * which never enter a stack at all. Filtering items by the stack would have silently switched off
+ * every worn bonus in the game.
+ *
+ * Conditions are never filtered, for the reason the tray gives them no cross: a condition is done
+ * to you, it has a duration, and declining it is not a move (core-rules 7).
+ *
+ * @param {Set<string>|null} [options.using]  The feature ids the staged half is using, or null.
  * @returns {{total: number, applied: object[], blocked: object[]}}
  */
-export function collectBonuses(actor, verb, item) {
+export function collectBonuses(actor, verb, item, { using = null } = {}) {
   const candidates = [];
 
   /*
@@ -117,6 +185,9 @@ export function collectBonuses(actor, verb, item) {
   for (const slate of actor.items) {
     const bonus = slate.system.bonus;
     if (!bonus?.value || bonus.verb !== verb) continue;
+    /* **A feature contributes because it is in the stack, not because it is owned.** Items are
+     * exempt: see the note above. */
+    if (using && slate.type === "feature" && !using.has(slate.id)) continue;
     // "Only equipped items can be used" (core-rules 4). Features are never out of play, so the
     // test is for items alone -- without it a ring granted its bonus from the bottom of the pack,
     // which six new worn slots would have made a great deal worse.
@@ -3530,7 +3601,8 @@ export function refusesTiming(actor, slate, { what = "that" } = {}) {
 }
 
 export async function resolveAttack(actor, {
-  verb = "strike", item, mod = 0, targets = [], step = {}, ammo = null, payload = null
+  verb = "strike", item, mod = 0, targets = [], step = {}, ammo = null, payload = null,
+  using = null
 }) {
   if (refusesAction(actor, { what: `a ${verb}` })) return null;
   const line = item?.system.verbs?.[verb];
@@ -3554,7 +3626,7 @@ export async function resolveAttack(actor, {
   /* The battered value, not the printed one: `valueFor` is `armorNow` for a weapon and returns
    * the same `null` the raw read does for a line the item has not got. */
   const base = item?.system?.valueFor?.(verb) ?? line.value;
-  const bonuses = collectBonuses(actor, verb, item);
+  const bonuses = collectBonuses(actor, verb, item, { using });
   const before = base + mod + (shot?.mod ?? 0) + bonuses.total;
 
   const ranged = !!(line.range && line.range > 1) || !!(step.range && step.range > 1);

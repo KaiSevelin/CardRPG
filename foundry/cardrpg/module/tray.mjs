@@ -36,6 +36,7 @@ import {
   resolveTaint, resolveGearEffect, resolveRepair, resolveRepairCheck,
   liftCondition, resolveForesee, collectBonuses,
   resolveConjure, resolveShape,
+  BARE_HANDS,
   itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore,
   refusesAction, refusesTiming, refusesState, stateHolds, stateWords, resolveRead,
   bookDelayed, healTargets, SKILL_FLOOR,
@@ -923,6 +924,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
          * remove button on that would offer to un-spend it.
          */
         const offered = (slate.type === "feature" && !slate.system.drained) || spell;
+        /*
+         * **A card with a cross on it does not say "always on".**  [2026-11-22]
+         *
+         * `#featureCard` writes *Passive -- always on* for a feature that costs nothing, which was
+         * true while a passive feature could never be in a stack. It is in one now, and it can be
+         * taken out of one, so the note has to say what it is doing here and what it is worth --
+         * the number being the whole reason it was brought in rather than left to apply in silence.
+         */
+        const boost = slate.type === "feature" && !slate.system.isActive
+          ? slate.system.bonus?.value ?? 0 : 0;
         cards.push(Object.assign(
           item ? this.#itemCard(slate, true)
             : spell ? this.#spellCard(slate) : this.#featureCard(slate),
@@ -934,6 +945,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
             moveTo: movable ? (half === "primary" ? "secondary" : "primary") : null,
             moveArrow: half === "primary" ? "→" : "←",
             ...(offered ? { waveId: slate.id, assisted: true } : {}),
+            ...(boost ? { note: `${boost > 0 ? "+" : ""}${boost} in this action` } : {}),
             tip: slate.system.drained && item
               ? `Disabled until it recharges: ${slate.system.rechargeLabel ?? "—"}. `
                 + "Click to put it back in the Items deck."
@@ -1073,6 +1085,75 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
+   * **The half the player clicked first.**  [BUILT 2026-11-22]
+   *
+   * A bonus that applies once has to apply to something, and *the primary* was the wrong answer:
+   * the order you click is the order the halves resolve, so a player who stages a secondary Strike
+   * and then a primary one was told the feature rode with the half that goes second. The first card
+   * selected is the one carrying the swing, and it is the one a player would say it rides with.
+   */
+  #leadHalf() {
+    return this.staged[0]?.half ?? "primary";
+  }
+
+  /**
+   * **The free features that will boost this verb**, with the item that has to satisfy them.
+   *
+   * *Free* is the whole filter: a passive feature costs nothing to use, so bringing it in is not a
+   * decision anybody would make differently, and leaving it out of the stack meant the one number
+   * the player cares about -- what this Strike actually does -- was assembled out of sight. Strong
+   * is +1 damage on a heavy Strike and had never once appeared in the play area.
+   *
+   * An **active** feature is a different thing and stays where it was: it Drains when used, so it
+   * is offered rather than assumed, and `#featuresFor` is still what offers it.
+   *
+   * **The tag is tested against the item that will serve**, not against the character. Strong wants
+   * a heavy weapon, so a hero holding a dagger must not be shown a +1 they will not get -- and
+   * since this is the same predicate the resolver uses, the stack and the chat card cannot
+   * disagree about it.
+   */
+  #freeBoostsFor(verb, item) {
+    return this.actor.items.filter(f => {
+      if (f.type !== "feature" || f.system.isActive) return false;
+      if (this.waved.has(f.id)) return false;
+      const bonus = f.system.bonus;
+      if (!bonus?.value || bonus.verb !== verb) return false;
+      return !bonus.requiresTag || itemMeets(item, { tag: bonus.requiresTag });
+    });
+  }
+
+  /** Those features across every verb this half is trying to do, each listed once. */
+  #boosts(half, verbs) {
+    const out = [];
+    for (const verb of verbs) {
+      for (const f of this.#freeBoostsFor(verb, this.#itemFor(verb, half))) {
+        if (!out.includes(f)) out.push(f);
+      }
+    }
+    return out;
+  }
+
+  /**
+   * **What the resolver is allowed to count, as the stack shows it.**  [BUILT 2026-11-22]
+   *
+   * One rule asked in one place, because three callers need the same answer and they must not drift:
+   * this builds the stack in `#assigned`, prints the number on the card face in `#stepFace`, and is
+   * handed to `resolveAttack` when the half is played. A face that promises 4 and a chat card that
+   * delivers 3 is the defect that made all of this worth doing.
+   *
+   * **An empty Set, not null, off the lead half.** `collectBonuses` reads null as *no opinion, count
+   * everything* -- which is what a creature wants -- so the second Strike of a turn has to say
+   * *these, and there are none* rather than say nothing at all.
+   */
+  #usingFor(half, verb, item) {
+    if (this.#leadHalf() !== half) return new Set();
+    return new Set([
+      ...this.#freeBoostsFor(verb, item).map(f => f.id),
+      ...this.#featuresFor([verb]).map(f => f.id)
+    ]);
+  }
+
+  /**
    * The slates assigned to a half.
    *
    * An item that could modify more than one action sits in the stack it was put in; one with a
@@ -1080,40 +1161,75 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * the primary.
    */
   #assigned(half) {
-    const items = this.actor.items.filter(i =>
-      i.type === "item" && i.system.equipped
-      && !CARDRPG.slots[i.system.equippedSlot]?.worn
-      && !CARDRPG.slots[i.system.equippedSlot]?.stows
-      && this.#stackOf(i) === half);
-    const features = half === "primary"
+    /*
+     * The spent ones, which are a record rather than a suggestion: a Drained active feature is in
+     * the stack to say the ability was used. That is true whether or not a card is staged above it,
+     * so it is the one thing here that does not wait for one.
+     */
+    const spent = half === "primary"
       ? this.actor.items.filter(f => f.type === "feature" && f.system.isActive && f.system.drained)
       : [];
 
     /*
-     * **The assist**, which adds nothing until a half is staged.
+     * **A stack is an action, so nothing joins one until a half is staged.**  [MOVED 2026-11-22]
      *
-     * The two above are the stack as it stood: gear is in it because it is in your hand, and a
-     * feature is in it because it has been spent. Neither knows what you are about to do. Once a
-     * card is staged the stack does know, and these three are the things a player would otherwise
-     * click every single turn with the same answer.
+     * This used to put every equipped item in a stack the moment it was equipped, on the argument
+     * that gear is in your hand long before a hand is dealt and the stack should say so. What that
+     * produced for the starter Warrior was **a Longsword, a Wooden Shield and a Healing Potion
+     * standing in the primary before the fight began** -- three cards that are not an action, in
+     * the panel whose whole job is to show the action. The potion is the one that gives it away:
+     * nothing about a Strike wants it, and it sat there every turn regardless.
      *
-     * The **default formula** is added and the default weapon is not, which looks inconsistent and
-     * is not: an equipped weapon is already here, because it is in your hand. A prepared spell is
-     * in a spell slot, which is not a stack, so a Cast had nothing in front of it. What the
-     * default weapon does instead is settle **which** of two, over in `#itemFor`.
+     * The gear is already listed in the **Items** deck on the left, equipped or not, and equipping
+     * is the character sheet's job. So the stack is now assembled from the staged half downwards:
+     * the action, then what serves it.
      */
     const verbs = this.#verbsOf(half);
-    if (!verbs.length) return [...items, ...features];
+    if (!verbs.length) return spent;
 
+    /*
+     * **Only the gear that can do what this half is doing.** A shield defends and a potion is
+     * drunk; neither has anything to say about a Strike. Read off the item's own verbs rather than
+     * a list here, so an item that gains a line gains a stack to appear in.
+     */
+    /*
+     * And not the ones an earlier half already spent: a sword swung on the first Strike is not
+     * available to the second, so leaving it drawn in both stacks would have the panel promising
+     * a weapon the resolver will not hand over.
+     */
+    const claimed = new Set(verbs.flatMap(v => [...this.#claimed(half, v)]));
+    const items = this.actor.items.filter(i =>
+      i.type === "item" && i.system.equipped
+      && !CARDRPG.slots[i.system.equippedSlot]?.worn
+      && !CARDRPG.slots[i.system.equippedSlot]?.stows
+      && this.#stackOf(i) === half
+      && !claimed.has(i.id)
+      && (i.system.availableVerbs ?? []).some(v => verbs.includes(v)));
+
+    /*
+     * **The default formula**, which a Cast has nothing else in front of it: a prepared spell sits
+     * in a spell slot, and a slot is not a stack. What the default WEAPON does instead is settle
+     * which of two, over in `#itemFor`.
+     */
     const spell = verbs.includes("cast") ? this.actor.system.defaultFor("cast") : null;
-    const offered = this.#featuresFor(verbs).filter(f => !features.includes(f));
+
+    /*
+     * **And the features, on the first half the player clicked.** Both kinds ride with the lead
+     * half rather than with the primary, and only one of them: a bonus that applies once would
+     * otherwise be drawn twice in a two-half turn and counted twice in `collectBonuses`.
+     */
+    const lead = this.#leadHalf() === half;
+    const boosts = lead ? this.#boosts(half, verbs) : [];
+    const offered = lead
+      ? this.#featuresFor(verbs).filter(f => !spent.includes(f) && !boosts.includes(f))
+      : [];
 
     return [
       ...items,
       ...(spell && !this.waved.has(spell.id) ? [spell] : []),
-      ...features,
-      /* Only the primary carries the offers, or a two-half turn shows each one twice. */
-      ...(half === "primary" ? offered : [])
+      ...spent,
+      ...boosts,
+      ...offered
     ];
   }
 
@@ -1159,6 +1275,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     return {
       id: card.id,
       name: cardName(card),
+      /*
+       * **The picture, which this one card has never worn.**  [FIXED 2026-11-22]
+       *
+       * Every other card in the stack sets it -- an item, a spell, a feature, even a condition --
+       * and the card the stack is BUILT ON did not, so the play panel drew a bare slab under a
+       * column of pictures. It went unseen because no test had ever staged a half while looking at
+       * the panel: the probe opened the tray, found the gear that used to stand there unasked, and
+       * every card it could see wore its art. Staging one was what asked the question.
+       */
+      art: artOf(card),
       action: true,
       icon: face?.icon,
       lines: [face?.text ?? "—"],
@@ -1839,7 +1965,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       if (need && !item) unmet = need;
       const base = item?.system.verbs?.[step.verb]?.value;
       if (base !== null && base !== undefined) {
-        text += ` ${base + (step.mod ?? 0) + collectBonuses(this.actor, step.verb, item).total}`;
+        /* Through the stack, so the face promises exactly what the play will deliver: a waved
+         * feature is gone from the number, and the second Strike of a turn is not boosted twice. */
+        const using = this.#usingFor(half, step.verb, item);
+        text += ` ${base + (step.mod ?? 0)
+          + collectBonuses(this.actor, step.verb, item, { using }).total}`;
       } else if (step.mod) text += ` ${step.mod > 0 ? "+" : ""}${step.mod}`;
       /*
        * **The requirement stays on the face, because it decides legality.** *needs a shield* is
@@ -2153,8 +2283,55 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * never takes a Strike away from the axe you deliberately put in the primary. It only answers
    * the question nobody asked.
    */
+  /** The step a staged half runs for a verb, so its own kit requirement can be read off it. */
+  #stepFor(half, verb) {
+    const entry = this.staged.find(s => s.half === half);
+    const card = entry ? deckOf(this.actor, "actionHand")?.cards.get(entry.cardId) : null;
+    return (card?.system[half] ?? []).find(st => st.verb === verb) ?? null;
+  }
+
+  /**
+   * **A weapon serves one Strike a turn.**  [BUILT 2026-11-22]
+   *
+   * Two Strikes in a turn is a real hand -- stage a Strike's primary and a *Weapon Swap*'s
+   * secondary -- and the engine handed the same Longsword to both of them, so a sword swung twice
+   * was simply twice the sword. *Off-Hand Blow* is written **Strike / Strike -1**, "two hands, two
+   * strikes, and the second is the weaker for it" (way-cards 3.1), and two hands means two things
+   * in them.
+   *
+   * So what an earlier staged half took is spent. **Earlier by click order**, which is the order
+   * the halves resolve, not by primary-before-secondary -- the same rule the lead half uses, and
+   * for the same reason.
+   *
+   * The recursion stops because it only looks at halves BEFORE this one and a turn stages two.
+   */
+  #claimed(half, verb) {
+    const mine = this.staged.findIndex(s => s.half === half);
+    if (mine <= 0) return new Set();
+    const taken = new Set();
+    for (const earlier of this.staged.slice(0, mine)) {
+      if (!this.#verbsOf(earlier.half).includes(verb)) continue;
+      /* The earlier half's OWN requirement: a Take the Shot that asked for a bow was answered by
+       * the bow, and claiming whatever the best unrestricted weapon is would spend the wrong one. */
+      const used = this.#itemFor(verb, earlier.half,
+        this.#stepFor(earlier.half, verb)?.requires ?? null);
+      if (used) taken.add(used.id);
+    }
+    return taken;
+  }
+
   #itemFor(verb, half = "primary", requires = null) {
-    const candidates = this.#itemsFor(verb, requires);
+    const taken = this.#claimed(half, verb);
+    const candidates = this.#itemsFor(verb, requires).filter(i => !taken.has(i.id));
+    /*
+     * **And the fist, when there is nothing left.** Unconditional for a Strike that asks for no
+     * particular kit, because bare hands are the one weapon that cannot be taken away -- and it is
+     * also the answer for a character holding nothing at all, which used to be refused outright.
+     * A requirement bare hands do not meet still refuses, and says which requirement.
+     */
+    if (!candidates.length) {
+      return verb === "strike" && itemMeets(BARE_HANDS, requires) ? BARE_HANDS : null;
+    }
     if (candidates.length < 2) return candidates[0] ?? null;
     const choosy = i => i.system.availableVerbs.length > 1;
     const preferred = this.actor.system.defaultFor?.(verb) ?? null;
@@ -3066,7 +3243,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           ? await this.#nock(item)
           : { ammo: null, payload: null };
         await resolveAttack(actor, {
-          verb: step.verb, item, mod: step.mod ?? 0, targets, step, ammo, payload
+          verb: step.verb, item, mod: step.mod ?? 0, targets, step, ammo, payload,
+          using: this.#usingFor(half, step.verb, item)
         });
         // A condition printed on the same step rides in with the attack.
         if (step.condition) {

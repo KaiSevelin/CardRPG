@@ -13419,21 +13419,285 @@ check("and in the tray it breaks the tie after the half",
     .test(traySource) ? "yes" : "no", "yes");
 
 /*
- * **What the assist adds, and when.** Nothing at all until a half is staged: a stack standing with
- * no action above it is a state the play area supports on purpose, because gear is equipped long
- * before a hand is dealt, and guessing then would fill both stacks before the turn began.
+ * **A stack is an action, so nothing joins one until a half is staged.**  [MOVED 2026-11-22]
+ *
+ * The rule here used to be the opposite, and it was written down and argued for: *a stack stands
+ * without an action card too, because gear is equipped long before a hand is dealt.* What that
+ * produced for the starter Warrior was a Longsword, a Wooden Shield and **a Healing Potion**
+ * standing in the primary before a hand was dealt -- and the potion is what gives it away, because
+ * nothing about a Strike wants it and no amount of equipping makes it an action.
+ *
+ * The gear was never hidden: the **Items** deck on the left lists all of it, equipped or not. So
+ * what the stack gained by also holding it was nothing, and what it lost was the ability to mean
+ * *this is the action*.
  */
 check("the assist reads the staged half's own verbs",
   /* The DECLARATION, not the first call of it: `this.#verbsOf(half)` appears a hundred lines
    * earlier, and a slice taken from a call site is a slice of whatever block the call sits in. */
   /steps\.map\(s => s\.verb\)/.test(bodyOf(traySource, "\n  #verbsOf(half)")) ? "yes" : "no",
   "yes");
-check("and adds nothing before a half is staged",
-  /const verbs = this\.#verbsOf\(half\);\s*\n\s*if \(!verbs\.length\) return \[\.\.\.items, \.\.\.features\];/
-    .test(traySource) ? "yes" : "no", "yes");
+check("and nothing joins a stack before a half is staged",
+  /if \(!verbs\.length\) return spent;/.test(bodyOf(traySource, "\n  #assigned(half)"))
+    ? "yes" : "no", "yes");
+/*
+ * **Except the record of what was spent**, which is the one thing in a stack that is not a
+ * suggestion: a Drained active feature is there to say the ability was used, and that is as true
+ * before a card is staged as after one.
+ */
+check("and the spent record does not wait for one",
+  /const spent = half === "primary"/.test(bodyOf(traySource, "\n  #assigned(half)"))
+    ? "yes" : "no", "yes");
+check("gear joins only the half whose verbs it can serve",
+  /\(i\.system\.availableVerbs \?\? \[\]\)\.some\(v => verbs\.includes\(v\)\)/
+    .test(bodyOf(traySource, "\n  #assigned(half)")) ? "yes" : "no", "yes");
 check("the formula comes in on a Cast",
   /verbs\.includes\("cast"\) \? this\.actor\.system\.defaultFor\("cast"\) : null/
     .test(traySource) ? "yes" : "no", "yes");
+
+/*
+ * **The features ride with the half the player clicked first, not with the primary.**
+ *
+ * The order you click is the order the halves resolve, so *the primary* told a player who staged a
+ * secondary Strike and then a primary one that the feature rode with the half going second. A bonus
+ * that applies once applies to the card carrying the swing.
+ */
+check("a bonus that applies once rides with the lead half",
+  /return this\.staged\[0\]\?\.half \?\? "primary";/.test(traySource) ? "yes" : "no", "yes");
+check("and the stack asks for it rather than naming the primary",
+  /const lead = this\.#leadHalf\(\) === half;/.test(bodyOf(traySource, "\n  #assigned(half)"))
+    ? "yes" : "no", "yes");
+/*
+ * **A free feature is in the stack rather than assumed.** Strong is +1 damage on a heavy Strike and
+ * had never appeared in the play area at all: `#featuresFor` tests `system.ready`, which is
+ * `isActive && !drained`, so a passive feature failed it **by being passive**. The one number a
+ * player cares about -- what this Strike does -- was assembled out of sight.
+ */
+check("a free feature is offered to the stack",
+  /if \(f\.type !== "feature" \|\| f\.system\.isActive\) return false;/
+    .test(bodyOf(traySource, "#freeBoostsFor(verb, item)")) ? "yes" : "no", "yes");
+check("and an active one is still offered rather than assumed",
+  /if \(f\.type !== "feature" \|\| !f\.system\.ready\) return false;/
+    .test(bodyOf(traySource, "\n  #featuresFor(verbs)")) ? "yes" : "no", "yes");
+check("and the tag is tested against the item that will serve",
+  /!bonus\.requiresTag \|\| itemMeets\(item, \{ tag: bonus\.requiresTag \}\)/
+    .test(bodyOf(traySource, "#freeBoostsFor(verb, item)")) ? "yes" : "no", "yes");
+check("and a waved one is left out",
+  /if \(this\.waved\.has\(f\.id\)\) return false;/
+    .test(bodyOf(traySource, "#freeBoostsFor(verb, item)")) ? "yes" : "no", "yes");
+/*
+ * **And a card with a cross on it does not say "always on".** `#featureCard` writes that for a
+ * feature costing nothing, which was true while such a feature could never be in a stack. It is in
+ * one now and it can be taken out of one, so the stack overrides the note with the number -- which
+ * is the whole reason the card was brought in rather than left to apply in silence.
+ */
+check("a boost in a stack says what it is worth",
+  /note: `\$\{boost > 0 \? "\+" : ""\}\$\{boost\} in this action`/.test(traySource)
+    ? "yes" : "no", "yes");
+check("and it is read off the bonus rather than the prose",
+  /slate\.system\.bonus\?\.value \?\? 0 : 0;/.test(traySource) ? "yes" : "no", "yes");
+
+
+/*
+ * **A weapon serves one Strike a turn.**  [BUILT 2026-11-22]
+ *
+ * Two Strikes in a turn is a hand the starter deck can deal -- a *Strike*'s primary and a *Weapon
+ * Swap*'s secondary -- and `#itemFor` handed the same Longsword to both, so a sword swung twice was
+ * simply twice the sword. *Off-Hand Blow* is written **Strike / Strike -1**, *two hands, two
+ * strikes, and the second is the weaker for it* (way-cards 3.1), and two hands means two things in
+ * them.
+ *
+ * **Spent by click order**, not by primary-before-secondary: the order you click is the order the
+ * halves resolve, which is the same rule the lead half follows.
+ */
+check("an earlier half's weapon is spent",
+  /const taken = this\.#claimed\(half, verb\);/.test(traySource) ? "yes" : "no", "yes");
+check("and the chooser never offers it again",
+  /this\.#itemsFor\(verb, requires\)\.filter\(i => !taken\.has\(i\.id\)\)/.test(traySource)
+    ? "yes" : "no", "yes");
+check("and the stack does not draw it either",
+  /&& !claimed\.has\(i\.id\)/.test(bodyOf(traySource, "\n  #assigned(half)")) ? "yes" : "no",
+  "yes");
+check("earlier means earlier by click, not by half",
+  /this\.staged\.slice\(0, mine\)/.test(bodyOf(traySource, "#claimed(half, verb)"))
+    ? "yes" : "no", "yes");
+/*
+ * **And the earlier half's own requirement decides which weapon it took.** A *Take the Shot* that
+ * asked for a bow was answered by the bow, so spending whatever the best unrestricted weapon is
+ * would take the wrong one out of the second Strike's hand.
+ */
+check("and it reads that half's own kit requirement",
+  /this\.#stepFor\(earlier\.half, verb\)\?\.requires \?\? null/.test(traySource)
+    ? "yes" : "no", "yes");
+/*
+ * **The fist is the floor, and it is unconditional.** A Strike asking for no particular kit always
+ * has an answer, which is also what lets a character holding nothing strike at all -- refused
+ * outright before today. A requirement bare hands do not meet still refuses, and still says which.
+ */
+check("a Strike with nothing left falls back to the fist",
+  /return verb === "strike" && itemMeets\(BARE_HANDS, requires\) \? BARE_HANDS : null;/
+    .test(traySource) ? "yes" : "no", "yes");
+check("and the fist is not a document anybody owns",
+  /export const BARE_HANDS = Object\.freeze\(\{/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **And the spec says so, because the spec argued the opposite for a fortnight.** 3.5.0 was written
+ * around *a stack stands without an action card too*; a spec still making that case beside code
+ * that does the reverse is worse than one that is merely out of date, because it reads as the
+ * intent. The three headings are the rules that replaced it, and a check that they exist is a check
+ * that whoever changes this back has to say so in both places.
+ */
+check("the spec carries the rule the code follows",
+  /^### 3\.5\.0 A stack is an action/m.test(hudSpec) ? "yes" : "no", "yes");
+check("and the three rules under it",
+  ["3.5.0a The free features", "3.5.0b The lead half", "3.5.0c A weapon serves one Strike"]
+    .filter(h => !hudSpec.includes(h)).join(", ") || "all three", "all three");
+check("and the argument it replaced is kept rather than deleted",
+  hudSpec.includes("the argument for it was") && hudSpec.includes("reasonable and wrong")
+    ? "yes" : "no", "yes");
+/*
+ * It must not be a catalogue entry, or it is gear with a weight, a slot, a price and a way to lose
+ * it. Asked of the item lists rather than of the content text, because `strength.glad.hands` is a
+ * levelling node called *Bare Hands* and is a perfectly good thing to have -- the grep found it and
+ * reported the fist as declared.
+ */
+check("and no item in the catalogue declares one",
+  [...content.ITEMS, ...content.NPC_GEAR, ...content.NATURAL_WEAPONS]
+    .filter(i => /^bare hands$/i.test(i.name)).map(i => i.name).join(", ") || "none", "none");
+
+/*
+ * **One set, three readers.**  [WIRED 2026-11-22]
+ *
+ * The stack builds it, the card face prints from it, and the played action is resolved with it. A
+ * face promising *Strike 4* while the chat card delivers 3 is the defect all of this is for, and it
+ * can only be ruled out by the three of them asking one function rather than three agreeing by
+ * hand. So the readers are counted, and a fourth that forgets to ask fails here.
+ */
+check("the resolver takes the staged set",
+  /export function collectBonuses\(actor, verb, item, \{ using = null \} = \{\}\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+check("and it filters features, never items",
+  /if \(using && slate\.type === "feature" && !using\.has\(slate\.id\)\) continue;/
+    .test(resolveSource) ? "yes" : "no", "yes");
+check("and an attack carries it through",
+  /const bonuses = collectBonuses\(actor, verb, item, \{ using \}\);/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("the tray builds it in one place",
+  /#usingFor\(half, verb, item\) \{/.test(traySource) ? "yes" : "no", "yes");
+check("and every reader asks that one place",
+  (traySource.match(/this\.#usingFor\(/g) ?? []).length, 2);
+/*
+ * **The empty Set, said out loud.** `null` means *count everything*, which is what a creature and a
+ * macro want; the second Strike of a turn has to say *these, and there are none*. The two are one
+ * character apart in the resolver and opposite in effect, so the line that returns the empty one is
+ * pinned rather than left to read like a guard.
+ */
+check("and the half that is not leading asks for none",
+  /if \(this\.#leadHalf\(\) !== half\) return new Set\(\);/.test(traySource) ? "yes" : "no", "yes");
+check("the face prints what the play will deliver",
+  /collectBonuses\(this\.actor, step\.verb, item, \{ using \}\)\.total/.test(traySource)
+    ? "yes" : "no", "yes");
+
+/*
+ * **The stack as the resolver reads it, driven.**  [BUILT 2026-11-22]
+ *
+ * This is the block that would have caught the defect, and no grep could have. The tray drew Strong
+ * into the stack with a cross on it, the cross wrote to a Set, and the Set never left the tray --
+ * so the +1 landed on every heavy Strike whatever the player clicked. Every line of that reads
+ * correctly: the control exists, the handler is wired, the renderer honours it. What was missing was
+ * an argument, and an argument that is not passed looks exactly like one that is.
+ *
+ * So each row below asks `collectBonuses` the question the stack is making a promise about.
+ */
+{
+  const savedGame = globalThis.game;
+  globalThis.game = { i18n: { localize: key => key } };
+  const bonuses = await import("../module/resolve.mjs");
+
+  /* A slate is identified by `id`, so each stub needs one: `using` is a set of ids and a stub
+   * sharing an id with another would make the filter look like it worked when it matched twice. */
+  const feature = (id, bonus) => ({ id, name: id, type: "feature", system: { bonus } });
+  const gear = (id, bonus) => ({
+    id, name: id, type: "item",
+    system: { bonus, equipped: true, equippedSlot: "fingers" }
+  });
+  const weapon = tag => ({ name: tag, system: { tags: new Set([tag]) } });
+
+  const STRONG = feature("strong", { verb: "strike", value: 1, requiresTag: "heavy" });
+  const RING = gear("ring", { verb: "strike", value: 1 });
+  const hero = items => ({ items, system: { activeConditions: [] } });
+  const sum = (items, item, using) =>
+    bonuses.collectBonuses(hero(items), "strike", item, ...(using === undefined ? [] : [{ using }]));
+
+  const heavy = weapon("heavy");
+  const light = weapon("light");
+
+  check("a free feature in the stack is counted",
+    sum([STRONG], heavy, new Set(["strong"])).total, 1);
+  /* The cross. One row, and it is the whole reason this file grew a driven block today. */
+  check("and waved out of the stack it is not",
+    sum([STRONG], heavy, new Set()).total, 0);
+  check("and left out while something else is in, it is not",
+    sum([STRONG], heavy, new Set(["somebody-else"])).total, 0);
+  /*
+   * **An empty Set is an answer and `null` is the absence of one.** A creature has no stack and its
+   * bonuses are simply true, so the resolver must not read *nothing was staged* as *nothing
+   * applies* -- which is the shape the second Strike of a turn passes in deliberately.
+   */
+  check("a caller with no stack still gets every feature",
+    sum([STRONG], heavy, null).total, 1);
+  check("and so does one that asks nothing at all",
+    sum([STRONG], heavy).total, 1);
+
+  /*
+   * **The exemption, which is the subtle half.** The bonus-carrying slots are mostly `worn` -- a
+   * ring, a cloak, a pendant -- and nothing worn ever enters a stack, so filtering items by the
+   * stack would have switched off every worn bonus in the game while every test about features
+   * passed.
+   */
+  check("a worn item's bonus is not filtered by the stack",
+    sum([RING], heavy, new Set()).total, 1);
+  check("and it is still counted beside a feature that is in it",
+    sum([STRONG, RING], heavy, new Set(["strong"])).total, 2);
+
+  /* The tag is about the thing in hand, and it still is. */
+  check("a heavy feature gives nothing to a light weapon",
+    sum([STRONG], light, new Set(["strong"])).total, 0);
+
+  /*
+   * **The fist, driven.**  [BUILT 2026-11-22]
+   *
+   * equipment.md has had the row since the catalogue was written -- *Bare hands, Light, Melee, 1*
+   * -- and the engine refused a Strike with no item, so the rules said an unarmed specialist
+   * strikes for 1 and the game said *nothing equipped can strike*. The number and the tags are
+   * both load-bearing and both easy to get wrong in a way that reads correctly: a `heavy` fist
+   * would quietly collect Strong, and a fist at 0 would make *Off-Hand Blow* worthless.
+   */
+  check("the fist strikes for what the catalogue prints",
+    bonuses.BARE_HANDS.system.verbs.strike.value, 1);
+  check("and it is light, so a heavy feature gives it nothing",
+    sum([STRONG], bonuses.BARE_HANDS, null).total, 0);
+  check("and it is melee", bonuses.BARE_HANDS.system.tags.has("melee"), true);
+  /* In the hands, which is the slot that decides whether a thing gives anything at all: `worn` and
+   * `stows` are both slots a weapon serves nothing from. */
+  check("and it is in the hands", bonuses.BARE_HANDS.system.equippedSlot, "hands");
+  check("and nothing can edit it", Object.isFrozen(bonuses.BARE_HANDS), true);
+  check("a plain Strike may use it", bonuses.itemMeets(bonuses.BARE_HANDS, null), true);
+  check("and a Strike that wants a bow may not",
+    bonuses.itemMeets(bonuses.BARE_HANDS, { tag: "ranged" }), false);
+  check("and nor may one that wants both hands on something",
+    bonuses.itemMeets(bonuses.BARE_HANDS, { bothHands: true }), false);
+
+  /* And the group cap, which the filter must not have quietly changed. */
+  const twins = [
+    feature("ink-a", { verb: "strike", value: 2 }),
+    feature("ink-b", { verb: "strike", value: 1 })
+  ];
+  twins.forEach(f => { f.system.group = "ink"; });
+  const capped = sum(twins, heavy, new Set(["ink-a", "ink-b"]));
+  check("two bonuses of one group still cap to the better", capped.total, 2);
+  check("and the one that lost is reported rather than dropped", capped.blocked.length, 1);
+
+  globalThis.game = savedGame;
+}
 
 /*
  * **Relevance is read off config flags, never off a list of keys.** The tray already does this for
