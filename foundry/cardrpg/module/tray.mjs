@@ -75,6 +75,27 @@ const REACHES = new Set(["strike", "cast", "use"]);
 /** A range of 99 in the catalogue means *any distance*, and two steps use it. */
 const UNLIMITED = 99;
 
+/**
+ * **Every deck the left column can hold, which is what a card's size is computed for.**
+ * **[RULED 2026-11-23]**
+ *
+ * The size was the window height divided by the rows **this actor draws**, and that is the wrong
+ * divisor: it makes the cards a fact about who is selected. A caster hero has four decks and a
+ * goblin has three, so clicking from one to the other changed the size of the whole left edge --
+ * which is the fault reported twice, once as *a monster's decks are bigger* and then again after
+ * the monster was fixed and the CASTER was the one out of step.
+ *
+ * So the divisor is the **tallest column the HUD can draw**: these four and the deck corner under
+ * them. Every actor's cards are that size, nobody's column ever has to resize, and a deck arriving
+ * or leaving moves nothing. It costs the three-deck case a little height, which is the price of
+ * the size meaning the same thing on every actor in the fight.
+ *
+ * Read off this list rather than off the screen, because what is on the screen is the actor-shaped
+ * answer this rule exists to stop using. The suite pins the list against the decks `#leftDecks`
+ * actually builds, so a fifth kind cannot be added without the size following it.
+ */
+export const LEFT_DECK_KINDS = ["items", "features", "spells", "conditions"];
+
 export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
   constructor(actor, options = {}) {
@@ -523,21 +544,21 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const layer = this.#layer();
     if (!layer) return;
     /*
-     * **The corner counts whether or not this actor has one.**  **[FIXED 2026-11-23]**
+     * **Counted off what the column CAN hold, not off what this actor drew.**
+     * **[RULED 2026-11-23]**
      *
-     * A monster presses no deck -- the round deals its intent for it (core-rules 3) -- so its HUD
-     * draws no bottom-left corner, and counting the piles actually drawn made its column three
-     * rows where a character's is four. Same screen, same fight, cards half again as large: a GM
-     * selecting a goblin watched the whole left column change size, which reads as two different
-     * interfaces rather than one interface showing two actors.
+     * Two versions of this were wrong in the same way and the second looked like a fix. Counting
+     * the piles drawn made a monster's cards half again as large, because a monster presses no
+     * deck corner (core-rules 3 deals its intent for it) and so drew one row fewer. Adding the
+     * corner settled that and left the other half standing: **a caster draws a fourth deck**, so
+     * a hero with a spell and a goblin without one were still two sizes, and clicking between
+     * them still resized the whole left edge.
      *
-     * The corner's height is spoken for either way; what differs is only whether there is a deck
-     * sitting in it. So the left column is counted off the DOM -- that is where a column grows a
-     * row nobody told the arithmetic about, and the reason this method exists -- and the corner
-     * is added as the constant it genuinely is.
+     * The divisor is `LEFT_DECK_KINDS` plus the corner -- the tallest column the HUD can draw --
+     * for the reasons written over that list. It is deliberately not a measurement: measuring the
+     * screen gives the actor-shaped answer this rule exists to stop using.
      */
-    const rows = layer.querySelectorAll(".cr-hud__decks--left .cr-pile").length;
-    if (rows > 0) layer.style.setProperty("--cr-rows", String(rows + 1));
+    layer.style.setProperty("--cr-rows", String(LEFT_DECK_KINDS.length + 1));
   }
 
   /**
@@ -2202,10 +2223,23 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * not look playable. Two readers, one predicate: a face that offers what the handler will refuse
    * is the same defect as a face promising a number the resolver will not deliver.
    *
-   * Out of combat every turn is the same turn, which is deliberate and matches `dealtAt`: the hand
-   * is dealt once there too, and a scene with no initiative has no second turn to deal into.
+   * **Out of combat nothing is spent at all.**  **[RULED 2026-11-23]**
+   *
+   * It used to answer out of combat the way it answers in one, on the argument that out of combat
+   * every turn is the same turn -- which is true and is the reason this was wrong. *The same turn*
+   * never ends, so the first card played outside a fight spent its half **for good**: a hand of
+   * five became a hand of three greyed cards and two live reaction rows, and nothing would clear
+   * it until a fight started and ended.
+   *
+   * The budget is a turn's (core-rules 3): one primary and one secondary, because a turn comes
+   * round again. Outside a fight there is no turn to spend and nothing to wait for, so there is
+   * no budget to enforce -- opening a door and then opening another is two actions in a game that
+   * is not counting. `dealtAt` keeps the opposite rule for the opposite reason: a hand dealt once
+   * stays dealt because there is no second turn to deal into, which is a fact about drawing and
+   * not about spending.
    */
   #halfSpent(name) {
+    if (!game.combat?.started) return false;
     if (this.playedAt !== CardRPGTray.#turnKey(game.combat)) return false;
     /* Exhausted is one CARD per turn, not one of each half, so the first played takes both. */
     if (this.actor.system.exhausted) {
@@ -3419,10 +3453,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
      * five was five actions. Recorded per half rather than as one *played* flag, because a turn
      * that spent only its primary still has its secondary to spend.
      */
-    const turn = CardRPGTray.#turnKey(game.combat);
-    if (this.playedAt !== turn) this.spentHalves = { primary: false, secondary: false };
-    for (const { half } of this.staged) this.spentHalves[half] = true;
-    this.playedAt = turn;
+    /* And not outside a fight, where there is no turn to spend: see `#halfSpent`. Booking it
+     * anyway left a marker that only a fight could clear. */
+    if (game.combat?.started) {
+      const turn = CardRPGTray.#turnKey(game.combat);
+      if (this.playedAt !== turn) this.spentHalves = { primary: false, secondary: false };
+      for (const { half } of this.staged) this.spentHalves[half] = true;
+      this.playedAt = turn;
+    }
     /* The turn's actions are done, so the hand stops being an automatic bill against stamina. */
     await this.#disarmHand();
     this.#resetPlay();

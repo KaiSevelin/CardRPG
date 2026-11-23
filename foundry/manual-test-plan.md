@@ -655,6 +655,51 @@ hand is full, the way the action deck dims on a turn it has already dealt.
 **As a player rather than the GM**, clicking it should say *The GM says when a new scene starts*
 and deal nothing. That rule has not changed; only where the GM presses has.
 
+## 2e.1 A deck is the same size whoever you click
+
+**Do.** Give the Warrior a spell (the prepare macro in [Setting up](#setting-up)), so its left
+column holds four decks. Open its tray, then click a **Goblin**, which holds three.
+
+**Expect.** **The decks are the same size on both**, and in the same place. The goblin has no deck
+corner at the bottom left — the round deals a monster's intent for it — but the three backs it
+does have are the size the Warrior's four are.
+
+**And the hand does not change size either.** This was reported twice: the first time the monster's
+cards were bigger, the second time the caster's were smaller. Check at **1366×768**, where every
+card is at its smallest, that the names on the cards in the play stacks still fit — *Wooden
+Shield* is the one that goes first.
+
+## 2e.2 Outside a fight, nothing is spent
+
+**Do.** With **no combat running**, play a card's primary, then look at the rest of your hand.
+Play another. And another.
+
+**Expect.** **Nothing greys out.** There is no turn outside a fight, so there is no budget to
+spend: every half in the hand stays playable for as long as the scene lasts.
+
+**Before today the first card killed the hand.** Out of combat every turn is the same turn, and
+the same turn never ends — so one card left you with greyed halves and nothing but reaction rows
+until a fight started and ended. Now start a fight and check the opposite: inside one, a played
+primary and secondary **do** grey the rest until your next turn.
+
+## 2e.3 The fate card, dealt and parked
+
+**Do.** Make any check, or play a Strike. Watch the middle of the screen.
+
+**Expect.** A **fate card appears in the middle of the scene**, big enough to read, with its value
+on it — `+1`, `±0`, `Critical`. It then **shrinks and flies to just under the Fate and Discard
+piles**, at those piles' width, and sits there for about five seconds before going.
+
+**A turn that draws twice** — a primary and a secondary that both resolve — parks the first card
+and then the second **to its right**, in that order.
+
+**With advantage or disadvantage**, **two** cards are dealt side by side. The one the rule does not
+take **fades out where it is**; the one it takes flies to the pile as above. That is the only place
+in the game you can see the card you did not get, so it is worth watching twice.
+
+**A card with no picture is fine** — the text is the card. What should never happen is a blank
+card with *no text*, or a card that stays on the screen.
+
 ---
 
 # 3. What the other person sees

@@ -513,18 +513,29 @@ this screen had already been wrong for the same reason and been fixed the same w
 width and the scene controls' — and this was the third. **Anything added to either column is
 counted from now on**, which is the difference between this and the number it replaced.
 
-**The corner counts whether or not there is a deck in it.**  **[FIXED 2026-11-23]** The first
-build counted every pile on the screen, corner included, and **a monster has no corner**: the
-round deals its intent for it (core-rules §3), so §7.1's HUD draws nothing there to press. A
-goblin's column therefore came out three rows where a hero's is four, which at 2:3 is cards half
-again as large — a GM selected a goblin and the whole left edge of the screen changed size, with
-the previous window's decks still showing through the gaps (§3.11).
+### 3.9a A deck is the same size whoever is selected  **[RULED 2026-11-23]**
 
-So the **left column** is counted off the screen, because that is where a column grows a row
-nobody told the arithmetic about, and the corner's row is added as the constant it genuinely is.
-The height is spoken for either way; what differs is only whether there is a deck sitting in it,
-which is a fact about the actor and not about the layout. **The scale and the placement of the
-decks are the same for a monster as for a character**, which is the ruling.
+**The size must not be a fact about who is selected**, and twice it was. Counting every pile on
+the screen gave a **monster** bigger cards, because a monster has no deck corner — the round deals
+its intent for it (core-rules §3), so §7.1's HUD draws nothing there to press, and its column came
+out three rows where a hero's is four. Adding the corner settled that half and left the other
+standing: **a caster draws a fourth deck**, so a hero with a spell and a goblin without one were
+still two sizes, and clicking between them still resized the whole left edge. The same fault was
+reported twice, the second time after it had been fixed.
+
+No amount of counting fixes a divisor that depends on the actor. So the divisor is the **tallest
+column the HUD can draw** — Items, Features, Spells, Conditions and the corner — and every actor's
+decks are that size. A deck arriving or leaving moves nothing. It costs the three-deck case a
+little height, which is what the size meaning one thing is worth.
+
+**And a card is not a deck.**  **[FIXED 2026-11-23]** These were one number, which is how a
+question about the left column became a question about the whole interface: the hand is a single
+row along the bottom and owes the column nothing, but it was sized by dividing the window by the
+number of **decks**. Pinning the deck size for every actor therefore shrank the hand and the play
+stacks for everybody, and the harness caught it on the next run — *Wooden Shield* and *Heavy
+Swing* stopped fitting on the cards they had been played onto, which is the fault §3.5.0's own
+check was written for. Nobody asked for smaller cards. A deck's height is now its share of the
+column; a card's is a share of the window, capped.
 
 ### 3.10 A dialog about cards shows cards  **[FIXED 2026-11-22]**
 
@@ -542,6 +553,48 @@ hand's renderer is the one place that knows a harm card has no halves to print.
 **The whole card is the tick.** The checkbox is still in the form and still named for what the
 button reads; it is taken off the screen rather than out of the markup, which also leaves it
 reachable from the keyboard.
+
+### 3.10a The fate card is shown  **[BUILT 2026-11-23]**
+
+**Every action in this game is a number and a card, and only the number reached the player.** The
+draw happened, a chat line said *Strike 5 · fate +1*, and the card itself — the object the whole
+deck economy is about, the thing §3.8 turned the piles into a *place* for — was never on the
+screen. A table watching somebody swing a sword saw a sentence arrive in the log.
+
+- **Dealt in the middle of the scene**, about a third of the window tall, big enough to read
+  across a table. The name is the whole face, and on eighteen of the twenty-one it *is* the value
+  — `+1`, `±0`, `−2`. **A card with no picture is still a card**, so a missing face costs the
+  reveal nothing.
+- **Then it flies to the record.** Small, to the width of the pile it goes under, below the Fate
+  and Discard row in the right column. That is the whole reason the flight exists rather than the
+  card simply vanishing: *where did that card go* is a question about a place, and the piles were
+  made into one for exactly this (§3.8). The easing leaves quickly and settles slowly, so the eye
+  can follow it down.
+- **Left to right, in draw order.** A turn that draws twice parks the **primary**'s card first and
+  the **secondary**'s beside it, because that is the order the rules resolve the halves in and
+  therefore the order the cards come off the deck. Nothing has to be told which half it came from.
+- **Five seconds parked, then gone**, counted from the landing rather than from the deal — a timer
+  started at the deal would spend most of it on the flight. This is a reveal, not a panel; the
+  piles underneath are the permanent record.
+- **Advantage deals two and shows two.** Both face up, side by side. The one the rule passes over
+  **fades where it lies** and the one it takes flies to the pile. Those two must not look alike:
+  one is going into the record and the other is being passed over. It is also the only form in
+  which a player can check what advantage bought — *you can see the card you did not get*.
+- **Measured, not computed.** Where the pile row is depends on what is in the right column, which
+  is a fact about a turn in progress, so the landing place is read off the row itself (the same
+  reason §3.11 measures). With no pile row on the screen the card simply goes rather than flying
+  to a guessed corner.
+- **It is a picture.** Over the HUD, deaf to the mouse, no ground of its own so the scene is still
+  visible around the card. A draw is an event in the fight, not a modal over it. And it is
+  **placed before it is told to move** — the lesson of §3.9's afternoon: furniture that animates
+  the instant it is placed animates from nowhere in particular.
+
+**Every draw, on every client**, because a drawn fate card is public (§7 keeps a *hand* private and
+says counts and draws are not). It hangs off the draw rather than off the HUD for the same reason:
+a goblin's Strike draws on the GM's screen whoever is selected, and an injury draws on the
+**target**'s deck, so a reveal owned by one actor's window would appear for some draws and not
+others with no rule anybody could learn. Initiative is the one fate draw that does **not** announce
+itself; it would deal a card per combatant at a round start.
 
 ### 3.11 A spread sits beside its own deck, and more than one can be open  **[BUILT 2026-11-23]**
 

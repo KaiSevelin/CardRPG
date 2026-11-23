@@ -765,16 +765,39 @@
    * take. **Anything added to either column is counted automatically**, which is the difference
    * between this and the two constants that preceded it.
    */
-  --cr-rows: 4;
-  --cr-card-w: clamp(76px,
-    (100vh - 156px - (var(--cr-rows) - 2) * 6px - var(--cr-flip)) / var(--cr-rows)
-      * var(--cardrpg-card-ratio),
-    128px);
+  --cr-rows: 5;
+
+  /*
+   * **A DECK is as tall as its share of the column.**  **[CHANGED 2026-11-23]**
+   *
+   * The window, less the furniture, divided by the rows the column must hold. This is the half of
+   * the old arithmetic that was about the column, and it is the only half that should ever have
+   * been.
+   */
+  --cr-deck-h: clamp(96px,
+    (100vh - 156px - (var(--cr-rows) - 2) * 6px - var(--cr-flip)) / var(--cr-rows),
+    192px);
+  --cr-deck-w: calc(var(--cr-deck-h) * var(--cardrpg-card-ratio));
+
+  /*
+   * **And a CARD is not.**  **[FIXED 2026-11-23]**
+   *
+   * These two were one variable, and that is how a question about the left column became a
+   * question about the whole interface: the hand is a single row along the bottom and owes the
+   * deck column nothing, but it was sized by dividing the window by the number of DECKS. Pinning
+   * the deck size for every actor -- which is the ruling, so a monster's column and a caster's
+   * are the same size -- therefore shrank the hand and the play stacks for everybody, and the
+   * harness said so immediately: *Wooden Shield* and *Heavy Swing* stopped fitting on the cards
+   * in the stack they had been played into.
+   *
+   * Nobody asked for smaller cards. What was asked for is that a deck is a deck whoever is
+   * selected, and that is a fact about the column. So the hand is sized the way a single row
+   * should be -- a share of the window, capped -- and learning a spell no longer resizes it.
+   */
+  --cr-card-h: clamp(114px, 26vh, 192px);
   /* Derived, so the tray's cards and the card's own aspect-ratio cannot disagree. 2:3 at 128
      wide is 192 tall, which is 13px more than 5:7 was -- the whole cost of the change. */
-  --cr-card-h: calc(var(--cr-card-w) / var(--cardrpg-card-ratio));
-  --cr-deck-w: var(--cr-card-w);
-  --cr-deck-h: var(--cr-card-h);
+  --cr-card-w: calc(var(--cr-card-h) * var(--cardrpg-card-ratio));
 }
 
 .cr-hud-layer .cr-hud__panel,
@@ -1590,6 +1613,119 @@
 }
 .cr-hud-layer .cr-pile--mini .cr-pile__count .cr-icon { width: 1em; height: 1em; }
 .cr-hud-layer .cr-pile--mini .cr-pile__label { font-size: 0.56rem; }
+
+/* -------------------------------------------- */
+/*  The fate card, shown                        */
+/* -------------------------------------------- */
+
+/*
+ * **The reveal layer.**  **[BUILT 2026-11-23]**
+ *
+ * Above the HUD and deaf to the mouse: this is a picture of a card that has already been drawn,
+ * and nothing about it is a control. `inset: 0` with no background, so the scene is still visible
+ * around the card -- the draw is an event in the fight, not a modal over it.
+ *
+ * Every card inside is placed at an explicit `left`/`top` and moved with a transform, for the
+ * reason written in fateshow.mjs: a second draw arriving must not be able to shove the first out
+ * of the place it has already flown to.
+ */
+.cr-fateshow {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+}
+
+/*
+ * **One fate card.**
+ *
+ * A card with no picture is still a card, so the paper and the name carry it on their own: the
+ * name is the value on eighteen of the twenty-one, and the art rides over the paper when there is
+ * any. `background-size: cover` on a 2:3 box, which is the shape every face in this game is drawn
+ * at.
+ *
+ * **`transition` is declared on the states and not here**, because this is the furniture the
+ * `transition: 0.5s` lesson was learned on (see `.cr-hud-layer .cr-pile`): a card that animates
+ * the moment it is placed animates from wherever the browser thinks it starts, which is nowhere
+ * in particular. It is placed first, and told to move afterwards.
+ */
+.cardrpg .cr-fate {
+  position: fixed;
+  box-sizing: border-box;
+  transform-origin: top left;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0.4em;
+  border: 1px solid var(--cardrpg-ink);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  background: var(--cr-fate-art, none) center / cover no-repeat, var(--cardrpg-paper);
+  color: var(--cardrpg-ink);
+  will-change: transform, opacity;
+}
+
+/*
+ * The name, over a scrim. A white number on an unknown picture is unreadable on about half of
+ * them -- the same problem the pile backs have, solved the same way (`.cr-pile--faced`).
+ */
+.cardrpg .cr-fate__name {
+  font-size: clamp(0.9rem, 4.5vh, 2.6rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  padding: 0.12em 0.4em;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--cardrpg-paper);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+/* A swing is worth seeing coming: the two cards that reshuffle the deck wear its edge colour. */
+.cardrpg .cr-fate--crit { border-color: var(--cardrpg-group-6); border-width: 2px; }
+.cardrpg .cr-fate--miss { border-color: var(--cardrpg-harm-edge); border-width: 2px; }
+.cardrpg .cr-fate--wild { border-color: var(--cardrpg-group-5); border-width: 2px; }
+
+/*
+ * **Dealt**: it arrives rather than appearing, which is what makes it read as a draw. A short
+ * scale-up from slightly small, once, with no transition on the box afterwards.
+ */
+.cardrpg .cr-fate--dealt { animation: cr-fate-deal 260ms ease-out; }
+
+@keyframes cr-fate-deal {
+  from { opacity: 0; transform: scale(0.86); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/*
+ * **Flying**: to the pile row, shrinking to the size of the pile it is going under. The easing is
+ * the point -- it leaves quickly and settles slowly, so the eye can follow it to where it lands,
+ * which is the whole reason the flight exists instead of the card simply vanishing.
+ */
+.cardrpg .cr-fate--flying {
+  transition: transform 650ms cubic-bezier(0.33, 0.8, 0.3, 1);
+  animation: none;
+}
+
+/*
+ * **Spurned**: the card advantage did not take, fading where it lies. It does not fly and it does
+ * not shrink -- it is not going into the record, it is being passed over, and those should not
+ * look the same.
+ */
+.cardrpg .cr-fate--spurned {
+  transition: opacity 450ms ease-in, filter 450ms ease-in;
+  animation: none;
+  opacity: 0;
+  filter: grayscale(1);
+}
+
+/* Motion is a nicety and nobody should be made ill by it. The card still appears, still parks and
+   still goes; it simply does not travel to get there. */
+@media (prefers-reduced-motion: reduce) {
+  .cardrpg .cr-fate--dealt { animation: none; }
+  .cardrpg .cr-fate--flying { transition: none; }
+  .cardrpg .cr-fate--spurned { transition: none; }
+}
 
 /* -------------------------------------------- */
 /*  Played and unplayed slates                  */

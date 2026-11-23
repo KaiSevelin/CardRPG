@@ -20,6 +20,7 @@ import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
 import { registerGroundHooks, imposeGround, springTraps } from "./module/ground.mjs";
 /* The reachable squares come off the board when the board changes under them; see board.mjs. */
 import { registerBoardHooks } from "./module/board.mjs";
+import { registerFateShow } from "./module/fateshow.mjs";
 import { registerCheckHooks } from "./module/checks.mjs";
 import { registerTableBoard } from "./module/table.mjs";
 import { registerEnrichers, registerEnricherClicks } from "./module/enrichers.mjs";
@@ -97,6 +98,8 @@ Hooks.once("init", () => {
   /* And the reachable-square highlight, which clears itself whenever "from here" stops being
    * true: the figure moved, the turn changed, the scene changed. */
   registerBoardHooks();
+  /* The fate card, dealt where the table is looking and parked under the pile it went into. */
+  registerFateShow();
   /* A check's result moves a challenge track, and only the GM's client may write a scene
    * flag -- so the recording hangs off the message rather than off the roll (checks.mjs). */
   registerCheckHooks();

@@ -172,6 +172,13 @@ If one side has clearly caught the other — an ambush, a sprung trap, a charge 
 - You may play them in either order.
 - Both cards go to your **discard pile**.
 - The rest of your hand stays for reactions.
+- **Outside a fight there is no budget at all.**  **[RULED 2026-11-23]** One primary and one
+  secondary is what a **turn** buys, and it holds because a turn comes round again. With no
+  initiative order there is no turn to spend and nothing to wait for: open a door, then open
+  another. Play as many cards as the fiction wants, and the GM says when something costs
+  something. The engine enforced the pair out of combat as well, on the reading that *out there
+  every turn is the same turn* — which is true, and is exactly why it was wrong, because the same
+  turn never ends. The first card you played outside a fight spent its half for good.
 - **Two attacks in one turn are allowed** if they come from two different cards, e.g. a Strike primary plus a card with Strike on its secondary. You can never use both halves of the same card.
 
 > **Where double attacks come from.** A card with Strike on its *secondary* half is the strongest kind of card in the game: simulation showed one such card shortens fights by a full round. The rule stays open, but these cards are meant to be **earned through leveling**, not handed out in starter decks. Treat Strike-on-secondary as a reward on a Way's tree, the same way a second attack is a milestone in other games. The mechanism is now specified — it is an **action-card benefit on a Way graph node** ([leveling.md](leveling.md) §4) — and the card is written: *Off-Hand Blow*, Strike on the primary and **Strike −1** on the secondary, in the common minor-node pool any Way may draw from ([way-cards.md](way-cards.md) §3.1). The −1 is what keeps it from making a plain Strike obsolete. The starter deck keeps its one double-strike card.

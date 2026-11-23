@@ -4917,7 +4917,8 @@ const CONTENT_MODULES = fs.readdirSync(path.join(MODULE_DIR, "content"))
  * `board` for the same reason: it is nothing but geometry over `canvas.grid`, asked inside
  * functions, which is what lets the reach walk be exercised here against a stubbed grid. */
 const LOADS_ANYWHERE = ["art", "board", "checks", "config", "content", "decks", "enrichers",
-  "grants", "graph", "ground", "monsters", "resolve", "setup", "table", ...CONTENT_MODULES];
+  "fateshow", "grants", "graph", "ground", "monsters", "resolve", "setup", "table",
+  ...CONTENT_MODULES];
 /*
  * And the ones that legitimately cannot: three data models extending Foundry's own classes, three
  * applications extending ApplicationV2, and the combat document. Every one of them is a SUBCLASS
@@ -10106,6 +10107,37 @@ check("the chooser and the face ask one predicate",
   (traySource.match(/#halfSpent\(/g) ?? []).length, 3);
 check("and the chooser refuses a spent half",
   /if \(this\.#halfSpent\(half\)\) \{/.test(traySource) ? "yes" : "no", "yes");
+
+/*
+ * **And outside a fight nothing is spent at all.**  **[RULED 2026-11-23]**
+ *
+ * The budget was enforced out of combat too, on the argument that out there every turn is the same
+ * turn -- which is true, and is precisely why it was wrong. **The same turn never ends.** So the
+ * first card played outside a fight spent its half for good: a hand of five became three greyed
+ * cards and two live reaction rows, and nothing short of starting and ending a fight would clear
+ * it. Reported from the table as *using an action off combat is weird*.
+ *
+ * The two-halves economy is a TURN's (core-rules 3), and it holds because a turn comes round
+ * again. Outside a fight there is no turn to spend and nothing to wait for. `dealtAt` keeps the
+ * opposite rule for the opposite reason -- a hand dealt once stays dealt, because there is no
+ * second turn to deal INTO -- and the two are not in tension: one is about drawing and one is
+ * about spending.
+ */
+const spentBody = bodyOf(traySource, "  #halfSpent(name) {");
+check("nothing is spent outside a fight",
+  /if \(!game\.combat\?\.started\) return false;/.test(spentBody) ? "yes" : "no", "yes");
+/* Asked before the turn key, because out of combat the key is a constant and comparing it is the
+ * thing that made the marker permanent. */
+check("and it is asked before the turn is",
+  spentBody.indexOf("!game.combat?.started") < spentBody.indexOf("this.playedAt !== ")
+    ? "before" : "after", "before");
+/* And nothing is booked out there either: a marker only a fight can clear is a marker that outlives
+ * every scene it was written in. */
+check("and a play outside a fight books nothing",
+  /if \(game\.combat\?\.started\) \{\s*\n\s*const turn = CardRPGTray\.#turnKey\(game\.combat\);/
+    .test(playBody) ? "yes" : "no", "yes");
+check("core-rules still says the budget is a turn's",
+  /A turn is a primary and a secondary/.test(coreRules) ? "yes" : "no", "yes");
 /*
  * **And the breath's refusals no longer describe the retired rule.** Three strings promised cards
  * out of the discard -- the tray's warning, the Breath tooltip and the discard pile's tip -- and a
@@ -13192,8 +13224,14 @@ check("and the art stops at it",
  */
 check("the card ratio is stated once",
   (css.match(/--cardrpg-card-ratio: [\d.]+;/g) ?? []).length, 1);
-check("and the tray's height is derived from it",
-  /--cr-card-h: calc\(var\(--cr-card-w\) \/ var\(--cardrpg-card-ratio\)\);/.test(css)
+/* Both ways round, because the two sizes are derived from opposite ends now: a card is given a
+ * height and takes its width from the ratio; a deck is given a height by the column and does the
+ * same. Either one written with a second number is the drift this ratio exists to stop. */
+check("and the tray's card width is derived from it",
+  /--cr-card-w: calc\(var\(--cr-card-h\) \* var\(--cardrpg-card-ratio\)\);/.test(css)
+    ? "yes" : "no", "yes");
+check("and a deck's width too",
+  /--cr-deck-w: calc\(var\(--cr-deck-h\) \* var\(--cardrpg-card-ratio\)\);/.test(css)
     ? "yes" : "no", "yes");
 /* It also scales a card turned sideways, so a rotated card still fits the slot it came from. */
 check("a sideways card is scaled by the same number",
@@ -17506,30 +17544,72 @@ check("and both edges are re-measured together",
  * way. This is the third, and the last one that was a number somebody typed.
  */
 check("the row count is a variable",
-  /--cr-rows: 4;/.test(css) ? "yes" : "no", "yes");
-check("and the card size is divided by it rather than by a literal",
-  /\/ var\(--cr-rows\)/.test(css) ? "yes" : "no", "yes");
+  /--cr-rows: 5;/.test(css) ? "yes" : "no", "yes");
+check("and the deck size is divided by it rather than by a literal",
+  /\/ var\(--cr-rows\),/.test(css) ? "yes" : "no", "yes");
+/*
+ * **And a CARD is not divided by it at all.**  **[FIXED 2026-11-23]**
+ *
+ * The two were one variable, which is how a question about the left column became a question
+ * about the whole interface: the hand is one row along the bottom and owes the deck column
+ * nothing, but it was sized by dividing the window by the number of DECKS. So pinning the deck
+ * size for every actor -- the ruling, so that a monster's column and a caster's are alike --
+ * shrank the hand and the play stacks for everybody, and the harness said so on the next run:
+ * *Wooden Shield* and *Heavy Swing* stopped fitting on the cards they had been played onto.
+ *
+ * Nobody asked for smaller cards. What was asked for is that a deck is a deck whoever is
+ * selected, which is a fact about the column and now lives only there.
+ */
+const cardSize = (css.match(/--cr-card-h: [^;]+;/) ?? [""])[0];
+check("a card's size is not a function of the deck count",
+  /--cr-rows/.test(cardSize) ? "no" : "yes", "yes");
+check("and is a share of the window, capped",
+  /--cr-card-h: clamp\(114px, 26vh, 192px\);/.test(css) ? "yes" : "no", "yes");
 check("and the gaps inside the column scale with it too",
   /\(var\(--cr-rows\) - 2\) \* 6px/.test(css) ? "yes" : "no", "yes");
 check("the tray counts the piles it drew",
   /#fitRows\(\) \{/.test(traySource) ? "yes" : "no", "yes");
 /*
- * Counted off the DOM rather than from the context, and the selector is the claim: the LEFT
- * column is where a column grows a row nobody told the arithmetic about, so a pile added there is
- * counted, and the piles under the play area -- which take none of this height -- are not.
+ * **And it is counted off what the column CAN hold, not off what this actor drew.**
+ * **[RULED 2026-11-23]**
  *
- * **The corner is added rather than counted.**  **[FIXED 2026-11-23]** It used to be counted with
- * the rest, and a monster has no corner: the round deals its intent for it (core-rules 3), so its
- * HUD draws no deck to press and its column came out three rows where a character's is four.
- * Same screen, same fight, cards half again as large. The height is spoken for either way; what
- * differs is only whether there is a deck sitting in it, which is not a fact about the layout.
+ * Three versions of this, and the first two were wrong the same way. The number was typed in as
+ * four. Then it counted the piles actually drawn, which made a MONSTER's cards half again as
+ * large -- a monster presses no deck corner, because the round deals its intent for it
+ * (core-rules 3), so it drew one row fewer. Adding the corner settled that half and left the
+ * other standing: **a caster draws a fourth deck**, so a hero with a spell and a goblin without
+ * one were still two sizes, and clicking between them still resized the whole left edge. The same
+ * fault was reported twice, the second time after it had been "fixed".
+ *
+ * A size that depends on who is selected is the fault, and no amount of counting fixes that. The
+ * divisor is the **tallest column the HUD can draw** -- the four deck kinds and the corner -- so
+ * every actor's cards are that size and a deck arriving or leaving moves nothing. It costs the
+ * three-deck case a little height, which is what the size meaning one thing is worth.
+ *
+ * Deliberately NOT a measurement: measuring the screen gives back the actor-shaped answer this
+ * rule exists to stop using. What replaces the DOM as the guard against a fifth deck arriving
+ * unnoticed is the pin below, which holds the list against the decks the window really builds.
  */
-check("and it counts the column that grows",
-  /querySelectorAll\("\.cr-hud__decks--left \.cr-pile"\)\.length/.test(traySource) ? "yes" : "no",
+check("the row count is the tallest column the HUD can draw",
+  /String\(LEFT_DECK_KINDS\.length \+ 1\)/.test(traySource) ? "yes" : "no", "yes");
+check("and it is no longer measured off the screen",
+  /querySelectorAll\("\.cr-hud__decks--left \.cr-pile"\)\.length/.test(traySource) ? "no" : "yes",
   "yes");
-check("and the corner's row is counted whether or not it is drawn",
-  /layer\.style\.setProperty\("--cr-rows", String\(rows \+ 1\)\);/.test(traySource) ? "yes" : "no",
-  "yes");
+/*
+ * **The list against the column it is a list of.** `#leftDecks` builds its four entries by hand
+ * -- each has its own label, count and tooltip -- so the constant cannot be derived from it, and a
+ * fifth deck added to the builder without the constant would be a fifth row in a space measured
+ * for four. That is the exact fault of 2026-11-22, which is why it is pinned rather than trusted.
+ */
+check("and the list is the decks the column really builds",
+  (() => {
+    const body = bodyOf(traySource, "  #leftDecks() {");
+    const built = [...body.matchAll(/^\s*id: "(\w+)",/gm)].map(m => m[1]).sort().join(",");
+    const named = (traySource.match(/export const LEFT_DECK_KINDS = \[([^\]]*)\]/) ?? [])[1] ?? "";
+    const kinds = [...named.matchAll(/"(\w+)"/g)].map(m => m[1]).sort().join(",");
+    return `${built} :: ${kinds}`;
+  })(),
+  "conditions,features,items,spells :: conditions,features,items,spells");
 /* Which is the half that has to stay true for the fix to mean anything: a monster still draws no
  * corner, and that is why the row has to be added rather than seen. */
 check("and a monster still has no deck to press",
@@ -17759,9 +17839,22 @@ check("and the GM is still the one who says when a scene starts",
 
 /* And the spec argues all five, because the ones that reverse an earlier ruling are only
  * defensible next to the argument they are reversing. */
-check("hud-spec records that the corner's row is counted either way",
-  /\*\*The corner counts whether or not there is a deck in it\.\*\*/.test(hudSpec) ? "yes" : "no",
-  "yes");
+check("hud-spec records that a deck is one size for everybody",
+  /^### 3\.9a A deck is the same size whoever is selected/m.test(hudSpec) ? "yes" : "no", "yes");
+/* And the half that was learned by breaking it: the hand is not the deck column, and sizing them
+ * together is how a ruling about one became a regression in the other. */
+check("and that a card is not a deck",
+  /\*\*And a card is not a deck\.\*\*/.test(hudSpec) ? "yes" : "no", "yes");
+check("and core-rules says the budget is a fight's",
+  /\*\*Outside a fight there is no budget at all\.\*\*/.test(coreRules) ? "yes" : "no", "yes");
+check("hud-spec records the fate reveal",
+  /^### 3\.10a The fate card is shown/m.test(hudSpec) ? "yes" : "no", "yes");
+/* The two halves of it a reader has to be able to find: where the card goes, and what advantage
+ * shows you. Both are rulings rather than mechanics, so both are argued there. */
+check("and that it lands on the pile it went under",
+  /\*\*Then it flies to the record\.\*\*/.test(hudSpec) ? "yes" : "no", "yes");
+check("and what advantage lets you see",
+  /\*\*Advantage deals two and shows two\.\*\*/.test(hudSpec) ? "yes" : "no", "yes");
 check("hud-spec records that the Items deck is what is equipped",
   /^### 3\.8a The Items deck is what you have equipped/m.test(hudSpec) ? "yes" : "no", "yes");
 check("hud-spec records where a spread goes, and how many there can be",
@@ -19299,6 +19392,140 @@ check("and neither draws fate at random any more",
   [["the fate deck", fateSource], ["initiative", combatSource]]
     .filter(([, src]) => /moveRandom\(deck, discard, need\)/.test(src))
     .map(([what]) => what).join(", ") || "none", "none");
+section("The fate card, shown");
+
+/*
+ * **Every action is a number and a card, and only the number reached the player.**
+ * **[BUILT 2026-11-23]**
+ *
+ * The draw happened, the chat line said *Strike 5 \u00b7 fate +1*, and the card -- the object the
+ * whole deck economy is about, the thing hud-spec 3.8 turned the piles into a PLACE for -- was
+ * never on the screen. A table watching somebody swing a sword saw a sentence arrive in the log.
+ *
+ * Dealt in the middle of the scene, then flown small to under the pile it went into, five seconds
+ * there and gone. The piles beneath it are the permanent record; this is the moment.
+ */
+const fateShowSource = fs.readFileSync(path.join(root, "module/fateshow.mjs"), "utf8");
+check("the draw announces itself",
+  /Hooks\.callAll\("cardrpgFateDrawn", \{ actor, drawn, used, mode \}\);/.test(fateSource)
+    ? "yes" : "no", "yes");
+/*
+ * **Before the tidying, not after.** A Blessed or Cursed card is DELETED the moment it is drawn
+ * (core-rules 6), a few lines below the announcement -- so a listener reading the documents later
+ * would find the one card the table most wants to see already gone.
+ */
+const drawBody = bodyOf(fateSource, "export async function drawFate(actor, value, mode = 0) {");
+check("and before the temporary cards are destroyed",
+  drawBody.indexOf('Hooks.callAll("cardrpgFateDrawn"') < drawBody.indexOf("await card.delete();")
+    ? "yes" : "no", "yes");
+/* One door, five callers, every one of them an action somebody performed -- which is what lets the
+ * reveal be unconditional. Initiative draws its own fate and deliberately does NOT announce one,
+ * or a round start would deal eight of these at once. */
+check("and initiative stays out of it",
+  /cardrpgFateDrawn/.test(combatSource) ? "no" : "yes", "yes");
+check("the reveal listens for the draw",
+  /Hooks\.on\("cardrpgFateDrawn", data =>/.test(fateShowSource) ? "yes" : "no", "yes");
+check("and is wired up at init",
+  /registerFateShow\(\);/.test(entrySource) ? "yes" : "no", "yes");
+/* A reveal that throws must never take the action down with it: the draw has already happened and
+ * the number is already real. */
+check("and a reveal that fails costs the action nothing",
+  /console\.error\("cardrpg \| the fate reveal failed", err\);/.test(fateShowSource)
+    ? "yes" : "no", "yes");
+
+/*
+ * **Where it goes**, which is the half that makes it a record rather than a flash: under the pile
+ * row, at the pile's own size, in draw order -- so a turn that draws twice reads left to right,
+ * primary then secondary, because that is the order the rules resolve them in and therefore the
+ * order they are drawn in. Nothing has to be told which half it came from.
+ */
+const parkBody = bodyOf(fateShowSource, "function parkPlace(slot) {");
+check("a parked card is measured off the pile row",
+  /const piles = document\.querySelector\("\.cr-hud__piles"\);/.test(parkBody) ? "yes" : "no",
+  "yes");
+check("and takes that pile's own width",
+  /width: pile\.width/.test(parkBody) ? "yes" : "no", "yes");
+check("and sits under the row rather than in it",
+  /top: row\.bottom \+ PARK_GAP/.test(parkBody) ? "yes" : "no", "yes");
+check("and the second draw of a turn parks beside the first",
+  /left: row\.left \+ slot \* \(pile\.width \+ PARK_GAP\)/.test(parkBody) ? "yes" : "no", "yes");
+/* No pile row on the screen is no answer. The card goes rather than flying to a guessed corner,
+ * and nothing is left behind for a player to wonder about. */
+check("and a card with nowhere to park simply goes",
+  /if \(!piles \|\| !one\) return null;/.test(parkBody) ? "yes" : "no", "yes");
+/* Five seconds PARKED, not five from the deal: the point of the pause is that the card can be
+ * found under the pile it went into, and a timer started at the deal spends most of it flying. */
+check("and it is shown for five seconds after it lands",
+  /parked: 5000/.test(fateShowSource) ? "yes" : "no", "yes");
+check("counted from the landing",
+  /TIMING\.fly \+ TIMING\.parked/.test(fateShowSource) ? "yes" : "no", "yes");
+
+/*
+ * **Advantage deals two and shows two**, which is the only form in which a player can check what
+ * advantage bought: *you can see the card you did not get*. The one the rule passes over fades
+ * where it lies rather than flying -- it is not going into the record, and those two things should
+ * not look the same.
+ */
+check("a pair is dealt side by side",
+  /const span = pair \? 2 \* width \+ GAP : width;/.test(fateShowSource) ? "yes" : "no", "yes");
+/* Scoped to the loop that does it: the same class is also used by the card with nowhere to park,
+ * and a grep two places answer cannot say which one broke. */
+const spurnBody = bodyOf(fateShowSource, "  for (const { node, keep } of nodes) {");
+check("and the card the rule passed over fades where it lies",
+  /node\.classList\.add\("cr-fate--spurned"\);/.test(spurnBody) ? "yes" : "no", "yes");
+/* And is passed over rather than never drawn, which is the distinction the fade is making: it is
+ * the kept card that is tested for, so a change of mind about which wins cannot leave two. */
+check("and it is the one the rule did not take",
+  /if \(keep\) continue;/.test(spurnBody) ? "yes" : "no", "yes");
+check("and a comparison is held longer than a number",
+  /const hold = pair \? TIMING\.holdPair : TIMING\.hold;/.test(fateShowSource) ? "yes" : "no",
+  "yes");
+check("and it is the kept card that flies",
+  /const winner = nodes\.find\(n => n\.keep\) \?\? nodes\[0\];/.test(fateShowSource) ? "yes" : "no",
+  "yes");
+
+/*
+ * **A card with no picture is still a card.** The name is the value on eighteen of the twenty-one
+ * faces -- `+1`, `\u00b10`, `\u22122` -- and the other three say Miss, Critical and Wild, so the text
+ * alone carries the reveal and a missing face costs it nothing. The table asked for exactly this:
+ * *blank cards with text is ok*.
+ */
+const faceBody = bodyOf(fateShowSource, "function faceOf(card) {");
+check("the face falls back to the name alone",
+  /label\.textContent = name;/.test(faceBody) ? "yes" : "no", "yes");
+check("and the art is only worn when there is some",
+  /if \(art\) \{/.test(faceBody) ? "yes" : "no", "yes");
+/* A card name is data: a face called `<img onerror=...>` would otherwise be markup. */
+check("and a card name is never markup",
+  /innerHTML/.test(fateShowSource) ? "no" : "yes", "yes");
+
+/*
+ * **The layer is a picture and nothing else**: over the HUD, deaf to the mouse, and with no ground
+ * of its own so the scene is still visible around the card. A draw is an event in the fight rather
+ * than a modal over it.
+ */
+const showRule = bodyOf(css, ".cr-fateshow {");
+check("the reveal sits over the HUD",
+  /z-index: 70;/.test(showRule) ? "yes" : "no", "yes");
+check("and ignores the mouse",
+  /pointer-events: none;/.test(showRule) ? "yes" : "no", "yes");
+/*
+ * **And it is placed before it is told to move.** This is the furniture the `transition: 0.5s`
+ * afternoon was spent on (3.9, and `.cr-hud-layer .cr-pile`): a card that animates the moment it
+ * is placed animates from wherever the browser thinks it starts. The transition is on the flying
+ * state, not on the card.
+ */
+const fateRule = bodyOf(css, ".cardrpg .cr-fate {");
+check("a fate card does not animate the moment it is placed",
+  /transition:/.test(fateRule) ? "no" : "yes", "yes");
+check("and the flight is what carries the transition",
+  /transition: transform 650ms/.test(css) ? "yes" : "no", "yes");
+/* Motion is a nicety and nobody should be made ill by it. The card still appears, parks and goes;
+ * it simply does not travel to get there. */
+check("and somebody who asked for less motion gets less",
+  /@media \(prefers-reduced-motion: reduce\)[\s\S]{0,200}cr-fate--flying \{ transition: none; \}/
+    .test(css) ? "yes" : "no", "yes");
+
 /*
  * **The same odds, which is what made it safe to change under every draw in the game.** A shuffled
  * deck's top card is a random card, so this is the identical distribution with an order attached --
@@ -20764,7 +20991,11 @@ readFiles.set("decksSource", decksSource);
  * both directions because CC BY 3.0 is the reason it ships. */
 /* 83 since 2026-11-22: `decks/fate.mjs`, which holds the fate draw -- the one file carrying the
  * difference between a deck that has an order and a deck that has not. */
-check("files this suite greps by name", readFiles.size, 83);
+/* 84 since 2026-11-23: `fateshow.mjs`, which puts the drawn card on the screen. It is the first
+ * module in this system whose entire job is a picture, so it is also the first whose checks are
+ * all about WHERE something is -- and the one place a span could lie about that is the stylesheet
+ * it shares with the HUD. */
+check("files this suite greps by name", readFiles.size, 84);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -20918,6 +21149,7 @@ check("greps a second printer could answer",
  */
 const absentGreps = [
   String.raw`a pile is never given one :: "pile",[^)]*backOf\(`,
+  String.raw`and a card name is never markup :: innerHTML`,
   String.raw`and breadth-first is gone from the picker :: breadthfirst`,
   String.raw`and core content is never written to :: NODES\.(push|splice|length =)`,
   String.raw`and down is not computed from the updated document :: down: taker\.system\.health\.value - dealt`,
@@ -20927,6 +21159,8 @@ const absentGreps = [
    * resolver is a fourth one to drift. */
   /* One dialog asks for the cards a Strain costs, and the tray's copy went with it: a spell
    * pays the same cards a card half does, and two copies would be two sets of rules. */
+  String.raw`and initiative stays out of it :: cardrpgFateDrawn`,
+  String.raw`and it is no longer measured off the screen :: querySelectorAll\("\.cr-hud__decks--left \.cr-pile"\)\.length`,
   String.raw`and it no longer counts the payable cards itself :: const payable = \(hand\?\.cards\.contents \?\? \[\]\)`,
   String.raw`and it reads the rule rather than naming the timings :: case "(outOfCombat|beforeFight)"`,
   String.raw`and its rule went with it :: cr-edge__note`,

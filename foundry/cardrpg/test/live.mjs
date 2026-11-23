@@ -300,6 +300,28 @@ async function arm(page) {
      * the FIRST condition card is the Dazed it just applied -- failed on a picture it was right
      * about. A probe that leaves a stack standing is a probe that edits its neighbours.
      */
+    /*
+     * **Wait until something is on the screen.**  [BUILT 2026-11-23]
+     *
+     * The companion to `await tray.render()`, which resolves when the application has handed its
+     * element over rather than when the browser has drawn it. Probes that render and then read
+     * the DOM in the same breath are asking a question of a screen that may not exist yet, and
+     * two of them had been failing on alternate runs for a week because of it.
+     *
+     * It polls a condition rather than counting frames, because a count is only ever right until
+     * the machine is busier: two frames was enough until it was not. Returns whether it ever came
+     * true, so a caller can tell *not drawn* from *drawn and wrong* -- and the condition must be
+     * about the panel EXISTING, never about the answer being the expected one, or the probe waits
+     * for the result it wants.
+     */
+    globalThis.LIVE.drawn = async (ready, tries = 60) => {
+      for (let i = 0; i < tries; i++) {
+        if (ready()) return true;
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      }
+      return false;
+    };
+
     globalThis.LIVE.unstage = async () => {
       const tray = game.cardrpg.openTray(globalThis.LIVE.hero);
       tray.staged = [];
@@ -595,9 +617,36 @@ async function probes(page) {
    */
   await probe("a spent turn leaves only the reaction", async () => {
     await settle(page);
+    /*
+     * **In a fight, because outside one there is no turn to spend.**  [FIXED 2026-11-23]
+     *
+     * This probe used to book a spent turn out of combat and assert the hand went dead, and the
+     * convenience was written down as one: *these probes run out of combat, where the turn key is
+     * the constant the tray compares against*. That constant is exactly what made a card played
+     * outside a fight spend its half for ever, which is now ruled against -- so the shortcut was
+     * testing the fault rather than the rule.
+     *
+     * The budget is a turn's and a turn is a thing a fight has, so the fight is set up here and
+     * taken down at the end.
+     */
+    await page.evaluate(async () => {
+      const { hero } = LIVE;
+      for (const c of [...(game.combats ?? [])]) await c.delete();
+      const token = (await hero.getTokenDocument({ x: 1500, y: 1500, actorLink: true }))
+        .toObject();
+      const [placed] = await canvas.scene.createEmbeddedDocuments("Token", [token]);
+      globalThis.LIVE.spentToken = placed.id;
+      const combat = await Combat.create({ scene: canvas.scene.id });
+      await combat.createEmbeddedDocuments("Combatant",
+        [{ tokenId: placed.id, sceneId: canvas.scene.id, actorId: hero.id }]);
+      await combat.startCombat();
+      await new Promise(r => setTimeout(r, 1200));
+    });
     await page.evaluate(async () => {
       const tray = game.cardrpg.openTray(LIVE.hero);
       tray.side = "action";
+      tray.playedAt = null;
+      tray.spentHalves = { primary: false, secondary: false };
       await tray.render();
     });
     await page.waitForSelector(".cr-card .cr-half--reaction", { timeout: 20000 });
@@ -607,12 +656,14 @@ async function probes(page) {
     const openHalves = await playable();
     const openSwitches = await switches();
 
-    /* Booked directly rather than by playing a turn: these probes run out of combat, where the
-     * turn key is the constant the tray compares against, and what is under test here is what a
-     * booked turn DOES -- the booking itself is pinned on the order of two lines offline. */
+    /* Booked directly rather than by playing a turn: what is under test here is what a booked
+     * turn DOES, and the booking itself is pinned on the order of two lines offline. The key comes
+     * from `turnKey` rather than being spelled here, which is the whole reason that function was
+     * exported -- two files cannot disagree about what a turn is called. */
     await page.evaluate(async () => {
+      const { turnKey } = await import("/systems/cardrpg/module/combat.mjs");
       const tray = game.cardrpg.openTray(LIVE.hero);
-      tray.playedAt = "no-combat";
+      tray.playedAt = turnKey(game.combat.round, game.combat.turn);
       tray.spentHalves = { primary: true, secondary: true };
       await tray.render();
     });
@@ -632,6 +683,26 @@ async function probes(page) {
       { timeout: 10000 }).catch(() => {});
     const upAfter = await page.evaluate(() => LIVE.uprightCards(LIVE.hero).length);
 
+    /*
+     * **And the fight comes down, with the hand put back by hand.**  [2026-11-23]
+     *
+     * `deleteCombat` runs `afterCombat`, which walks every pile putting the hand away, and nothing
+     * awaits it -- so the probe after this one was handed a hand that was still being emptied and
+     * reported *nothing in hand*, which is a true statement about a hand mid-move. `settle` has a
+     * quiet-wait at its head for exactly this and it is not enough on its own here, because the
+     * delete and the wait are in two different evaluates.
+     *
+     * Both halves awaited in the same breath as the delete, so there is nothing left in flight to
+     * land afterwards: this is the same pair `settle` runs, run where the fight ends.
+     */
+    await page.evaluate(async () => {
+      for (const c of [...(game.combats ?? [])]) await c.delete();
+      await new Promise(r => setTimeout(r, 1200));
+      await LIVE.afterCombat(LIVE.hero);
+      await LIVE.refill(LIVE.hero);
+      const token = canvas.scene.tokens.get(globalThis.LIVE.spentToken);
+      if (token) await token.delete();
+    });
     await settle(page);
     await page.evaluate(async () => {
       /* settle restores state; the screen still shows what the spent turn drew. */
@@ -1532,22 +1603,25 @@ async function probes(page) {
         tray.staged = order;
         await tray.render();
         /*
-         * **And the frame that draws it.**  [FIXED 2026-11-23]
+         * **And then wait until the panel has actually been drawn.**  [FIXED 2026-11-23]
          *
          * `await tray.render()` resolves when the application has handed its element over, which
-         * is not the instant the browser has laid it out. Reading the DOM on the next line asks
-         * a question of a screen that may not have been drawn, and it fails the way a race fails
-         * -- rarely, on alternate runs, reading as though the feature were broken. This read
-         * reported `nowhere` for a stack it had just staged, and the one below it `NaN` for a
-         * number the card prints.
+         * is not the instant the browser has laid it out -- and the read on the next line asks a
+         * question of a screen that may not exist yet. It fails the way a race fails: rarely, on
+         * alternate runs, and reading as though the feature were broken. This read reported
+         * `nowhere` for a stack it had just staged, and the one further down `NaN` for a number
+         * the card prints.
          *
          * Confirmed against the shipped build before any of this session's work was in the tree:
-         * the same two checks, on the same alternate runs. It is the probe that was wrong.
+         * the same two checks, on the same alternate runs. It is the probe that is wrong.
          *
-         * Two frames, because one is not enough: the first callback runs *before* the paint that
-         * follows it, so a read inside it can still beat the layout.
+         * **A fixed number of frames is the wrong wait** -- it was two, and two was enough until
+         * it was not. What this needs is the condition itself: a stack panel with cards in it. The
+         * poll is for cards being there at all, NOT for Strong being in the half the check wants,
+         * so a feature in the wrong half still reports the wrong half rather than waiting for the
+         * right one.
          */
-        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+        await LIVE.drawn(() => document.querySelector(".cr-stack[data-half] .cr-card__title"));
         /* `data-half` rather than a class: the template writes the half as an attribute, and
          * sniffing it out of `className` found "secondary" nowhere and reported "primary" for
          * both. */
@@ -1601,8 +1675,11 @@ async function probes(page) {
         { cardId: second.id, half: "secondary" }
       ];
       await tray.render();
-      /* And the frame that draws it, for the reason written over the same wait above. */
-      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      /* And then wait until it is on the screen, for the reason written over the same wait in the
+       * probe above. The condition is the primary stack having cards -- which is the half both of
+       * the rows below read -- rather than a count of frames. */
+      await LIVE.drawn(
+        () => document.querySelector('.cr-stack[data-half="primary"] .cr-card__title'));
       /* Per half: the weapons drawn into it, and the Strike number its card prints. */
       const read = which => {
         const box = document.querySelector(`.cr-stack[data-half="${which}"]`);
@@ -5360,6 +5437,24 @@ async function probes(page) {
    */
   await probe("a monster's decks are a character's size", async () => {
     await settle(page);
+    /*
+     * **With a spell on the hero**, which is the case that was reported second.  [2026-11-23]
+     *
+     * The first version of this probe compared a three-deck hero with a three-deck goblin and
+     * passed, while the fault it was meant to cover was still on the screen: a CASTER draws a
+     * fourth deck, so the hero in the screenshot had four and the goblin three, and the sizes
+     * went on disagreeing. A parity check between two columns of the same height is not one.
+     */
+    await page.evaluate(async () => {
+      const { hero } = LIVE;
+      if (!hero.items.some(i => i.type === "spell")) {
+        await hero.createEmbeddedDocuments("Item", [{
+          name: "Probe Cantrip", type: "spell", system: { prepared: true, strength: 1 }
+        }]);
+      }
+      await game.cardrpg.openTray(hero).render();
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    });
     const hero = await page.evaluate(() => {
       const piles = [...document.querySelectorAll(".cr-hud__decks--left .cr-pile")];
       const layer = document.querySelector(".cr-hud-layer");
@@ -5396,23 +5491,221 @@ async function probes(page) {
       game.cardrpg.openTray(LIVE.hero);
     });
     await page.waitForTimeout(400);
+    await page.evaluate(async () => {
+      const spell = LIVE.hero.items.find(i => i.name === "Probe Cantrip");
+      if (spell) await spell.delete();
+      await game.cardrpg.openTray(LIVE.hero).render();
+    });
     return [
       ["a character's decks have a width", hero.width > 0, true],
       ["and the monster's are the same width", beast.width, hero.width],
-      /* The mechanism, so a pass by coincidence is distinguishable from a pass. */
       ["both columns are counted the same way", beast.var, hero.var],
       /*
-       * And counted the right way, which is the fix itself: the piles DRAWN down the left plus
-       * the corner, whether or not this actor has a deck to put in it. Asserted against each
-       * column's own pile count rather than against the other's, so a caster growing a fourth
-       * deck moves both sides of the claim and neither of these two rows.
+       * **And the columns really were different heights**, or the two rows above are a parity
+       * check between two identical things. The caster draws four decks and the goblin three:
+       * that is the case the table reported, and the size has to survive it.
        */
-      ["a character's rows are its piles plus the corner", hero.var, String(hero.rows + 1)],
-      ["and a monster's are too, although it draws no corner", beast.var,
-        String(beast.rows + 1)],
+      ["the caster's column is the taller of the two", hero.rows > beast.rows, true],
+      /* The divisor is the tallest column the HUD can draw -- four kinds and the corner -- so it
+       * is the same number on both, and on an actor with any number of decks. */
+      ["and the size is still computed for five rows", hero.var, "5"],
       /* The thing the GM actually saw: two HUDs on the screen at once. */
       ["and only one HUD is on the screen", beast.layers, 1],
       ["and a monster still has no deck corner to press", beast.corner, 0]
+    ];
+  });
+
+  /*
+   * **Outside a fight there is no turn to spend.**  **[RULED 2026-11-23]**
+   *
+   * The two-halves budget was enforced out of combat too, where *every turn is the same turn* --
+   * and the same turn never ends, so the first card played outside a fight greyed its half for
+   * good. A hand of five became three dead cards and two live reaction rows, with nothing short
+   * of a fight starting and ending to clear it.
+   *
+   * Played rather than asserted: the fault was in what the hand looked like AFTERWARDS, so the
+   * probe has to play something and then look at the hand.
+   */
+  await probe("a card played outside a fight spends no turn", async () => {
+    await settle(page);
+    await page.evaluate(async () => {
+      /* No combat at all, which is the state this is about -- and the hand put back in the same
+       * breath, for the reason written where the spent-turn probe ends its fight. */
+      for (const c of [...(game.combats ?? [])]) await c.delete();
+      await new Promise(r => setTimeout(r, 1200));
+      await LIVE.afterCombat(LIVE.hero);
+      await LIVE.refill(LIVE.hero);
+    });
+    const before = await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      tray.playedAt = null;
+      tray.spentHalves = { primary: false, secondary: false };
+      await tray.render();
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      return {
+        fighting: !!game.combat?.started,
+        offered: document.querySelectorAll(".cr-hud__hand [data-action=stage]").length,
+        struck: document.querySelectorAll(".cr-hud__hand .cr-half--blocked").length
+      };
+    });
+    /* Book both halves the way a Play does, and then ask the hand what it thinks. */
+    const after = await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.playedAt = "no-combat";
+      tray.spentHalves = { primary: true, secondary: true };
+      await tray.render();
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      return {
+        offered: document.querySelectorAll(".cr-hud__hand [data-action=stage]").length,
+        struck: document.querySelectorAll(".cr-hud__hand .cr-half--blocked").length
+      };
+    });
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.playedAt = null;
+      tray.spentHalves = { primary: false, secondary: false };
+      await tray.render();
+    });
+    return [
+      ["there is no fight running", before.fighting, false],
+      ["the hand offers halves to stage", before.offered > 0, true],
+      /* The claim: a spent marker outside a fight changes nothing, because there is no turn for
+       * it to be about. */
+      ["and a spent turn outside one takes none of them away", after.offered, before.offered],
+      /* Measured against the hand as it was, not against nought: a condition can grey a half
+       * for reasons that have nothing to do with a turn, and this probe is not about those. */
+      ["and greys nothing it was not already greying", after.struck, before.struck]
+    ];
+  });
+
+  /*
+   * **The fate card is shown.**  **[BUILT 2026-11-23]**
+   *
+   * Every action is a number and a card, and only the number used to reach the player: the draw
+   * happened, a chat line said *fate +1*, and the card itself was never on the screen.
+   *
+   * Three things are checked and the middle one is the point. That a card appears is easy. That it
+   * **lands under the pile it went into, at that pile's width** is the reason the flight exists
+   * rather than the card simply vanishing -- hud-spec 3.8 made the piles a place so the answer to
+   * *where did that card go* could be a place, and this is the card going there.
+   */
+  await probe("the fate card, dealt and parked", async () => {
+    await settle(page);
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      tray.openPiles.clear();
+      await tray.render();
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      /* Not awaited: the reveal is what this probe watches, and awaiting the draw would let the
+       * whole of it happen before the first look. */
+      LIVE.drawFate(LIVE.hero, 3, 0);
+    });
+    await page.waitForSelector("#cr-fateshow .cr-fate", { timeout: 10000 });
+    const dealt = await page.evaluate(() => {
+      const card = document.querySelector("#cr-fateshow .cr-fate");
+      const r = card.getBoundingClientRect();
+      return {
+        cards: document.querySelectorAll("#cr-fateshow .cr-fate").length,
+        /* In the middle of the window, within a card's width of centre on both axes. */
+        centred: Math.abs((r.left + r.right) / 2 - window.innerWidth / 2) < r.width
+          && Math.abs((r.top + r.bottom) / 2 - window.innerHeight / 2) < r.height,
+        /* Big enough to read, which is the whole reason it is dealt in the middle first. */
+        tall: Math.round(r.height) > Math.round(window.innerHeight * 0.25),
+        named: (card.querySelector(".cr-fate__name")?.textContent ?? "").trim().length > 0,
+        clickable: getComputedStyle(document.getElementById("cr-fateshow")).pointerEvents
+      };
+    });
+    /* Long enough for the hold and the flight, and well short of the five seconds parked. */
+    await page.waitForTimeout(2200);
+    const landed = await page.evaluate(() => {
+      const card = document.querySelector("#cr-fateshow .cr-fate");
+      const pile = document.querySelector(".cr-hud__piles .cr-pile");
+      const piles = document.querySelector(".cr-hud__piles");
+      if (!card || !pile || !piles) return { gone: !card };
+      const r = card.getBoundingClientRect();
+      const p = pile.getBoundingClientRect();
+      const row = piles.getBoundingClientRect();
+      return {
+        gone: false,
+        /* The pile's own width, which is what "the same size as the fate deck" means. */
+        width: Math.abs(r.width - p.width) <= 2,
+        under: r.top >= row.bottom - 1,
+        aligned: Math.abs(r.left - row.left) <= 2
+      };
+    });
+    /* And then it goes: five seconds parked, counted from the landing. */
+    await page.waitForTimeout(5200);
+    const after = await page.evaluate(
+      () => document.querySelectorAll("#cr-fateshow .cr-fate").length);
+    return [
+      ["a draw deals one card", dealt.cards, 1],
+      ["in the middle of the scene", dealt.centred, true],
+      ["big enough to read", dealt.tall, true],
+      ["with its name on it", dealt.named, true],
+      /* A picture of a card that has already been drawn: nothing about it is a control. */
+      ["and nothing about it is clickable", dealt.clickable, "none"],
+      ["it is still on the screen after the flight", landed.gone, false],
+      ["at the width of the pile it went under", landed.width, true],
+      ["below the pile row", landed.under, true],
+      ["and lined up with it", landed.aligned, true],
+      ["and five seconds later it is gone", after, 0]
+    ];
+  });
+
+  /*
+   * **Advantage deals two and shows two**, which is the only form in which a player can check what
+   * advantage bought: *you can see the card you did not get*. The one the rule passes over fades
+   * where it lies rather than flying -- it is not going into the record, and those two things must
+   * not look the same.
+   */
+  await probe("two fate cards, and the one that was not taken", async () => {
+    await settle(page);
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      await tray.render();
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      LIVE.drawFate(LIVE.hero, 3, 1);
+    });
+    await page.waitForSelector("#cr-fateshow .cr-fate", { timeout: 10000 });
+    await page.waitForTimeout(300);
+    const both = await page.evaluate(() => {
+      const cards = [...document.querySelectorAll("#cr-fateshow .cr-fate")];
+      const rects = cards.map(c => c.getBoundingClientRect());
+      return {
+        count: cards.length,
+        /* Side by side, not stacked: two cards at one place is one card as far as a player is
+         * concerned. */
+        apart: rects.length === 2 && Math.abs(rects[0].top - rects[1].top) < 2
+          && rects[0].right <= rects[1].left + 1,
+        named: cards.every(c => (c.querySelector(".cr-fate__name")?.textContent ?? "").trim())
+      };
+    });
+    /* Past the pair's longer hold, and into the fade. */
+    await page.waitForTimeout(1900);
+    const chosen = await page.evaluate(() => {
+      const cards = [...document.querySelectorAll("#cr-fateshow .cr-fate")];
+      return {
+        left: cards.length,
+        spurned: cards.filter(c => c.classList.contains("cr-fate--spurned")).length,
+        flying: cards.filter(c => c.classList.contains("cr-fate--flying")).length
+      };
+    });
+    await page.waitForTimeout(6000);
+    const after = await page.evaluate(
+      () => document.querySelectorAll("#cr-fateshow .cr-fate").length);
+    return [
+      ["advantage deals two cards", both.count, 2],
+      ["side by side", both.apart, true],
+      ["both of them readable", both.named, true],
+      /* One flies into the record and one fades out of it. Exactly one of each: two flying would
+       * be two cards parked for a draw that kept one. */
+      ["one of them flies to the pile", chosen.flying, 1],
+      ["and the other is passed over where it lies", chosen.spurned >= 1 || chosen.left === 1,
+        true],
+      ["and in the end neither is left on the screen", after, 0]
     ];
   });
 

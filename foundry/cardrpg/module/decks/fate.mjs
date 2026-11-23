@@ -106,6 +106,25 @@ export async function drawFate(actor, value, mode = 0) {
       return (mode > 0 ? better : !better) ? card : best;
     });
 
+  /*
+   * **The draw is announced before anything is cleaned up.**  **[BUILT 2026-11-23]**
+   *
+   * Every action in this game is a number and a card, and until today only the number reached the
+   * player: the draw happened, a chat line said *fate +1*, and the card itself -- the object the
+   * whole deck economy is about -- was never on the screen. fateshow.mjs deals it where the table
+   * is looking and then parks it under the pile it went into.
+   *
+   * **Here and not after the tidying**, because a Blessed or Cursed card is DELETED a few lines
+   * below the moment it is drawn (core-rules 6) -- so a listener reading the documents later would
+   * find the one card the table most wants to see already gone.
+   *
+   * A hook rather than a call: this module moves cards and does not know what a screen is, and
+   * five callers draw through it. Every one of them is an action somebody performed, which is
+   * what makes the reveal unconditional -- initiative does not draw fate, so no round start ever
+   * deals eight of these at once.
+   */
+  Hooks.callAll("cardrpgFateDrawn", { actor, drawn, used, mode });
+
   const result = used.system.apply ? used.system.apply(value) : applyFate(value, used);
 
   // A Blessed or Cursed card is removed when drawn, whether or not it was the one used.
