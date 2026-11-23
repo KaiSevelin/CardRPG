@@ -740,7 +740,7 @@ export const DECK_BACKS = {
    * face-down state to show, and that the day an unexpanded view wanted one, the entries should be
    * added here and `backOf` would already answer for them. That day is this one: the three piles
    * down the left of the tray are collapsed whenever they are not the open one -- `#leftDecks()`
-   * has carried `open: this.openPile === d.id` all along -- and a collapsed pile is a face-down
+   * has carried `open: this.openPiles.has(d.id)` all along -- and a collapsed pile is a face-down
    * deck by every test this file applies. It was drawing a hatched gradient because there was no
    * picture to draw.
    *

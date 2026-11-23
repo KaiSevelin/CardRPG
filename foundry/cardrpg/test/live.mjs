@@ -381,6 +381,12 @@ async function settle(page) {
        */
       tray.playedAt = null;
       tray.spentHalves = { primary: false, secondary: false };
+      /*
+       * **And every deck shut.**  [2026-11-23] More than one can be open now, and an open deck
+       * puts a row of cards across the middle of the screen -- over whatever the next probe is
+       * about to click on. One at a time used to make this self-limiting; a set does not.
+       */
+      tray.openPiles.clear();
     }
     /*
      * **And the deal marker, which is on the ACTOR now.**  [2026-11-22] It was a field on the
@@ -543,6 +549,25 @@ async function probes(page) {
     await page.waitForSelector(".cr-card--reserved", { timeout: 10000 });
     const downTargets = await reserveTargets();
     const heldText = await page.locator(".cr-card--reserved .cr-half--reaction").first().innerText();
+
+    /*
+     * **Wait for the whole hand to be down, not for the first card that is.**  [2026-11-23]
+     *
+     * `reserveAll` turns every card in the hand, and every card it writes can bring a render of
+     * its own, so the selector above is satisfied by a hand that is **still being turned** -- and
+     * the click below then lands in the middle of the next render, on a card the renderer is
+     * about to replace. It stood up and was drawn again down, and the probe read 0.
+     *
+     * This was a rare flake for a week and became a reliable one the day `_onRender` grew a
+     * fourth measurement, which is the honest version of what happened: the race was always here
+     * and the window it needed got wider. The claim being tested is about a hand that is down, so
+     * waiting for one is not a workaround -- it is the precondition, written down.
+     */
+    await page.waitForFunction(() => {
+      const held = LIVE.deckOf(LIVE.hero, "actionHand").cards.contents
+        .filter(c => LIVE.isReserved(c)).length;
+      return held > 0 && document.querySelectorAll(".cr-card--reserved").length === held;
+    }, null, { timeout: 10000 }).catch(() => {});
 
     /* The NAME, not the reaction button: the whole card is the claim being tested. */
     const before = await page.evaluate(() => LIVE.uprightCards(LIVE.hero).length);
@@ -1506,6 +1531,23 @@ async function probes(page) {
       const whereStrong = async order => {
         tray.staged = order;
         await tray.render();
+        /*
+         * **And the frame that draws it.**  [FIXED 2026-11-23]
+         *
+         * `await tray.render()` resolves when the application has handed its element over, which
+         * is not the instant the browser has laid it out. Reading the DOM on the next line asks
+         * a question of a screen that may not have been drawn, and it fails the way a race fails
+         * -- rarely, on alternate runs, reading as though the feature were broken. This read
+         * reported `nowhere` for a stack it had just staged, and the one below it `NaN` for a
+         * number the card prints.
+         *
+         * Confirmed against the shipped build before any of this session's work was in the tree:
+         * the same two checks, on the same alternate runs. It is the probe that was wrong.
+         *
+         * Two frames, because one is not enough: the first callback runs *before* the paint that
+         * follows it, so a read inside it can still beat the layout.
+         */
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
         /* `data-half` rather than a class: the template writes the half as an attribute, and
          * sniffing it out of `className` found "secondary" nowhere and reported "primary" for
          * both. */
@@ -1559,6 +1601,8 @@ async function probes(page) {
         { cardId: second.id, half: "secondary" }
       ];
       await tray.render();
+      /* And the frame that draws it, for the reason written over the same wait above. */
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
       /* Per half: the weapons drawn into it, and the Strike number its card prints. */
       const read = which => {
         const box = document.querySelector(`.cr-stack[data-half="${which}"]`);
@@ -3459,7 +3503,7 @@ async function probes(page) {
     await page.evaluate(async () => {
       const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
       const tray = CardRPGTray.openTrays[0];
-      tray.openPile = "conditions";
+      tray.openPiles = new Set(["conditions"]);
       await tray.render();
     });
     await page.waitForSelector(".cr-hud__spread .cr-card", { timeout: 20000 });
@@ -4257,7 +4301,7 @@ async function probes(page) {
       /* And what the card says while it cannot be cast, read off the tray's own spell panel. */
       const tray = game.cardrpg.openTray(hero);
       tray.side = "action";
-      tray.openPile = "spells";
+      tray.openPiles = new Set(["spells"]);
       await tray.render();
       /*
        * The note is in the card's TEXT and the reason is in its tooltip ATTRIBUTE, so both are
@@ -4283,7 +4327,7 @@ async function probes(page) {
       const whose = combat.combatant?.actor?.id === hero.id ? "still the hero" : "somebody else";
 
       /* Put the world back. */
-      tray.openPile = null;
+      tray.openPiles.clear();
       await combat.delete();
       for (const doc of made.reverse()) await doc.delete();
       await hero.deleteEmbeddedDocuments("Item", [ask.id, hour.id]);
@@ -4622,7 +4666,7 @@ async function probes(page) {
       await pause();
       const tray = game.cardrpg.openTray(hero);
       tray.side = "action";
-      tray.openPile = "spells";
+      tray.openPiles = new Set(["spells"]);
       await tray.render();
       await pause(300);
       /* The note is in the card's TEXT, which is the lesson the timing probe paid for: a card says
@@ -4632,7 +4676,7 @@ async function probes(page) {
       const note = card ? card.textContent.replace(/\s+/g, " ").trim() : "not shown";
 
       /* ---- and put the world back ---- */
-      tray.openPile = null;
+      tray.openPiles.clear();
       await tray.render();
       await tray.close();
       for (const slate of slates) await hero.deleteEmbeddedDocuments("Item", [slate.id]);
@@ -4799,7 +4843,7 @@ async function probes(page) {
       /* ---- and the card says so before it is clicked ---- */
       const tray = game.cardrpg.openTray(hero);
       tray.side = "action";
-      tray.openPile = "spells";
+      tray.openPiles = new Set(["spells"]);
       await tray.render();
       await pause(400);
       const faceOf = () => [...(tray.element?.querySelectorAll(".cr-card") ?? [])]
@@ -4820,7 +4864,7 @@ async function probes(page) {
       const stillPrinted = /While both hands are empty/.test(faceOf()?.textContent ?? "");
 
       /* ---- and put the world back ---- */
-      tray.openPile = null;
+      tray.openPiles.clear();
       await tray.render();
       await tray.close();
       await hero.deleteEmbeddedDocuments("Item", [carry.id]);
@@ -5253,7 +5297,7 @@ async function probes(page) {
     await page.evaluate(async () => {
       const tray = game.cardrpg.openTray(LIVE.hero);
       tray.side = "action";
-      tray.openPile = null;
+      tray.openPiles.clear();
       await tray.render();
     });
     await page.waitForSelector(".cr-hud__piles", { timeout: 20000 });
@@ -5289,15 +5333,253 @@ async function probes(page) {
       return [
         ["clicking the discard spreads it", spread ? "open" : "shut", "open"],
         ["and it is the discard that opened",
-          spread?.getAttribute("data-group-label") ?? "nothing", "Discard — not in play"]
+          spread?.getAttribute("data-group-label") ?? "nothing", "Discard"],
+        /* And it says which back it belongs to, which is what places it. */
+        ["and it says which back it came off",
+          spread?.getAttribute("data-pile") ?? "nothing", "actionDiscard"]
       ];
     });
     await page.evaluate(async () => {
       const tray = game.cardrpg.openTray(LIVE.hero);
-      tray.openPile = null;
+      tray.openPiles.clear();
       await tray.render();
     });
     return [...rows, ...opened];
+  });
+
+  /*
+   * **A monster's column is a character's column.**  **[FIXED 2026-11-23]**
+   *
+   * `#fitRows` counted the piles actually drawn, and a monster draws no deck corner -- the round
+   * deals its intent for it (core-rules 3). So a goblin's column came out three rows where a
+   * hero's is four, which at 2:3 is cards half again as large: the GM clicked a goblin and the
+   * whole left edge of the screen changed size.
+   *
+   * Measured rather than reasoned about, and measured on both actors in one probe, because the
+   * claim is a comparison and a number on its own could not make it.
+   */
+  await probe("a monster's decks are a character's size", async () => {
+    await settle(page);
+    const hero = await page.evaluate(() => {
+      const piles = [...document.querySelectorAll(".cr-hud__decks--left .cr-pile")];
+      const layer = document.querySelector(".cr-hud-layer");
+      return {
+        width: Math.round(piles[0]?.getBoundingClientRect().width ?? 0),
+        rows: piles.length,
+        var: getComputedStyle(layer).getPropertyValue("--cr-rows").trim()
+      };
+    });
+    await page.evaluate(async () => {
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      const beast = game.actors.getName("Goblin") ?? game.actors.find(a => a.type === "npc");
+      globalThis.LIVE.beast = beast;
+      game.cardrpg.openTray(beast);
+    });
+    await page.waitForSelector(".cr-npc", { timeout: 20000 });
+    await page.waitForTimeout(600);
+    const beast = await page.evaluate(() => {
+      const piles = [...document.querySelectorAll(".cr-hud__decks--left .cr-pile")];
+      const layer = document.querySelector(".cr-hud-layer");
+      return {
+        width: Math.round(piles[0]?.getBoundingClientRect().width ?? 0),
+        rows: piles.length,
+        var: getComputedStyle(layer).getPropertyValue("--cr-rows").trim(),
+        /* One layer, or the window behind this one is still on the screen. */
+        layers: document.querySelectorAll(".cr-hud-layer").length,
+        corner: document.querySelectorAll(".cr-hud__decks--action").length
+      };
+    });
+    await page.evaluate(async () => {
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      game.cardrpg.openTray(LIVE.hero);
+    });
+    await page.waitForTimeout(400);
+    return [
+      ["a character's decks have a width", hero.width > 0, true],
+      ["and the monster's are the same width", beast.width, hero.width],
+      /* The mechanism, so a pass by coincidence is distinguishable from a pass. */
+      ["both columns are counted the same way", beast.var, hero.var],
+      /*
+       * And counted the right way, which is the fix itself: the piles DRAWN down the left plus
+       * the corner, whether or not this actor has a deck to put in it. Asserted against each
+       * column's own pile count rather than against the other's, so a caster growing a fourth
+       * deck moves both sides of the claim and neither of these two rows.
+       */
+      ["a character's rows are its piles plus the corner", hero.var, String(hero.rows + 1)],
+      ["and a monster's are too, although it draws no corner", beast.var,
+        String(beast.rows + 1)],
+      /* The thing the GM actually saw: two HUDs on the screen at once. */
+      ["and only one HUD is on the screen", beast.layers, 1],
+      ["and a monster still has no deck corner to press", beast.corner, 0]
+    ];
+  });
+
+  /*
+   * **Two decks open, each beside its own back.**  **[BUILT 2026-11-23]**
+   *
+   * Opening one deck shut the other, and whichever opened spread into a band pinned to the top of
+   * the screen -- so a card from the third row of the column arrived level with the first. Both
+   * halves are one fact: there was exactly one place to put a spread.
+   *
+   * The top of each row is compared against the top of the back it came off, which is the whole
+   * claim. A row that merely EXISTS proves nothing: the old one existed too, in the wrong place.
+   */
+  await probe("two decks open, each beside its own deck", async () => {
+    await settle(page);
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      tray.openPiles = new Set(["items", "conditions"]);
+      await tray.render();
+    });
+    await page.waitForSelector(".cr-hud__spread", { timeout: 20000 });
+    await page.waitForTimeout(400);
+    const rows = await page.evaluate(() => {
+      const spreads = [...document.querySelectorAll(".cr-hud__spread")];
+      const beside = spreads.map(sp => {
+        const back = document.querySelector(`.cr-pile[data-pile="${sp.dataset.pile}"]`);
+        if (!back) return null;
+        return Math.abs(sp.getBoundingClientRect().top - back.getBoundingClientRect().top);
+      });
+      const named = spreads.map(sp => sp.dataset.pile).sort().join(", ");
+      /* Two rows at two different heights: one height would be the old bug wearing two labels. */
+      const tops = new Set(spreads.map(sp => Math.round(sp.getBoundingClientRect().top)));
+      return [
+        ["two decks are open at once", spreads.length, 2],
+        ["and they are the two that were opened", named, "conditions, items"],
+        ["each row is level with its own back", beside.every(d => d !== null && d <= 2), true],
+        ["and the two rows are not at the same height", tops.size, 2],
+        /* The Conditions deck is below Items in the column, so its row must be below too. */
+        ["and the lower deck's row is the lower one",
+          (() => {
+            const of = id => document.querySelector(`.cr-hud__spread[data-pile="${id}"]`)
+              ?.getBoundingClientRect().top ?? 0;
+            return of("conditions") > of("items");
+          })(), true]
+      ];
+    });
+    /* And clicking one shuts only itself, which is the half a set buys. */
+    await page.click('.cr-hud__decks--left .cr-pile[data-pile="items"]');
+    await page.waitForTimeout(400);
+    const after = await page.evaluate(() => {
+      const spreads = [...document.querySelectorAll(".cr-hud__spread")];
+      return [
+        ["shutting one leaves the other open", spreads.length, 1],
+        ["and it is the one that was not clicked",
+          spreads[0]?.dataset.pile ?? "nothing", "conditions"]
+      ];
+    });
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.openPiles.clear();
+      await tray.render();
+    });
+    return [...rows, ...after];
+  });
+
+  /*
+   * **The Items deck is what you have equipped.**  **[RULED 2026-11-23]**
+   *
+   * The count was everything owned and the spread was everything NOT in play: two decks sharing
+   * one label. A goblin with a single equipped knife read **1 Items** and opened on nothing.
+   *
+   * What is checked is the agreement, not either number on its own -- *the back says what the
+   * spread holds* is the rule, and a probe that only counted cards would pass on a back that
+   * still lied.
+   */
+  await probe("the Items deck says what it holds", async () => {
+    await settle(page);
+    const rows = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      const gear = hero.items.filter(i => i.type === "item");
+      const worn = gear.filter(i => i.system.equipped);
+      /* A character with nothing equipped could not tell the two rules apart. */
+      if (!worn.length && gear.length) await gear[0].update({ "system.equipped": true });
+
+      const tray = game.cardrpg.openTray(hero);
+      tray.side = "action";
+      tray.openPiles = new Set(["items"]);
+      await tray.render();
+      await new Promise(r => setTimeout(r, 400));
+
+      const equipped = hero.items.filter(i => i.type === "item" && i.system.equipped).length;
+      const back = document.querySelector('.cr-pile[data-pile="items"] .cr-pile__count');
+      const spread = document.querySelector('.cr-hud__spread[data-pile="items"]');
+      const cards = spread ? [...spread.querySelectorAll(".cr-card--spread")] : [];
+      return [
+        ["the back counts what is equipped", back?.textContent.trim() ?? "?", String(equipped)],
+        ["and the spread holds the same number", cards.length, equipped],
+        ["and the heading says so", spread?.dataset.groupLabel ?? "nothing",
+          "Items \u2014 equipped"],
+        /* A reference, not a control: equipping is the character sheet's job now. */
+        ["and no card in it offers to be played",
+          cards.some(c => c.dataset.action === "playSlate"), false]
+      ];
+    });
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.openPiles.clear();
+      await tray.render();
+    });
+    return rows;
+  });
+
+  /*
+   * **The skill deck deals when you click it.**  **[CHANGED 2026-11-23]**
+   *
+   * It was deliberately inert, on the argument that skill-rules 1 gives the GM the say. That
+   * confused who decides with where you press: the action deck in the same corner on the other
+   * side of the window deals when clicked, so the skill deck looked like a button and was not.
+   */
+  await probe("the skill deck deals a hand", async () => {
+    await settle(page);
+    const before = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      const hand = LIVE.deckOf(hero, "skillHand");
+      const discard = LIVE.deckOf(hero, "skillDiscard");
+      /* An empty hand, or the corner is right to refuse and the probe proves nothing. */
+      if (hand.cards.size) {
+        await LIVE.move(hand, discard, hand.cards.contents.map(c => c.id));
+      }
+      const tray = game.cardrpg.openTray(hero);
+      tray.side = "skill";
+      tray.openPiles.clear();
+      await tray.render();
+      await new Promise(r => setTimeout(r, 400));
+      const corner = document.querySelector(".cr-hud__decks--action .cr-pile");
+      return {
+        held: hand.cards.size,
+        deck: LIVE.deckOf(hero, "skill").cards.size,
+        action: corner?.dataset.action ?? "none",
+        label: corner?.querySelector(".cr-pile__label")?.textContent.trim() ?? ""
+      };
+    });
+    await page.click(".cr-hud__decks--action .cr-pile");
+    await page.waitForTimeout(1200);
+    const after = await page.evaluate(() => {
+      const hand = LIVE.deckOf(LIVE.hero, "skillHand");
+      const corner = document.querySelector(".cr-hud__decks--action .cr-pile");
+      return {
+        held: hand.cards.size,
+        spent: corner?.classList.contains("cr-pile--spent") ?? false
+      };
+    });
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      await tray.render();
+    });
+    return [
+      ["the corner is the skill deck", before.label, "Skill deck"],
+      ["and it is wired to deal", before.action, "dealSkills"],
+      ["the hand starts empty", before.held, 0],
+      ["and there was something to draw", before.deck > 0, true],
+      ["clicking it deals a hand", after.held > 0, true],
+      /* And then says there is nothing more to come, the way the action deck does. */
+      ["and the corner then says the hand is full", after.spent, true]
+    ];
   });
 
   await probe("the system itself", async () => {

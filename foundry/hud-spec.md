@@ -475,6 +475,28 @@ same pile, and a Spent cost and the Spent link mean the same pile.
 **Spent is absent entirely when nothing is Spent**, so it appears exactly when it starts to mean
 something. Fate and Discard are always there, because a count of zero is itself worth reading.
 
+### 3.8a The Items deck is what you have equipped  **[RULED 2026-11-23]**
+
+The back counted **everything the character owned** and opening it spread **everything not in
+play**. Those are two different decks sharing one label and one picture, and the gap between them
+is exactly the gear you are carrying: a goblin with a single equipped knife read **1 Items** and
+opened on nothing at all.
+
+**The HUD is the surface you play from; the character sheet is where you own things.** So the deck
+is the gear that is in your hands, on your back and on your belt, and the count and the spread are
+now the same question asked twice. What is in the pack is on the sheet, where the weight is, and
+the sheet is the only place it has ever needed to be.
+
+The old rule had an argument and it was about somewhere else: *what is in play is already on the
+scene* is true of the two **stacks** (§3.5.0), which hold the gear serving the action you have
+staged. Gear you are wearing but not swinging this instant is in neither stack, so the one deck
+labelled Items was showing you the things you had put away.
+
+**The spread is a reference, not a control.** Equipping is the sheet's job, so there is nothing
+here to click a card into — a card that looks takeable and takes nothing is worse than one that
+does not. Turning a card over for value, weight and type still works, and so does starring the
+weapon the assist reaches for: both are reading rather than equipping.
+
 ### 3.9 The left column is as tall as the piles in it  **[FIXED 2026-11-22]**
 
 A card's size is the window's height divided by **how many cards are stacked down the left edge**,
@@ -490,6 +512,19 @@ The tray counts the piles it has drawn and the stylesheet divides by the answer.
 this screen had already been wrong for the same reason and been fixed the same way — the sidebar's
 width and the scene controls' — and this was the third. **Anything added to either column is
 counted from now on**, which is the difference between this and the number it replaced.
+
+**The corner counts whether or not there is a deck in it.**  **[FIXED 2026-11-23]** The first
+build counted every pile on the screen, corner included, and **a monster has no corner**: the
+round deals its intent for it (core-rules §3), so §7.1's HUD draws nothing there to press. A
+goblin's column therefore came out three rows where a hero's is four, which at 2:3 is cards half
+again as large — a GM selected a goblin and the whole left edge of the screen changed size, with
+the previous window's decks still showing through the gaps (§3.11).
+
+So the **left column** is counted off the screen, because that is where a column grows a row
+nobody told the arithmetic about, and the corner's row is added as the constant it genuinely is.
+The height is spoken for either way; what differs is only whether there is a deck sitting in it,
+which is a fact about the actor and not about the layout. **The scale and the placement of the
+decks are the same for a monster as for a character**, which is the ruling.
 
 ### 3.10 A dialog about cards shows cards  **[FIXED 2026-11-22]**
 
@@ -507,6 +542,39 @@ hand's renderer is the one place that knows a harm card has no halves to print.
 **The whole card is the tick.** The checkbox is still in the form and still named for what the
 button reads; it is taken off the screen rather than out of the markup, which also leaves it
 reachable from the keyboard.
+
+### 3.11 A spread sits beside its own deck, and more than one can be open  **[BUILT 2026-11-23]**
+
+Two faults, and both of them were one object: there was exactly **one place to put a spread**.
+
+**It was always at the top of the screen.** 54px is the head of the left column, so whichever deck
+you opened, its cards came out level with **Items** — a feature turned over from the third row
+appeared two rows above the back it came off. At the table that reads as the wrong deck having
+opened, which is the worst kind of wrong because the player then stops trusting the click.
+
+**And opening one deck shut the others.** Nothing ever ruled that; it was a consequence of the
+single place. A player weighing a feature against the gear it modifies could not see both, and a
+caster who opened the spell book lost sight of what was being done to them.
+
+So: **a row per open deck, each placed against the back it came out of**, in the order the backs
+are drawn in — the left column top to bottom, then the piles under the Play button — so the rows
+tile down the screen in the same sequence as the column and nothing crosses over anything else.
+
+**Measured, not calculated.** The left column's rows could have been worked out from a start
+offset, a card height and a gap. The piles under the Play button could not: that column is
+top-anchored and as tall as whatever is in it, so where the discard sits is a fact about a turn in
+progress. One mechanism that asks each back where it is answers for both columns and cannot drift
+from the stylesheet the way a second copy of the arithmetic would. A row clamps at the hand rather
+than drawing over the cards you are playing, and a back that is not on the screen leaves its row
+where the stylesheet put it.
+
+**Only one HUD is on the screen, and now it really is.**  **[FIXED 2026-11-23]** The window has
+closed the others since it was built — it covers the screen edges, so two would fight for the
+same space — and closing is a fade: the new window was painted in the same instant, so for the
+length of the animation both layers were up, one over the other. What a GM saw when they selected
+a goblin was the goblin's decks **with the hero's decks showing through the gaps between them**,
+including a skill deck and a flip button in a corner a monster does not have. The new window is
+still handed to its caller at once; only the **paint** waits for the screen to clear.
 
 ---
 
@@ -672,6 +740,14 @@ action one. Two hands on the screen is two hands to read, and only one of them c
   see they are holding.
 - **A monster never sees it.** It has one deck and makes no checks of its own (core-rules §9), so
   a control with one state would be a label.
+- **Both corners deal.**  **[CHANGED 2026-11-23]** The skill deck used to be inert — a count and
+  a back — on the argument that skill-rules §1 gives the GM the say about when a new scene
+  starts, so dealing lived on the scene panel's *New scene* button. That confused **who decides**
+  with **where you press**. The action deck in the same corner on the other side of this window
+  deals when it is clicked, so anyone who had learned that reached for the skill deck and got
+  nothing, in the one place on the screen whose whole job is to be the deck you are playing from.
+  Who decides has not moved: a player who clicks it is still told the GM says when. The corner
+  dims on a full hand, exactly as the action deck dims on a turn already dealt.
 
 ---
 

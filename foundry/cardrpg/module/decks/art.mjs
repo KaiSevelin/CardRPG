@@ -151,7 +151,7 @@ export function conditionArt(key) {
  * The back a collapsed slate pile wears, by the pile's id in the tray.
  *
  * **The three piles down the left of the tray are face-down decks whenever they are shut**, which
- * is what `openPile` has always meant, and a shut deck showing a hatched gradient is a deck with
+ * is what `openPiles` has always meant, and a shut deck showing a hatched gradient is a deck with
  * no back rather than a deck that wants none. Items, features and conditions have one now.
  *
  * **Written out rather than derived, and the suite is why.** The pile ids are plural -- they label

@@ -130,8 +130,19 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
      * @type {Set<string>}
      */
     this.pendingEquips = new Set();
-    /** Which deck is open, if any. @type {string|null} */
-    this.openPile = null;
+    /**
+     * **Which decks are open.**  **[CHANGED 2026-11-23]**
+     *
+     * It was one id, which makes the column a set of radio buttons nobody asked for: opening
+     * Features shut Items, so a player weighing a feature against the gear it modifies could
+     * never see both at once. Nothing about a spread wanted the others gone -- that was a
+     * consequence of there being one place to put a spread, and now each one sits beside the
+     * deck it came from (`#fitSpreads`), two open decks are two rows rather than two things
+     * fighting over one.
+     *
+     * @type {Set<string>}
+     */
+    this.openPiles = new Set();
     /** Slates currently turned over, showing value, weight and type. @type {Set<string>} */
     this.flipped = new Set();
     /*
@@ -258,9 +269,33 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     if (actor.type !== "character" && actor.type !== "npc") return null;
     if (actor.type === "npc" && !game.user.isGM) return null;
     if (!actor.isOwner) return null;
-    // One HUD at a time: it covers the screen edges, so two would fight for the same space.
+    /*
+     * **One HUD at a time, and the old one leaves the screen at once.**  **[FIXED 2026-11-23]**
+     *
+     * The rule was right and the implementation was a race. `close` is asynchronous -- a fade and
+     * a teardown -- and the new window was rendered in the same tick, so for the length of the
+     * animation both layers were up, each `position: fixed; inset: 0`, one over the other. What a
+     * GM saw when they selected a goblin was the goblin's decks with **somebody else's decks
+     * showing through the gaps between them**: a skill deck and a flip button in a corner that a
+     * monster's HUD does not have and cannot have.
+     *
+     * Worse than cosmetic, because several hooks re-render every open tray, and one of those
+     * catching the closing window mid-fade would have brought it back for good.
+     *
+     * **The outgoing layer is hidden now and torn down on its own time**, which is the fix with
+     * nothing attached to it. The first version waited for the close and rendered afterwards,
+     * and that put a paint at a moment no caller chose: forty callers hold this window by hand
+     * and several of them render it themselves on the next line, so a second render arriving a
+     * microtask later races every one of them. Nothing here is asynchronous any more -- the swap
+     * is a style on the way out and a render on the way in, both in the tick that asked for
+     * them, and no caller's timing changes at all.
+     *
+     * The fade was always a nicety. A second HUD over the first is not.
+     */
     for (const other of CardRPGTray.openTrays) {
-      if (other.actor?.id !== actor.id) other.close();
+      if (other.actor?.id === actor.id) continue;
+      if (other.element) other.element.style.display = "none";
+      other.close();
     }
     let tray = CardRPGTray.#open.get(actor.id);
     if (!tray) {
@@ -487,8 +522,63 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   #fitRows() {
     const layer = this.#layer();
     if (!layer) return;
-    const rows = layer.querySelectorAll(".cr-hud__decks .cr-pile").length;
-    if (rows > 0) layer.style.setProperty("--cr-rows", String(rows));
+    /*
+     * **The corner counts whether or not this actor has one.**  **[FIXED 2026-11-23]**
+     *
+     * A monster presses no deck -- the round deals its intent for it (core-rules 3) -- so its HUD
+     * draws no bottom-left corner, and counting the piles actually drawn made its column three
+     * rows where a character's is four. Same screen, same fight, cards half again as large: a GM
+     * selecting a goblin watched the whole left column change size, which reads as two different
+     * interfaces rather than one interface showing two actors.
+     *
+     * The corner's height is spoken for either way; what differs is only whether there is a deck
+     * sitting in it. So the left column is counted off the DOM -- that is where a column grows a
+     * row nobody told the arithmetic about, and the reason this method exists -- and the corner
+     * is added as the constant it genuinely is.
+     */
+    const rows = layer.querySelectorAll(".cr-hud__decks--left .cr-pile").length;
+    if (rows > 0) layer.style.setProperty("--cr-rows", String(rows + 1));
+  }
+
+  /**
+   * **And a spread sits beside the deck it came out of.**  **[BUILT 2026-11-23]**
+   *
+   * Every opened deck used to spread into one band pinned to the top of the screen, which is
+   * right for the first deck in the column and wrong for all the others: a feature turned over
+   * from the third row appeared level with the first, so the card you had just asked for arrived
+   * two rows above the thing you asked. At the table that reads as the wrong deck having opened.
+   *
+   * **Measured rather than calculated.** The left column's rows could be worked out -- a start
+   * offset, a card height, a gap -- but the piles under the Play button could not: that column is
+   * top-anchored and as tall as whatever is in it, so where its discard sits is a fact about a
+   * turn in progress. One mechanism that asks the back where it is answers for both, and cannot
+   * drift from the stylesheet the way a second copy of the arithmetic would.
+   *
+   * A pile has `transition: none` for the reason written over that rule, so what this measures is
+   * where the back IS and not where it is on its way to.
+   *
+   * It clamps at the hand, because a spread drawn over the cards you are playing is worse than
+   * one drawn a little above its deck.
+   */
+  #fitSpreads() {
+    const layer = this.#layer();
+    if (!layer) return;
+    const frame = layer.getBoundingClientRect();
+    const hand = layer.querySelector(".cr-hud__hand");
+    const floor = hand
+      ? hand.getBoundingClientRect().top - frame.top - 8
+      : frame.height;
+
+    for (const spread of layer.querySelectorAll(".cr-hud__spread")) {
+      const id = spread.dataset.pile;
+      const back = id ? layer.querySelector(`.cr-pile[data-pile="${id}"]`) : null;
+      /* No back on the screen is no answer, and the stylesheet's top is a better guess than a
+       * number computed from a rectangle that is not there. */
+      if (!back) continue;
+      const want = back.getBoundingClientRect().top - frame.top;
+      const limit = Math.max(0, floor - spread.offsetHeight);
+      spread.style.top = `${Math.round(Math.min(Math.max(0, want), limit))}px`;
+    }
   }
 
   _onRender(context, options) {
@@ -496,6 +586,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     this.#fitSidebar();
     this.#fitControls();
     this.#fitRows();
+    /* After `#fitRows`, which changes how tall a card is and therefore where every back sits. */
+    this.#fitSpreads();
     this.#paintReach();
   }
 
@@ -634,6 +726,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     for (const tray of CardRPGTray.openTrays) {
       tray.#fitSidebar();
       tray.#fitControls();
+      /* The column's cards are sized off the window height, so every back has just moved. */
+      tray.#fitSpreads();
     }
   }
 
@@ -663,6 +757,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const combat = game.combat;
     const myCombatant = combat?.combatants.find(c => c.actor?.id === actor.id);
     const counts = system.deckCounts ?? {};
+
+    /*
+     * Both deck lists, built once, because the open spreads are derived from them: the rows come
+     * out in the order the backs are drawn in, and a second call could not promise that.
+     */
+    const leftDecks = this.#leftDecks();
+    const pileLinks = this.#pileLinks();
     const deckTotal = Math.max(1, (counts.draw ?? 0) + (counts.discard ?? 0) + (counts.hand ?? 0));
     const fateTotal = (counts.fate ?? 0) + (counts.fateDiscard ?? 0);
 
@@ -787,11 +888,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       // do not reshuffle and are not swings, so they are in `k` and not in the 2.
       fateSwing: counts.fate ? Math.min(100, Math.round(200 / counts.fate)) : null,
       playArea: this.#playArea(),
-      leftDecks: this.#leftDecks(),
+      leftDecks,
       /* The corner means the same thing on both sides: the deck you are playing from. */
       actionDeck: side === "skill" ? this.#skillDeck() : this.#actionDeck(combat),
-      pileLinks: this.#pileLinks(),
-      viewer: this.#viewer(),
+      pileLinks,
+      viewers: this.#viewers([...leftDecks, ...pileLinks]),
 
       /*
        * The scene tray (hud-spec 5), shown whenever no Combat is active. It is the same window in
@@ -1599,7 +1700,20 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * as decks because they are the same printed size and a stack is how you hold them at a table.
    */
   #leftDecks() {
-    const items = this.actor.items.filter(i => i.type === "item");
+    /*
+     * **The Items deck is what you have equipped.**  **[RULED 2026-11-23]**
+     *
+     * The count was everything owned and the spread was everything NOT in play, which is two
+     * different decks sharing one label and one back. A goblin carrying a single equipped knife
+     * read **1 Items** and opened on nothing at all; a character read their whole inventory and
+     * opened on the part of it they had put away.
+     *
+     * The HUD is the surface you play from and the sheet is where you own things, so the deck is
+     * the gear that is in your hands, on your back and on your belt -- and the count and the
+     * spread are now the same question asked twice. Equipping stays the character sheet's job:
+     * this shows the answer and does not offer to change it.
+     */
+    const items = this.actor.items.filter(i => i.type === "item" && i.system.equipped);
     const features = this.actor.items.filter(i => i.type === "feature");
     const spells = this.actor.items.filter(i => i.type === "spell");
     const conditions = this.actor.system.activeConditions ?? [];
@@ -1633,13 +1747,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       }
     ].map(d => ({
       ...d,
-      open: this.openPile === d.id,
+      open: this.openPiles.has(d.id),
       /*
        * **A shut pile is a face-down deck, so it wears that deck's back.** Read for the shut state
        * only: an open pile is showing its cards, and a back behind them is a picture nobody can
        * see paid for in a texture load. `pileBack` owns the pile-id-to-deck-key mapping.
        */
-      art: this.openPile === d.id ? "" : pileBack(d.id)
+      art: this.openPiles.has(d.id) ? "" : pileBack(d.id)
     }));
   }
 
@@ -1659,22 +1773,35 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * The skill deck in the bottom-left corner, where the action deck sits on the other side.
    *
-   * It is **not** a deal button. skill-rules 1 says the GM says when a new scene starts, which is
-   * why dealing lives on the scene panel's *New scene* and not here; this is the count and the
-   * back, so the corner means the same thing on both sides -- *this is the deck you are playing
-   * from, and this is how much of it is left*.
+   * **It deals, which it used to refuse to do.**  **[CHANGED 2026-11-23]**
+   *
+   * It was deliberately inert: skill-rules 1 says the GM says when a new scene starts, so dealing
+   * lived on the scene panel's *New scene* button and the corner was a count and a back. The
+   * argument confused **who decides** with **where you press**. The action deck in the same
+   * corner on the other side of the window deals when you click it, and a player who had learned
+   * that reached for the skill deck and got nothing -- in a corner whose entire job is to be the
+   * deck you are playing from.
+   *
+   * Who decides has not moved: `#onDealSkills` still turns a player away, and still says why.
+   * The GM now has two places to press rather than one, which is what a deck back should mean.
    */
   #skillDeck() {
     const deck = deckOf(this.actor, "skill");
     const discard = deckOf(this.actor, "skillDiscard");
+    const hand = deckOf(this.actor, "skillHand");
+    const full = (hand?.cards.size ?? 0) >= CARDRPG.defaults.skillHandSize;
     return {
       label: "Skill deck",
       count: deck?.cards.size ?? 0,
-      spent: false,
+      /* Dimmed on a full hand for the same reason the action deck dims on a dealt one: there is
+       * nothing more to come out of it, and a lit deck that draws nothing is a broken promise. */
+      spent: full,
       art: backOf("skill"),
-      state: `${discard?.cards.size ?? 0} discarded`,
-      tip: "Your skill deck. The GM deals a hand when a new scene starts, and the discard comes "
-        + "back on a rest rather than on a shuffle."
+      state: full ? "hand full" : `${discard?.cards.size ?? 0} discarded`,
+      tip: full
+        ? "Your skill hand is already full. The discard comes back on a rest."
+        : "Your skill deck. Click to deal a new scene's hand \u2014 the GM's call \u2014 and the "
+          + "discard comes back on a rest rather than on a shuffle."
     };
   }
 
@@ -1755,36 +1882,71 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     /* A shut pile wears its deck's back and an open one is showing its cards, exactly as the
      * left-hand column does; `pileBack` owns the mapping for both. */
     return links.map(l => ({
-      ...l, icon: CARDRPG.pileIcons[l.id], open: this.openPile === l.id,
-      art: this.openPile === l.id ? "" : pileBack(l.id)
+      ...l, icon: CARDRPG.pileIcons[l.id], open: this.openPiles.has(l.id),
+      art: this.openPiles.has(l.id) ? "" : pileBack(l.id)
     }));
   }
 
   /**
-   * Whichever deck is open, spread beside it -- holding only what is NOT in play, since what is in
-   * play is already on the scene.
+   * **Every open deck, each spread beside the deck it came from.**  **[CHANGED 2026-11-23]**
+   *
+   * Two things were wrong and both of them were this method returning one object. A spread was
+   * drawn in a single band at the top of the screen, so a card turned over from the **Conditions**
+   * deck appeared three rows above it, level with **Items** -- an answer with no question beside
+   * it, which at the table reads as the wrong deck having opened. And opening a second deck shut
+   * the first, because one object is one place.
+   *
+   * So: a list, in the order the decks are drawn in -- the left column top to bottom, then the
+   * piles under the Play button -- and `#fitSpreads` puts each row against its own back. The
+   * order matters more than it looks: the rows tile down the screen in the same sequence as the
+   * column, so nothing crosses over anything else on its way to where it belongs.
+   *
+   * @param {object[]} decks  The deck objects already built for the template, in drawing order.
    */
-  #viewer() {
-    if (!this.openPile) return null;
+  #viewers(decks) {
+    if (!this.openPiles.size) return [];
+    return decks.filter(d => this.openPiles.has(d.id)).map(d => this.#viewerFor(d.id));
+  }
 
-    if (this.openPile === "items") {
-      // Not in use: in the pack, or slung on your back. Both are things you can still pick up.
+  /**
+   * One open deck's contents. The label is the whole heading, because what a spread is holding
+   * differs per deck and a suffix fixed in the template could only ever be right about one.
+   */
+  #viewerFor(id) {
+    if (id === "items") {
+      /*
+       * **What is equipped**, which is what the back now counts. It used to be the opposite --
+       * everything out of play, on the argument that what is in play is already on the scene --
+       * and the argument was about the two stacks, which hold the gear serving the action you
+       * have staged. Gear you are carrying but not swinging this instant is in neither, so the
+       * one deck labelled Items showed you the things you had put away.
+       */
       const cards = this.actor.items
-        .filter(i => i.type === "item"
-          && (!i.system.equipped || CARDRPG.slots[i.system.equippedSlot]?.stows))
-        .map(i => this.#itemCard(i, false));
-      return { label: "Items", count: `${cards.length}`, cards };
+        .filter(i => i.type === "item" && i.system.equipped)
+        /*
+         * **A reference, not a control.** Equipping is the character sheet's job, so there is
+         * nothing here to click a card into -- and a card that looks takeable and takes nothing
+         * is worse than one that does not. The star and the flip still work: choosing which
+         * sword the assist reaches for, and turning a card over for value and weight, are both
+         * reading rather than equipping.
+         */
+        .map(i => ({
+          ...this.#itemCard(i, true),
+          passive: true,
+          tip: "Equipped. What you carry is set on the character sheet."
+        }));
+      return { id, label: "Items \u2014 equipped", count: `${cards.length}`, cards };
     }
 
-    if (this.openPile === "features") {
+    if (id === "features") {
       // Every feature, always: none of them is ever out of play, so none of them is ever missing.
       const cards = this.actor.items
         .filter(i => i.type === "feature")
         .map(f => this.#featureCard(f));
-      return { label: "Features", count: `${cards.length}`, cards };
+      return { id, label: "Features", count: `${cards.length}`, cards };
     }
 
-    if (this.openPile === "spells") {
+    if (id === "spells") {
       /*
        * Prepared first, because those are the ones you can do something with, and the book after
        * -- greyed, because *the caster who prepared the wrong spells has prepared the wrong
@@ -1794,10 +1956,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         || a.name.localeCompare(b.name);
       const cards = this.actor.items.filter(i => i.type === "spell").sort(order)
         .map(s => this.#spellCard(s));
-      return { label: "Spells", count: `${cards.length}`, cards };
+      return { id, label: "Spells \u2014 prepared first", count: `${cards.length}`, cards };
     }
 
-    if (this.openPile === "conditions") {
+    if (id === "conditions") {
       const cards = (this.actor.system.activeConditions ?? []).map((c, index) => {
         const cfg = CARDRPG.conditions[c.key] ?? {};
         const creator = c.creatorId ? game.actors.get(c.creatorId)?.name : null;
@@ -1817,10 +1979,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
             : (cfg.derived ? "From carried weight" : "Ticks on your own turn")
         };
       });
-      return { label: "Conditions", count: `${cards.length}`, cards };
+      return { id, label: "Conditions", count: `${cards.length}`, cards };
     }
 
-    const stack = deckOf(this.actor, this.openPile);
+    const stack = deckOf(this.actor, id);
     const labels = { actionDiscard: "Discard", fateDiscard: "Fate discard", actionSpent: "Spent" };
     const cards = (stack?.cards.contents ?? []).map(c => ({
       id: c.id,
@@ -1833,7 +1995,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       passive: true,
       lines: [cardLine(c)]
     }));
-    return { label: labels[this.openPile] ?? this.openPile, count: `${cards.length}`, cards };
+    return { id, label: labels[id] ?? id, count: `${cards.length}`, cards };
   }
 
   /**
@@ -3181,10 +3343,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     this.render();
   }
 
-  /** Clicking an open pile shuts it again. */
+  /** Clicking an open pile shuts it again, and leaves whatever else is open alone. */
   static #onOpenPile(event, target) {
     const id = target.dataset.pile;
-    this.openPile = this.openPile === id ? null : id;
+    this.openPiles.has(id) ? this.openPiles.delete(id) : this.openPiles.add(id);
     this.render();
   }
 

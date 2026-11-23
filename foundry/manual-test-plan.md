@@ -599,6 +599,62 @@ They were a row of small icon counters on the same line as Health and Block, whi
 discard pile is not visible* came from. **Play a card and watch the Discard count go up**, which
 is the thing that was impossible to see.
 
+## 2d.1 A goblin's decks are a hero's decks
+
+**Do.** Open the tray on the **Starter Warrior** and look at the left column. Then click a
+**Goblin** token on the canvas and look again, without closing anything.
+
+**Expect.** The decks are **the same size and in the same place** on both. Three backs down the
+left — Items, Features, Conditions — and on the goblin **no deck corner at the bottom left**,
+because the round deals a monster's intent for it and there is nothing there to press.
+
+**Two things used to be wrong here at once.** The goblin's cards came out half again as large,
+because the column was measured by counting the piles drawn and the goblin has one fewer. And the
+Warrior's HUD was still on the screen underneath — look for a **second set of smaller card edges
+showing through the gaps**, or a *Skill deck* and an *Action deck* button in a corner the goblin
+does not have. Select back and forth a few times: there should never be more than one HUD.
+
+## 2d.2 Two decks open at once, each beside its own deck
+
+**Do.** Click **Items**. Then, without shutting it, click **Conditions**.
+
+**Expect.** **Two rows of cards**, each starting level with the back it came out of — the Items
+row beside Items, the Conditions row further down beside Conditions. Clicking **Items** again
+shuts **only** that row.
+
+Open the **Discard** under the Play button too, and its row should appear down beside *it*, not up
+at the top of the screen. Before today every row appeared at the top of the column whichever deck
+you clicked, and opening a second deck shut the first.
+
+## 2d.3 Items means what you are carrying
+
+**Do.** Look at the number on the **Items** back, then click it.
+
+**Expect.** The number and the number of cards that spread are **the same**, and both are the
+count of what is **equipped** — what is in your hands, on your back and on your belt. The heading
+reads *Items — equipped*.
+
+**Now unequip something on the character sheet** and look again: both numbers drop by one. The
+card is in the pack now, which is the sheet's business. **Clicking a card in this spread does
+nothing**, on purpose: it is a reference, not a control. Turning one over for value and weight
+still works, and so does the star that picks your default weapon.
+
+**On the goblin this used to read 1 and open on nothing**, which is the clearest version of the
+fault: the back counted everything owned, the spread showed everything *not* in play, and an
+equipped knife is in neither list.
+
+## 2d.4 The skill deck deals
+
+**Do.** With no fight running, turn the window to the **skill** side if it is not there already,
+and click the **Skill deck** in the bottom-left corner.
+
+**Expect.** A **skill hand is dealt**, up to your skill hand size, exactly as *New scene* on the
+scene panel does — it is the same deal in a second place. The corner then **dims** and says the
+hand is full, the way the action deck dims on a turn it has already dealt.
+
+**As a player rather than the GM**, clicking it should say *The GM says when a new scene starts*
+and deal nothing. That rule has not changed; only where the GM presses has.
+
 ---
 
 # 3. What the other person sees

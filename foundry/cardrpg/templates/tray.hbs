@@ -38,7 +38,7 @@
     <button type="button"
           class="cr-pile cr-pile--action{{#if actionDeck.spent}} cr-pile--spent{{/if}}{{#if actionDeck.art}} cr-pile--faced{{/if}}"
           {{#if actionDeck.art}}style="--cr-art: {{crArt actionDeck.art}}"{{/if}}
-          {{#unless onSkill}}data-action="dealHand"{{/unless}} data-tooltip="{{actionDeck.tip}}">
+          {{#if onSkill}}data-action="dealSkills"{{else}}data-action="dealHand"{{/if}} data-tooltip="{{actionDeck.tip}}">
       <span class="cr-pile__count">{{actionDeck.count}}</span>
       <span class="cr-pile__label">{{actionDeck.label}}</span>
       <span class="cr-pile__state">{{actionDeck.state}}</span>
@@ -611,9 +611,12 @@
     </section>
   {{/if}}
 
-  {{#if viewer}}
-    <section class="cr-hud__spread" data-group-label="{{viewer.label}} — not in play">
-      {{#each viewer.cards}}
+  {{!-- One row per open deck, each placed against its own back by `#fitSpreads`. The label is
+        the whole heading: what a spread holds differs per deck, so a suffix fixed here could
+        only ever be right about one of them. --}}
+  {{#each viewers}}
+    <section class="cr-hud__spread" data-pile="{{this.id}}" data-group-label="{{this.label}}">
+      {{#each this.cards}}
       <div class="cr-card cr-card--spread{{#if this.harm}} cr-card--harm{{/if}}{{#if this.sole}} cr-card--sole{{/if}}{{#if this.flipped}} cr-card--back{{/if}}{{#if this.passive}} cr-card--passive{{else}} cr-card--takeable{{/if}}"
            data-group="{{this.group}}" data-tooltip="{{this.tip}}"
            {{#if this.art}}style="--cr-art: {{crArt this.art}}"{{/if}}
@@ -651,10 +654,10 @@
       </div>
       {{else}}
       <div class="cr-card cr-card--spread cr-card--passive">
-        <div class="cr-card__front"><span class="cr-note">Nothing left in the deck.</span></div>
+        <div class="cr-card__front"><span class="cr-note">Nothing in this deck.</span></div>
       </div>
       {{/each}}
     </section>
-  {{/if}}
+  {{/each}}
 
 </div>

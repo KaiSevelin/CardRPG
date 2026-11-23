@@ -17484,20 +17484,35 @@ check("and the gaps inside the column scale with it too",
 check("the tray counts the piles it drew",
   /#fitRows\(\) \{/.test(traySource) ? "yes" : "no", "yes");
 /*
- * Counted off the DOM rather than from the context, and the selector is the claim: `.cr-hud__decks`
- * is the two columns down the left and nothing else, so a pile added to either is counted and the
- * piles under the play area -- which take none of this height -- are not.
+ * Counted off the DOM rather than from the context, and the selector is the claim: the LEFT
+ * column is where a column grows a row nobody told the arithmetic about, so a pile added there is
+ * counted, and the piles under the play area -- which take none of this height -- are not.
+ *
+ * **The corner is added rather than counted.**  **[FIXED 2026-11-23]** It used to be counted with
+ * the rest, and a monster has no corner: the round deals its intent for it (core-rules 3), so its
+ * HUD draws no deck to press and its column came out three rows where a character's is four.
+ * Same screen, same fight, cards half again as large. The height is spoken for either way; what
+ * differs is only whether there is a deck sitting in it, which is not a fact about the layout.
  */
-check("and it counts the two columns that take the height",
-  /querySelectorAll\("\.cr-hud__decks \.cr-pile"\)\.length/.test(traySource) ? "yes" : "no", "yes");
+check("and it counts the column that grows",
+  /querySelectorAll\("\.cr-hud__decks--left \.cr-pile"\)\.length/.test(traySource) ? "yes" : "no",
+  "yes");
+check("and the corner's row is counted whether or not it is drawn",
+  /layer\.style\.setProperty\("--cr-rows", String\(rows \+ 1\)\);/.test(traySource) ? "yes" : "no",
+  "yes");
+/* Which is the half that has to stay true for the fix to mean anything: a monster still draws no
+ * corner, and that is why the row has to be added rather than seen. */
+check("and a monster still has no deck to press",
+  /\{\{#unless isNpc\}\}\s*\n\s*<section class="cr-hud__decks cr-hud__decks--action">/
+    .test(trayTemplate) ? "yes" : "no", "yes");
 check("and it is measured with the two edges",
   (traySource.match(/this\.#fitRows\(\);/g) ?? []).length, 1);
-/* Three measurements, one lookup for the element they all write onto: the third copy of five
- * identical lines is what says to stop. */
+/* Four measurements now, one lookup for the element they all write onto: the third copy of five
+ * identical lines was what said to stop, and the fourth arrived for free because of it. */
 check("the HUD's root is found in one place",
   (traySource.match(/querySelector\("\.cr-hud-layer"\)/g) ?? []).length, 1);
-check("and all three measurements ask for it",
-  (traySource.match(/this\.#layer\(\)/g) ?? []).length, 3);
+check("and every measurement asks for it",
+  (traySource.match(/this\.#layer\(\)/g) ?? []).length, 4);
 
 /*
  * **And a pile does not animate its own size.**  **[FIXED 2026-11-22]**
@@ -17550,11 +17565,184 @@ check("and the icon rides with the count, because two of them share a picture",
     .test(trayTemplate) ? "yes" : "no", "yes");
 /* One mapping for every pile back in the game, which is what `pileBack` was written to be. */
 check("and the tray asks pileBack rather than mapping them again",
-  /art: this\.openPile === l\.id \? "" : pileBack\(l\.id\)/.test(traySource) ? "yes" : "no", "yes");
+  /art: this\.openPiles\.has\(l\.id\) \? "" : pileBack\(l\.id\)/.test(traySource) ? "yes" : "no",
+  "yes");
 check("the vitals row no longer carries them",
   /cr-options__pile/.test(trayTemplate) ? "no" : "yes", "yes");
 check("nor does the stylesheet still dress them",
   /cr-options__pile/.test(css) ? "no" : "yes", "yes");
+
+section("Four decks, four places to put them, and one window at a time");
+
+/*
+ * **Only one HUD is on the screen, and now it really is.**  **[FIXED 2026-11-23]**
+ *
+ * `openFor` has closed the others since the window was built -- *it covers the screen edges, so
+ * two would fight for the same space* -- and closing is asynchronous. The new window was rendered
+ * in the same tick, so for the length of a fade both layers were up, each `position: fixed;
+ * inset: 0`, one over the other.
+ *
+ * What a GM saw when they selected a goblin was the goblin's decks **with somebody else's decks
+ * showing through the gaps between them**: a skill deck and a flip button in a corner a monster
+ * does not have. Worse than cosmetic, too -- several hooks re-render every open tray, and one of
+ * those catching the closing window mid-fade would have brought it back for good.
+ */
+check("one HUD at a time, and the old one goes at once",
+  /if \(other\.element\) other\.element\.style\.display = "none";/.test(traySource) ? "yes" : "no",
+  "yes");
+/*
+ * **And nothing about the swap is deferred.** The first build of this waited for the close and
+ * rendered afterwards, which put a paint at a moment no caller chose -- and forty callers hold
+ * this window by hand, several of them rendering it themselves on the next line. The teardown
+ * can take its time; the paint cannot.
+ */
+const openForBody = bodyOf(traySource, "  static openFor(actor, { auto = false } = {}) {");
+check("and the new window paints in the tick that asked for it",
+  /tray\.render\(\{ force: true \}\);\s*\n\s*return tray;/.test(openForBody) ? "yes" : "no",
+  "yes");
+/* Which is the whole claim, and the cheapest way to state it: an opener with nothing waited on
+ * in it cannot land a render at a time its caller did not choose. */
+check("and nothing in the swap is waited on",
+  /await |\.then\(/.test(openForBody) ? "no" : "yes", "yes");
+/* Which is the whole reason it is done this way: forty callers take the tray by hand on the line
+ * that asks for it, so the opener still hands one back rather than a promise of one. */
+check("and the opener still returns the window itself",
+  /static openFor\(actor, \{ auto = false \} = \{\}\) \{/.test(traySource) ? "yes" : "no", "yes");
+
+/*
+ * **More than one deck can be open.**  **[CHANGED 2026-11-23]**
+ *
+ * One id made the column a set of radio buttons nobody asked for: opening Features shut Items, so
+ * a player weighing a feature against the gear it modifies could never see both. That was never a
+ * rule -- it was a consequence of there being exactly one place to put a spread.
+ */
+check("more than one deck can be open at once",
+  /this\.openPiles = new Set\(\);/.test(traySource) ? "yes" : "no", "yes");
+const openBody = bodyOf(traySource, "  static #onOpenPile(event, target) {");
+check("and opening one leaves the others where they are",
+  /this\.openPiles\.has\(id\) \? this\.openPiles\.delete\(id\) : this\.openPiles\.add\(id\);/
+    .test(openBody) ? "yes" : "no", "yes");
+check("and the template draws a row per open deck",
+  /\{\{#each viewers\}\}/.test(trayTemplate) ? "yes" : "no", "yes");
+/* Each row carries the id of the back it belongs to, which is what `#fitSpreads` matches on: a
+ * row with no name on it could not be placed beside anything. */
+check("and each row says which deck it came out of",
+  /data-pile="\{\{this\.id\}\}" data-group-label="\{\{this\.label\}\}"/.test(trayTemplate)
+    ? "yes" : "no", "yes");
+/* Built from the two deck lists rather than from the open set, so the rows come out in the order
+ * the backs are drawn in and nothing crosses over anything on its way to where it belongs. */
+check("and the rows are ordered by the decks themselves",
+  /viewers: this\.#viewers\(\[\.\.\.leftDecks, \.\.\.pileLinks\]\),/.test(traySource)
+    ? "yes" : "no", "yes");
+
+/*
+ * **And a spread sits beside the deck it came out of.**  **[BUILT 2026-11-23]**
+ *
+ * Every opened deck spread into one band pinned to the top of the screen, which is right for the
+ * first deck in the column and wrong for every other: a feature turned over from the third row
+ * appeared level with the first. At the table that reads as the wrong deck having opened.
+ *
+ * **Measured rather than calculated**, because half of it could not be calculated: the piles
+ * under the Play button sit in a top-anchored column as tall as whatever is in it, so where the
+ * discard is depends on a turn in progress. One mechanism that asks the back where it is answers
+ * for both columns, and cannot drift from the stylesheet the way a second copy of the arithmetic
+ * would.
+ */
+check("a spread is placed against its own back",
+  /#fitSpreads\(\) \{/.test(traySource) ? "yes" : "no", "yes");
+const spreadBody = bodyOf(traySource, "  #fitSpreads() {");
+check("and it asks the back where it is",
+  /back\.getBoundingClientRect\(\)\.top - frame\.top/.test(spreadBody) ? "yes" : "no", "yes");
+check("and matches a row to a back by the pile's own id",
+  /layer\.querySelector\(`\.cr-pile\[data-pile="\$\{id\}"\]`\)/.test(spreadBody) ? "yes" : "no",
+  "yes");
+/* A back that is not on the screen is not an answer, and the stylesheet's top is a better guess
+ * than a number computed from a rectangle that is not there. */
+check("and leaves a row alone when its back is not drawn",
+  /if \(!back\) continue;/.test(spreadBody) ? "yes" : "no", "yes");
+check("and never draws a spread over the hand",
+  /Math\.max\(0, floor - spread\.offsetHeight\)/.test(spreadBody) ? "yes" : "no", "yes");
+/* After the rows are counted, because counting them is what decides how tall a card is and
+ * therefore where every back on the screen sits. */
+const renderBody = bodyOf(traySource, "  _onRender(context, options) {");
+check("and it runs after the row count that moves every back",
+  /this\.#fitRows\(\);[\s\S]*this\.#fitSpreads\(\);/.test(renderBody) ? "yes" : "no", "yes");
+check("and again when the window is resized",
+  /tray\.#fitSpreads\(\);/.test(traySource) ? "yes" : "no", "yes");
+/* The stylesheet keeps a top so the one frame before the measurement lands is in the right
+ * neighbourhood rather than at the top of the window. */
+check("and the stylesheet's own top is only the first frame",
+  /\*\*`top` is a first-paint fallback and nothing else\.\*\*/.test(css) ? "yes" : "no", "yes");
+
+/*
+ * **The Items deck is what you have equipped.**  **[RULED 2026-11-23]**
+ *
+ * The count was everything owned and the spread was everything NOT in play, which is two
+ * different decks sharing one label and one back. A goblin carrying a single equipped knife read
+ * **1 Items** and opened on nothing at all.
+ *
+ * The HUD is the surface you play from and the character sheet is where you own things, so the
+ * deck is the gear in your hands, on your back and on your belt -- and the count and the spread
+ * are the same question asked twice.
+ */
+check("the Items deck counts what is equipped",
+  /const items = this\.actor\.items\.filter\(i => i\.type === "item" && i\.system\.equipped\);/
+    .test(traySource) ? "yes" : "no", "yes");
+const viewerBody = bodyOf(traySource, "  #viewerFor(id) {");
+check("and opens on the same gear it counted",
+  /\.filter\(i => i\.type === "item" && i\.system\.equipped\)/.test(viewerBody) ? "yes" : "no",
+  "yes");
+/* A reference, not a control: equipping is the character sheet's job, and a card that looks
+ * takeable and takes nothing is worse than one that does not. */
+check("and the spread does not offer to equip anything",
+  /tip: "Equipped\. What you carry is set on the character sheet\."/.test(viewerBody)
+    ? "yes" : "no", "yes");
+check("and the pack is no longer what the Items deck shows",
+  /!i\.system\.equipped \|\| CARDRPG\.slots\[i\.system\.equippedSlot\]\?\.stows/.test(traySource)
+    ? "no" : "yes", "yes");
+/* The heading is the whole label now, because what a spread holds differs per deck and a suffix
+ * fixed in the template could only ever have been right about one of them. */
+check("and the template no longer claims every spread is out of play",
+  /not in play/.test(trayTemplate) ? "no" : "yes", "yes");
+
+/*
+ * **The skill deck deals when you click it.**  **[CHANGED 2026-11-23]**
+ *
+ * It was deliberately inert: skill-rules 1 says the GM says when a new scene starts, so dealing
+ * lived on the scene panel's *New scene* button. That confused **who decides** with **where you
+ * press**. The action deck in the same corner on the other side of the window deals when it is
+ * clicked, and anyone who had learned that reached for the skill deck and got nothing -- in a
+ * corner whose whole job is to be the deck you are playing from.
+ *
+ * Who decides has not moved, which is the pin that keeps skill-rules 1 true.
+ */
+check("the skill corner deals a hand",
+  /\{\{#if onSkill\}\}data-action="dealSkills"\{\{else\}\}data-action="dealHand"\{\{\/if\}\}/
+    .test(trayTemplate) ? "yes" : "no", "yes");
+const skillBody = bodyOf(traySource, "  #skillDeck() {");
+check("and dims once the hand is full, like the action deck on a dealt turn",
+  /spent: full,/.test(skillBody) ? "yes" : "no", "yes");
+check("and the corner is no longer inert",
+  /spent: false,/.test(skillBody) ? "no" : "yes", "yes");
+check("and the GM is still the one who says when a scene starts",
+  /The GM says when a new scene starts\./.test(traySource) ? "yes" : "no", "yes");
+
+/* And the spec argues all five, because the ones that reverse an earlier ruling are only
+ * defensible next to the argument they are reversing. */
+check("hud-spec records that the corner's row is counted either way",
+  /\*\*The corner counts whether or not there is a deck in it\.\*\*/.test(hudSpec) ? "yes" : "no",
+  "yes");
+check("hud-spec records that the Items deck is what is equipped",
+  /^### 3\.8a The Items deck is what you have equipped/m.test(hudSpec) ? "yes" : "no", "yes");
+check("hud-spec records where a spread goes, and how many there can be",
+  /^### 3\.11 A spread sits beside its own deck, and more than one can be open/m.test(hudSpec)
+    ? "yes" : "no", "yes");
+check("hud-spec records the window that would not go away",
+  /\*\*Only one HUD is on the screen, and now it really is\.\*\*/.test(hudSpec) ? "yes" : "no",
+  "yes");
+check("hud-spec records that both corners deal",
+  /\*\*Both corners deal\.\*\*/.test(hudSpec) ? "yes" : "no", "yes");
+
 
 /*
  * **Sift shows the cards.**  **[FIXED 2026-11-22]**
@@ -20758,12 +20946,14 @@ const absentGreps = [
   String.raw`and the old disjunction is gone from the hand filter :: c\.type !== "wound" && c\.type !== "taint"`,
   String.raw`and the old relative anchor is gone :: the dark lives between that strip`,
   String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,
+  String.raw`and the pack is no longer what the Items deck shows :: !i\.system\.equipped \|\| CARDRPG\.slots\[i\.system\.equippedSlot\]\?\.stows`,
   String.raw`and the parenthesis that said nothing is gone :: \(was \$\{step\.param\}\)`,
   String.raw`and the predicate the five readers shared :: export function (injuryBites|adaptedNames)`,
   String.raw`and the repair hands its own item to the check :: resolveCheck\(actor, \{ approach: "lore", dc, item \}\)`,
   String.raw`and the resolver reads the flag :: conditionsOf\(actor\)\.includes\("invisible"\)`,
   String.raw`and the sentence that was false is gone :: closes every other god permanently`,
   String.raw`and the template no longer asks which kind it is :: \{\{#if isWound\}\}`,
+  String.raw`and the template no longer claims every spread is out of play :: not in play`,
   String.raw`and the token is not given a file of its own :: texture: \{ src: (?!art \})`,
   String.raw`and the tray does not claim it :: await askStrain\(this\.actor, owed, \{[\s\S]{0,200}?agreed`,
   String.raw`and the tray keeps no loop of its own :: for \(const card of cards\) \{\s*\n\s*if \(isReserved`,

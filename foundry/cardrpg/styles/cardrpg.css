@@ -962,6 +962,18 @@
 /*
  * An opened deck fans out sideways from its back, at the same card size as everything else, with
  * no tray behind it.
+ *
+ * **`top` is a first-paint fallback and nothing else.**  **[CHANGED 2026-11-23]**
+ *
+ * It was the whole answer, and 54px is the top of the left column -- so every spread came out
+ * level with the FIRST deck whichever deck had been clicked. A card turned over from Conditions
+ * appeared two rows above the back it came from, which at the table reads as the wrong deck
+ * having opened. `#fitSpreads` measures the back and writes the real top inline, for the reason
+ * given there: the piles under the Play button sit at a height that depends on what is in that
+ * column, which no stylesheet can know.
+ *
+ * It stays at the column's head here so that the one frame before the measurement lands is in
+ * the right neighbourhood rather than at the top of the window.
  */
 .cr-hud-layer .cr-hud__spread {
   left: calc(var(--cr-controls) + var(--cr-gutter) + var(--cr-card-w) + 12px);
