@@ -160,6 +160,28 @@ export async function refill(actor, { handlers = {} } = {}) {
   };
 }
 
+/**
+ * **How many cards a hand is still missing, which is not the same as how many were drawn.**
+ * **[BUILT 2026-11-22]**
+ *
+ * `drawn` is 0 for a player holding a full hand, and the deck button read that as *your draw pile
+ * is empty* -- a warning about a problem they did not have, pointing them at Catch Breath for
+ * stamina they need not spend. The question *did the deck run out* is a question about the hand.
+ *
+ * `short` is the part that cannot be read off the hand: an intruder that was dealt, resolved and
+ * binned took a slot with it, so a hand of four with one Fear behind it is full rather than one
+ * card down. The caller has that number from its own `refill` and passes it back in.
+ *
+ * One predicate, because two readers must agree: the turn-start deal whispers the GM, the deck
+ * button warns the player, and a hand that is short for one of them is short for both.
+ */
+export function handShort(actor, short = 0) {
+  const size = actor?.system?.handSize?.max ?? 0;
+  if (!size) return 0;
+  const held = deckOf(actor, "actionHand")?.cards.size ?? 0;
+  return Math.max(0, size - held - short);
+}
+
 /*
  * **What each kind does as it is dealt**, keyed by the `onDraw` in the table above.
  *

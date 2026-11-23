@@ -13,8 +13,12 @@
  */
 
 import { CARDRPG } from "./config.mjs";
-import { deckOf, moveRandom, moveTop, move, normalizeDeck, allStacks, available } from "./decks.mjs";
-import { resolveWound, DROPPED, resolveDue, clearDue } from "./resolve.mjs";
+import {
+  deckOf, moveRandom, moveTop, move, normalizeDeck, allStacks, available, refill, handShort
+} from "./decks.mjs";
+/* `applyRage` because a Rage card is a Strike and the deck layer does not resolve Strikes: the
+ * turn-start deal needs the same handler the deck button has always passed. */
+import { resolveWound, DROPPED, resolveDue, clearDue, applyRage } from "./resolve.mjs";
 import { expireGround, clearGround, groundFor, imposeGround } from "./ground.mjs";
 
 /* -------------------------------------------- */
@@ -126,11 +130,23 @@ export class CardRPGCombat extends Combat {
 /* -------------------------------------------- */
 
 /**
- * Start of a round: draw one intent card per NPC type.
+ * Start of a round: refill every character's hand, then draw one intent card per NPC type.
  *
- * Hands are NOT dealt here. Drawing is the player's own act -- they click their deck -- because
- * playing a card is what spends the clock and watching your own stamina fall is the point. Filling
- * the hand for them would make the cost invisible.
+ * **The refill is core-rules 3 step 1, and it was never built.**  **[FIXED 2026-11-22]** The
+ * round is written as *refill, intent, turns*, and this function did the second and third of
+ * those. Drawing was left to a button in the HUD corner, under an argument that said *drawing is
+ * the player's own act, because playing a card is what spends the clock and watching your own
+ * stamina fall is the point.* That argument is about **playing** cards and was applied to
+ * **drawing** them. The deck cycles for free (core-rules 8), so a refill costs nothing, decides
+ * nothing, and the click bought the player no choice -- only a fight that began with five empty
+ * hands and a rule nobody could find.
+ *
+ * It matters most in round 1, and that is the case a turn-start refill alone does not cover:
+ * **you can react before your first turn**, so a character fourth in the order with no cards is a
+ * character who cannot defend themselves for three turns of somebody else's.
+ *
+ * The acting character is topped up again at the start of their own turn, by `dealTurnHand`; see
+ * the note there for what that second fill is for.
  *
  * **[2026-11-12] The draw pile is no longer the clock**, and this comment used to say it was. The
  * deck cycles for free while stamina lasts, so an empty draw pile means only that the discard is
@@ -140,7 +156,7 @@ export class CardRPGCombat extends Combat {
  * anyway, so it flips automatically -- which is exactly what makes Foresee worth something only
  * when the enemy acts late in the order.
  */
-export async function onRoundStart(combat) {
+export async function onRoundStart(combat, updateData = null) {
   if (!game.user.isGM) return;
 
   /*
@@ -151,6 +167,15 @@ export async function onRoundStart(combat) {
    * round at all is *all fight*, and what takes those is the fight ending.
    */
   await expireGround(combat.scene ?? canvas?.scene, combat.round ?? 0);
+
+  /* Step 1, for everyone, before the monsters decide anything. The key is the turn that is
+   * STARTING, which is also the key the acting figure's own refill will compare against, so the
+   * first combatant is not dealt to twice. */
+  const starting = turnOf(combat, updateData);
+  const at = turnKey(starting.round, starting.index);
+  for (const combatant of combat.combatants) {
+    if (combatant.actor?.type === "character") await dealTurnHand(combatant.actor, at);
+  }
 
   const lines = [];
   const intents = await drawIntents(combat);
@@ -299,6 +324,24 @@ export function turnOf(combat, updateData = null) {
   return answer;
 }
 
+/**
+ * **The key a once-per-turn marker is written under.**  **[BUILT 2026-11-22]**
+ *
+ * `onTurnStart` has written `round:turn` into a combat flag since the day it learned to run once
+ * per turn, and the tray has spelled the same string for the action deck's *already dealt this
+ * turn*. While nothing compared the two, two spellings cost nothing. **They are compared now**:
+ * the turn deals the hand, and the deck corner greys itself out by reading the marker the deal
+ * wrote. Two files agreeing on a format by coincidence is the defect this project has a dozen
+ * notes about, so the format is a function.
+ *
+ * It takes the round and the index rather than the combat, because the one caller that matters
+ * most cannot use the combat: inside a turn hook, `combat.turn` is still the turn that ENDED
+ * (see `turnOf`), and a key built from it would mark the wrong turn for ever.
+ */
+export function turnKey(round, index) {
+  return round === null || round === undefined ? "no-combat" : `${round}:${index}`;
+}
+
 export async function onTurnStart(combat, updateData = null) {
   if (!game.user.isGM) return;
   const { actor, index, round } = turnOf(combat, updateData);
@@ -314,7 +357,7 @@ export async function onTurnStart(combat, updateData = null) {
    * hooks call this now, and this marker is what makes that safe: if a build ever fires both for
    * one transition, the second call does nothing rather than ticking everything twice.
    */
-  const at = `${round}:${index}`;
+  const at = turnKey(round, index);
   if (combat.getFlag("cardrpg", "turnDone") === at) return;
   await combat.setFlag("cardrpg", "turnDone", at);
 
@@ -330,6 +373,8 @@ export async function onTurnStart(combat, updateData = null) {
   await resolveDue(actor);
 
   if (actor.type === "npc") await revealIntent(actor);
+  /* And a character's hand comes up to size, because every turn starts that way. */
+  else await dealTurnHand(actor, at);
 
   /*
    * **The ground renews what it imposes, before anything reads the conditions.**  [2026-11-16]
@@ -367,6 +412,66 @@ export async function onTurnStart(combat, updateData = null) {
      */
     if (before - damage <= 0) await resolveWound(actor, { reason: DROPPED });
   }
+}
+
+/**
+ * **And the acting figure is topped up at the start of their own turn.**  **[BUILT 2026-11-22]**
+ *
+ * The round already refilled everybody (above). This is the **second** fill, and what it covers
+ * is the cards spent since: reactions, mostly, which is the one way a hand empties on somebody
+ * else's turn.
+ *
+ * **It is a change to the written rule, and worth stating as one.**  **[RULED 2026-11-22]**
+ * core-rules 3 refills once, at the top of the round, so a player who reacted three times before
+ * their turn acted with two cards -- and a player who reacted three times *after* their turn
+ * acted with five. The same spending, a different price, decided by where initiative put them.
+ * A fill at the top of each figure's own turn puts the refill at the same point in everybody's
+ * personal cycle, which is what the round-start version was reaching for.
+ *
+ * **What it costs is a real cost**: reactions before your turn no longer thin the hand you act
+ * with, so a reaction is paid for in stamina and in the card itself rather than in what you can
+ * do next. That is the trade, written down so it can be reversed by deleting one line if the
+ * table finds reactions too cheap.
+ *
+ * **The button stays, and it is not redundant.** Out of combat there is no turn to start, so a
+ * scene still deals from the corner; a hand thinned mid-turn by Strain can still be topped up.
+ * What it is no longer is the only way to get cards.
+ *
+ * **Idempotent on the key**, which is what lets the round and the turn both call it: the first
+ * figure in the order is refilled by the round under the same key its own turn would use, so the
+ * second call does nothing rather than re-reading every pile to draw zero cards.
+ *
+ * **The marker moved onto the actor.** `dealtAt` was a field on the tray -- one client's memory
+ * of what that client had clicked -- and the deal happens on the GM's machine now, for somebody
+ * else's character. A flag on the actor is the one answer every client reads, so the corner greys
+ * out on the player's screen for the turn their hand arrived on instead of inviting a second deal
+ * that would draw nothing.
+ *
+ * @param {Actor} actor the character whose turn is starting
+ * @param {string} at the turn's key, from `turnKey` -- the SAME string the tray compares against
+ */
+export async function dealTurnHand(actor, at) {
+  if (!actor || actor.type !== "character") return null;
+  if (actor.getFlag("cardrpg", "dealtAt") === at) return null;
+
+  const result = await refill(actor, { handlers: { rage: applyRage } });
+  await actor.setFlag("cardrpg", "dealtAt", at);
+
+  /*
+   * Said only when the deck could not fill the hand, and asked of the HAND rather than of what
+   * was drawn -- `handShort` is the predicate, shared with the deck button so the two cannot
+   * disagree about what being short means.
+   */
+  const missing = handShort(actor, result.short);
+  if (missing) {
+    await ChatMessage.create({
+      content: `<div class="cardrpg"><p><strong>${actor.name}</strong> draws, and the deck runs `
+        + `out: <strong>${missing}</strong> short of a full hand. Catch Breath buys the stamina `
+        + `that lets the discard cycle back.</p></div>`,
+      whisper: ChatMessage.getWhisperRecipients("GM")
+    });
+  }
+  return result;
 }
 
 /**
@@ -447,6 +552,166 @@ async function tickRecharges(actor) {
 }
 
 /* -------------------------------------------- */
+/*  Going down                                  */
+/* -------------------------------------------- */
+
+/**
+ * **Foundry's own skull**, by its status id, rather than a picture of one.  [2026-11-22]
+ *
+ * `dead` is in `CONFIG.statusEffects` in every Foundry install, it draws `icons/svg/skull.svg`,
+ * and as an **overlay** it is drawn across the whole token instead of as one of the little
+ * corner badges. Using it means the mark survives a token being dragged, copied or re-linked, it
+ * can be taken off by hand from the token HUD, and a module that restyles conditions restyles
+ * this one too -- none of which is true of a sprite this system would have to draw itself.
+ */
+const DOWNED_STATUS = "dead";
+
+/**
+ * **Dropping to 0 takes you off the board and out of the order.**  **[BUILT 2026-11-22]**
+ *
+ * Three things used to happen when a character hit 0 Health -- a Wound card, an injury draw, and
+ * a health value of zero -- and **not one of them was visible on the map.** The figure stood
+ * there in the order, with a turn coming round, looking exactly like a figure that could act. A
+ * GM running five goblins had nothing to read but the numbers in a tracker.
+ *
+ * So: the skull goes over the token, and the combatant leaves the fight.
+ *
+ * **Leaving the fight is the part worth arguing about**, because it is not reversible by itself.
+ * A healed character does not walk back into the initiative order -- somebody has to put them
+ * there, and `rollInitiative` draws them a new place when they do. That is the honest model: a
+ * character who was out and is now up has not been waiting their turn, and core-rules 3 draws the
+ * order once per fight precisely so that the order is a fact about the fight rather than a queue
+ * that is edited. The alternative -- marking them defeated and leaving them in the list -- keeps
+ * a figure in the order whose every turn is skipped, which is the thing the GM was already having
+ * to remember.
+ *
+ * Matched by **uuid and not by id**: an unlinked token's actor is a synthetic document carrying
+ * the base actor's id, so five unlinked goblins all answer to one id and one of them dropping
+ * would have deleted the lot. A uuid names the token.
+ */
+export async function markDown(actor) {
+  if (!actor) return false;
+
+  let marked = false;
+  if (!actor.statuses?.has(DOWNED_STATUS)) {
+    if (CONFIG.statusEffects?.some(e => e.id === DOWNED_STATUS)) {
+      await actor.toggleStatusEffect(DOWNED_STATUS, { active: true, overlay: true });
+      marked = true;
+    } else {
+      console.warn(`Card RPG | no "${DOWNED_STATUS}" status effect to mark ${actor.name} with`);
+    }
+  }
+
+  /*
+   * **The place is kept, because they are coming back to it.**  **[RULED 2026-11-22]**
+   *
+   * The first version of this said a healed character does not walk back into the order, and
+   * argued it: the order is drawn once and holds for the whole fight (core-rules 3), so a figure
+   * who was out has not been waiting their turn. **That was the wrong end of the same rule.** An
+   * order that holds for the whole fight is exactly what says their place is still theirs --
+   * they did not leave the fight, they stopped being able to act in it -- and the alternative
+   * put the GM in the middle of every revival, re-adding a token and settling where it goes,
+   * which is bookkeeping the engine already has the answer to.
+   *
+   * So what is remembered is the **whole place**: the combat, the token, and the initiative they
+   * drew. Not a new draw on the way back in -- a second draw would be a second order, and the
+   * one thing core-rules 3 insists on is that there is one.
+   */
+  const left = [];
+  for (const combat of game.combats ?? []) {
+    const mine = combat.combatants.filter(c => c.actor?.uuid === actor.uuid);
+    if (!mine.length) continue;
+    for (const c of mine) {
+      left.push({
+        combatId: combat.id, tokenId: c.tokenId, sceneId: c.sceneId, actorId: c.actorId,
+        initiative: c.initiative, hidden: c.hidden
+      });
+    }
+    await combat.deleteEmbeddedDocuments("Combatant", mine.map(c => c.id));
+  }
+  /* Only when there is something to remember: called twice on a figure already down, the second
+   * call must not overwrite the place with an empty list. */
+  if (left.length) await actor.setFlag("cardrpg", "downedFrom", left);
+
+  if (marked || left.length) {
+    await ChatMessage.create({
+      content: `<div class="cardrpg"><p><strong>${actor.name}</strong> is down`
+        + (left.length ? ", and out of the fight" : "")
+        + `. Unconscious until treated; healing above 0 stands them up and puts them back `
+        + `where they were in the order.</p></div>`
+    });
+  }
+  return marked || left.length > 0;
+}
+
+/**
+ * **Back above 0: the skull comes off and the figure goes back where it was.**
+ * **[CHANGED 2026-11-22]**
+ *
+ * At the place it drew, with the initiative it drew, and with no second draw: core-rules 3 draws
+ * the order once for the whole fight, so coming back into it is a restoration rather than an
+ * entrance. A fight that has since ended leaves nothing to go back to, and the memory of the
+ * place is dropped rather than kept against a fight that will never run again.
+ *
+ * Cheap when there is nothing to do, which it has to be: this runs on **every** write that
+ * leaves an actor above 0 Health, which is most writes in the game.
+ */
+export async function standUp(actor) {
+  if (!actor) return false;
+
+  let stood = false;
+  if (actor.statuses?.has(DOWNED_STATUS)) {
+    await actor.toggleStatusEffect(DOWNED_STATUS, { active: false, overlay: true });
+    stood = true;
+  }
+
+  const places = actor.getFlag("cardrpg", "downedFrom") ?? [];
+  if (!places.length) return stood;
+
+  const back = [];
+  for (const place of places) {
+    const combat = game.combats?.get(place.combatId);
+    if (!combat) continue;
+    /* Already there is already right: a GM who put them back by hand has settled it. */
+    if (combat.combatants.some(c => c.actor?.uuid === actor.uuid)) continue;
+    await combat.createEmbeddedDocuments("Combatant", [{
+      tokenId: place.tokenId, sceneId: place.sceneId, actorId: place.actorId,
+      initiative: place.initiative, hidden: place.hidden
+    }]);
+    back.push(combat);
+  }
+  await actor.unsetFlag("cardrpg", "downedFrom");
+
+  if (back.length) {
+    await ChatMessage.create({
+      content: `<div class="cardrpg"><p><strong>${actor.name}</strong> is back on their feet, `
+        + `and back in the order at the place they drew.</p></div>`
+    });
+  }
+  return stood || back.length > 0;
+}
+
+/**
+ * **One gate, read off the number rather than off the blow.**
+ *
+ * Health is written in eleven places -- a hit, a burn, a tick of ground, a fast Taint, the price
+ * of a spell, a heal, a rest, and a GM typing into the sheet. Hanging the skull off `resolveWound`
+ * would catch the ones that go through the Wound gate and miss the sheet entirely, and hanging it
+ * off each writer is eleven copies with a twelfth added later and missed. **The number is the
+ * fact**, so the number is what is watched.
+ *
+ * It is idempotent in both directions, which is what lets it be driven by *any* write: marking a
+ * token that already wears the skull does nothing, and deleting combatants that are already gone
+ * is an empty list.
+ */
+export async function onHealthChanged(actor, changed = {}) {
+  if (!game.user.isGM) return;
+  if (!foundry.utils.hasProperty(changed, "system.health.value")) return;
+  if ((actor.system.health?.value ?? 1) <= 0) await markDown(actor);
+  else await standUp(actor);
+}
+
+/* -------------------------------------------- */
 /*  End of combat                               */
 /* -------------------------------------------- */
 
@@ -491,13 +756,15 @@ export function registerCombatHooks() {
   /* Every one of these hands the turn that is STARTING over in `updateData`, and the combat
    * itself still reports the one that ended. All three pass it on; `turnOf` is the one reader. */
   Hooks.on("combatRound", async (combat, updateData) => {
-    await onRoundStart(combat);
+    await onRoundStart(combat, updateData);
     await onTurnStart(combat, updateData);
   });
   Hooks.on("combatTurn", (combat, updateData) => onTurnStart(combat, updateData));
   Hooks.on("combatStart", async (combat, updateData) => {
-    await onRoundStart(combat);
+    await onRoundStart(combat, updateData);
     await onTurnStart(combat, updateData);
   });
   Hooks.on("deleteCombat", combat => onCombatEnd(combat));
+  /* Dropping to 0 is a fact about a number, so it is watched where the number is written. */
+  Hooks.on("updateActor", (actor, changed) => onHealthChanged(actor, changed));
 }

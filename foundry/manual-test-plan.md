@@ -145,12 +145,21 @@ pile.
 
 **Expect.**
 
-- The dialog lists exactly **one** card, with a checkbox, and says the ticked card goes to your
-  discard and that a Catch Breath brings it back.
-- Ticking it and binning moves it to the **discard**, not out of the game. Draw pile one shorter.
+- The dialog shows exactly **one card** — a card, with its picture, its name and both its halves,
+  the same way it would look in your hand. **[CHANGED 2026-11-22]** It used to be a bulleted list
+  of names with a tick box beside each, which is not enough to judge a card by, and judging cards
+  is the whole of this effect.
+- **Clicking anywhere on the card marks it**: a cross in the corner, the card dimmed and ringed.
+  Clicking again takes the mark off.
+- Binning it moves it to the **discard**, not out of the game. Draw pile one shorter.
 - The chat line says the Warrior sifts 1 and bins 1.
 
 **Then do it again and press "Keep them all".** Nothing moves, and the chat line says so.
+
+> **A Sift that turns up an intruder is the case worth catching.** If a Fear or a Taint card is in
+> the draw pile when you sift, it should be drawn as a **harm card** — dark, with *Can't be
+> played* across it — and not as a blank. The draw pile holds them, and a player who can see one
+> coming is exactly who should be allowed to bin it.
 
 **And the look-only version.** *Graven Sight* is a **feature**, not a spell — Tattoo Magic ink, so
 it is not prepared and not cast. Give the hero the feature and use it from the features pile. It is
@@ -513,6 +522,82 @@ an armed row is darker than a held one.
 grey, with **neither word**: it is not armed, because it will not fire, and it is not held, because
 nobody held it. Three states, three looks. A blocked row reading *armed* would be the card
 promising something the armour already refused.
+
+---
+
+# 2c. The turn, the window and the body  **[new 2026-11-22]**
+
+**Why manual:** four changes asked for after a second test round, three of which are about what is
+on the screen and one of which happens on somebody else's machine.
+
+## 2c.1 Nobody presses anything to get a hand
+
+**Do.** Put the Warrior and a goblin in a fight and press **Begin combat**. Do not touch the deck
+corner.
+
+**Expect.**
+
+- The Warrior's hand is **dealt**, up to hand size, as the fight begins.
+- The **action deck corner** reads *cards dealt* and is dimmed: it has already dealt for this turn.
+- **End the turn and come round again.** The hand is topped back up to size at the start of your
+  turn, without a click.
+
+**Then play a reaction before your own turn** — easiest with two characters, or by holding a card
+and letting the goblin hit you. At the start of your own turn the hand comes back **up to size**,
+including the card you reacted with. That is the ruling: reacting early and reacting late now cost
+the same (core-rules §3).
+
+**And out of combat.** The corner is **never** dimmed out of a fight, because out of a fight there
+is no turn for it to be spent on. Pressing it with a full hand should say **nothing at all** — it
+used to warn *Draw pile is empty*, which was a statement about the draw and not about your hand.
+
+## 2c.2 A body on the floor looks like one
+
+**Do.** Take the goblin to **0 Health** — hit it, or type 0 into its sheet, which is the case most
+worth pressing because it does not go through a blow at all.
+
+**Expect.**
+
+- A **skull** is drawn over the whole token, not a small badge in the corner.
+- The goblin **leaves the combat tracker**.
+- Its tray shows **Unconscious** in the conditions pile, and its reactions are off.
+- Chat says it is down and out of the fight.
+
+**Then heal it above 0.** The skull comes off, the Unconscious goes with it, and **the figure is
+back in the combat tracker at the place it drew** — the same initiative it had before it went
+down, because the order is drawn once and holds for the whole fight (core-rules §3). Chat says so.
+Check the tracker rather than the token: the number beside its name should be the one it had.
+
+Do the same to the **Warrior**: a character is not a special case. **And end the fight while
+somebody is down**, then heal them: there is no fight to go back into, and nothing should be
+re-created or complained about.
+
+## 2c.3 A caster can still see their conditions
+
+**This is the one to run with a spell on the hero.** It is the fault that was reported.
+
+**Do.** Open the tray on a character with **no** spells and count the piles down the left: Items,
+Features, Conditions, and the action deck in the corner. Now give that character a spell — the
+prepare macro from [Setting up](#setting-up) will do it — and look again.
+
+**Expect.** **Five things down the left edge**, all of them on the screen: Items, Features,
+**Spells**, **Conditions**, and the deck corner. The cards are each a little smaller than they
+were, which is how the fifth one fits.
+
+**Before today the Conditions pile went off the bottom**, which reads as the spell deck having
+replaced it. Worth checking at a small window — **1366×768** is where it is worst.
+
+## 2c.4 Where the discard is
+
+**Do.** Look at the bottom of the right-hand column, under the **Play** button.
+
+**Expect.** **Three deck backs in a row** — Fate, Discard, and Spent once anything is Spent — each
+about a third of the column wide, each with its icon, its count and its name. Clicking one spreads
+it beside the column, the same as the decks down the left.
+
+They were a row of small icon counters on the same line as Health and Block, which is where *the
+discard pile is not visible* came from. **Play a card and watch the Discard count go up**, which
+is the thing that was impossible to see.
 
 ---
 

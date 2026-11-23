@@ -170,6 +170,17 @@ export function pileBack(id) {
   if (id === "features") return backOf("feature");
   if (id === "conditions") return backOf("condition");
   if (id === "spells") return backOf("spell");
+  /*
+   * **And the three down the right, which are piles of a deck rather than decks.**
+   * [2026-11-22]
+   *
+   * A discard wears the back of the deck it came out of, because that is what it is: the same
+   * cards, face down in a different place. So Discard and Spent are both the action deck's back
+   * and are told apart by their icon and their label, the way they always were as counters --
+   * what the picture says is *these are your cards*, and what the icon says is which pile.
+   */
+  if (id === "fateDiscard") return backOf("fate");
+  if (id === "actionDiscard" || id === "actionSpent") return backOf("action");
   return "";
 }
 

@@ -132,6 +132,33 @@ function zeroedBy(system, flag) {
   return false;
 }
 
+/**
+ * **0 Health is Unconscious, and it is derived rather than stored.**  **[BUILT 2026-11-22]**
+ *
+ * core-rules 8 says Unconscious *means 0 Health and lasts until treated*, and config.mjs has said
+ * so in a comment beside the condition since it was written -- `noDuration`, because combat.mjs
+ * used to clear it at the end of a fight and a downed character stood up for free. `resolveCondition`
+ * refuses to apply it and says why: *Unconscious comes from 0 Health, not from an effect.*
+ *
+ * **And nothing ever applied it.** The one condition in the game whose trigger is written into the
+ * rules three times was the one condition no code path could produce: a character at 0 Health had
+ * a Wound, an injury draw, and nothing on their sheet saying they were down. Reactions kept firing
+ * off a body.
+ *
+ * Derived is what makes it true in both directions without a single write. A heal takes it off,
+ * because the number it is read from went up; a GM typing a health value into the sheet is as
+ * good as a blow; and nothing can leave a stale Unconscious on somebody who is standing, which is
+ * exactly the failure a stored copy of a derived fact produces.
+ *
+ * Shared between the two models rather than written out twice, which is this file's own lesson
+ * about `noReactions` -- that one was two identical getters and injuries were added to one of them.
+ */
+function downedConditions(system) {
+  return (system.health?.value ?? 1) <= 0
+    ? [{ key: "unconscious", duration: null, creatorId: "" }]
+    : [];
+}
+
 function slotCapacityOf(system, slot) {
   const base = CARDRPG.slots[slot]?.capacity;
   if (base === null || base === undefined) return base;
@@ -736,7 +763,8 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
    * which is which. They share a group -- the condition's key -- so their bonuses cap each other.
    */
   get activeConditions() {
-    const list = this.conditions.map(c => ({ ...c }));
+    /* Being down comes first, because it is the first thing true of you. */
+    const list = [...downedConditions(this), ...this.conditions.map(c => ({ ...c }))];
     if (this.encumbrance === "burdened") list.push({ key: "burdened", duration: null, creatorId: "" });
     if (this.encumbrance === "overloaded" || this.encumbrance === "immobile") {
       list.push({ key: "overloaded", duration: null, creatorId: "" });
@@ -1084,7 +1112,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
   }
 
   get activeConditions() {
-    return this.conditions.map(c => ({ ...c }));
+    return [...downedConditions(this), ...this.conditions.map(c => ({ ...c }))];
   }
 
   get blockedIcons() {

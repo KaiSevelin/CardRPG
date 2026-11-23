@@ -727,10 +727,10 @@
    * Almost nobody has one once the browser's own furniture is taken off, so the action deck has
    * been sitting on top of Conditions for everybody.
    *
-   * The budget is four cards plus the fixed furniture: 54 above, 12 of gaps inside the column, 12
-   * between the column and the deck, the deck's own toggle, and the hotbar below. The card is
-   * whatever is left over -- never bigger than the 128px the art was drawn for, never smaller
-   * than a count is readable at.
+   * The budget is the column's cards plus the fixed furniture: 54 above, 6 per gap inside the
+   * column, 12 between the column and the deck, the deck's own toggle, and the hotbar below. The
+   * card is whatever is left over -- never bigger than the 128px the art was drawn for, never
+   * smaller than a count is readable at.
    *
    * One variable does it, because the hand, the piles and any opened deck all derive from it:
    * a card dealt from a deck is exactly the size of the deck it came from, which is the rule this
@@ -743,7 +743,33 @@
    * middle once before. Anything added to that corner has to be declared here.
    */
   --cr-flip: 22px;
-  --cr-card-w: clamp(76px, (100vh - 168px - var(--cr-flip)) / 4 * var(--cardrpg-card-ratio), 128px);
+  /*
+   * **How many cards tall that column is, counted rather than assumed.**  **[FIXED 2026-11-22]**
+   *
+   * The divisor below was the literal `4`: three piles -- Items, Features, Conditions -- and the
+   * deck corner under them. **A caster has four piles**, because the spell book is a deck and not
+   * a rail (3.8), and nothing anywhere knew it. The budget still cut the window into four, every
+   * card came out a fifth too tall, and the bottom of the column went back under the action deck
+   * -- the same collision this whole block was written to end, brought back by content rather
+   * than by a window size.
+   *
+   * What a player saw was **the Conditions deck disappearing the moment their character learned a
+   * spell**: the pile that says what is being done to you right now, taken away by the one event
+   * that makes the column taller. It was read as the spell deck *replacing* the condition deck,
+   * which is exactly what it looks like when the fifth card is drawn off the bottom of a screen
+   * sized for four.
+   *
+   * So the tray counts the piles it has actually drawn and writes the answer here -- see
+   * `#fitRows`. The 4 that stays is the fallback for the commonest case and for the first paint
+   * before the count lands, which is the same bargain `--cr-sidebar` and `--cr-controls` already
+   * take. **Anything added to either column is counted automatically**, which is the difference
+   * between this and the two constants that preceded it.
+   */
+  --cr-rows: 4;
+  --cr-card-w: clamp(76px,
+    (100vh - 156px - (var(--cr-rows) - 2) * 6px - var(--cr-flip)) / var(--cr-rows)
+      * var(--cardrpg-card-ratio),
+    128px);
   /* Derived, so the tray's cards and the card's own aspect-ratio cannot disagree. 2:3 at 128
      wide is 192 tall, which is 13px more than 5:7 was -- the whole cost of the change. */
   --cr-card-h: calc(var(--cr-card-w) / var(--cardrpg-card-ratio));
@@ -818,6 +844,24 @@
   flex: 0 0 auto;
   width: var(--cr-deck-w);
   height: var(--cr-deck-h);
+  /*
+   * **A pile does not animate its own size.**  **[FIXED 2026-11-22]**
+   *
+   * The host styles every `button` with `transition: 0.5s` -- **all** properties, half a second --
+   * and a pile is a button. So a render that changed a card's size slid it to the new one over
+   * half a second, and anything looking at the column inside that window saw a size that was on
+   * its way somewhere else.
+   *
+   * That cost an afternoon. Three runs of the live harness measured a pile a few percent out of
+   * true, by a different few percent each time, and the arithmetic they were testing had been
+   * right the whole way through; the chase ended with a second column measured against a first
+   * one that was still growing. **A measurement of something in motion is a measurement of
+   * nothing**, and the harness has the same note on it.
+   *
+   * Furniture does not need an entrance. A deck is the size of the hand dealt from it on the
+   * frame it is drawn.
+   */
+  transition: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -944,6 +988,64 @@
   color: var(--cardrpg-paper);
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
+
+/*
+ * **The Sift dialog, which shows cards now.**  **[BUILT 2026-11-22]**
+ *
+ * It had no stylesheet at all: the effect built a `<ul>` of names with a checkbox each, and a
+ * list of names is not something anybody can judge a card by. These are the cards themselves,
+ * laid out the way an opened pile is, and the whole card is the tick.
+ *
+ * The checkbox stays in the markup and stays named `bin`, because that is what the dialog button
+ * reads; it is taken off the screen rather than out of the form, which also keeps the keyboard
+ * able to reach it.
+ */
+.cardrpg .cr-sift__cards {
+  list-style: none;
+  margin: 0.6em 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.cardrpg .cr-sift__pick {
+  display: block;
+  position: relative;
+  cursor: pointer;
+}
+.cardrpg .cr-sift__pick input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+/* The mark a card carries once it is for the bin, and the only thing that says so twice. */
+.cardrpg .cr-sift__tick {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 1;
+  width: 1.5em;
+  height: 1.5em;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--cardrpg-group-1);
+  color: var(--cardrpg-paper);
+  font-weight: 700;
+}
+.cardrpg .cr-sift__pick input:checked ~ .cr-sift__tick { display: flex; }
+/* Binned reads as binned at a glance: dimmed and ringed, not merely ticked. */
+.cardrpg .cr-sift__pick input:checked ~ .cr-card {
+  outline: 3px solid var(--cardrpg-group-1);
+  filter: grayscale(0.6) brightness(0.8);
+}
+.cardrpg .cr-sift__pick input:focus-visible ~ .cr-card {
+  outline: 3px solid var(--cardrpg-group-6);
+}
+.cardrpg .cr-sift__pick:hover .cr-card { border-color: var(--cardrpg-ink); }
+.cardrpg .cr-sift__seen { list-style: none; }
 
 /* --- spread cards: the same size as a card in hand, whatever is on them --- */
 .cardrpg .cr-card--spread {
@@ -1437,37 +1539,45 @@
 
 
 /*
- * Fate, Discard and Spent as a row of counters in the panel, not as deck backs on the table.
+ * **Fate, Discard and Spent, under the Play button: backs again, at a third of the width.**
+ * **[MOVED 2026-11-22]**
  *
- * A deck back is a big object that says "draw me", and none of these is drawn from by hand: Fate
- * is drawn by the rules, and the two discards are records. Card-sized backs for them also made the
- * column tall enough to sit under Foundry's own toasts, which have to land somewhere.
+ * They were counters at the end of the vitals row, and the argument for that was good: a deck
+ * back promises a pile you can draw on, none of these is drawn from by hand, and three card-sized
+ * backs cost the column two heights it did not have -- at full height it sat under Foundry's own
+ * notifications, which have to land somewhere.
+ *
+ * What it cost was the discard. **A number beside a heart and a shield reads as a statistic**,
+ * and the question a player actually has is *where did that card go* -- which is a question about
+ * a place, and is answered by a place. A third of the column each is what settles the original
+ * objection rather than ignoring it: one row of three, 94px tall at the common size, under a
+ * button that is already the bottom of the column.
  */
-.cr-hud-layer .cr-options__piles {
-  display: inline-flex;
-  gap: 0.5em;
-  /* Pushed to the end of the vitals row and divided off: the same kind of counter, a different
-     kind of thing counted. */
-  margin-left: auto;
-  padding-left: 0.5em;
-  border-left: 1px solid var(--cardrpg-rule);
+.cr-hud-layer .cr-hud__piles {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 6px;
 }
 
-.cr-hud-layer .cr-options__pile {
-  flex: 0 0 auto;
+/* A third of the two-card column, less the two gaps between the three of them. */
+.cr-hud-layer .cr-pile--mini {
+  --cr-mini-w: calc((2 * var(--cr-card-w) - 4px) / 3);
+  width: var(--cr-mini-w);
+  height: calc(var(--cr-mini-w) / var(--cardrpg-card-ratio));
+  gap: 0.1em;
+}
+/* The count shares its line with the icon that says which pile it counts: Discard and Spent wear
+   the same deck's back, so the glyph is the whole of the difference between them. */
+.cr-hud-layer .cr-pile--mini .cr-pile__count {
   display: inline-flex;
   align-items: center;
-  gap: 0.2em;
-  padding: 0;
-  border: none;
-  background: none;
-  font-size: 0.72rem;
-  color: var(--cardrpg-group-6);
-  cursor: pointer;
+  gap: 0.15em;
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
 }
-.cr-hud-layer .cr-options__count { font-variant-numeric: tabular-nums; }
-.cr-hud-layer .cr-options__pile:hover,
-.cr-hud-layer .cr-options__pile--open { font-weight: 700; text-decoration: underline; }
+.cr-hud-layer .cr-pile--mini .cr-pile__count .cr-icon { width: 1em; height: 1em; }
+.cr-hud-layer .cr-pile--mini .cr-pile__label { font-size: 0.56rem; }
 
 /* -------------------------------------------- */
 /*  Played and unplayed slates                  */

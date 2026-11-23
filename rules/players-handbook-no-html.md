@@ -1436,7 +1436,9 @@ once per patient per day; some magic says so.
 ### 0 Health
 
 At 0 you are **Unconscious**: you fall Prone, take no turns, cannot react, and gain a Wound. You are
-dying until somebody treats you.
+dying until somebody treats you. **You come out of the initiative order** while you are down, and
+healing puts you back into it at the place you drew. Your place is still yours: the order is drawn
+once and holds for the whole fight.
 
 ---
 

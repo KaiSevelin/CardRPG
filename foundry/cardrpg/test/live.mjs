@@ -339,6 +339,27 @@ async function probe(name, fn) {
 async function settle(page) {
   await page.evaluate(async () => {
     const { hero } = LIVE;
+    /*
+     * **Wait for whatever is still moving cards to stop.**  [2026-11-22]
+     *
+     * `deleteCombat` runs `afterCombat`, which walks every pile putting the hand back, and
+     * nothing awaits it -- so a probe that ends a fight hands the next one a deck that is still
+     * being shuffled. Settling on top of that emptied the hand, and a probe three further down
+     * reported *no Strike in hand*: a true statement about a hand that was mid-move.
+     *
+     * It has always been possible and it started happening when a fight began dealing a hand,
+     * which is twice the card movement in the same unawaited window. A known state has to begin
+     * by waiting for the last one to finish.
+     */
+    const waiting = LIVE.deckOf(hero, "actionHand");
+    let last = -1;
+    let same = 0;
+    for (let i = 0; i < 40 && same < 3; i++) {
+      await new Promise(r => setTimeout(r, 50));
+      const n = waiting?.cards.size ?? 0;
+      same = n === last ? same + 1 : 0;
+      last = n;
+    }
     await LIVE.afterCombat(hero);
     await LIVE.refill(hero);
     await LIVE.reserveHand(hero, false);
@@ -361,6 +382,13 @@ async function settle(page) {
       tray.playedAt = null;
       tray.spentHalves = { primary: false, secondary: false };
     }
+    /*
+     * **And the deal marker, which is on the ACTOR now.**  [2026-11-22] It was a field on the
+     * tray and went with the two above; it is a flag, so it survives the window being closed and
+     * a probe that starts a fight leaves it behind for every probe after. A known state is a
+     * state with no memory of a turn in it.
+     */
+    await hero.unsetFlag("cardrpg", "dealtAt");
   });
 }
 
@@ -4956,6 +4984,320 @@ async function probes(page) {
         ["and with nobody else in the fight, no deck is read", alone.length, 0]
       ];
     });
+  });
+
+  /*
+   * **The round deals the hand, and the turn tops it up.**  **[BUILT 2026-11-22]**
+   *
+   * core-rules 3 step 1 is *refill*, and the engine did not do it: drawing was a button in the
+   * HUD corner, so a fight began with five empty hands and a rule nobody could find. Both fills
+   * are driven here through a REAL encounter rather than by calling `dealTurnHand`, because what
+   * was missing was never the function -- it was the wiring, and a probe that calls the function
+   * proves the half that was already fine. That is the same lesson *the HUD belongs to the fight*
+   * is written under, in this file, forty probes up.
+   */
+  await probe("the round deals, and nobody presses anything", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { hero } = LIVE;
+      const hand = LIVE.deckOf(hero, "actionHand");
+      const size = hero.system.handSize?.max ?? 5;
+
+      /* An empty hand, so a deal is the only thing that can fill it. */
+      const discard = LIVE.deckOf(hero, "actionDiscard");
+      if (hand.cards.size) await LIVE.move(hand, discard, hand.cards.map(c => c.id));
+      const before = hand.cards.size;
+
+      /*
+       * **Linked, and the probe is wrong without it.** An unlinked token's actor is a synthetic
+       * copy carrying its own uuid, so the figure in the fight is not the document this probe
+       * reads afterwards: the hand filled (the decks are shared by id) and the turn's marker
+       * went onto the copy. A player character's token is linked, which is the case being tested.
+       */
+      const token = (await hero.getTokenDocument({ x: 1400, y: 1400, actorLink: true }))
+        .toObject();
+      const [placed] = await canvas.scene.createEmbeddedDocuments("Token", [token]);
+      const combat = await Combat.create({ scene: canvas.scene.id });
+      await combat.createEmbeddedDocuments("Combatant",
+        [{ tokenId: placed.id, sceneId: canvas.scene.id, actorId: hero.id }]);
+      await combat.startCombat();
+
+      /* The deal is a chain of awaits hanging off a hook nobody awaits, so this waits for the
+       * hand to stop changing rather than betting on a number of milliseconds. */
+      const held = async () => {
+        let last = -1;
+        let same = 0;
+        for (let i = 0; i < 40 && same < 3; i++) {
+          await new Promise(r => setTimeout(r, 100));
+          const n = hand.cards.size;
+          same = n === last ? same + 1 : 0;
+          last = n;
+        }
+        return last;
+      };
+      const dealt = await held();
+
+      /* And the corner says so, on the screen, which is the half a flag check cannot see. */
+      const tray = game.cardrpg.openTray(hero);
+      tray.side = "action";
+      await tray.render();
+      await new Promise(r => setTimeout(r, 300));
+      const corner = document.querySelector(".cr-hud__decks--action .cr-pile");
+      const spent = corner?.classList.contains("cr-pile--spent") ? "dimmed" : "live";
+      const says = corner?.querySelector(".cr-pile__state")?.textContent.trim();
+      /*
+       * **Read after the render, not after the cards.** The deal is a chain of awaits hanging off
+       * a hook nobody holds, and the flag is written at the end of it -- so a hand that has
+       * stopped growing is not yet a turn that has been marked. First time round this read a
+       * `null` and reported a marker that was written 200ms later.
+       */
+      const marked = hero.getFlag("cardrpg", "dealtAt");
+
+      /* The top-up: spend a card the way a reaction does, and start the turn again. */
+      const [one] = hand.cards.contents;
+      if (one) await LIVE.move(hand, discard, [one.id]);
+      const thinned = hand.cards.size;
+      await combat.nextRound();
+      const refilled = await held();
+
+      await combat.delete();
+      await placed.delete();
+      await hero.unsetFlag("cardrpg", "dealtAt");
+      /*
+       * **And wait for the fight to finish ending.** `deleteCombat` runs `afterCombat`, which
+       * moves every card back, and nothing awaits it -- so the next probe's `settle` refilled a
+       * hand that was being emptied underneath it, and the deck layer threw *Card does not
+       * exist* in a probe about something else entirely.
+       */
+      await new Promise(r => setTimeout(r, 1500));
+
+      return [
+        ["the hand starts empty", before, 0],
+        ["beginning a fight fills it", dealt, size],
+        ["and the turn is marked on the actor, where every client can read it",
+          typeof marked === "string" && marked.length > 0, true],
+        ["the deck corner is dimmed", spent, "dimmed"],
+        ["and says what it did", says ?? "nothing", "cards dealt"],
+        ["a card spent between turns leaves the hand short", thinned, size - 1],
+        ["and the next turn brings it back to size", refilled, size]
+      ];
+    });
+  });
+
+  /*
+   * **A figure at 0 Health wears a skull and leaves the order.**  **[BUILT 2026-11-22]**
+   *
+   * Three things happened at 0 Health -- a Wound card, an injury draw, and a health value of zero
+   * -- and not one of them was on the map. Driven through a plain `update` on the actor and not
+   * through a blow, because **the number is the gate**: the GM typing a 0 into a sheet has to
+   * work exactly as a hit does, and that is the path no damage-shaped test would cover.
+   */
+  await probe("a figure that is down", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { hero } = LIVE;
+      const full = hero.system.health.max;
+
+      /* Linked, so the figure in the fight is the hero and not a copy of them: see above. */
+      const token = (await hero.getTokenDocument({ x: 1500, y: 1500, actorLink: true }))
+        .toObject();
+      const [placed] = await canvas.scene.createEmbeddedDocuments("Token", [token]);
+      const combat = await Combat.create({ scene: canvas.scene.id });
+      await combat.createEmbeddedDocuments("Combatant",
+        [{ tokenId: placed.id, sceneId: canvas.scene.id, actorId: hero.id }]);
+      await combat.startCombat();
+      const inAtFirst = combat.combatants.filter(c => c.actor?.uuid === hero.uuid).length;
+
+      /* The hook is not awaited by the caller, so settle on the answer rather than time it. */
+      const rest = async () => {
+        for (let i = 0; i < 40; i++) await new Promise(r => setTimeout(r, 50));
+      };
+
+      /* The place they are about to lose, so the one they come back to can be compared with it. */
+      const drew = combat.combatants.find(c => c.actor?.uuid === hero.uuid)?.initiative ?? null;
+
+      await hero.update({ "system.health.value": 0 });
+      await rest();
+      const skull = hero.statuses?.has("dead") ? "yes" : "no";
+      const left = combat.combatants.filter(c => c.actor?.uuid === hero.uuid).length;
+      const said = (hero.system.activeConditions ?? []).map(c => c.key);
+      const reacts = hero.system.noReactions ? "no" : "yes";
+      const kept = hero.getFlag("cardrpg", "downedFrom")?.length ?? 0;
+
+      await hero.update({ "system.health.value": full });
+      await rest();
+      const stillSkull = hero.statuses?.has("dead") ? "yes" : "no";
+      const upAgain = (hero.system.activeConditions ?? []).some(c => c.key === "unconscious");
+      const backIn = combat.combatants.filter(c => c.actor?.uuid === hero.uuid);
+      const place = backIn[0]?.initiative ?? null;
+      const forgotten = hero.getFlag("cardrpg", "downedFrom") ?? "gone";
+
+      await combat.delete();
+      await placed.delete();
+      await new Promise(r => setTimeout(r, 1500));
+
+      return [
+        ["the figure was in the fight", inAtFirst, 1],
+        ["0 Health draws a skull over the token", skull, "yes"],
+        ["and takes the figure out of the order", left, 0],
+        ["Unconscious is on the sheet", said.includes("unconscious"), true],
+        ["and it is the first thing said about them", said[0] ?? "nothing", "unconscious"],
+        ["and the reactions are off", reacts, "no"],
+        ["and the place it drew is remembered", kept, 1],
+        ["healing takes the skull off", stillSkull, "no"],
+        ["and the Unconscious with it", upAgain, false],
+        ["and the health really came back", hero.system.health.value, full],
+        /*
+         * **Back in, once, at the initiative it drew.** The order is drawn once and holds for
+         * the whole fight, so coming back is a restoration: a second draw would be a second
+         * order, and two combatants would be a second figure.
+         */
+        ["and the figure is back in the fight", backIn.length, 1],
+        ["at the place it drew", place, drew],
+        ["and the memory of the place is dropped", forgotten, "gone"]
+      ];
+    });
+  });
+
+  /*
+   * **A caster's column still fits.**  **[FIXED 2026-11-22]**
+   *
+   * The probe above this file's deck-fitting one measures three piles and a deck corner, which is
+   * what a Warrior has. **A caster has four piles**, because the spell book is a deck -- and the
+   * card size was divided by a literal 4, so the fifth card went off the bottom of the screen and
+   * the Conditions pile with it. Measured at 1366x768, the smallest window Foundry will run in.
+   *
+   * The spell is made and deleted here rather than left on the hero: every probe after this one
+   * would otherwise be looking at a different column from the one it was written against.
+   */
+  await probe("the decks fit a caster's window", async () => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await page.evaluate(async () => {
+      await LIVE.hero.createEmbeddedDocuments("Item",
+        [{ name: "Probe Formula", type: "spell", system: { prepared: true } }]);
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      await tray.render();
+    });
+    await page.waitForSelector(".cr-hud__decks--action", { timeout: 20000 });
+    const rows = await page.evaluate(async () => {
+      /*
+       * **Wait until the column has stopped moving.**  [2026-11-22]
+       *
+       * The host styles every `button` with `transition: 0.5s` -- all properties -- and a deck
+       * pile is a button, so a render that changes a card's size slid it to the new one over half
+       * a second. This probe measured inside that window and reported a pile a few percent out of
+       * true, by a different few percent on each of three runs, while the arithmetic it was
+       * testing was right the whole time. **A measurement of something in motion is a measurement
+       * of nothing.** The system turns that transition off for a pile now; this waits as well,
+       * because the next thing to animate will not be a pile.
+       */
+      const box = sel => document.querySelector(sel)?.getBoundingClientRect();
+      let was = -1;
+      let still = 0;
+      for (let i = 0; i < 40 && still < 3; i++) {
+        await new Promise(r => requestAnimationFrame(r));
+        const now = Math.round(box(".cr-hud__decks--left")?.bottom ?? 0);
+        still = now === was ? still + 1 : 0;
+        was = now;
+      }
+
+      const left = box(".cr-hud__decks--left");
+      const action = box(".cr-hud__decks--action");
+      const piles = [...document.querySelectorAll(".cr-hud__decks--left .cr-pile")]
+        .map(p => p.querySelector(".cr-pile__label")?.textContent.trim());
+      /*
+       * Off the layer the column is actually in, not the first one in the document: two trays can
+       * be open, and a monster's has a left column and no deck corner.
+       */
+      const layer = document.querySelector(".cr-hud__decks--left").closest(".cr-hud-layer");
+      const rows = getComputedStyle(layer).getPropertyValue("--cr-rows").trim();
+      const overlap = Math.round(Math.max(0, left.bottom - action.top));
+      /* On failure it prints what it measured: the arithmetic has four inputs, and a bare number
+       * of pixels says which of them is wrong only by luck. */
+      const one = document.querySelector(".cr-hud__decks--left .cr-pile");
+      const seen = getComputedStyle(one);
+      const detail = `${overlap}px: left ${Math.round(left.top)}-${Math.round(left.bottom)}, `
+        + `deck ${Math.round(action.top)}-${Math.round(action.bottom)}, `
+        + `pile ${seen.width}x${seen.height}, rows ${rows}, piles ${piles.length}, `
+        + `vh ${window.innerHeight}`;
+      return [
+        ["a caster has four piles down the left", piles.join(", "),
+          "Items, Features, Spells, Conditions"],
+        ["and the budget counts all five cards", rows, "5"],
+        ["the pile column stops before the action deck starts", overlap ? detail : 0, 0],
+        ["the bottom pile is on the screen", left.bottom <= window.innerHeight, true],
+        ["the action deck is too", action.bottom <= window.innerHeight, true],
+        ["and a pile is still big enough to read a number on", Math.round(action.height) >= 90,
+          true]
+      ];
+    });
+    await page.evaluate(async () => {
+      const spell = LIVE.hero.items.find(i => i.name === "Probe Formula");
+      if (spell) await spell.delete();
+      await game.cardrpg.openTray(LIVE.hero).render();
+    });
+    await page.setViewportSize({ width: 1600, height: 900 });
+    return rows;
+  });
+
+  /*
+   * **The piles are decks again, under the Play button.**  **[MOVED 2026-11-22]**
+   *
+   * They were icon counters at the end of the vitals row and the table reported *the discard pile
+   * is not visible* -- which it was, as six characters of text beside a heart and a shield. What
+   * is measured here is the thing a counter could not be: a place, the size of a card, that opens.
+   */
+  await probe("where the discard is", async () => {
+    await settle(page);
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      tray.openPile = null;
+      await tray.render();
+    });
+    await page.waitForSelector(".cr-hud__piles", { timeout: 20000 });
+    const rows = await page.evaluate(() => {
+      const piles = [...document.querySelectorAll(".cr-hud__piles .cr-pile")];
+      const play = document.querySelector(".cr-hud__play").getBoundingClientRect();
+      const first = piles[0]?.getBoundingClientRect();
+      const button = document.querySelector(".cr-hud__play .cr-play")?.getBoundingClientRect();
+      const named = piles.map(p => p.querySelector(".cr-pile__label")?.textContent.trim());
+      /* Card-shaped and a third of the column: tiles rather than piles would be the failure. */
+      const shaped = piles.every(p => {
+        const r = p.getBoundingClientRect();
+        return r.height > r.width && r.width > 24;
+      });
+      const faced = piles.filter(p => p.classList.contains("cr-pile--faced")).length;
+      const glyphs = piles.filter(p => p.querySelector(".cr-pile__count .cr-icon")).length;
+      return [
+        ["the piles are a row under the play column", named.join(", "), "Fate, Discard"],
+        ["and they are below the button that resolves the turn",
+          button && first ? first.top >= button.bottom - 1 : false, true],
+        ["and inside the column", first ? first.right <= play.right + 1 : false, true],
+        ["each is a card back", faced, named.length],
+        ["each keeps a card's shape", shaped, true],
+        ["and each carries the glyph that says which pile it is", glyphs, named.length],
+        ["three of them across one column", piles.length <= 3, true]
+      ];
+    });
+    /* And it opens, which is the whole point of making it a place. */
+    await page.click('.cr-hud__piles .cr-pile[data-pile="actionDiscard"]');
+    await page.waitForTimeout(400);
+    const opened = await page.evaluate(() => {
+      const spread = document.querySelector(".cr-hud__spread");
+      return [
+        ["clicking the discard spreads it", spread ? "open" : "shut", "open"],
+        ["and it is the discard that opened",
+          spread?.getAttribute("data-group-label") ?? "nothing", "Discard — not in play"]
+      ];
+    });
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.openPile = null;
+      await tray.render();
+    });
+    return [...rows, ...opened];
   });
 
   await probe("the system itself", async () => {

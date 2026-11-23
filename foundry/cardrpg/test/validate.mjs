@@ -2581,7 +2581,7 @@ check("and a module may answer it instead",
     ? "yes" : "no", "yes");
 /* And the marker is built from that answer, which is the whole of the second bug. */
 check("and the once-per-turn marker is built from the turn that was announced",
-  /const at = `\$\{round\}:\$\{index\}`;/.test(combatSource) ? "yes" : "no", "yes");
+  /const at = turnKey\(round, index\);/.test(combatSource) ? "yes" : "no", "yes");
 
 /*
  * **And every writer of a condition record stamps the round**, which is the half that rots. There
@@ -2709,6 +2709,259 @@ check("the discard reach has named owners",
   /\*\*Seven nodes get it, and none of them the same way\.\*\*/.test(coreRules) ? "yes" : "no", "yes");
 check("and choice is reserved for the deep cards",
   /\*\*Direct choice is reserved for the deep cards\*\*/.test(coreRules) ? "yes" : "no", "yes");
+
+
+/* -------------------------------------------- */
+
+section("The hand the round deals, and the figure that stops getting one");
+
+/*
+ * **core-rules 3 step 1 was never built.**  **[FIXED 2026-11-22]**
+ *
+ * The round is written *refill, intent, turns*, and `onRoundStart` did the second and third.
+ * Drawing was a button in the HUD corner under an argument that reads well and is about the
+ * wrong verb: *drawing is the player's own act, because playing a card is what spends the clock.*
+ * Playing spends the clock. Drawing does not -- the deck cycles for free (core-rules 8) -- so the
+ * click offered no decision, and what it produced was a fight beginning with five empty hands.
+ *
+ * Both fills are pinned, because they answer different questions. The round's fill is **round 1
+ * and reactions**: you may react before your first turn, so a character fourth in the order with
+ * no cards cannot defend themselves through three turns of somebody else's. The turn's fill is
+ * **fairness**: without it, reacting before your turn costs you the hand you act with and
+ * reacting after it costs you nothing, which is one price decided by initiative.
+ */
+check("the round refills every character in it",
+  /if \(combatant\.actor\?\.type === "character"\) await dealTurnHand\(combatant\.actor, at\);/
+    .test(combatSource) ? "yes" : "no", "yes");
+check("and before the monsters decide anything",
+  inOrder(combatSource, ["await dealTurnHand(combatant.actor, at);", "await drawIntents(combat)"]),
+  "in order");
+check("and the acting figure is topped up at the start of their own turn",
+  /else await dealTurnHand\(actor, at\);/.test(combatSource) ? "yes" : "no", "yes");
+/* A monster's turn reveals its intent instead, which is the branch this one is the else of. */
+check("and a monster gets an intent rather than a hand",
+  /if \(actor\.type === "npc"\) await revealIntent\(actor\);/.test(combatSource) ? "yes" : "no",
+  "yes");
+/*
+ * The round and the turn both call it for the figure at the top of the order, under one key --
+ * so the guard is what stops the first combatant paying for a second pass over every pile to
+ * draw nothing.
+ */
+check("a second fill under the same key does nothing",
+  /if \(actor\.getFlag\("cardrpg", "dealtAt"\) === at\) return null;/.test(combatSource)
+    ? "yes" : "no", "yes");
+/* And the rage handler travels with it, or a Rage drawn at the top of a turn has nothing to
+ * resolve it -- the one thing the deck layer cannot do for itself. */
+check("the turn's deal carries the handler the button always carried",
+  /await refill\(actor, \{ handlers: \{ rage: applyRage \} \}\);/.test(combatSource) ? "yes" : "no",
+  "yes");
+
+/*
+ * **One spelling of the key, now that two files compare against it.**
+ *
+ * `round:turn` was written out in combat.mjs for the once-per-turn marker and in the tray for the
+ * deck corner, and while nothing compared the two it cost nothing. The deal writes the marker the
+ * corner reads, so a format agreed by coincidence is a format that will be changed in one place.
+ */
+check("the key is a function",
+  /export function turnKey\(round, index\)/.test(combatSource) ? "yes" : "no", "yes");
+check("and the tray asks for it rather than spelling it",
+  /return turnKey\(combat\?\.round, combat\?\.turn\);/.test(traySource) ? "yes" : "no", "yes");
+check("and imports it from the file that writes the marker",
+  /import \{ revealIntent, turnOf, turnKey \} from "\.\/combat\.mjs";/.test(traySource)
+    ? "yes" : "no", "yes");
+/*
+ * **The marker moved off the window and onto the actor.** It was a field on the tray -- one
+ * client's memory of what that client had clicked -- and the deal happens on the GM's machine
+ * now, for somebody else's character. A marker nobody else can read would have left the corner
+ * inviting a second deal that draws nothing.
+ */
+check("the marker is written where every client can read it",
+  /await actor\.setFlag\("cardrpg", "dealtAt", at\);/.test(combatSource) ? "yes" : "no", "yes");
+check("and the corner asks one predicate",
+  /const dealt = CardRPGTray\.#dealtThisTurn\(this\.actor, combat\);/.test(traySource)
+    ? "yes" : "no", "yes");
+/*
+ * **Out of combat it is never inert**, which a persistent marker makes a real question: out of a
+ * fight every turn is `no-combat`, so a flag written once would have killed the corner for ever
+ * where the tray field it replaced forgot itself when the window closed.
+ */
+const dealtBody = bodyOf(traySource, "static #dealtThisTurn(actor, combat)");
+check("and out of combat there is no turn to be inert for",
+  /if \(!combat\) return false;/.test(dealtBody) ? "yes" : "no", "yes");
+check("and the window keeps no marker of its own",
+  /this\.dealtAt/.test(traySource) ? "no" : "yes", "yes");
+
+/*
+ * **Short is a question about the hand, not about what was drawn.**  [FIXED 2026-11-22]
+ *
+ * `drawn` is 0 for a player holding a full hand, and the deck button read that as *your draw pile
+ * is empty* -- a warning about a problem they did not have, pointing them at Catch Breath for
+ * stamina they need not spend. With the round dealing automatically it would have fired on every
+ * turn of every full hand in the game.
+ *
+ * One predicate, two readers: the deal whispers the GM, the button warns the player, and they
+ * cannot disagree about what short means. `short` is the part no hand can report -- an intruder
+ * dealt, resolved and binned took a slot with it.
+ */
+check("the suite's one reading of a short hand",
+  /export function handShort\(actor, short = 0\)/.test(decksSource) ? "yes" : "no", "yes");
+check("and it counts the slot an intruder took away",
+  /return Math\.max\(0, size - held - short\);/.test(decksSource) ? "yes" : "no", "yes");
+check("the turn's deal asks it", /const missing = handShort\(actor, result\.short\);/
+  .test(combatSource) ? "yes" : "no", "yes");
+check("and so does the button", /if \(handShort\(this\.actor, short\)\) \{/.test(traySource)
+  ? "yes" : "no", "yes");
+check("and nothing still reads the warning off what was drawn",
+  /!drawn && !taint && !fear && !rage/.test(traySource) ? "no" : "yes", "yes");
+
+/*
+ * **Going down is visible now, and it was not.**  **[BUILT 2026-11-22]**
+ *
+ * Three things happened at 0 Health -- a Wound card, an injury draw, and a health value of zero
+ * -- and not one of them was on the map. The figure stood in the order with a turn coming round,
+ * looking exactly like a figure that could act, and a GM running five goblins had nothing to read
+ * but the numbers in a tracker.
+ */
+check("the mark is Foundry's own status, by id",
+  /const DOWNED_STATUS = "dead";/.test(combatSource) ? "yes" : "no", "yes");
+/* An OVERLAY: across the whole token, not one of the little corner badges, which is the
+ * difference between a skull over a body and a skull beside one. */
+check("and it goes on as an overlay",
+  /await actor\.toggleStatusEffect\(DOWNED_STATUS, \{ active: true, overlay: true \}\);/
+    .test(combatSource) ? "yes" : "no", "yes");
+check("and comes off again above 0",
+  /await actor\.toggleStatusEffect\(DOWNED_STATUS, \{ active: false, overlay: true \}\);/
+    .test(combatSource) ? "yes" : "no", "yes");
+/* A world that has removed the status says so rather than throwing in the middle of a fight. */
+check("and a world without that status is told, not crashed",
+  /if \(CONFIG\.statusEffects\?\.some\(e => e\.id === DOWNED_STATUS\)\)/.test(combatSource)
+    ? "yes" : "no", "yes");
+const downBody = bodyOf(combatSource, "export async function markDown(actor)");
+check("a downed figure leaves the order",
+  /await combat\.deleteEmbeddedDocuments\("Combatant", mine\.map\(c => c\.id\)\);/.test(downBody)
+    ? "yes" : "no", "yes");
+/*
+ * **By uuid and not by id**: an unlinked token's actor is a synthetic document carrying the base
+ * actor's id, so five unlinked goblins all answer to one id -- and one of them dropping would
+ * have deleted the lot.
+ */
+check("and the figure is matched by the token it is",
+  /c\.actor\?\.uuid === actor\.uuid/.test(downBody) ? "yes" : "no", "yes");
+
+/*
+ * **And a healed figure goes back in, at the place it drew.**  **[RULED 2026-11-22]**
+ *
+ * The first version of this said it did not, and argued it: the order is drawn once and holds
+ * for the whole fight (core-rules 3), so a figure who was out has not been waiting their turn.
+ * **That is the wrong end of the same rule.** An order that holds for the whole fight is exactly
+ * what says the place is still theirs -- they did not leave the fight, they stopped being able
+ * to act in it -- and the alternative put the GM in the middle of every revival.
+ *
+ * So the **place** is remembered, not the fact: the combat, the token, and the initiative. A
+ * second draw on the way back in would be a second order, and the one thing core-rules 3
+ * insists on is that there is one.
+ */
+check("the place is kept when the figure is taken out",
+  /await actor\.setFlag\("cardrpg", "downedFrom", left\);/.test(combatSource) ? "yes" : "no",
+  "yes");
+check("and the initiative it drew is part of the place",
+  /initiative: c\.initiative, hidden: c\.hidden/.test(combatSource) ? "yes" : "no", "yes");
+const upBody = bodyOf(combatSource, "export async function standUp(actor)");
+check("healing puts the figure back",
+  /await combat\.createEmbeddedDocuments\("Combatant", \[\{/.test(upBody) ? "yes" : "no", "yes");
+check("and back at the initiative it drew, with no second draw",
+  /initiative: place\.initiative, hidden: place\.hidden/.test(upBody) ? "yes" : "no", "yes");
+/* A GM who put them back by hand has settled it, and a fight that has since ended is nothing to
+ * go back to -- both of which have to be true before this can run on every heal in the game. */
+check("and it does not put them back twice",
+  /if \(combat\.combatants\.some\(c => c\.actor\?\.uuid === actor\.uuid\)\) continue;/.test(upBody)
+    ? "yes" : "no", "yes");
+check("and a fight that has ended is not re-entered",
+  /const combat = game\.combats\?\.get\(place\.combatId\);\s*\n\s*if \(!combat\) continue;/
+    .test(upBody) ? "yes" : "no", "yes");
+check("and the memory is dropped either way",
+  /await actor\.unsetFlag\("cardrpg", "downedFrom"\);/.test(upBody) ? "yes" : "no", "yes");
+/* It runs on every write that leaves an actor above 0, which is most writes in the game, so the
+ * common case has to cost nothing. */
+check("and it costs nothing when there is nothing to do",
+  /if \(!places\.length\) return stood;/.test(upBody) ? "yes" : "no", "yes");
+
+/*
+ * **One gate, and it is the number rather than the blow.** Health is written in eleven places --
+ * a hit, a burn, ground, a fast Taint, the price of a spell, a heal, a rest, and a GM typing into
+ * the sheet. Hanging this off `resolveWound` catches the ones that go through the Wound gate and
+ * misses the sheet; hanging it off each writer is eleven copies with a twelfth added later.
+ */
+check("the skull is driven by the health value",
+  /if \(!foundry\.utils\.hasProperty\(changed, "system\.health\.value"\)\) return;/
+    .test(combatSource) ? "yes" : "no", "yes");
+check("and the watch is wired",
+  /Hooks\.on\("updateActor", \(actor, changed\) => onHealthChanged\(actor, changed\)\);/
+    .test(combatSource) ? "yes" : "no", "yes");
+check("and it is the GM's, like every other half of the round",
+  /export async function onHealthChanged\(actor, changed = \{\}\) \{\s*\n\s*if \(!game\.user\.isGM\) return;/
+    .test(combatSource) ? "yes" : "no", "yes");
+
+/*
+ * **The condition nothing could ever apply.**  **[BUILT 2026-11-22]**
+ *
+ * core-rules 7's table says *Unconscious: at 0 Health*, core-rules 8 says it means 0 Health and
+ * lasts until treated, config.mjs carries `noDuration` so a fight ending cannot clear it, and
+ * `resolveCondition` refuses to apply it and says why. Four statements of one rule, and **no code
+ * path produced it**: a character at 0 Health had a Wound, an injury draw, and nothing on their
+ * sheet saying they were down. Reactions kept firing off a body.
+ *
+ * Derived rather than stored, which is what makes it true in both directions with no write: a
+ * heal takes it off because the number went up, a GM typing a value in is as good as a blow, and
+ * nothing can leave a stale one on somebody standing.
+ */
+check("0 Health is Unconscious, derived",
+  /function downedConditions\(system\) \{/.test(actorsSource) ? "yes" : "no", "yes");
+check("and it is read off the number",
+  /return \(system\.health\?\.value \?\? 1\) <= 0/.test(actorsSource) ? "yes" : "no", "yes");
+/* Both models, which is this file's own lesson: `noReactions` was two identical getters, and
+ * injuries were added to one of them. */
+check("and both kinds of actor ask the same question",
+  (actorsSource.match(/downedConditions\(this\)/g) ?? []).length, 2);
+/* What the condition itself is made of is pinned with the other conditions, further down: the
+ * config is imported later in this file than this section runs. */
+check("core-rules says a downed figure takes no turns",
+  /you fall Prone, take no turns, and can't play reactions/.test(coreRules) ? "yes" : "no", "yes");
+/* And the engine's half of that sentence, which is the ruling rather than the rule. */
+check("and that the figure leaves the order",
+  /\*\*You come out of the initiative order while you are down/.test(coreRules) ? "yes" : "no",
+  "yes");
+check("and that healing puts them back where they were",
+  /healing puts you back into it[\s]+at the place you drew\.\*\*/.test(coreRules) ? "yes" : "no",
+  "yes");
+/* And no second draw, which is the half that keeps one order for one fight. */
+check("and that it is a restoration rather than a second draw",
+  /\*\*No second\s+draw\*\*/.test(coreRules) ? "yes" : "no", "yes");
+check("hud-spec records that healing puts the figure back",
+  /\*\*The combatant leaves the fight, and healing puts it back\.\*\*/.test(hudSpec)
+    ? "yes" : "no", "yes");
+check("hud-spec records what a downed figure looks like",
+  /### 7\.2 A figure that is down looks down {2}\*\*\[BUILT 2026-11-22\]\*\*/.test(hudSpec)
+    ? "yes" : "no", "yes");
+
+/*
+ * **The second refill is a rules change and is written down as one**, with what it costs. A
+ * reaction no longer thins the hand you act with, so it is paid for in the card and in stamina
+ * alone -- which is the knob to turn first if reactions start to feel free.
+ */
+check("core-rules states both refills",
+  /\*\*Two refills, and the second one is new\.\*\*/.test(coreRules) ? "yes" : "no", "yes");
+/* Settled at the table on 2026-11-22: the trade is the ruling rather than a thing to watch. */
+check("and names what the second one buys",
+  /a reaction costs \*\*the card and the[\s>]+stamina and nothing else\*\*/.test(coreRules)
+    ? "yes" : "no", "yes");
+check("and the turn list says the hand is topped up",
+  /\*\*Your hand is topped\s+back up to size as your own turn begins\*\*/.test(coreRules)
+    ? "yes" : "no", "yes");
+check("hud-spec records that nobody presses anything",
+  /### 3\.3a The round deals the hand {2}\*\*\[CHANGED 2026-11-22\]\*\*/.test(hudSpec)
+    ? "yes" : "no", "yes");
 
 
 /* -------------------------------------------- */
@@ -5255,6 +5508,22 @@ for (const [flag, key, getter, what] of BLOCKS) {
       + `\\.some\\(c => CARDRPG\\.conditions\\[c\\.key\\]\\?\\.${flag}\\)`)
       .test(actorsSource) ? "yes" : "no", "yes");
 }
+
+/*
+ * **Unconscious is the fourth of that family and is not in the list above**, because it is the
+ * one nothing applies: it is derived from 0 Health rather than landed by an effect (core-rules
+ * 8), `resolveCondition` refuses it by name, and `downedConditions` in the actor models is what
+ * produces it.
+ *
+ * All four statements of that rule existed and **none of them made it true** until 2026-11-22: a
+ * character at 0 Health had a Wound, an injury draw, and nothing on their sheet saying they were
+ * down, so reactions kept firing off a body.
+ */
+check("the condition the drop produces exists", "unconscious" in CARDRPG.conditions, true);
+check("and takes the reactions the rules say it takes",
+  CARDRPG.conditions.unconscious.blocksReactions === true, true);
+check("and is not timed, so a fight ending cannot clear it",
+  CARDRPG.conditions.unconscious.noDuration === true, true);
 /*
  * **And the getter is read by something, which is the link that was actually missing.**
  *
@@ -7498,8 +7767,10 @@ const trayTemplate = fs.readFileSync(path.join(root, "templates/tray.hbs"), "utf
  */
 check("the action deck carries a back", /art: backOf\("action"\)/.test(traySource) ? "yes" : "no",
   "yes");
+/* Three now: the left column, the deck corner, and the piles under the play column, which went
+ * back to being backs on 2026-11-22. */
 check("and the stacks that wear one in the template",
-  (trayTemplate.match(/cr-pile--faced/g) ?? []).length, 2);
+  (trayTemplate.match(/cr-pile--faced/g) ?? []).length, 3);
 const kit = (tags, twoHanded = false) =>
   ({ system: { tags: new Set(tags), isTwoHanded: twoHanded } });
 const bow = kit(["ranged"]);
@@ -16240,8 +16511,12 @@ check("the stat panel wears it",
  * that showed four would be hiding two a player is entitled to. Read from the `#sceneTray` body --
  * the check dialog filters the same list the same way, and a loose match found that one instead.
  */
+/* Ended at the DECLARATION after it rather than at the comment above the declaration: the
+ * comment grew into a docstring and the anchor went missing, which takes `indexOf` to -1 and
+ * silently hands the slice the whole rest of the file. The check still passed its own sentence
+ * and was reading nine thousand lines it had nothing to do with. */
 const sceneBody = traySource.slice(
-  traySource.indexOf("  #sceneTray() {"), traySource.indexOf("  /** Round and turn,"));
+  traySource.indexOf("  #sceneTray() {"), traySource.indexOf("  static #turnKey(combat) {"));
 check("the passive list covers every approach but `any`",
   (sceneBody.match(/key !== "any"/g) ?? []).length, 1);
 check("and nothing narrows it to one",
@@ -17185,6 +17460,155 @@ check("the left controls are measured, not assumed",
   /#fitControls\(\) \{/.test(traySource) ? "yes" : "no", "yes");
 check("and both edges are re-measured together",
   /this\.#fitSidebar\(\);\s*\n\s*this\.#fitControls\(\);/.test(traySource) ? "yes" : "no", "yes");
+
+/*
+ * **And how tall the column is, which was the third constant on the same screen.**
+ * **[FIXED 2026-11-22]**
+ *
+ * The stylesheet divides the window height by the number of cards stacked down the left edge, and
+ * that number was the literal `4`: Items, Features, Conditions, and the deck corner under them.
+ * **A caster has a fourth pile**, because the spell book is a deck and not a rail (3.8). Five
+ * cards in a space measured for four pushed the bottom one off the screen, so a character who
+ * learned a spell lost the **Conditions** deck -- read at the table as the spell deck replacing
+ * it, which is exactly what it looks like.
+ *
+ * Two constants on this screen had already been wrong for the same reason and been fixed the same
+ * way. This is the third, and the last one that was a number somebody typed.
+ */
+check("the row count is a variable",
+  /--cr-rows: 4;/.test(css) ? "yes" : "no", "yes");
+check("and the card size is divided by it rather than by a literal",
+  /\/ var\(--cr-rows\)/.test(css) ? "yes" : "no", "yes");
+check("and the gaps inside the column scale with it too",
+  /\(var\(--cr-rows\) - 2\) \* 6px/.test(css) ? "yes" : "no", "yes");
+check("the tray counts the piles it drew",
+  /#fitRows\(\) \{/.test(traySource) ? "yes" : "no", "yes");
+/*
+ * Counted off the DOM rather than from the context, and the selector is the claim: `.cr-hud__decks`
+ * is the two columns down the left and nothing else, so a pile added to either is counted and the
+ * piles under the play area -- which take none of this height -- are not.
+ */
+check("and it counts the two columns that take the height",
+  /querySelectorAll\("\.cr-hud__decks \.cr-pile"\)\.length/.test(traySource) ? "yes" : "no", "yes");
+check("and it is measured with the two edges",
+  (traySource.match(/this\.#fitRows\(\);/g) ?? []).length, 1);
+/* Three measurements, one lookup for the element they all write onto: the third copy of five
+ * identical lines is what says to stop. */
+check("the HUD's root is found in one place",
+  (traySource.match(/querySelector\("\.cr-hud-layer"\)/g) ?? []).length, 1);
+check("and all three measurements ask for it",
+  (traySource.match(/this\.#layer\(\)/g) ?? []).length, 3);
+
+/*
+ * **And a pile does not animate its own size.**  **[FIXED 2026-11-22]**
+ *
+ * The host styles every `button` with `transition: 0.5s` -- all properties, half a second -- and
+ * a pile is a button. A render that changed a card's size slid it to the new one over half a
+ * second, so the live harness, measuring the two columns moments after a render, read a pile a
+ * few percent out of true -- by a different few percent on each of three runs, because what it
+ * was measuring was in motion. The arithmetic it was testing had been right the whole time.
+ *
+ * It is pinned in both places for the same reason the two deck columns are: either half alone
+ * brings the fault back, and the fault this time is *the measurement was wrong*, which is the
+ * worst kind because it indicts the thing being measured.
+ */
+const pileRule = bodyOf(css, ".cr-hud-layer .cr-pile {");
+check("a pile does not animate its size", /transition: none;/.test(pileRule) ? "yes" : "no",
+  "yes");
+/* The harness's own half of that is pinned with the rest of the harness, further down: it is
+ * read into `liveSource` later in this file than this section runs. */
+
+/*
+ * **The piles went back to being decks, under the Play button.**  **[MOVED 2026-11-22]**
+ *
+ * 3.8 made Fate, Discard and Spent icon counters at the end of the vitals row, and the argument
+ * was good: a deck back promises a pile you can draw on, none of these is drawn from by hand, and
+ * three card-sized backs cost the column two heights it had not got.
+ *
+ * What it cost was the discard. **A number beside a heart and a shield reads as a statistic**,
+ * and the question a player has is *where did that card go* -- which is about a place and is
+ * answered by a place. A third of the column each settles the original objection rather than
+ * ignoring it.
+ */
+check("the piles are a row under the play column",
+  /<section class="cr-hud__piles"/.test(trayTemplate) ? "yes" : "no", "yes");
+check("and they are a third of its width",
+  /--cr-mini-w: calc\(\(2 \* var\(--cr-card-w\) - 4px\) \/ 3\);/.test(css) ? "yes" : "no", "yes");
+/* Card-shaped at a third of the width, or they are tiles rather than piles. */
+check("and keep a card's shape at that width",
+  /height: calc\(var\(--cr-mini-w\) \/ var\(--cardrpg-card-ratio\)\);/.test(css) ? "yes" : "no",
+  "yes");
+/* Discard and Spent are the same deck's cards, so they wear the same back and the glyph is the
+ * whole of the difference between them. Both halves are checked: the mapping, and the glyph. */
+check("a discard wears the back of the deck it came out of",
+  /if \(id === "actionDiscard" \|\| id === "actionSpent"\) return backOf\("action"\);/
+    .test(decksSource) ? "yes" : "no", "yes");
+check("and the fate discard wears fate's",
+  /if \(id === "fateDiscard"\) return backOf\("fate"\);/.test(decksSource) ? "yes" : "no", "yes");
+check("and the icon rides with the count, because two of them share a picture",
+  /<span class="cr-pile__count">\{\{crIcon this\.icon\}\}\{\{this\.count\}\}<\/span>/
+    .test(trayTemplate) ? "yes" : "no", "yes");
+/* One mapping for every pile back in the game, which is what `pileBack` was written to be. */
+check("and the tray asks pileBack rather than mapping them again",
+  /art: this\.openPile === l\.id \? "" : pileBack\(l\.id\)/.test(traySource) ? "yes" : "no", "yes");
+check("the vitals row no longer carries them",
+  /cr-options__pile/.test(trayTemplate) ? "no" : "yes", "yes");
+check("nor does the stylesheet still dress them",
+  /cr-options__pile/.test(css) ? "no" : "yes", "yes");
+
+/*
+ * **Sift shows the cards.**  **[FIXED 2026-11-22]**
+ *
+ * The dialog was a bulleted list of NAMES with a checkbox beside each, and a player met it as *a
+ * tick box labelled Taunt*. Judging cards is the entire effect -- *you see them and may reject
+ * them* -- so a list of names delivered the rejecting without the seeing, and what the rule
+ * bought was nothing.
+ *
+ * Drawn through `#renderCard`, which is what the hand is drawn through, and that is the pin that
+ * matters: a Sift printing a card differently from the hand would be showing something other than
+ * the card you are about to be dealt. The draw pile also holds intruders, and `#renderCard` is
+ * the one place that knows a harm card has no halves.
+ */
+check("the sift dialog draws real cards",
+  /const face = this\.#renderCard\(card, new Set\(\), false\);/.test(traySource) ? "yes" : "no",
+  "yes");
+/* Through the helpers, not rebuilt: `crArt` exists because eight hand-written `url()`s all 404'd,
+ * and a ninth written in a dialog would be the same bug somewhere nobody looks. */
+check("and asks the helpers for its art and its icons",
+  /Handlebars\.helpers\.crArt\(face\.art\)/.test(traySource) ? "yes" : "no", "yes");
+check("the whole card is the tick",
+  /\.cardrpg \.cr-sift__pick input:checked ~ \.cr-card \{/.test(css) ? "yes" : "no", "yes");
+/*
+ * The checkbox stays in the markup and stays named `bin`, because that is what the dialog's own
+ * button reads -- it is taken off the screen rather than out of the form, which also leaves it
+ * reachable from the keyboard.
+ */
+check("and the form still carries what the button reads",
+  /<input type="checkbox" name="bin" value="\$\{card\.id\}">/.test(traySource) ? "yes" : "no",
+  "yes");
+check("and the box itself is hidden rather than removed",
+  /\.cardrpg \.cr-sift__pick input \{/.test(css) ? "yes" : "no", "yes");
+
+/* And the three sections that record all of this, each of which argues with a decision this
+ * file used to pin the other side of. */
+check("hud-spec records the piles as decks again",
+  /### 3\.8 Piles are decks again, under the Play button {2}\*\*\[MOVED 2026-11-22\]\*\*/
+    .test(hudSpec) ? "yes" : "no", "yes");
+/* The argument for counters is KEPT rather than deleted, the way 3.5.0 keeps its own: it was a
+ * good argument and it was half right, and the half it was right about is why these are small. */
+check("and keeps the argument it is reversing",
+  /a deck back on the table promises a pile\s+you can draw on/.test(hudSpec) ? "yes" : "no", "yes");
+check("hud-spec records the column's height",
+  /### 3\.9 The left column is as tall as the piles in it {2}\*\*\[FIXED 2026-11-22\]\*\*/
+    .test(hudSpec) ? "yes" : "no", "yes");
+check("hud-spec records that a pile is smaller than a deck on purpose",
+  /\*\*Smaller than the decks down the left is right, and is the ruling\.\*\*/.test(hudSpec)
+    ? "yes" : "no", "yes");
+check("hud-spec records what a card dialog owes the player",
+  /### 3\.10 A dialog about cards shows cards {2}\*\*\[FIXED 2026-11-22\]\*\*/.test(hudSpec)
+    ? "yes" : "no", "yes");
+check("and the list of names is gone",
+  /<li>\$\{esc\(cardName\(card\)\)\}<\/li>/.test(traySource) ? "no" : "yes", "yes");
 
 /*
  * **The GM's controls moved onto the token.** A call and a challenge are things that happen TO
@@ -20063,6 +20487,14 @@ check("and deletes everything it made when it is done",
   /removeScratchData\(scratch\)/.test(liveSource) ? "yes" : "no", "yes");
 check("and drives a browser that is already installed",
   /channel: arg\("channel", "msedge"\)/.test(liveSource) ? "yes" : "no", "yes");
+/*
+ * **And it waits for what it is about to measure to stop moving.** The host transitions every
+ * `button` over half a second, so a probe that measures a deck column moments after a render
+ * reads a size on its way somewhere else -- which it did, three runs running, each time by a
+ * different few percent, while the arithmetic under test was right.
+ */
+check("and waits for a column to settle before measuring it",
+  /the column has stopped moving/.test(liveSource) ? "yes" : "no", "yes");
 
 const selfSource = fs.readFileSync(path.join(root, "test/validate.mjs"), "utf8");
 
@@ -20300,6 +20732,10 @@ const absentGreps = [
   String.raw`and nothing ever puts a condition in the waved set :: waved\.add\(.*condition`,
   String.raw`and nothing in the content deals an injury directly :: verb: "maiming"[\s\S]{0,120}injury:`,
   String.raw`and nothing matches a document back by its escaped name :: find\(card => card\.name === name\)`,
+  /* The deck button told a player with a FULL hand that their draw pile was empty, because
+   * `drawn` is 0 either way. With the round dealing automatically that would have fired on every
+   * turn of every full hand in the game; `handShort` asks the hand instead. */
+  String.raw`and nothing still reads the warning off what was drawn :: !drawn && !taint && !fear && !rage`,
   String.raw`and nothing stores one on the character :: facing: new fields`,
   String.raw`and reads the change rather than the state :: item\.system\.prepared`,
   String.raw`and so is the id escaper it was the only caller of :: function cssId`,
@@ -20315,6 +20751,9 @@ const absentGreps = [
   String.raw`and the dependency points one way :: from "\.\/graph\.mjs"`,
   String.raw`and the gate's own table no longer describes the old capsule :: the top quarter is empty`,
   String.raw`and the handbook's feature table no longer lists it :: \| \*\*Adapted\*\* \|`,
+  /* Sift showed a bulleted list of NAMES with a checkbox each, which delivers the rejecting
+   * without the seeing -- and the seeing is the whole effect. It draws the cards now. */
+  String.raw`and the list of names is gone :: <li>\$\{esc\(cardName\(card\)\)\}<\/li>`,
   String.raw`and the literal Fear used to carry is gone :: const which = fast \? "actionHand" : "actionDiscard";`,
   String.raw`and the old disjunction is gone from the hand filter :: c\.type !== "wound" && c\.type !== "taint"`,
   String.raw`and the old relative anchor is gone :: the dark lives between that strip`,
@@ -20330,7 +20769,12 @@ const absentGreps = [
   String.raw`and the tray keeps no loop of its own :: for \(const card of cards\) \{\s*\n\s*if \(isReserved`,
   String.raw`and the two retired vocabularies are gone from config :: conjureSources|conjureSides`,
   String.raw`and the unpatched line is gone :: Object\.create\(Array\.prototype\)`,
+  /* The once-per-turn deal marker was a field on the tray -- one client's memory of what that
+   * client had clicked -- and the deal happens on the GM's machine now. It is a flag on the
+   * actor, which every client reads. */
+  String.raw`and the window keeps no marker of its own :: this\.dealtAt`,
   String.raw`nor does the pane :: levels\?\.pending`,
+  String.raw`nor does the stylesheet still dress them :: cr-options__pile`,
   String.raw`nor does the template offer it :: data-action="grantLevel"`,
   /* The Challenge button, retired with the other two: the token is the door now. */
   String.raw`nor starts a challenge :: data-action="startChallenge"`,
@@ -20368,6 +20812,10 @@ const absentGreps = [
   /* Only a character counts cards for a passive score, which is what having a skill deck means.
    * The gate used to be "owns any stack", and a creature owns four. */
   String.raw`the tray's own strain dialog is gone :: #payStrain`,
+  /* Fate, Discard and Spent were icon counters at the end of the vitals row and are deck backs
+   * under the Play button again: a number beside a heart reads as a statistic, and *where did
+   * that card go* is a question about a place. */
+  String.raw`the vitals row no longer carries them :: cr-options__pile`,
   String.raw`which a creature's schema has not got :: intent: new fields\.DocumentIdField\(\)[\s\S]{0,40}skill`,
   String.raw`while nothing applies one at grant time :: createItem[\s\S]{0,200}resolveCondition`,
 ].join(" | ");

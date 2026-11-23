@@ -143,16 +143,6 @@
         <span data-tooltip="Armor: subtracted from incoming damage before Block. Always on.">&#9636; {{system.armor}}</span>
         {{#if system.wounds}}<span data-tooltip="Wounds">&#10006; {{system.wounds}}</span>{{/if}}
         {{#if system.taint.total}}<span data-tooltip="Taint">&#9763; {{system.taint.total}}</span>{{/if}}
-        {{!-- The piles ride on the same row as the vitals: both are counters, and the column has
-              no height to spare. --}}
-        <span class="cr-options__piles">
-          {{#each pileLinks}}
-            <button type="button" class="cr-options__pile{{#if this.open}} cr-options__pile--open{{/if}}"
-                    data-action="openPile" data-pile="{{this.id}}" data-tooltip="{{this.tip}}">
-              {{crIcon this.icon}}<span class="cr-options__count">{{this.count}}</span>
-            </button>
-          {{/each}}
-        </span>
       </div>
       {{!-- What the square under you is, when it is anything. Beside the vitals because it is
             the same kind of fact: true of you right now, and not a choice you are being offered.
@@ -401,6 +391,25 @@
           <p class="cr-note">Nothing equipped can strike. Give it a weapon from the Items deck.</p>
         {{/if}}
       </div>
+    {{/if}}
+
+    {{!-- Last row of the column, under the button that resolves the turn: the piles the turn
+          draws on and fills. Backs rather than counters, because *where did that card go* is a
+          question about a place; a third of the column wide each, because at full card size they
+          cost the column two heights it has not got. The icon is what tells Discard from Spent,
+          which wear the same deck's back. --}}
+    {{#if pileLinks.length}}
+    <section class="cr-hud__piles" data-group-label="Piles">
+      {{#each pileLinks}}
+        <button type="button"
+                class="cr-pile cr-pile--mini{{#if this.open}} cr-pile--open{{/if}}{{#if this.art}} cr-pile--faced{{/if}}"
+                {{#if this.art}}style="--cr-art: {{crArt this.art}}"{{/if}}
+                data-action="openPile" data-pile="{{this.id}}" data-tooltip="{{this.tip}}">
+          <span class="cr-pile__count">{{crIcon this.icon}}{{this.count}}</span>
+          <span class="cr-pile__label">{{this.label}}</span>
+        </button>
+      {{/each}}
+    </section>
     {{/if}}
   </section>
 

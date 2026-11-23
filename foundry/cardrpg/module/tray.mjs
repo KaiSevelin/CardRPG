@@ -19,7 +19,8 @@
 import { CARDRPG } from "./config.mjs";
 import { CARD_BLURBS } from "./content.mjs";
 import {
-  deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName, artOf,
+  deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, handShort,
+  cardName, artOf,
   conditionArt, portraitOf,
   dealSkillHand, discardSkillCards, pileBack, backOf,
   isReserved, reserveCard, reserveHand, uprightCards, isIntruder, intruderLine,
@@ -48,7 +49,7 @@ import {
 } from "./resolve.mjs";
 /* The GM plays a monster from this window now, and the moment one acts its type's intent card is
  * public knowledge anyway -- so the HUD flips it through the same function the turn hook does. */
-import { revealIntent, turnOf } from "./combat.mjs";
+import { revealIntent, turnOf, turnKey } from "./combat.mjs";
 import { layGround, groundChips } from "./ground.mjs";
 import { showReach, clearReach, squaresBetween } from "./board.mjs";
 import {
@@ -133,8 +134,19 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     this.openPile = null;
     /** Slates currently turned over, showing value, weight and type. @type {Set<string>} */
     this.flipped = new Set();
-    /** The round:turn a hand was last dealt, so the deck goes inert until the next turn. */
-    this.dealtAt = null;
+    /*
+     * **No `dealtAt` here.**  [MOVED 2026-11-22]
+     *
+     * It was the round:turn a hand was last dealt, held on the tray so the deck corner could go
+     * inert until the next turn -- fine while the only thing that dealt was a click in this
+     * window. The turn deals the hand now (`dealTurnHand`), on the GM's machine, for somebody
+     * else's character: a marker in one client's memory cannot be read by the client that needs
+     * it, so the corner would have invited a second deal that drew nothing.
+     *
+     * It is a flag on the actor instead, which every client reads and which survives this window
+     * being closed and opened. `playedAt` below is still a field, and deliberately so: a staged
+     * turn is this window's own business and nobody else renders it.
+     */
     /*
      * **What this turn has already played.**  **[BUILT 2026-11-22]**
      *
@@ -369,6 +381,20 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
+   * **The HUD's own root, which is sometimes the application element and sometimes inside it.**
+   *
+   * Three methods measure something against the screen and write the answer onto this element as
+   * a custom property. All three opened with the same five lines, and the third copy is what says
+   * to stop: a lookup written out per caller is a lookup that gets fixed in two places out of
+   * three the next time Foundry moves a frame around.
+   */
+  #layer() {
+    return (this.element?.classList?.contains("cr-hud-layer")
+      ? this.element
+      : this.element?.querySelector(".cr-hud-layer")) ?? null;
+  }
+
+  /**
    * Sit the right column clear of Foundry's own sidebar, whatever width it is right now.
    *
    * The sidebar collapses to a rail of buttons and expands again, so a fixed width in the
@@ -376,9 +402,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * buttons, too large and it floats a card's width away from them. Measure the real element.
    */
   #fitSidebar() {
-    const layer = this.element?.classList?.contains("cr-hud-layer")
-      ? this.element
-      : this.element?.querySelector(".cr-hud-layer");
+    const layer = this.#layer();
     if (!layer) return;
 
     // Ask Foundry for its own sidebar before guessing at element ids, which have moved between
@@ -415,9 +439,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * of Foundry's own tools. Same bug, same fix, other side of the screen.
    */
   #fitControls() {
-    const layer = this.element?.classList?.contains("cr-hud-layer")
-      ? this.element
-      : this.element?.querySelector(".cr-hud-layer");
+    const layer = this.#layer();
     if (!layer) return;
 
     const own = ui.controls?.element;
@@ -440,10 +462,40 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  /**
+   * **And how many cards tall the left column is, which is no more a constant than its edge is.**
+   * **[BUILT 2026-11-22]**
+   *
+   * The stylesheet divides the window height by the number of cards stacked down the left edge to
+   * decide how big a card is, and that number was typed in as `4` -- Items, Features, Conditions,
+   * and the deck corner under them. **A caster has a fourth pile**, because the spell book is a
+   * deck and not a rail (hud-spec 3.8). Five cards in a space measured for four pushed the bottom
+   * one off the screen, so a character who learned a spell lost the **Conditions** deck: read at
+   * the table as the spell deck replacing it, which is exactly what it looks like.
+   *
+   * **Counted off the DOM rather than from the context**, for one reason: the context knows about
+   * the piles it builds, and what broke here was a column growing a row the arithmetic had never
+   * been told about. A count of the elements actually drawn cannot go stale that way, so anything
+   * added to either column from now on pays for itself.
+   *
+   * `.cr-hud__decks` is both of those columns and nothing else. The piles under the play area are
+   * deliberately not in it: they are on the other side of the screen and take none of this height.
+   *
+   * It leaves the variable alone when it counts nothing -- an unrendered HUD has no piles at all,
+   * and writing a 0 there would divide the window by zero.
+   */
+  #fitRows() {
+    const layer = this.#layer();
+    if (!layer) return;
+    const rows = layer.querySelectorAll(".cr-hud__decks .cr-pile").length;
+    if (rows > 0) layer.style.setProperty("--cr-rows", String(rows));
+  }
+
   _onRender(context, options) {
     super._onRender?.(context, options);
     this.#fitSidebar();
     this.#fitControls();
+    this.#fitRows();
     this.#paintReach();
   }
 
@@ -571,7 +623,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     return squares;
   }
 
-  /** Re-measure when the sidebar opens or shuts, without re-rendering the whole HUD. */
+  /**
+   * Re-measure when the sidebar opens or shuts, without re-rendering the whole HUD.
+   *
+   * `#fitRows` is deliberately not here: it counts piles, and a pile arrives or leaves only on a
+   * render, which does the counting itself. The height the count is divided into is the
+   * stylesheet's `100vh`, which the browser redoes on a resize without being asked.
+   */
   static refitAll() {
     for (const tray of CardRPGTray.openTrays) {
       tray.#fitSidebar();
@@ -1626,7 +1684,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * drawing your deck away.
    */
   #actionDeck(combat) {
-    const dealt = this.dealtAt === CardRPGTray.#turnKey(combat);
+    const dealt = CardRPGTray.#dealtThisTurn(this.actor, combat);
     return {
       label: "Action deck",
       count: this.actor.system.deckCounts?.draw ?? 0,
@@ -1647,11 +1705,23 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
-   * Fate above, Discard below, in the bottom-right.
+   * **The three piles the turn draws on and fills, under the button that resolves it.**
+   * **[MOVED 2026-11-22]**
    *
-   * The fate deck itself cannot be opened: it is shuffled and face down, and that is the whole
-   * reason a thin deck is a risk rather than a lookup. Its discard is face up, which is what makes
-   * counting possible.
+   * They were icon counters at the end of the vitals row, and 3.8 argued for that: a deck back
+   * promises a pile you can draw on, none of these is drawn from by hand, and the column had no
+   * height to spare. The argument was sound and the result was that **nobody could find their
+   * discard.** A number beside a heart and a shield reads as a statistic; what a player is
+   * actually asking is *where did that card go*, which is a question about a place, and the
+   * answer has to be a place.
+   *
+   * So they are backs again, in a row of three under the Play button -- a third of the column's
+   * width each, which is the one thing 3.8 was right about: at full card size this cost two
+   * card-heights the column could not spare and sat under Foundry's own toasts.
+   *
+   * The fate deck itself still cannot be opened: it is shuffled and face down, and that is the
+   * whole reason a thin deck is a risk rather than a lookup. Its discard is face up, which is
+   * what makes counting possible.
    */
   #pileLinks() {
     const counts = this.actor.system.deckCounts ?? {};
@@ -1682,8 +1752,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       });
     }
 
+    /* A shut pile wears its deck's back and an open one is showing its cards, exactly as the
+     * left-hand column does; `pileBack` owns the mapping for both. */
     return links.map(l => ({
-      ...l, icon: CARDRPG.pileIcons[l.id], open: this.openPile === l.id
+      ...l, icon: CARDRPG.pileIcons[l.id], open: this.openPile === l.id,
+      art: this.openPile === l.id ? "" : pileBack(l.id)
     }));
   }
 
@@ -1932,9 +2005,32 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     };
   }
 
-  /** Round and turn, so the action deck can go inert until the next turn. */
+  /**
+   * **Has this figure already been dealt to, for the turn that is running?**
+   *
+   * **Out of combat the answer is always no**, and that is the whole of this method. The marker
+   * is a round:turn key, and out of a fight every turn is `no-combat` -- so a flag written once
+   * would have made the deck corner dead for ever, where the tray field it replaced forgot
+   * itself whenever the window was closed. A persistent marker needs a clock behind it, and out
+   * of combat there is not one.
+   *
+   * Nothing is lost by letting it be pressed: a refill tops a hand up to size, so pressing it
+   * twice draws nothing the second time and says nothing, now that *short* is asked of the hand.
+   */
+  static #dealtThisTurn(actor, combat) {
+    if (!combat) return false;
+    return actor.getFlag("cardrpg", "dealtAt") === CardRPGTray.#turnKey(combat);
+  }
+
+  /**
+   * Round and turn, so the action deck can go inert until the next turn.
+   *
+   * The format is `turnKey`'s and not this file's: the deal that writes the marker happens in
+   * combat.mjs now, and two files spelling one key by coincidence is a key that will be changed
+   * in one of them.
+   */
   static #turnKey(combat) {
-    return combat ? `${combat.round}:${combat.turn}` : "no-combat";
+    return turnKey(combat?.round, combat?.turn);
   }
 
   /**
@@ -2550,7 +2646,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   static async #onDealHand() {
     const key = CardRPGTray.#turnKey(game.combat);
-    if (this.dealtAt === key) {
+    if (CardRPGTray.#dealtThisTurn(this.actor, game.combat)) {
       return ui.notifications.info("Already dealt this turn. You draw again next turn.");
     }
     /*
@@ -2560,9 +2656,15 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
      */
     /* `applyRage` comes from the resolver: a Rage card is a Strike, and decks.mjs does not resolve
      * Strikes. See `FROM_CALLER` there. */
-    const { drawn, taint, fear, rage } = await refill(this.actor, { handlers: { rage: applyRage } });
-    this.dealtAt = key;
-    if (!drawn && !taint && !fear && !rage) {
+    const { short } = await refill(this.actor, { handlers: { rage: applyRage } });
+    await this.actor.setFlag("cardrpg", "dealtAt", key);
+    /*
+     * **Asked of the hand, not of what was drawn.**  [FIXED 2026-11-22] `drawn` is 0 for a player
+     * whose hand was already full, and that player was told their draw pile was empty -- a
+     * warning about a problem they do not have, sending them to Catch Breath for stamina they
+     * need not spend. `handShort` is the question, and the turn-start deal asks the same one.
+     */
+    if (handShort(this.actor, short)) {
       ui.notifications.warn("Draw pile is empty. Catch Breath to recover some.");
     }
     this.render();
@@ -3603,18 +3705,58 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         }
         const lookOnly = /seeing only/i.test(step.text ?? "");
         const esc = foundry.utils.escapeHTML;
+
+        /*
+         * **It shows the cards.**  **[FIXED 2026-11-22]**
+         *
+         * The dialog was a bulleted list of NAMES with a checkbox beside each, and a player met
+         * it as *a tick box labelled Taunt* -- which is not enough to judge a card by, and
+         * judging cards is the entire effect. Sift's bargain is *you see them and may reject
+         * them*; a list of names delivers the rejecting and not the seeing, so what the rule
+         * bought was nothing.
+         *
+         * Drawn through `#renderCard`, which is what the hand is drawn through. Not a second
+         * renderer: a Sift that printed a card differently from the hand would be showing you
+         * something other than the card you are about to be dealt, and the draw pile can hold
+         * intruders -- a Fear in there is a card you would very much like to bin, and
+         * `#renderCard` is the one place that knows a harm card has no halves.
+         *
+         * `Handlebars.helpers` rather than rebuilt markup, for the icons and the art: `crArt`
+         * exists because eight sites wrote the `url()` by hand and every one of them 404'd, and
+         * a ninth written here would be the same bug in a dialog.
+         *
+         * **The whole card is the tick**, which is the same gesture the hand uses for turning a
+         * card sideways: the checkbox is still there, still named `bin`, and still what the
+         * button reads -- it is just no longer the only thing you can hit.
+         */
+        const glyph = key => Handlebars.helpers.crIcon(key).toString();
+        const cardHtml = card => {
+          const face = this.#renderCard(card, new Set(), false);
+          const body = face.harm
+            ? `<div class="cr-half"><span class="cr-note">Can\u2019t be played, not even for `
+              + `Brace.</span></div>`
+            : (face.halves ?? []).map(h => `<div class="cr-half cr-half--${h.name}">`
+              + `<span class="cr-half__marker">${glyph(h.icon)}</span>`
+              + `<span>${esc(h.text)}</span></div>`).join("");
+          return `<div class="cr-card${face.harm ? " cr-card--harm" : ""}"`
+            + (face.art ? ` style="--cr-art: ${Handlebars.helpers.crArt(face.art)}"` : "")
+            + `><div class="cr-card__name">${esc(face.name)}</div>${body}</div>`;
+        };
+
         const rows = seen.map(card => lookOnly
-          ? `<li>${esc(cardName(card))}</li>`
-          : `<li><label><input type="checkbox" name="bin" value="${card.id}"> `
-            + `${esc(cardName(card))}</label></li>`).join("");
+          ? `<li class="cr-sift__seen">${cardHtml(card)}</li>`
+          : `<li><label class="cr-sift__pick">`
+            + `<input type="checkbox" name="bin" value="${card.id}">`
+            + `<span class="cr-sift__tick" aria-hidden="true">&#10005;</span>`
+            + cardHtml(card) + `</label></li>`).join("");
 
         const chosen = await foundry.applications.api.DialogV2.wait({
           window: { title: `${game.i18n.localize("CARDRPG.Effect.Sift")} ${n}` },
           content: `<div class="cardrpg cr-sift"><p class="cr-note">`
             + (lookOnly
               ? "You see them and that is all. Nothing moves."
-              : "Anything you tick goes to your discard, which the next cycle brings back. "
-                + "You cannot reorder them.")
+              : "Click a card to bin it. What you bin goes to your discard, which the next "
+                + "cycle brings back \u2014 nothing here is lost, and you cannot reorder them.")
             + `</p><ul class="cr-sift__cards">${rows}</ul></div>`,
           buttons: lookOnly
             ? [{ action: "seen", label: "Seen" }]

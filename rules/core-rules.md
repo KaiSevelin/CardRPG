@@ -68,7 +68,24 @@ Any card whose printed reaction cannot fire — the wrong trigger, or a drawback
    dearest number on your sheet: a card of hand size is worth about as much as four points of
    Health in a hard fight, and under §8 it costs you nothing to hold, so the ceiling is the price.
 2. **Intent** – the GM draws one card per NPC **type** and lays it **face down** (see below).
-3. **Turns** – everyone takes a turn, one at a time, in initiative order.
+3. **Turns** – everyone takes a turn, one at a time, in initiative order. **Your hand is topped
+   back up to size as your own turn begins**, as well as at step 1.
+
+> **Two refills, and the second one is new.**  **[RULED 2026-11-22]** The round has always
+> refilled at the top, and that is what gives everyone a hand before anybody acts — including
+> before the first reaction of the fight, which you may be called on for long before your own
+> turn. The problem it leaves is that **reacting early and reacting late cost different amounts**:
+> spend three cards defending yourself before your turn and you act with two, spend them after
+> your turn and you act with five. Same cards, same stamina, a different price, decided by where
+> initiative happened to put you.
+>
+> Topping up again at the start of your own turn puts the refill at the same point in everybody's
+> personal cycle, and **what it gives up is the ruling**: a reaction costs **the card and the
+> stamina and nothing else**. It no longer also costs you the hand you act with, which was never
+> a price anybody chose — it was a side effect of where the refill happened to sit.
+>
+> Both fills are the engine's: you do not press anything, and the deck cycles for free while you
+> have stamina (§8), so there was never a decision in the drawing.
 
 ### Initiative
 
@@ -2328,6 +2345,13 @@ the Way graphs is which nodes offer what, not the rule.
 
 - Health **never goes below 0**. Damage beyond that is lost.
 - At **0 Health** you are **Unconscious**: you fall Prone, take no turns, and can't play reactions. You also gain 1 Wound.
+- **You come out of the initiative order while you are down, and healing puts you back into it
+  at the place you drew.**  **[RULED 2026-11-22]** *Takes no turns* was a line somebody at the
+  table had to remember every round, and a figure that cannot act does not belong in a list of
+  who acts next. But the place is still yours: the order is drawn once and holds for the whole
+  fight (§3), so you did not leave the fight, you stopped being able to act in it. **No second
+  draw** — a second draw would be a second order. On the map the figure wears a **skull** for as
+  long as they are down.
 - You are **dying**. You die if either of these happens:
   1. you take **any further damage** while at 0 Health, or
   2. you are **not treated** before the end of your next turn.

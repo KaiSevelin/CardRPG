@@ -102,6 +102,35 @@ dead except a Wound.
 | **Wound** | Occupies a hand slot, renders as unplayable, auto-discards at end of turn. |
 | **Taint** | Has no decision attached: resolve on draw (1 damage, ignores armor), discard, draw no replacement. Show a notification, don't prompt. |
 
+### 3.3a The round deals the hand  **[CHANGED 2026-11-22]**
+
+**Nobody presses anything to get cards.** The round fills every character's hand at the top of it,
+and the acting character is topped back up as their own turn begins.
+
+The deck corner has been a button since this window was built, under an argument that reads well:
+*drawing is the player's own act, because playing a card is what spends the clock and watching
+your own stamina fall is the point.* That argument is about **playing** cards and it had been
+applied to **drawing** them. Playing spends stamina; the deck cycles for free (core-rules §8), so
+a refill costs nothing and decides nothing. The click bought the player no choice at all — what it
+bought was a fight that began with five empty hands and a rule nobody could find, and a table
+reporting *it did not deal me anything*.
+
+- **core-rules §3 step 1 was never built.** The round is written *refill, intent, turns*, and the
+  engine did the second and the third.
+- **The second fill is new, and it is a rules change** — see the ruling in core-rules §3. It is
+  what makes reacting before your turn cost the same as reacting after it.
+- **The corner stays, and it is not redundant.** Out of combat there is no turn to start, so a
+  scene still deals from it, and a hand thinned mid-turn by Strain can still be topped up. It is
+  simply no longer the only way to get cards.
+- **The marker moved onto the actor.** *Already dealt this turn* used to be a field on the window,
+  which is one client's memory of what that client had clicked; the deal happens on the GM's
+  machine now, for somebody else's character. It is a flag on the actor, so the corner greys out
+  on the player's screen for the turn their hand arrived on. **Out of combat it never greys**,
+  because out of a fight every turn is the same turn and a persistent marker with no clock behind
+  it would kill the button for ever.
+- **The warning is about the hand, not about the draw.** *Draw pile is empty* used to be said
+  whenever nothing was drawn — which is also what a full hand looks like.
+
 ### 3.4 Playing a turn
 
 One primary and one secondary, from **two different cards**, in **either order**.
@@ -402,18 +431,32 @@ The cards being played are never payable: a half cannot pay for itself. If the r
 too thin to cover the bill, the turn is refused with a notification rather than part-paid -- the
 same shape as an unpaid Ready (§3.5.2).
 
-### 3.8 Piles are links, not decks
+### 3.8 Piles are decks again, under the Play button  **[MOVED 2026-11-22]**
 
-Fate, Discard and Spent sit as **icon counters on the same row as Health, Block and Armor**, divided
-off at the end of it, each opening into the same spread the left-hand decks use. They share that row
-because they are the same kind of thing -- a number you read, not a thing you click to play -- and
-because the column has no height to spare.
+Fate, Discard and Spent sit as a row of **three small deck backs** in the last row of the right
+column, directly under the button that resolves the turn, each a third of that column's width and
+each opening into the same spread the left-hand decks use.
 
-A deck back on the table promises a pile you can draw on. None of these is drawn from by hand: Fate
-is drawn by the rules when an action resolves, and the two discards are **records of what the fight
-has cost you so far** — the same kind of thing as Health, Block and conditions, and belonging where
-they are. They also cost the column two card-heights it could not spare: at full height it sat under
-Foundry's own notifications, which have to land somewhere.
+They were **icon counters on the vitals row**, and the argument for that is kept here rather than
+deleted, because it was a good one and it was half right: a deck back on the table promises a pile
+you can draw on, none of these is drawn from by hand — Fate is drawn by the rules, the two discards
+are records — and three card-sized backs cost the column two heights it has not got. At full height
+the column sat under Foundry's own notifications, which have to land somewhere.
+
+**What it cost was the discard.** A number beside a heart and a shield reads as a statistic, and
+the question a player actually has is *where did that card go* — which is a question about a
+**place**, and is answered by a place. Reported from the table as *the discard pile is not
+visible*, which it was, as six characters of text in a row of counters.
+
+A third of the width each is what settles the original objection instead of ignoring it: one row,
+about 94px tall at the common card size, under a button that is already the bottom of the column.
+**Discard and Spent wear the same back** — they are the same deck's cards in two places — so the
+**icon rides with the count** and is the whole of the difference between them.
+
+**Smaller than the decks down the left is right, and is the ruling.**  **[RULED 2026-11-22]** A
+deck you play from and a pile that records what you have played are not the same kind of object,
+and the size says which is which before the label does. It also buys the column its height back:
+these three cost one row between them rather than three.
 
 | Link | Icon | Opens |
 |---|---|---|
@@ -431,6 +474,39 @@ same pile, and a Spent cost and the Spent link mean the same pile.
 
 **Spent is absent entirely when nothing is Spent**, so it appears exactly when it starts to mean
 something. Fate and Discard are always there, because a count of zero is itself worth reading.
+
+### 3.9 The left column is as tall as the piles in it  **[FIXED 2026-11-22]**
+
+A card's size is the window's height divided by **how many cards are stacked down the left edge**,
+and that number was typed in as four: Items, Features, Conditions, and the deck corner under them.
+
+**A caster has a fourth pile**, because the spell book is a deck (§3.8 above lists it), and nothing
+knew. Five cards in a space measured for four pushed the bottom one off the screen, so a character
+who learned a spell **lost the Conditions deck** — the pile that says what is being done to you
+right now, taken away by the one event that makes the column taller. At the table it was read as
+*the spell deck replaced the condition deck*, which is exactly what it looks like.
+
+The tray counts the piles it has drawn and the stylesheet divides by the answer. Two constants on
+this screen had already been wrong for the same reason and been fixed the same way — the sidebar's
+width and the scene controls' — and this was the third. **Anything added to either column is
+counted from now on**, which is the difference between this and the number it replaced.
+
+### 3.10 A dialog about cards shows cards  **[FIXED 2026-11-22]**
+
+**Sift** let you look at n cards out of your draw pile and bin what you did not want, and it asked
+with a bulleted list of **names** and a checkbox beside each. A player met *Sift 1* as a tick box
+labelled *Taunt*.
+
+Judging cards is the entire effect — *you see them and may reject them* — so a list of names
+delivered the rejecting without the seeing, and what the rule bought was nothing. The dialog draws
+the cards now, through **the same renderer the hand uses**: a Sift that printed a card differently
+from the hand would be showing you something other than the card you are about to be dealt, and the
+draw pile holds intruders too — a Fear in there is a card you would very much like to bin, and the
+hand's renderer is the one place that knows a harm card has no halves to print.
+
+**The whole card is the tick.** The checkbox is still in the form and still named for what the
+button reads; it is taken off the screen rather than out of the markup, which also leaves it
+reachable from the keyboard.
 
 ---
 
@@ -920,6 +996,33 @@ character's.
 Visibility is unchanged and is the whole of the rule: a player sees a character they own, a GM sees
 whoever they have selected. Deselecting closes nothing — the tray is the surface you play from, and
 one that vanished on every click into empty canvas would be unusable.
+
+### 7.2 A figure that is down looks down  **[BUILT 2026-11-22]**
+
+Three things used to happen at 0 Health — a Wound card, an injury draw, and a health value of zero
+— and **not one of them was on the map**. The figure stood in the order with a turn coming round,
+looking exactly like a figure that could act. A GM running five goblins had nothing to read but the
+numbers in a tracker.
+
+- **A skull goes over the token**, as Foundry's own `dead` status and as an **overlay** rather than
+  one of the small corner badges: across the body, not beside it. Using the built-in status means
+  the mark survives a token being dragged or copied, can be taken off by hand from the token HUD,
+  and is restyled by anything that restyles conditions.
+- **The combatant leaves the fight, and healing puts it back.**  **[RULED 2026-11-22]**
+  core-rules §8 says a downed figure takes no turns, and that was a line somebody had to remember
+  every round. The place in the order is kept while they are down and restored when they are
+  healed, **at the initiative they drew and with no second draw** — the order is drawn once and
+  holds for the whole fight (§3), so coming back is a restoration rather than an entrance. The
+  first build of this left the re-entry to the GM, which put them in the middle of every
+  revival: re-adding a token, and settling a place the engine already knew.
+- **Unconscious appears on the sheet**, derived from the number rather than stored — which is what
+  makes it true in both directions with nothing to write: a heal takes it off, a GM typing a value
+  into the sheet is as good as a blow, and no stale copy can be left on somebody standing. It was
+  the one condition in the game that the rules named three times and **no code path could
+  produce**, so reactions had been firing off bodies.
+- **Driven by the health value and not by the blow**, which is the only gate that catches all of
+  them: a hit, a burn, ground, a fast Taint, the price of a spell, a heal, a rest, and the GM
+  editing the sheet.
 
 ---
 
