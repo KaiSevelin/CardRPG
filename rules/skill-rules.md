@@ -33,7 +33,7 @@ Every skill card shows one **approach** and a **value** (1–3):
 | **Lore** | 📜 | Knowledge, arcana, religion, history, healing |
 | **Presence** | 👑 | Persuading, leading, performing, bargaining, calming |
 
-Some cards also have a small **edge**: a bonus effect that triggers when the card is played, even if the check fails.
+Every card also carries an **edge**: a line of prose that happens when the card is played, whether or not the check succeeds.  **[FIXED 2026-11-23]** It is **not a bonus** — it is the card's second half, and sometimes its price. *Deck composition* below has the ladder that makes which card to play a decision, and §2's fourth worked check has one being claimed.
 
 ```
 ┌───────────────────────┐

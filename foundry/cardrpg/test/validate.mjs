@@ -15690,6 +15690,36 @@ section("the skill deck, and the check");
 
 /* The record, written where a reader of the check rules will find it. */
 const skillDoc = fs.readFileSync(path.join(root, "../../rules/skill-rules.md"), "utf8");
+
+/*
+ * **One document said both things about the edge.**  **[FIXED 2026-11-23]**
+ *
+ * The approach table was followed by *some cards also have a small edge: a bonus effect*, which
+ * was true when it was written and stopped being true on 2026-11-15, when the value-against-text
+ * ladder was found in the content and the other five cards were filled in. The bullet under deck
+ * composition has said **every card carries an edge** since that day; the opening paragraph was
+ * never corrected, so the first statement a reader met was the wrong one.
+ *
+ * And it was wrong twice: the handbook has said *the edge is not a bonus, it is the card's second
+ * half* since it was written, which is the half that matters at a table. **The Loud Voice** says
+ * everyone knows it was you whether or not you wanted it -- a rider called a bonus is a rider
+ * nobody expects to be charged for.
+ *
+ * Pinned in both directions, because a contradiction inside one document is exactly what a
+ * one-sided check lets back in.
+ */
+check("skill-rules says every card carries an edge",
+  /\*\*Every card carries an edge\*\*/.test(skillDoc) ? "yes" : "no", "yes");
+check("and says so where the edge is introduced",
+  /Every card also carries an \*\*edge\*\*/.test(skillDoc) ? "yes" : "no", "yes");
+check("and no longer says only some cards have one",
+  /Some cards also have a small \*\*edge\*\*/.test(skillDoc) ? "no" : "yes", "yes");
+/* Not a bonus, which is the word that made a price read as a gift. */
+check("and that it is not a bonus",
+  /It is \*\*not a bonus\*\*/.test(skillDoc) ? "yes" : "no", "yes");
+check("and the handbook agrees with it",
+  /The edge is not a bonus\. It is the card's second half\./.test(handbook) ? "yes" : "no",
+  "yes");
 check("skill-rules marks the check built",
   /^## 2\. Making a check {2}\*\*\[BUILT 2026-11-01\]\*\*$/m.test(skillDoc) ? "yes" : "no", "yes");
 check("and records the defect it was hiding",
@@ -20910,6 +20940,7 @@ const absentGreps = [
   String.raw`and no deck writes an action card by hand any more :: faces: \[\{ name: def\.name \}\]`,
   String.raw`and no longer reads a spell as a source of bonus :: slate\.type === "spell" && slate\.system\.effect`,
   String.raw`and no longer reads an art field the content has not got :: def\?\.art \?\? ""`,
+  String.raw`and no longer says only some cards have one :: Some cards also have a small \*\*edge\*\*`,
   String.raw`and no longer stops dealing at the first dose :: taint\+\+;\s*\n\s*break;`,
   String.raw`and no longer warns that nothing can grant it :: Skill card[\s\S]{0,80}\*\*\[OPEN\]\*\* The one reward on this list with no key`,
   String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,
