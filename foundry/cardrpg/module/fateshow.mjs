@@ -190,9 +190,7 @@ function clear(node, slot) {
  * flight can be disturbed by another arriving. A flex row would have been shorter and the second
  * draw of a turn would have shoved the first out of its parked place while it sat there.
  */
-export function showFate({ drawn = [], used = null, mode = 0 } = {}) {
-  if (!drawn.length) return;
-
+function reveal({ drawn, used }) {
   const host = layer();
   const height = Math.round(window.innerHeight * REVEAL_HEIGHT);
   const width = Math.round(height * cardRatio(host));
@@ -251,6 +249,56 @@ export function showFate({ drawn = [], used = null, mode = 0 } = {}) {
      * on the flight. */
     window.setTimeout(() => clear(winner.node, slot), TIMING.fly + TIMING.parked);
   }, hold);
+
+  /*
+   * **The centre is free once the kept card has landed**, which is what the next draw waits for --
+   * not the five seconds it then spends parked. A turn that draws twice should park its second
+   * card beside the first while the first is still there, which is the whole point of the row.
+   */
+  return new Promise(resolve => window.setTimeout(resolve, hold + TIMING.fly));
+}
+
+/**
+ * **One reveal at a time.**  **[FIXED 2026-11-23]**
+ *
+ * Each reveal computed its own centre and dealt there immediately, and an action can draw more
+ * than once: an attack draws for itself, and then again for a saving throw it forced or for the
+ * injury of a target it dropped (resolve.mjs). So **an attack with advantage showed three cards**
+ * -- the pair, plus a single from the second draw, all stacked in the middle of the screen at the
+ * same time. The player asked what the third card was, which is the right question and had no
+ * answer: it belonged to a different draw and nothing said so.
+ *
+ * Queued, so the middle of the screen means one draw. The second reveal starts when the first has
+ * landed, which is also exactly the sequence the table asked for: the primary's card parks, then
+ * the secondary's is shown and parks beside it.
+ *
+ * **Bounded**, because a queue is a promise about the future and this one is about the present. A
+ * card dealt thirty seconds after the action it came from is a lie about which action drew it, so
+ * past a short backlog the reveal is dropped -- the piles underneath have recorded the draw either
+ * way, which is what they are for.
+ */
+let waiting = Promise.resolve();
+let pending = 0;
+const QUEUE_MAX = 3;
+
+export function showFate({ drawn = [], used = null } = {}) {
+  if (!drawn.length) return;
+  if (pending >= QUEUE_MAX) return;
+  pending++;
+  /*
+   * `mode` is in the hook's payload and deliberately not read: **how many cards were drawn already
+   * says whether this was an advantage draw**, and `used` already says which one the rule took. A
+   * reveal that read the mode as well would be a second opinion about a question the cards have
+   * already answered -- and the one that disagreed would be this one, which can only ever be
+   * wrong about it.
+   */
+  waiting = waiting
+    .then(() => reveal({ drawn, used }))
+    /* A reveal that throws must never take the action down with it: the draw has already happened
+     * and the number is already real. It also must not break the chain, or every later draw in the
+     * session goes unshown -- which is why this sits inside the link rather than around it. */
+    .catch(err => console.error("cardrpg | the fate reveal failed", err))
+    .finally(() => { pending--; });
 }
 
 /**
@@ -261,13 +309,6 @@ export function showFate({ drawn = [], used = null, mode = 0 } = {}) {
  * settled it, which is the whole reason the deck is face up once drawn.
  */
 export function registerFateShow() {
-  Hooks.on("cardrpgFateDrawn", data => {
-    try {
-      showFate(data ?? {});
-    } catch (err) {
-      /* A reveal that throws must never take the action down with it: the draw has already
-       * happened and the number is already real. */
-      console.error("cardrpg | the fate reveal failed", err);
-    }
-  });
+  /* The failure path is inside the queue, where the work is: see `showFate`. */
+  Hooks.on("cardrpgFateDrawn", data => showFate(data ?? {}));
 }

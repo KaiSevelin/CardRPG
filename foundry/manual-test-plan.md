@@ -697,6 +697,12 @@ and then the second **to its right**, in that order.
 take **fades out where it is**; the one it takes flies to the pile as above. That is the only place
 in the game you can see the card you did not get, so it is worth watching twice.
 
+**An action that draws twice shows two, then one.** Drop a goblin to 0 with an attack made with
+advantage, or force a saving throw with one: the attack draws a pair and the injury or the save
+draws again. **There should never be three cards in the middle at once** — the pair, then the
+single after it has landed. Three together was the fault reported on 2026-11-23, and the third card
+belonged to a different draw with nothing saying so.
+
 **A card with no picture is fine** — the text is the card. What should never happen is a blank
 card with *no text*, or a card that stays on the screen.
 

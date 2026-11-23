@@ -580,6 +580,17 @@ screen. A table watching somebody swing a sword saw a sentence arrive in the log
   **fades where it lies** and the one it takes flies to the pile. Those two must not look alike:
   one is going into the record and the other is being passed over. It is also the only form in
   which a player can check what advantage bought — *you can see the card you did not get*.
+- **One reveal at a time.**  **[FIXED 2026-11-23]** An action can draw more than once: an attack
+  draws for itself, and then again for a saving throw it forced or for the **injury** of a target
+  it dropped (core-rules §8 draws one at 0 Health). Each reveal dealt at its own centre
+  immediately, so **an attack with advantage showed three cards** — the pair, plus a single
+  belonging to a different draw, stacked in the middle together. The player asked what the third
+  card was, which is the right question and had no answer. They are queued now, which is also
+  exactly the sequence asked for: the first card parks, then the second is shown and parks beside
+  it. The next reveal starts when the previous card has **landed**, not when it has finished its
+  five seconds, so a turn's two cards are in the row together. A backlog past a few is dropped
+  rather than shown late — a card dealt half a minute after the action it came from is a lie
+  about which action drew it, and the piles have recorded the draw either way.
 - **Measured, not computed.** Where the pile row is depends on what is in the right column, which
   is a fact about a turn in progress, so the landing place is read off the row itself (the same
   reason §3.11 measures). With no pile row on the screen the card simply goes rather than flying

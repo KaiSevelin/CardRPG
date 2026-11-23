@@ -386,6 +386,24 @@ async function settle(page) {
     await LIVE.refill(hero);
     await LIVE.reserveHand(hero, false);
     /*
+     * **And then check the hand really is at size.**  [BUILT 2026-11-23]
+     *
+     * The refill above is awaited, so after it the hand IS full -- unless something still in
+     * flight lands afterwards and empties it again, which is exactly what `afterCombat` does when
+     * a fight has just ended: `deleteCombat` calls it without awaiting, and the quiet-wait at the
+     * head of this function is a guess at how long that takes rather than a fact about it.
+     *
+     * The symptom is always the same and never says what it is: a probe three hundred lines later
+     * reports *nothing in hand*, or times out waiting for a stack panel that has nothing to draw,
+     * and takes six checks down with it. A known state has to be checked rather than arranged, so
+     * this refills again if the hand has gone and gives up quietly rather than hanging.
+     */
+    const want = hero.system.handSize?.max ?? 5;
+    for (let i = 0; i < 20 && (LIVE.deckOf(hero, "actionHand")?.cards.size ?? 0) < want; i++) {
+      await new Promise(r => setTimeout(r, 100));
+      await LIVE.refill(hero);
+    }
+    /*
      * **And the window on the action side.**  [2026-11-14] The mode picks the side now -- a fight
      * is the action deck, a scene is the skill deck -- and these probes run out of combat, so
      * without this the hand they are all about is not on the screen. Pinned here rather than
@@ -1621,7 +1639,9 @@ async function probes(page) {
          * so a feature in the wrong half still reports the wrong half rather than waiting for the
          * right one.
          */
-        await LIVE.drawn(() => document.querySelector(".cr-stack[data-half] .cr-card__title"));
+        await LIVE.drawn(() => document.querySelectorAll(".cr-stack[data-half]").length >= 2
+          && [...document.querySelectorAll(".cr-stack[data-half]")]
+            .every(h => h.querySelector(".cr-card__title")));
         /* `data-half` rather than a class: the template writes the half as an attribute, and
          * sniffing it out of `className` found "secondary" nowhere and reported "primary" for
          * both. */
@@ -1678,8 +1698,9 @@ async function probes(page) {
       /* And then wait until it is on the screen, for the reason written over the same wait in the
        * probe above. The condition is the primary stack having cards -- which is the half both of
        * the rows below read -- rather than a count of frames. */
-      await LIVE.drawn(
-        () => document.querySelector('.cr-stack[data-half="primary"] .cr-card__title'));
+      await LIVE.drawn(() => document.querySelectorAll(".cr-stack[data-half]").length >= 2
+        && [...document.querySelectorAll(".cr-stack[data-half]")]
+          .every(h => h.querySelector(".cr-card__title")));
       /* Per half: the weapons drawn into it, and the Strike number its card prints. */
       const read = which => {
         const box = document.querySelector(`.cr-stack[data-half="${which}"]`);
@@ -5872,6 +5893,91 @@ async function probes(page) {
       ["clicking it deals a hand", after.held > 0, true],
       /* And then says there is nothing more to come, the way the action deck does. */
       ["and the corner then says the hand is full", after.spent, true]
+    ];
+  });
+
+  /*
+   * **Two draws in one action show two cards, then one.**  **[FIXED 2026-11-23]**
+   *
+   * Each reveal computed its own centre and dealt there at once, and **an action can draw more
+   * than once**: an attack draws for itself, and then again for a saving throw it forced or for
+   * the injury of a target it dropped. So an attack with advantage put **three cards** in the
+   * middle of the screen together -- the pair, plus a single belonging to a different draw, with
+   * nothing saying which was which. Reported from the table as exactly that: *three fate cards*.
+   *
+   * What is measured is the thing that was wrong. Not *do the cards appear* -- they did -- but
+   * **how many are in the middle at once**, sampled across the whole sequence, because the fault
+   * lasted about a second and a half and a single look would have missed it.
+   */
+  await probe("two draws at once still show one at a time", async () => {
+    await settle(page);
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      tray.openPiles.clear();
+      await tray.render();
+      await LIVE.drawn(() => document.querySelector(".cr-hud__piles .cr-pile"));
+      /*
+       * **Back to back, and the first one awaited.** This is how the engine draws: an attack
+       * draws for itself, and only once that has resolved does it draw again for the saving
+       * throw it forced or the injury of a target it dropped. The DRAWS are sequential; it is the
+       * REVEALS that used to overlap, because the first is still in the middle of the screen a
+       * second later.
+       *
+       * Firing both unawaited instead was this probe's own first bug: two concurrent `moveTop`
+       * calls on one deck, which is a race the game never runs and which drew one card where it
+       * should have drawn two.
+       */
+      await LIVE.drawFate(LIVE.hero, 3, 1);
+      LIVE.drawFate(LIVE.hero, 3, 0);
+    });
+    /*
+     * Sampled rather than looked at once: a card in the middle is one with neither the flying nor
+     * the spurned class on it, and the question is the WORST moment across the sequence.
+     */
+    const watch = await page.evaluate(async () => {
+      let mostCentred = 0;
+      let everParked = 0;
+      /*
+       * **Counted over time, not at a moment.** Three cards is what the table saw and three cards
+       * is still what is dealt -- a pair and then a single -- so the total cannot be read off any
+       * one sample once the reveals take turns, which is the entire fix. Each element is stamped
+       * the first time it is seen and the stamps are tallied.
+       */
+      let stamp = 0;
+      const seen = new Set();
+      for (let i = 0; i < 60; i++) {
+        const all = [...document.querySelectorAll("#cr-fateshow .cr-fate")];
+        for (const c of all) {
+          if (!c.dataset.probeSeen) c.dataset.probeSeen = String(++stamp);
+          seen.add(c.dataset.probeSeen);
+        }
+        const centred = all.filter(c => !c.classList.contains("cr-fate--flying")
+          && !c.classList.contains("cr-fate--spurned")).length;
+        const flying = all.filter(c => c.classList.contains("cr-fate--flying")).length;
+        mostCentred = Math.max(mostCentred, centred);
+        everParked = Math.max(everParked, flying);
+        await new Promise(r => setTimeout(r, 100));
+      }
+      return { mostCentred, everParked, everSeen: seen.size };
+    });
+    /* And then the screen empties, however many draws went through it. */
+    await page.waitForFunction(
+      () => document.querySelectorAll("#cr-fateshow .cr-fate").length === 0,
+      null, { timeout: 15000 }).catch(() => {});
+    const after = await page.evaluate(
+      () => document.querySelectorAll("#cr-fateshow .cr-fate").length);
+    return [
+      /* **The row this probe exists for.** Two is the advantage pair; three was the bug. */
+      ["never more than two cards in the middle at once", watch.mostCentred <= 2, true],
+      ["and the pair really was dealt", watch.mostCentred, 2],
+      /* The second draw is queued, not dropped: both cards reach the pile row, which is also what
+       * says the primary's card is still there when the secondary's lands. */
+      ["both draws reach the pile row", watch.everParked, 2],
+      /* Three cards is still what a pair and a single add up to -- the fix is that they are not
+       * all in the middle together, not that one of them went missing. */
+      ["and three cards were dealt in all", watch.everSeen, 3],
+      ["and in the end the screen is clear", after, 0]
     ];
   });
 

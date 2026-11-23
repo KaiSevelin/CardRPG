@@ -17855,6 +17855,10 @@ check("and that it lands on the pile it went under",
   /\*\*Then it flies to the record\.\*\*/.test(hudSpec) ? "yes" : "no", "yes");
 check("and what advantage lets you see",
   /\*\*Advantage deals two and shows two\.\*\*/.test(hudSpec) ? "yes" : "no", "yes");
+/* And the one a player reported rather than a designer predicted: three cards in the middle, two
+ * of them belonging to one draw and the third to another, with nothing saying so. */
+check("and that only one draw is in the middle at a time",
+  /\*\*One reveal at a time\.\*\*/.test(hudSpec) ? "yes" : "no", "yes");
 check("hud-spec records that the Items deck is what is equipped",
   /^### 3\.8a The Items deck is what you have equipped/m.test(hudSpec) ? "yes" : "no", "yes");
 check("hud-spec records where a spread goes, and how many there can be",
@@ -19428,10 +19432,46 @@ check("the reveal listens for the draw",
 check("and is wired up at init",
   /registerFateShow\(\);/.test(entrySource) ? "yes" : "no", "yes");
 /* A reveal that throws must never take the action down with it: the draw has already happened and
- * the number is already real. */
+ * the number is already real -- and it must not break the queue either, or every later draw in the
+ * session goes unshown, so the guard is inside the link rather than around it. */
 check("and a reveal that fails costs the action nothing",
-  /console\.error\("cardrpg \| the fate reveal failed", err\);/.test(fateShowSource)
+  /\.catch\(err => console\.error\("cardrpg \| the fate reveal failed", err\)\)/
+    .test(fateShowSource) ? "yes" : "no", "yes");
+
+/*
+ * **One reveal at a time.**  **[FIXED 2026-11-23]**
+ *
+ * Each reveal computed its own centre and dealt there at once, and **an action can draw more than
+ * once**: an attack draws for itself, and then again for a saving throw it forced or for the
+ * injury of a target it dropped. So an attack with advantage showed **three cards** -- the pair,
+ * plus a single from the second draw, stacked in the middle of the screen together. The player
+ * asked what the third card was, which is the right question and had no answer: it belonged to a
+ * different draw and nothing on the screen said so.
+ *
+ * Queued, so the middle of the screen means one draw -- and the second reveal starting when the
+ * first has LANDED is also the sequence the table asked for: the primary's card parks, then the
+ * secondary's is shown and parks beside it.
+ */
+check("reveals take turns",
+  /waiting = waiting\s*\n\s*\.then\(\(\) => reveal\(\{ drawn, used \}\)\)/.test(fateShowSource)
     ? "yes" : "no", "yes");
+/* Released when the kept card has landed, NOT when it has finished its five seconds parked: the
+ * second card of a turn has to arrive while the first is still beside it. */
+check("and the next one waits for the landing rather than the parking",
+  /window\.setTimeout\(resolve, hold \+ TIMING\.fly\)/.test(fateShowSource) ? "yes" : "no", "yes");
+check("and not for the five seconds after it",
+  /setTimeout\(resolve, hold \+ TIMING\.fly \+ TIMING\.parked\)/.test(fateShowSource)
+    ? "no" : "yes", "yes");
+/*
+ * **Bounded**, because a queue is a promise about the future and this one is about the present. A
+ * card dealt half a minute after the action it came from is a lie about which action drew it, so
+ * past a short backlog the reveal is dropped -- the piles underneath have recorded the draw
+ * anyway, which is what they are for.
+ */
+check("and a backlog is dropped rather than shown late",
+  /if \(pending >= QUEUE_MAX\) return;/.test(fateShowSource) ? "yes" : "no", "yes");
+check("and the count comes back down however the reveal ends",
+  /\.finally\(\(\) => \{ pending--; \}\);/.test(fateShowSource) ? "yes" : "no", "yes");
 
 /*
  * **Where it goes**, which is the half that makes it a record rather than a flash: under the pile
@@ -21181,6 +21221,7 @@ const absentGreps = [
   String.raw`and no table offers a Swedish column :: \| Swedish \|`,
   /* The range display measures and refuses nothing: there is no line to find, which is the
    * only shape this rule can be checked in. */
+  String.raw`and not for the five seconds after it :: setTimeout\(resolve, hold \+ TIMING\.fly \+ TIMING\.parked\)`,
   String.raw`and nothing anywhere refuses an action for being out of range :: out of range[\s\S]{0,40}return|notifications\.warn\([^)]*too far`,
   String.raw`and nothing ever puts a condition in the waved set :: waved\.add\(.*condition`,
   String.raw`and nothing in the content deals an injury directly :: verb: "maiming"[\s\S]{0,120}injury:`,
