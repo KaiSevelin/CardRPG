@@ -2126,8 +2126,24 @@ check("the routine that makes a Wound",
   /export async function resolveWound\(target, \{ reason = "", injuryMode = 0 \} = \{\}\)/
     .test(resolveSource) ? "yes" : "no", "yes");
 check("and the guard is the target having a deck of its own",
-  /const stack = deckOf\(target, "actionDiscard"\);\s*\n\s*if \(!stack\) return false;/
-    .test(resolveSource) ? "yes" : "no", "yes");
+  /const stack = deckOf\(target, "actionDiscard"\);/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **And the `no` is said out loud.**  **[FIXED 2026-11-23]**
+ *
+ * It returned `false` in silence, which is the worst answer this moment has: the blow landed, the
+ * Health went down, and the two rules core-rules 8 hangs here -- the Wound card and, on a drop to
+ * 0, the injury draw -- did not happen with nothing anywhere saying so. A creature dragged out of
+ * the bestiary compendium has no stacks at all (`buildCreatureDecks`), so this was every such
+ * creature every time, and the table's only clue was that nothing arrived. Reported as *post
+ * saves from npc to the chat*, which is exactly what it looked like from the outside.
+ */
+const woundBody = bodyOf(resolveSource,
+  'export async function resolveWound(target, { reason = "", injuryMode = 0 } = {}) {');
+check("and a creature with no pile to put one in is told so",
+  /has no discard pile to put one in/.test(woundBody) ? "yes" : "no", "yes");
+check("and so is one with no fate deck to draw an injury from",
+  /has no fate deck `\s*\n\s*\+ `to draw an injury from/.test(resolveSource) ? "yes" : "no",
+  "yes");
 /* One Wound per blow: the rule says *you gain 1 Wound when* and then lists two triggers. */
 check("a blow that both drops you and deals five gives one Wound",
   /if \(dropped \|\| dealt >= CARDRPG\.defaults\.woundAt\) \{/.test(resolveSource)
@@ -8280,8 +8296,38 @@ check("decks given a back", [...new Set(backed)].sort().join(", "),
 /* Every back declared is a back used: one nobody reads is a picture drawn for nothing. */
 check("backs declared but never read",
   backs.map(([k]) => k).filter(k => !backed.includes(k)).join(", ") || "none", "none");
+/*
+ * **Two shapes, because there are two ways to ask for a stack.**  [FIXED 2026-11-23]
+ *
+ * A direct `makeCards(..., "pile", ...)` call passes its arguments in a row; a **slot plan** is a
+ * table of objects, and three routines use one now. The old single grep was `"pile",[^)]*backOf\(`
+ * over the whole file, and a `[^)]` run walks out of one table entry and into the next -- so
+ * `creatureDecks` put a `"pile"` two entries above a `backOf(` and the pin reported a back on a
+ * pile that has none. Widening the run would not have helped: a plan entry holds `${kind}` and
+ * `${name}`, so a `[^}]` run stops inside a template literal rather than at the end of the entry,
+ * and a grep that cannot reach the field it is about can only ever pass.
+ *
+ * So the plans are read as entries. Each begins `{ slot: ` and runs to the next one or to the end
+ * of the array, which is one split rather than a regex that has to know about braces.
+ */
 check("a pile is never given one",
-  /"pile",[^)]*backOf\(/.test(setupSource) ? "no" : "yes", "yes");
+  /"pile",[^)\n]*backOf\(/.test(setupSource) ? "no" : "yes", "yes");
+const planEntries = setupSource.split("{ slot: ").slice(1).map(chunk => {
+  const stop = chunk.indexOf("];");
+  return stop === -1 ? chunk : chunk.slice(0, stop);
+});
+const planOf = kind => planEntries.filter(e => new RegExp(`^"\\w+", type: "${kind}"`).test(e));
+check("stacks declared in a slot plan", planEntries.length, 15);
+check("and the three kinds they are",
+  [["deck", planOf("deck").length], ["hand", planOf("hand").length],
+    ["pile", planOf("pile").length]].map(([k, n]) => `${k} ${n}`).join(", "),
+  "deck 5, hand 2, pile 8");
+check("every planned deck names a back",
+  planOf("deck").filter(e => !/back:/.test(e)).length, 0);
+check("and no planned pile does",
+  planOf("pile").filter(e => /back:/.test(e)).length, 0);
+check("nor a planned hand",
+  planOf("hand").filter(e => /back:/.test(e)).length, 0);
 /*
  * **Every deck document gets a back and no pile does**, which is the rule rather than a list: a
  * deck is face down, so somebody is looking at its back all evening; a hand is face up to its
@@ -8296,12 +8342,15 @@ const deckCalls = [...setupSource.matchAll(/makeCards\(([\s\S]*?)\n?\s*\);/g)]
  * that a Cursed goblin does not hex the ogre beside it, and they share the one fate back -- and the
  * twist deck is the GM's, which borrows the skill back for the reason twistCardData gives. */
 /*
- * Eight: the seven authored ones and the one every creature in the roster is built from, whose back
- * key is **chosen rather than written** -- its own if the kind has earned one, the common intent
- * back otherwise. That is the only computed back key in the file, which is why the check below
- * exists: a computed key cannot be audited by reading the call, so it is audited from the content.
+ * **Seven, and the creature decks are no longer among them.**  [MOVED 2026-11-23] The goblin
+ * line's fate deck and every creature's intent deck were two of these calls; they are slot-plan
+ * entries in `creatureDecks` now, audited as entries above. What is left is the authored world:
+ * the stacks a world has one of.
+ *
+ * The computed back key went with them -- `npc.${kind}` falling back to `npc` -- which is why the
+ * checks around this one audit it from the content rather than from the call.
  */
-check("deck documents created", deckCalls.length, 9);
+check("deck documents created", deckCalls.length, 7);
 check("and every creature's back resolves to a declared one",
   monsters.expandRoster(content.ROSTER, content.VARIANTS)
     .filter(c => !(`npc.${c.system.kind}` in content.DECK_BACKS)
@@ -9930,11 +9979,28 @@ check("and says how many grants the cap ate",
  * forget -- a hero who breathes has just bought stamina back and would otherwise hand it straight
  * to the next four hits.
  */
+/* A local slice rather than `playBody`, which is declared eight hundred lines below: a pin above
+ * its own variable is a ReferenceError, and this file has the note about that trap twice already. */
 check("a played turn disarms what is left in hand",
-  /stops being an automatic bill against stamina\. \*\/\s*\n\s*await this\.#disarmHand\(\);/
-    .test(traySource) ? "yes" : "no", "yes");
+  /if \(game\.combat\?\.started\) await this\.#disarmHand\(\);/
+    .test(bodyOf(traySource, "  static async #onPlay() {")) ? "yes" : "no", "yes");
+/*
+ * **And a played turn is a thing only a fight has.**  **[FIXED 2026-11-23]**
+ *
+ * The gate is on the CALL rather than inside `#disarmHand`, because what the sideways hand warns
+ * about is a reaction's 1 stamina and outside a fight nothing spends stamina at all
+ * (decks/play.mjs) -- so out there it warned about a cost that could not be charged, and left a
+ * player who had just opened a door looking at five cards on their side.
+ *
+ * Inside the routine was the first attempt and it was wrong, which a live probe said within the
+ * minute: a **breath** is the other caller and a breath is a declared turn whoever is fighting.
+ * *Spend your whole turn, playing nothing* -- a player who breathes has said their turn is over.
+ */
 check("and a breath does too, because a breath is a turn",
   (traySource.match(/await this\.#disarmHand\(\)/g) ?? []).length, 2);
+check("and the breath's own call is not gated",
+  /A breath is a whole turn, so it ends the same way a played turn does\. \*\/\s*\n\s*await this\.#disarmHand\(\);/
+    .test(traySource) ? "yes" : "no", "yes");
 /*
  * **And it goes through one gate that takes the state to end in.**  **[FIXED 2026-11-12]**
  *
@@ -10138,6 +10204,47 @@ check("and a play outside a fight books nothing",
     .test(playBody) ? "yes" : "no", "yes");
 check("core-rules still says the budget is a turn's",
   /A turn is a primary and a secondary/.test(coreRules) ? "yes" : "no", "yes");
+
+/*
+ * **And the card itself costs nothing out there either.**  **[FIXED 2026-11-23]**
+ *
+ * The ruling above fixed the BUDGET and left the two real costs standing, which turned out to be
+ * the half that emptied the deck. Reported from the table as *the action deck gets empty even
+ * outside a fight*, and it was: every card played in a corridor went to the discard, the hand drew
+ * a replacement off the draw pile, and nothing brought either back. `afterCombat` is the one
+ * routine that sweeps the piles into the deck and it runs when a FIGHT ends -- so a combat that
+ * never started never ended, and an evening of talking and searching ran a character's deck down
+ * to nothing for good.
+ *
+ * Stamina went the same way and worse: it is restored in full by `afterCombat` *because it
+ * measures one fight* (the note there says so), so every point spent outside one was gone for the
+ * evening, and at zero the draw pile is emptied into the discard by rule. Six doors opened put a
+ * character on the floor of their own stamina with no deck.
+ *
+ * Two gates, in the two routines that charge, rather than one in the tray: `retireCards` is the
+ * one place a played card is put away and `spendStamina` is the one place the stat is charged, and
+ * a rule written at the call site is a rule the next call site will not have.
+ */
+const retireBody = bodyOf(decksSource, "export async function retireCards(actor, plays) {");
+check("a card played outside a fight is not put away",
+  /if \(!game\.combat\?\.started\) return \[\];/.test(retireBody) ? "yes" : "no", "yes");
+/* After the hand is found, so a character with no hand is still the same `[]` it always was, and
+ * before anything is sorted into the two piles. */
+check("and it is asked before a Spent half is sorted out",
+  retireBody.indexOf("!game.combat?.started") < retireBody.indexOf("isSpentBy")
+    ? "before" : "after", "before");
+const staminaBody = bodyOf(decksSource, "export async function spendStamina(actor, n = 1) {");
+check("and no stamina is charged outside one",
+  /if \(!game\.combat\?\.started\) return null;/.test(staminaBody) ? "yes" : "no", "yes");
+/* Which also closes the wall: at 0 stamina the rest of the draw pile is discarded, and that is a
+ * fight's rule. It could not fire out there now even if something charged. */
+check("and the gate sits above the wall that empties the draw pile",
+  staminaBody.indexOf("!game.combat?.started") < staminaBody.indexOf("left === 0")
+    ? "above" : "below", "above");
+/* And the hand is not turned sideways by the play out there either, which is the same argument
+ * about the same stamina: see *a played turn disarms what is left in hand*. */
+check("and core-rules rules the card as well as the half",
+  /\*\*And the card costs nothing either\.\*\*/.test(coreRules) ? "yes" : "no", "yes");
 /*
  * **And the breath's refusals no longer describe the retired rule.** Three strings promised cards
  * out of the discard -- the tray's warning, the Breath tooltip and the discard pile's tip -- and a
@@ -13077,9 +13184,16 @@ check("and the token is not given a file of its own",
 check("an intent card has one builder",
   /export function npcCardData\(card, \{ kind, creature, back \}\)/.test(decksSource)
     ? "yes" : "no", "yes");
-check("and both routines use it",
-  (setupSource.match(/npcCardData\(card, \{ kind, creature: creature\.name, back: npcBack \}\)/g)
-    ?? []).length, 2);
+/*
+ * **And there is one caller now, not two.**  **[MOVED 2026-11-23]** The goblin line's stacks, a
+ * built monster's and a dragged-in creature's are one plan in `creatureDecks`; this used to pin
+ * that the two copies spelled the builder the same way, which is a weaker thing to be able to say.
+ */
+check("and one routine uses it",
+  (setupSource.match(/npcCardData\(card, \{ kind, creature: name, back: npcBack \}\)/g)
+    ?? []).length, 1);
+check("and nothing else builds an intent card",
+  (setupSource.match(/npcCardData\(/g) ?? []).length, 1);
 check("and neither builds a face by hand any more",
   /faces: \[\{ name: card\.name \}\]/.test(setupSource) ? "no" : "yes", "yes");
 const npcBody = decksSource.slice(decksSource.indexOf("export function npcCardData"));
@@ -14701,6 +14815,89 @@ check("and an empty state, so the tab never reads as broken",
   /<li class="cr-note">No injuries\.<\/li>/.test(charTemplate) ? "yes" : "no", "yes");
 
 /*
+ * **And the slates that were on no surface at all.**  **[FIXED 2026-11-24]**
+ *
+ * The same rule as the injuries above, failed harder: *a slate nobody can see is a slate nobody
+ * has*. Reported from a table as **spells are not visible on player sheet, spells cannot be viewed
+ * or edited**, and the two halves were one omission -- a spell is an embedded Item like a feature,
+ * and this sheet listed items, features and injuries and never spells. `SlateSheet` has handled
+ * the type since it was written and is registered for it, so every field was editable and nothing
+ * anywhere linked to it. The only road in was the Items sidebar, which holds the world's spells
+ * rather than a character's.
+ *
+ * Worse than browsing: **preparing is written by setting `prepared` and nothing else does it**, so
+ * the one decision a caster makes between fights had no surface. The tray's spell deck greys the
+ * book and says *what is prepared changes between fights* -- advice about a thing that could not be
+ * done.
+ */
+check("the sheet gathers the spells",
+  /const spells = slates\.filter\(i => i\.type === "spell"\)/.test(sheetSource)
+    ? "yes" : "no", "yes");
+/* Prepared first, then the book: the tray's order and the tray's argument -- those are the ones you
+ * can do something with. */
+check("and puts the prepared ones first",
+  /\(b\.system\.prepared \? 1 : 0\) - \(a\.system\.prepared \? 1 : 0\)/.test(sheetSource)
+    ? "yes" : "no", "yes");
+/* The price through the one routine that charges it, so the sheet and the card in the tray cannot
+ * quote different bills for one cast -- and a SCALED price moves as the line forms, so it is worked
+ * out rather than read off the slate. */
+check("and quotes the price the caster will actually pay",
+  /priceWords\(spellPrice\(actor, slate\)\)/.test(sheetSource) ? "yes" : "no", "yes");
+check("and shows the slot budget rather than making them add it up",
+  /used: system\.spellSlots\?\.used \?\? 0,/.test(sheetSource) ? "yes" : "no", "yes");
+check("and the template has a block for them",
+  /\{\{#each spells as \|entry\|\}\}/.test(charTemplate) ? "yes" : "no", "yes");
+check("and an empty state that says where spells come from",
+  /No spells\. They come from a Way's nodes/.test(charTemplate) ? "yes" : "no", "yes");
+/*
+ * Scoped to the spells block: the features and the injuries print the same button, and a grep
+ * three printers could answer is a grep about none of them.
+ *
+ * A slice and not `bodyOf`, which counts braces to find the end of a block -- Handlebars opens
+ * every one of its own with two of them and the count never comes back to zero.
+ */
+const spellsBlock = charTemplate.slice(charTemplate.indexOf("{{#each spells as |entry|}}"),
+  charTemplate.indexOf("</section>", charTemplate.indexOf("{{#each spells as |entry|}}")));
+check("and a row can be opened for editing",
+  /data-action="editSlate"/.test(spellsBlock) ? "yes" : "no", "yes");
+/*
+ * **The button that was the point.** `prepared` is a boolean the data model has carried since it
+ * was written and the only thing that ever set it was the slate sheet's own checkbox.
+ */
+check("and a spell can be put in your head from the sheet",
+  /data-action="togglePrepared"/.test(charTemplate) ? "yes" : "no", "yes");
+const prepareSpellBody = bodyOf(sheetSource,
+  "  static async #onTogglePrepared(event, target) {");
+/* Refused over budget rather than allowed and reported: `spellSlots.free` is derived from the
+ * prepared spells and capped by any vow, so preparing past it writes a state the rules do not
+ * have and nothing anywhere would have objected. */
+check("and preparing past the budget is refused",
+  /if \(want && cost > free\) \{/.test(prepareSpellBody) ? "yes" : "no", "yes");
+/* And un-preparing never is: putting a spell back in the book cannot break a budget. */
+check("and putting one back never is",
+  /const want = !slate\.system\.prepared;/.test(prepareSpellBody) ? "yes" : "no", "yes");
+/*
+ * **One charger for two doors.** `payToPrepare` hangs off the `updateItem` hook, which is what
+ * makes the checkbox and the button cost the same; charging in the handler as well would bill a
+ * caster twice for one spell.
+ */
+check("and the button charges nothing itself",
+  /payToPrepare/.test(prepareSpellBody) ? "no" : "yes", "yes");
+check("the preparing price is collected on the hook",
+  /await payToPrepare\(item\.parent, item\);/.test(entrySource) ? "yes" : "no", "yes");
+/* `activeGM` and not `isGM`: two connected GMs billed one caster twice, and a PLAYER preparing
+ * their own spell fired no GM-side check at all. The actor hook makes the same argument. */
+check("and by one elected client rather than every GM",
+  /if \(!\(game\.users\.activeGM\?\.isSelf \?\? game\.user\.isGM\)\) return;\s*\n\s*await payToPrepare/
+    .test(entrySource) ? "yes" : "no", "yes");
+/* And the sheet that edits one is registered for the type, which is the half that was never
+ * broken -- pinned so a change to the list cannot quietly unreach them again. */
+check("and the slate sheet is registered for spells",
+  /types: \["item", "feature", "injury", "spell"\]/.test(sheetSource) ? "yes" : "no", "yes");
+check("and hud-spec says the sheet is where they live",
+  /\*\*And the spells\.\*\*/.test(hudSpec) ? "yes" : "no", "yes");
+
+/*
  * **[MEASURED 2026-11-08] A bad leg and a frozen leg are different subtractions, and measuring
  * them as one found a real bug.**
  *
@@ -14848,6 +15045,48 @@ const stepFieldsEdited = [...stepPart.matchAll(/name="\{\{path\}\}\.([a-zA-Z.]+)
 const missingFromEditor = [...stepKeys].filter(k => !stepFieldsEdited.includes(k));
 check("step fields the editor cannot set",
   missingFromEditor.length ? missingFromEditor.join(", ") : "none", "none");
+
+/*
+ * **Every table the editor loops, printed the way its own values are shaped.**
+ * **[BUILT 2026-11-24]**
+ *
+ * `config.timings` is an object of OBJECTS -- a label plus the two rules that say when the timing
+ * refuses -- and the editor printed `{{localize this}}`. Handing `localize` an object reaches
+ * `getProperty(this.translations, stringId)`, whose `key.split(".")` throws on anything that is
+ * not a string; Foundry catches it as *failed to render template part*, and **the sheet never
+ * opens at all**. That is the whole of the table's report: *spells cannot be viewed or edited*.
+ * The slate sheet includes this partial for a spell and nothing else does, so of the four slate
+ * kinds exactly one was unopenable -- and the card config sheet with it.
+ *
+ * A grep for the one bad line would have been a pin about one table. This pairs **every** loop
+ * with the table it loops and asks the content which spelling is right, because the mistake is
+ * not a typo: it is two vocabularies, `{{localize this}}` for a table of strings and
+ * `{{localize this.label}}` for a table of objects, and nothing anywhere said which table is
+ * which. Fourteen loops, and the day a table gains a field this fails rather than the sheet.
+ */
+const stepLoops = [...stepPart.matchAll(
+  /\{\{#each config\.(\w+)\}\}([\s\S]{0,400}?)\{\{\/each\}\}/g)]
+  .map(m => ({ table: m[1], body: m[2] }));
+check("tables the step editor loops", new Set(stepLoops.map(l => l.table)).size, 14);
+const badLabels = stepLoops.filter(({ table, body }) => {
+  const values = Object.values(CARDRPG[table] ?? {});
+  if (!values.length) return true;
+  const objects = values.every(v => v && typeof v === "object");
+  const strings = values.every(v => typeof v === "string");
+  /* A loop that prints no label at all is a tick box naming its value elsewhere; only the two
+   * label spellings are audited here. */
+  const plain = /\{\{localize this\}\}/.test(body);
+  const labelled = /\{\{localize this\.label\}\}/.test(body);
+  if (!plain && !labelled) return false;
+  return plain ? !strings : !objects;
+}).map(l => l.table);
+check("and every one printed the way its values are shaped", badLabels.join(", ") || "none",
+  "none");
+/* And the spelling that broke it is gone, named rather than left to the audit above: a pin that
+ * only an audit can explain is a pin nobody will understand in six months. */
+check("a timing prints its label rather than itself",
+  /\{\{#each config\.timings\}\}[\s\S]{0,200}\{\{localize this\.label\}\}/.test(stepPart)
+    ? "yes" : "no", "yes");
 
 /*
  * And the two enums are ticked rather than typed, which is the point of putting them on a document:
@@ -17847,6 +18086,11 @@ check("and that a card is not a deck",
   /\*\*And a card is not a deck\.\*\*/.test(hudSpec) ? "yes" : "no", "yes");
 check("and core-rules says the budget is a fight's",
   /\*\*Outside a fight there is no budget at all\.\*\*/.test(coreRules) ? "yes" : "no", "yes");
+/* And the half of that ruling the table found by playing it: the BUDGET was fixed and the two real
+ * costs were left standing, which is what emptied the deck. */
+check("and hud-spec rules the costs out there too",
+  /\*\*Outside a fight a half costs nothing at all\.\*\*/.test(hudSpec) ? "yes" : "no", "yes");
+
 check("hud-spec records the fate reveal",
   /^### 3\.10a The fate card is shown/m.test(hudSpec) ? "yes" : "no", "yes");
 /* The two halves of it a reader has to be able to find: where the card goes, and what advantage
@@ -17859,6 +18103,11 @@ check("and what advantage lets you see",
  * of them belonging to one draw and the third to another, with nothing saying so. */
 check("and that only one draw is in the middle at a time",
   /\*\*One reveal at a time\.\*\*/.test(hudSpec) ? "yes" : "no", "yes");
+/* And the other half of the same complaint, answered from the card's side rather than the queue's:
+ * a card in the middle of the screen with no question attached to it. */
+check("and that each card says who drew it and what for",
+  /\*\*Each card says who drew it and what for\.\*\*/.test(hudSpec) ? "yes" : "no", "yes");
+
 check("hud-spec records that the Items deck is what is equipped",
   /^### 3\.8a The Items deck is what you have equipped/m.test(hudSpec) ? "yes" : "no", "yes");
 check("hud-spec records where a spread goes, and how many there can be",
@@ -18809,11 +19058,124 @@ check("the cost may not take you below 1 Health",
 check("casting reads the Wild price",
   /wilds: Math\.max\(0, Math\.trunc\(slate\?\.system\?\.wilds \?\? 0\)\)/.test(resolveSource)
     ? "yes" : "no", "yes");
-check("and a spell that charges nothing at all charges nothing",
-  /if \(!priceTotal\(price\)\) return true;/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * A spell that charges nothing still says nothing in chat -- the early exit is about the message.
+ * **It consumes the preparation on the way past**, because that is a cost every cast pays and
+ * most of the list prints no other (`payToCast`).  [CHANGED 2026-11-24]
+ */
+check("and a spell that charges nothing at all says nothing",
+  /if \(!priceTotal\(price\)\) \{\s*\n\s*await consume\(\);/.test(resolveSource)
+    ? "yes" : "no", "yes");
 check("and the Wild goes into the fate deck",
   /await addFateCards\(actor, \{ special: "wild", count: price\.wilds \}\)/.test(resolveSource)
     ? "yes" : "no", "yes");
+
+/*
+ * **Casting spends the preparation.**  **[RULED 2026-11-24]**
+ *
+ * Nothing limited how often a prepared spell could be cast. `strength` is a slot cost, so slots
+ * bounded how many spells a caster HELD and no rule bounded the casting -- and **117 of the 147
+ * spells in the content print no price at all**, so for most of the list a cast was free,
+ * repeatable and unlimited, on your turn, inside a two-halves budget every other character obeys.
+ * The sentence the engine was reading -- *a prepared spell is there every fight and costs no half*
+ * -- is core-rules talking about **reactions**.
+ *
+ * So the preparation is the cost: the spell stays in its slot, used up, and a long rest puts it
+ * back. `drained` is the field because it is the engine's own *Spent* for a thing that was never
+ * in your hand, which is what a spell reaction has always spent.
+ */
+const payCastBody = bodyOf(resolveSource, "export async function payToCast(actor, slate) {");
+check("a cast consumes the preparation",
+  /const consume = \(\) => slate\.update\(\{ "system\.drained": true \}\);/.test(payCastBody)
+    ? "yes" : "no", "yes");
+/*
+ * **After every refusal.** A cast refused for an unaffordable Health, a full pair of hands, an
+ * unprepared spell or a declined Strain charges nothing, so it must consume nothing -- and every
+ * one of those is a `return false` above. The ordering is the check, because a `consume` moved up
+ * one guard would spend a spell that was never cast.
+ */
+check("and only after every refusal",
+  payCastBody.lastIndexOf("return false;") < payCastBody.lastIndexOf("await consume();")
+    ? "after" : "before", "after");
+/* The free road exits earlier, so it is pinned against the refusals that can reach it: a spell
+ * with no price has no Health to be unable to afford and no Strain to decline, which leaves the
+ * two that are about the caster rather than the bill. */
+check("and the free road sits below the hand and the book",
+  payCastBody.indexOf("has no hand free") < payCastBody.indexOf("await consume();")
+    ? "below" : "above", "below");
+/* Twice, and that is the shape rather than a duplication: the priced road says so in chat and the
+ * free road returns before the message. Both are casts. */
+check("and on both roads out",
+  (payCastBody.match(/await consume\(\);/g) ?? []).length, 2);
+/* A spell that has been cast is refused at the click as well as greyed on the card: a guard that
+ * fires only once the card is clickable is a guard that charges for what it refuses. */
+/* The spell's own wording, not the shape: a drained FEATURE is refused two branches below in
+ * exactly the same three lines, and a grep either could answer is a grep about neither. */
+check("and the tray refuses one already cast",
+  /has been cast\. The preparation is spent; a `/.test(traySource) ? "yes" : "no", "yes");
+/* And so does the door every cast comes through, which is the one that matters: a gate that lives
+ * only in the window is a gate a macro walks round. Beside the *in your book* refusal, because it
+ * is the same question one state along -- `prepared` stopped meaning *castable*. */
+check("and so does the one door every cast comes through",
+  /if \(slate\.system\.drained\) \{\s*\n\s*ui\.notifications\.warn/.test(payCastBody)
+    ? "yes" : "no", "yes");
+
+/*
+ * **And a long rest is what puts it back**, which meant teaching `rest` to look at a slate at all.
+ *
+ * `CARDRPG.recharges` has held three boundaries since drained slates were built and **only
+ * `combat` was ever honoured**: `onCombatEnd` clears the fight's own and nothing anywhere read the
+ * two rest ones. So a feature printed *recharges: a long rest* was drained for the rest of the
+ * campaign, and Ward Magic's counterspell promised *back on a rest* about a field no routine
+ * looked at. Three places said a rest restores things and the routine that rests did not.
+ */
+const restBody = bodyOf(decksSource, "export async function rest(actor, { long = false } = {}) {");
+check("a rest brings back what printed a rest boundary",
+  /boundary === "shortRest" \|\| \(boundary === "longRest" && long\)/.test(restBody)
+    ? "yes" : "no", "yes");
+/* And a spell's recharge is a rule rather than a printed field: no spell in the content prints a
+ * boundary, so reading one would have applied the new ruling to none of them. */
+check("and a spell comes back on a long rest, whatever it prints",
+  /slate\.type === "spell"\s*\n\s*\? long/.test(restBody) ? "yes" : "no", "yes");
+check("and no spell in the content prints a recharge boundary",
+  [...graph.SPELLS.values()].filter(sp => sp.active?.boundary).length, 0);
+/* Said in chat only when something came back: a rest that restores nothing is the common case, and
+ * a line reporting none of it is noise every time anybody sleeps. */
+check("and it says what came back",
+  /is "ready" : "are ready"|\$\{woken\.length === 1 \? "is" : "are"\} ready/.test(restBody)
+    ? "yes" : "no", "yes");
+
+/*
+ * **A used-up spell holds its slot**, which is what makes the rest matter rather than the sleep
+ * being a formality: a spell that merely left your head would free its slot, another would go in
+ * on the spot, and a caster with three slots and twenty spells would have twenty casts a day.
+ */
+check("and a spent spell cannot be put back in the book",
+  /if \(!want && slate\.system\.drained\) \{/.test(sheetSource) ? "yes" : "no", "yes");
+/* The slot is still charged while it is spent, which is the same getter as before: `slotCost` asks
+ * whether it is PREPARED, and a used-up spell still is. */
+check("and the slot is still counted against the budget",
+  /return this\.outsideBudget \|\| !this\.prepared \? 0 : this\.strength;/.test(itemsSource)
+    ? "yes" : "no", "yes");
+/* And the row says so, because a slot that has gone somewhere invisible is the one thing a caster
+ * cannot work out from the budget alone. */
+check("and the sheet marks the row",
+  /cr-slate-row--spent/.test(charTemplate) && /cr-slate-row--spent/.test(css)
+    ? "yes" : "no", "yes");
+check("and names the rest that returns it",
+  /Cast &mdash; back on a long rest/.test(charTemplate) ? "yes" : "no", "yes");
+check("core-rules rules it",
+  /^#### Casting spends the preparation/m.test(coreRules) ? "yes" : "no", "yes");
+check("and says what the slots now mean",
+  /\*\*your slots are what you can cast between sleeps\.\*\*/.test(coreRules) ? "yes" : "no",
+  "yes");
+/* And the sentence the engine had been over-reading is corrected where it is written, rather than
+ * left to be found again. */
+check("and corrects the sentence it was read off",
+  /\*\*And \*costs no half\* means exactly that and nothing more\.\*\*/.test(coreRules)
+    ? "yes" : "no", "yes");
+check("and hud-spec says the cast is a cost",
+  /\*\*Casting spends the preparation\.\*\*/.test(hudSpec) ? "yes" : "no", "yes");
 /*
  * **Permanent, which is the difference between a price and a cost.** `addFateCards` writes a
  * `temporary` copy for Blessed and Cursed -- the one the rules remove when it is drawn (core-rules
@@ -19411,14 +19773,15 @@ section("The fate card, shown");
  */
 const fateShowSource = fs.readFileSync(path.join(root, "module/fateshow.mjs"), "utf8");
 check("the draw announces itself",
-  /Hooks\.callAll\("cardrpgFateDrawn", \{ actor, drawn, used, mode \}\);/.test(fateSource)
+  /Hooks\.callAll\("cardrpgFateDrawn", \{ actor, drawn, used, mode, why \}\);/.test(fateSource)
     ? "yes" : "no", "yes");
 /*
  * **Before the tidying, not after.** A Blessed or Cursed card is DELETED the moment it is drawn
  * (core-rules 6), a few lines below the announcement -- so a listener reading the documents later
  * would find the one card the table most wants to see already gone.
  */
-const drawBody = bodyOf(fateSource, "export async function drawFate(actor, value, mode = 0) {");
+const drawBody = bodyOf(fateSource,
+  'export async function drawFate(actor, value, mode = 0, { why = "" } = {}) {');
 check("and before the temporary cards are destroyed",
   drawBody.indexOf('Hooks.callAll("cardrpgFateDrawn"') < drawBody.indexOf("await card.delete();")
     ? "yes" : "no", "yes");
@@ -19453,8 +19816,8 @@ check("and a reveal that fails costs the action nothing",
  * secondary's is shown and parks beside it.
  */
 check("reveals take turns",
-  /waiting = waiting\s*\n\s*\.then\(\(\) => reveal\(\{ drawn, used \}\)\)/.test(fateShowSource)
-    ? "yes" : "no", "yes");
+  /waiting = waiting\s*\n\s*\.then\(\(\) => reveal\(\{ drawn, used, caption \}\)\)/
+    .test(fateShowSource) ? "yes" : "no", "yes");
 /* Released when the kept card has landed, NOT when it has finished its five seconds parked: the
  * second card of a turn has to arrive while the first is still beside it. */
 check("and the next one waits for the landing rather than the parking",
@@ -19530,11 +19893,56 @@ check("and it is the kept card that flies",
  * alone carries the reveal and a missing face costs it nothing. The table asked for exactly this:
  * *blank cards with text is ok*.
  */
-const faceBody = bodyOf(fateShowSource, "function faceOf(card) {");
+const faceBody = bodyOf(fateShowSource, 'function faceOf(card, caption = "") {');
 check("the face falls back to the name alone",
   /label\.textContent = name;/.test(faceBody) ? "yes" : "no", "yes");
 check("and the art is only worn when there is some",
   /if \(art\) \{/.test(faceBody) ? "yes" : "no", "yes");
+/*
+ * **And what the card is FOR.**  **[BUILT 2026-11-23]**
+ *
+ * Reported from the table as *mark the fate cards with the action or circumstance that makes them
+ * be drawn*, and the reason it had to be asked for is the reason it matters: a `−2` in the middle
+ * of the screen is a card with no question attached to it. It could be your Strike, the saving
+ * throw your spell just forced, or the injury of the goblin you dropped -- three different pieces
+ * of news wearing one face, and the only way to tell was to count the cards and guess. It is the
+ * same complaint the queue answered from the other side.
+ *
+ * The NAME first, because the drawer is the half a player cannot infer at all: a goblin's draw
+ * looks exactly like their own, and two cards parked side by side under the fate pile are told
+ * apart by nothing else.
+ */
+check("the face carries a caption",
+  /why\.className = "cr-fate__why";/.test(faceBody) ? "yes" : "no", "yes");
+check("and only when there is one to carry",
+  /if \(caption\) \{/.test(faceBody) ? "yes" : "no", "yes");
+/* Assembled where the draw is known rather than in `faceOf`, which is handed one card and knows
+ * nothing about the draw it belongs to. Both halves are optional and the separator is neither's. */
+check("and it is the drawer and the reason, in that order",
+  /const caption = \[actor\?\.name, why\]\.filter\(Boolean\)\.join\(" \\u00b7 "\);/
+    .test(fateShowSource) ? "yes" : "no", "yes");
+check("and the stylesheet dresses it", /\.cardrpg \.cr-fate__why \{/.test(css) ? "yes" : "no",
+  "yes");
+/* An item's name is in it and *Rusty Chain Shirt* is wider than a card: a word that cannot break
+ * reaches past the paper it is printed on. */
+check("and a long name breaks rather than overflowing",
+  /overflow-wrap: anywhere;/.test(bodyOf(css, ".cardrpg .cr-fate__why {")) ? "yes" : "no", "yes");
+/*
+ * **And the five draws each say what they are**, which is the half no stylesheet can supply. The
+ * door carries the reason; only the caller knows it, and a caller that forgot would deal a card
+ * with the drawer's name and nothing else -- true, and no answer to the question that was asked.
+ */
+for (const [what, pattern] of [
+  ["an attack names its verb and its weapon", /why: item \? `\$\{verb\} with \$\{item\.name\}` : verb/],
+  ["a check names its approach", /why: `\$\{game\.i18n\.localize\(CARDRPG\.approaches\[approach\]/],
+  ["a saving throw names the condition", /why: `saving throw: \$\{label\(key\)\}`/],
+  ["a heal says so", /why: source \? `heal with \$\{source\}` : "heal"/],
+  ["an injury draw says so", /why: "injury draw"/]
+]) check(what, pattern.test(resolveSource) ? "yes" : "no", "yes");
+check("and nothing else draws fate without saying why",
+  (resolveSource.match(/drawFate\([^)]*\{\s*\n?\s*why:/g) ?? []).length,
+  (resolveSource.match(/drawFate\(/g) ?? []).length);
+
 /* A card name is data: a face called `<img onerror=...>` would otherwise be markup. */
 check("and a card name is never markup",
   /innerHTML/.test(fateShowSource) ? "no" : "yes", "yes");
@@ -20059,14 +20467,20 @@ check("the tray offers a spells deck",
  * so the check is on the SHAPE: one `passive`, fed by every reason there is. A fourth reason will
  * arrive and should not break this; a fourth greyed field beside `passive` still will.
  */
-const greyClause = /passive: !prepared(?: \|\| !![A-Za-z]+)+,/.exec(traySource)?.[0] ?? "none";
+const greyClause = /passive: !prepared(?: \|\| !?!?[A-Za-z]+)+,/.exec(traySource)?.[0] ?? "none";
 check("and only a prepared spell is clickable",
   greyClause.includes("!prepared") ? "yes" : "no", "yes");
+/* **[2026-11-24] A fourth term, for a spell already cast**, which is the state the ruling added:
+ * casting consumes the preparation, so *prepared* is no longer the same thing as *castable*. The
+ * shape is what is pinned -- one `passive`, fed by every reason there is. */
 check("and every reason it is not reaches the same state",
-  greyClause, "passive: !prepared || !!notNow || !!notYet,");
+  greyClause, "passive: !prepared || spent || !!notNow || !!notYet,");
 /* And each reason reaches the tip too, so the card never greys without saying why. */
 check("and the tip says which reason it was",
-  /: notNow \|\| notYet \|\| `Cast it\./.test(traySource) ? "yes" : "no", "yes");
+  /notNow \|\| notYet\s*\n?\s*\|\| `Cast it\./.test(traySource) ? "yes" : "no", "yes");
+check("and a spent one says a long rest puts it back",
+  /The preparation is spent; a long rest puts it back in your head\./.test(traySource)
+    ? "yes" : "no", "yes");
 
 /* -------------------------------------------- */
 
@@ -20115,8 +20529,8 @@ section("The monster roster");
  * answer is a grep about neither, which the section at the end of this file said twice while this
  * one was being written.
  */
-const buildCreatureBody = setupSource.slice(setupSource.indexOf("const buildCreature = async"),
-  setupSource.indexOf("const goblinLine ="));
+const buildCreatureBody = bodyOf(setupSource,
+  "export async function creatureDecks(name, system = {}, fallbackKey = \"\") {");
 const everyCreature = monsters.expandRoster(content.ROSTER, content.VARIANTS);
 /*
  * `kind` is passed through because three cards in the pool are drawn by a named creature rather
@@ -20735,12 +21149,73 @@ check("the Queen has no variants", content.VARIANTS.queen ?? "none", "none");
 /* `buildCreature`'s own body again: `buildMonster` builds a deck the same way, and it should --
  * but a grep that either can answer is a grep about neither. */
 check("setup builds a deck from the pool",
-  /deckFor\(creature\.system\.capabilities \?\? \[\], INTENTS, kind\)/.test(buildCreatureBody)
+  /deckFor\(system\.capabilities \?\? \[\], INTENTS, kind\)/.test(buildCreatureBody)
     ? "yes" : "no", "yes");
-check("and so does the on-demand builder",
-  /deckFor\(creature\.system\.capabilities \?\? \[\], INTENTS, kind\)/.test(
+/* And the on-demand builder does not build one of its own: it asks the same routine.  [2026-11-23] */
+check("and the on-demand builder asks for the same five",
+  /const \{ decks, intents \} = await creatureDecks\(creature\.name, creature\.system\);/.test(
     setupSource.slice(setupSource.indexOf("export async function buildMonster")))
     ? "yes" : "no", "yes");
+
+/*
+ * **And a creature that arrived by neither road gets them too.**  **[FIXED 2026-11-23]**
+ *
+ * Reported from the table as *post saves from npc to the chat*, and the reason nothing was in the
+ * chat is that nothing was drawn: **a creature dragged out of the bestiary compendium has no decks
+ * at all.** `system.decks` is deliberately absent from a pack actor -- those slots hold ids of
+ * Cards documents and a compendium has no world to point at (test/build-packs.mjs says so in as
+ * many words) -- and until today the only routines that filled them in were the two above, one for
+ * the starter goblins and one for a creature asked for by name.
+ *
+ * What that cost is quiet and total. `drawFate` with no fate deck returns the value it was handed,
+ * so a saving throw against that goblin was settled by its passive score alone with **no card
+ * drawn, no reveal and nothing in chat**; `resolveWound` returns early with no discard pile to put
+ * a Wound in, so dropping it to 0 drew no injury either. Three rules silently did not apply and
+ * the only trace was a `console.warn`.
+ */
+check("an existing creature can be wired to its stacks",
+  /export async function buildCreatureDecks\(actor\) \{/.test(setupSource) ? "yes" : "no", "yes");
+const wireBody = bodyOf(setupSource, "export async function buildCreatureDecks(actor) {");
+check("and only a creature", /actor\.type !== "npc"/.test(wireBody) ? "yes" : "no", "yes");
+/* Idempotent per SLOT, like `buildCharacterDecks`: a creature missing one gets one, and a slot
+ * pointing at a document somebody has since deleted is as empty as one never filled -- so the id
+ * is checked against the world rather than merely for being set. */
+check("and a slot already filled is left alone",
+  /!\(have\[slot\] && game\.cards\.get\(have\[slot\]\)\)/.test(wireBody) ? "yes" : "no", "yes");
+/* Asked before a single stack is made, because `makeCards` resyncs what it finds and resyncing
+ * five stacks to answer *does this creature need anything* is work for nothing. */
+check("and nothing is built to answer the question",
+  wireBody.indexOf("if (!missing.length) return 0;") < wireBody.indexOf("creatureDecks(")
+    ? "before" : "after", "before");
+/* On createActor, for the reason the character hook is: *does this creature have a fate deck* has
+ * exactly one right answer and nobody should have to ask it. */
+check("and the hook asks on every actor made",
+  /const beastly = await buildCreatureDecks\(actor\);/.test(entrySource) ? "yes" : "no", "yes");
+check("and it is the same hook the character builder is on",
+  (entrySource.match(/Hooks\.on\("createActor"/g) ?? []).length, 1);
+/*
+ * **A creature with no `kind` gets its own stacks**, keyed on its id. The schema's initial for
+ * `kind` is the empty string, so a GM's homemade NPC has none -- and keying those on the blank
+ * would have handed **every kindless creature in the world one shared fate deck**, which is the
+ * one thing core-rules 6's per-type rule exists to prevent.
+ */
+check("a creature with no kind is keyed on something of its own",
+  /const kind = system\.kind \|\| fallbackKey \|\| name;/.test(buildCreatureBody)
+    ? "yes" : "no", "yes");
+check("and the wiring passes the actor's id as that fallback",
+  /await creatureDecks\(actor\.name, actor\.system, actor\.id\);/.test(wireBody)
+    ? "yes" : "no", "yes");
+/* The intent deck is the KIND's and the fate deck is the BASE's: a Goblin Archer must not share
+ * the spearman's intent, and a hex on the goblins must not touch the ogre (core-rules 6). */
+check("the intents are keyed on the kind",
+  /tag: `\$\{kind\}\.deck`/.test(buildCreatureBody) ? "yes" : "no", "yes");
+check("and the fate deck on the base",
+  /tag: `\$\{baseKind\}\.fate`/.test(buildCreatureBody) ? "yes" : "no", "yes");
+/* A kind the roster has never heard of is its own base, which is right: nothing can be a variant
+ * of a creature the content does not describe. */
+check("and an unknown kind is its own base",
+  /const baseKind = base\?\.system\.kind \?\? kind;/.test(buildCreatureBody) ? "yes" : "no",
+  "yes");
 check("and every variant gets its own intent, because kind owns it",
   /`\$\{kind\}\.deck`/.test(buildCreatureBody) ? "yes" : "no", "yes");
 /* A starter world gets the goblin line and nothing else: forty-seven monsters in a new world is a
@@ -21188,7 +21663,7 @@ check("greps a second printer could answer",
  * can read is a list nobody will check when it changes.
  */
 const absentGreps = [
-  String.raw`a pile is never given one :: "pile",[^)]*backOf\(`,
+  String.raw`a pile is never given one :: "pile",[^)\n]*backOf\(`,
   String.raw`and a card name is never markup :: innerHTML`,
   String.raw`and breadth-first is gone from the picker :: breadthfirst`,
   String.raw`and core content is never written to :: NODES\.(push|splice|length =)`,

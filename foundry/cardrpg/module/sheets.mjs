@@ -14,6 +14,9 @@ import { GRAPH } from "./graph.mjs";
  * one answer to "what does this card say", for the deck list the Deck tab grew. */
 import { artOf, isIntruder, intruderLine, deckOf, cardName, cardLine } from "./decks.mjs";
 import { isSole } from "./monsters.mjs";
+/* What a spell costs, asked of the one routine that charges it: the sheet and the card in the tray
+ * must not be able to quote different bills for the same cast. See `spellPrice`. */
+import { spellPrice, priceWords } from "./resolve.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2, ItemSheetV2 } = foundry.applications.sheets;
@@ -112,6 +115,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       dropNode: CharacterSheet.#onDropNode,
       toggleEquipped: CharacterSheet.#onToggleEquipped,
       toggleDrained: CharacterSheet.#onToggleDrained,
+      togglePrepared: CharacterSheet.#onTogglePrepared,
       addCondition: CharacterSheet.#onAddCondition,
       removeCondition: CharacterSheet.#onRemoveCondition,
       editSlate: CharacterSheet.#onEditSlate,
@@ -132,7 +136,9 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     { id: "vitals", label: "Vitals" },
     { id: "deck", label: "Deck" },
     { id: "gear", label: "Gear" },
-    { id: "features", label: "Features" },
+    /* The label names spells first because that is what somebody opening this tab is looking
+     * for: a feature is read once and a prepared list is changed between every fight. */
+    { id: "features", label: "Spells & features" },
     { id: "notes", label: "Notes" }
   ];
 
@@ -156,6 +162,27 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
      * read together or not at all.
      */
     const injuries = slates.filter(i => i.type === "injury");
+    /*
+     * **The spells, which this sheet had never shown.**  **[FIXED 2026-11-24]**
+     *
+     * Reported from a table as *spells are not visible on player sheet, spells cannot be viewed or
+     * edited*, and both halves were one omission: a spell is an embedded Item like a feature or an
+     * injury and there was no list of them anywhere on this surface. `SlateSheet` has handled the
+     * type since it was written -- strength, source, the four prices, `prepared`, the effect steps
+     * -- so a spell was fully editable and completely unreachable. The only way in was the Items
+     * sidebar, which holds the world's spells and not a character's.
+     *
+     * What that cost is more than browsing. **Preparing is done by writing `prepared`** and
+     * nothing else does it (`payToPrepare`), so a caster could not choose what was in their head:
+     * the tray's spell deck greys the book and says *what is prepared changes between fights*, and
+     * there was no surface anywhere on which to change it.
+     *
+     * **Prepared first, then the book**, which is the tray's order and the tray's argument: those
+     * are the ones you can do something with.
+     */
+    const spells = slates.filter(i => i.type === "spell")
+      .sort((a, b) => (b.system.prepared ? 1 : 0) - (a.system.prepared ? 1 : 0)
+        || a.name.localeCompare(b.name));
 
     // Group equipped gear by slot so the sheet mirrors the slot rules rather than a flat list.
     const equipped = {};
@@ -203,6 +230,73 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
       equipped,
       pack: items.filter(i => !i.system.equipped),
+      /*
+       * The price in words rather than a number per purse, because that is what the card in the
+       * tray prints and the two are the same call. A **scaled** price moves as the line forms, so
+       * it is worked out now rather than read off the slate.
+       */
+      spells: spells.map(slate => {
+        const timing = slate.system.effect?.timing ?? "";
+        const rule = timing ? CARDRPG.timings[timing] : null;
+        /* What it costs to have in your head, which is what a reader wants to know -- and NOT
+         * `slotCost`, which is what it is costing right now and so reads 0 for every spell in the
+         * book. The same distinction the Prepare button is refused on. */
+        const slots = slate.system.outsideBudget ? 0 : (slate.system.strength ?? 0);
+        const price = priceWords(spellPrice(actor, slate)).join(", ");
+        /*
+         * **Two lines, and they are two different costs.**  **[BUILT 2026-11-24]**
+         *
+         * What a spell costs to **keep** is slots, paid once when it goes into your head and held
+         * for as long as it is there. What it costs to **cast** is Health, Taint, Strain or skill
+         * cards, paid every single time. Printing them as one list reads as a single bill and the
+         * difference is the whole of how a caster plans a day, so they are two sentences.
+         *
+         * **And a cast that costs nothing says so**, which is the row that matters most: 117 of
+         * the 147 spells in the content print no price at all, so *nothing* is the common answer
+         * and a blank where the price goes cannot be told from a price nobody filled in.
+         *
+         * Assembled here rather than in the template: optional pieces joined by separators that
+         * belong to none of them is a paragraph of `{{#if}}` for a sentence, and the sentence is
+         * the thing being got right.
+         */
+        const keep = [
+          slate.system.source,
+          slate.system.outsideBudget
+            ? "no slot \u2014 never prepared"
+            : `${slots} slot${slots === 1 ? "" : "s"} while prepared`,
+          rule ? game.i18n.localize(rule.label) : ""
+        ].filter(Boolean).join(" \u00b7 ");
+        return {
+          doc: slate,
+          prepared: !!slate.system.prepared,
+          /* Cast, and so used up until a long rest (`payToCast`). A prepared spell has two states
+           * now and the row has to say which. */
+          spent: !!slate.system.drained,
+          slots,
+          price,
+          keep,
+          /*
+           * **What a cast takes, and the preparation is part of it.**  **[RULED 2026-11-24]**
+           *
+           * The words come from `priceWords`, which is what the tray's card prints and what
+           * `payToCast` charges -- and the preparation is charged there too now, so it is named
+           * here. A spell that prints no price is not a free spell: it costs the spell.
+           */
+          cast: [price, "the preparation \u2014 back on a long rest"]
+            .filter(Boolean).join(", "),
+          when: rule ? game.i18n.localize(rule.label) : "",
+          /* What the effect says, for a reader rather than a caster: the tray's card is the thing
+           * you click, this is the thing you look up. */
+          text: slate.system.effect?.text ?? ""
+        };
+      }),
+      /* Used and free, so a caster can see the budget without adding the column up. `free` is
+       * derived on the actor, which is also what the Prepare button is refused against. */
+      slotBudget: {
+        used: system.spellSlots?.used ?? 0,
+        free: system.spellSlots?.free ?? 0,
+        max: system.spellSlots?.max ?? 0
+      },
       features: features.map(f => ({ doc: f, drain: describeDrain(f) })),
       injuries: injuries.map(i => {
         const cat = CARDRPG.injuryCategories[i.system.category] ?? {};
@@ -551,6 +645,65 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   static #onEditSlate(event, target) {
     this.document.items.get(target.dataset.slateId)?.sheet.render({ force: true });
+  }
+
+  /**
+   * **Put a spell in your head, or take it out.**  **[BUILT 2026-11-24]**
+   *
+   * `prepared` is a boolean the data model has carried since it was written and **nothing in the
+   * game ever set it** except the item sheet's own checkbox, which no surface linked to. So the
+   * one decision a caster makes between fights -- which spells are in your head -- could not be
+   * made at all.
+   *
+   * **Refused over budget, rather than allowed and reported.** `spellSlots.free` is derived from
+   * the prepared spells and capped by any vow, so preparing past it writes a state the rules do
+   * not have, and nothing anywhere would have objected. Un-preparing is never refused: putting a
+   * spell back in the book cannot break a budget.
+   *
+   * **The price is not charged here**, and that is deliberate. `payToPrepare` hangs off the
+   * `updateItem` hook, which is what makes the item sheet's checkbox cost the same as this button
+   * -- one charger for two doors. A charge here as well would bill a caster twice for one spell.
+   */
+  static async #onTogglePrepared(event, target) {
+    const slate = this.document.items.get(target.dataset.slateId);
+    if (!slate || slate.type !== "spell") return;
+    const want = !slate.system.prepared;
+    /*
+     * **A spell already cast cannot be put back in the book.**  **[RULED 2026-11-24]**
+     *
+     * Without this the ruling leaks in one click. Casting consumes the preparation and a long rest
+     * restores it -- but if a spent spell could be un-prepared, its slot would come free, another
+     * spell could go into it on the spot, and a caster with three slots and twenty spells would
+     * have twenty casts a day. The slot is what the long rest is really about: it holds a used-up
+     * spell until you sleep, which makes `spellSlots` the per-day budget it reads as.
+     *
+     * Putting an UNSPENT spell back is still free, because *what is prepared changes between
+     * fights* and that was never the thing being limited.
+     */
+    if (!want && slate.system.drained) {
+      return ui.notifications.warn(`${slate.name} has been cast. A used-up spell stays in its `
+        + "slot until a long rest, so it cannot go back in the book yet.");
+    }
+    /*
+     * **`strength`, not `slotCost`.**  [FIXED 2026-11-24]
+     *
+     * `slotCost` is what the spell is costing *right now* and returns **0 while it is still in
+     * the book** -- which is exactly the state this button is asked about, so reading it made
+     * every Prepare free and the refusal below unreachable. A live probe prepared a strength-99
+     * spell into a three-slot budget and said so.
+     *
+     * `outsideBudget` is still honoured, because a ritual never costs a slot whatever its
+     * strength (data/items.mjs), and that getter is the one place that says which spells those
+     * are.
+     */
+    const cost = slate.system.outsideBudget ? 0 : (slate.system.strength ?? 0);
+    const free = this.document.system.spellSlots?.free ?? 0;
+    if (want && cost > free) {
+      return ui.notifications.warn(`${slate.name} takes ${cost} slot`
+        + `${cost === 1 ? "" : "s"} and ${this.document.name} has ${free} free. `
+        + "Put something back in the book first.");
+    }
+    await slate.update({ "system.prepared": want });
   }
 
   static async #onDeleteSlate(event, target) {

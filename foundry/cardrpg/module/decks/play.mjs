@@ -323,6 +323,20 @@ export async function discardCards(actor, cardIds) {
 export async function spendStamina(actor, n = 1) {
   const stamina = actor.system?.stamina;
   if (!stamina || n <= 0) return null;
+  /*
+   * **And nothing is spent outside a fight.**  **[FIXED 2026-11-23]**
+   *
+   * Stamina measures ONE FIGHT -- that is why `afterCombat` hands all of it back, and the note
+   * there says so. Outside a fight there is no fight for it to measure, and nothing ever hands it
+   * back either: `afterCombat` runs when a combat ENDS, so a combat that never started never ends
+   * and every point spent in the corridor was gone for the evening. Six doors opened put a
+   * character on the floor of their own stamina with the draw pile emptied into the discard, and
+   * the only cure was to start a fight and finish it.
+   *
+   * It is the same ruling as the turn's two halves (core-rules 3): out there the same turn never
+   * ends, so a cost that is paid back at the end of a turn can never be paid back at all.
+   */
+  if (!game.combat?.started) return null;
 
   const left = Math.max(0, stamina.value - n);
   await actor.update({ "system.stamina.value": left });
@@ -401,6 +415,28 @@ export async function discardSkillCards(actor, cardIds) {
 export async function retireCards(actor, plays) {
   const hand = deckOf(actor, "actionHand");
   if (!hand) return [];
+  /*
+   * **Outside a fight a played card is not put away at all.**  **[FIXED 2026-11-23]**
+   *
+   * Reported from a table as *the action deck gets empty even outside a fight*, and that is
+   * exactly what happened: each card played in the corridor went to the discard, the hand drew a
+   * replacement off the draw pile, and nothing ever brought either back -- `afterCombat` is the
+   * one routine that sweeps the piles into the deck and it runs when a FIGHT ends. So an evening
+   * of talking and searching ran the deck down to nothing, permanently, and the player had done
+   * nothing wrong.
+   *
+   * core-rules 3 already rules the half of this that is about the budget: *outside a fight there
+   * is no budget at all*, because a turn's pair of halves holds only while a turn comes round
+   * again. The card itself is the same argument and the same sentence -- the discard is where a
+   * card waits for a refill, and out there nothing refills.
+   *
+   * So the card stays in your hand, which is also what the table expects: open a door, then open
+   * another, with the same card. A cost the fiction wants is the GM's to ask for.
+   *
+   * **A half printed Spent is not spent either**, for the one reason Spent exists -- it is out
+   * *for the rest of the fight* (core-rules 8), and there is no fight for it to be out of.
+   */
+  if (!game.combat?.started) return [];
 
   const spentPile = deckOf(actor, "actionSpent");
   const burns = [];
@@ -574,5 +610,42 @@ export async function rest(actor, { long = false } = {}) {
   else update["system.rest.tokens"] = Math.max(0, actor.system.rest.tokens - 1);
   await actor.update(update);
 
-  return { heal, long };
+  /*
+   * **And the slates a rest brings back, which nothing ever did.**  **[FIXED 2026-11-24]**
+   *
+   * `CARDRPG.recharges` has held three boundaries since drained slates were built -- `combat`,
+   * `shortRest`, `longRest` -- and only the first was ever honoured: `onCombatEnd` clears the
+   * fight's own, and **nothing anywhere read the other two.** So a feature printed *recharges: a
+   * long rest* was drained for the rest of the campaign, and the comment on Ward Magic's
+   * counterspell promised *back on a rest* about a field no routine looked at. Three places said
+   * a rest restores things and the routine that rests did not.
+   *
+   * **A spell's recharge is a rule rather than a printed field.**  **[RULED 2026-11-24]** Casting
+   * a prepared spell consumes the preparation (`payToCast`) and a **long rest** is what puts it
+   * back, for every spell: no spell in the content prints a boundary, so reading one would have
+   * made the new rule apply to none of them. A feature still obeys what it prints.
+   */
+  const woken = [];
+  for (const slate of actor.items ?? []) {
+    if (!slate.system?.drained) continue;
+    const boundary = slate.system.active?.boundary ?? "";
+    const back = slate.type === "spell"
+      ? long
+      : boundary === "shortRest" || (boundary === "longRest" && long);
+    if (!back) continue;
+    await slate.update({ "system.drained": false, "system.drainedFor": null });
+    woken.push(slate.name);
+  }
+  /* Said only when something came back, because a rest that restores nothing is the common case
+   * and a line reporting none of it is noise in the log every time anybody sleeps. */
+  if (woken.length) {
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="cardrpg"><p><strong>${actor.name}</strong> rests: `
+        + `<em>${woken.join("</em>, <em>")}</em> ${woken.length === 1 ? "is" : "are"} ready `
+        + "again.</p></div>"
+    });
+  }
+
+  return { heal, long, woken };
 }

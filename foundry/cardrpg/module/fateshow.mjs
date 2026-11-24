@@ -131,7 +131,7 @@ function parkPlace(slot) {
  * everything a player needs, and a missing face costs the reveal nothing. That is why this does
  * not wait for art or refuse without it.
  */
-function faceOf(card) {
+function faceOf(card, caption = "") {
   const name = card.faces?.[0]?.name ?? card.name ?? "";
   const art = card.faces?.[0]?.img ?? "";
   const node = document.createElement("div");
@@ -156,13 +156,34 @@ function faceOf(card) {
   /*
    * **The name is the whole face, and on eighteen of the twenty-one cards the name is the
    * number**: `+1`, `±0`, `−2`. The other three say `Miss`, `Critical` and `Wild`, which need no
-   * gloss either. A second line repeating the name is what a note would be here, so there is not
-   * one -- and `textContent` rather than markup, because a card name is data.
+   * gloss either -- so nothing here repeats the name.
+   *
+   * `textContent` rather than markup, because a card name is data and so is a creature's.
    */
   const label = document.createElement("span");
   label.className = "cr-fate__name";
   label.textContent = name;
   node.appendChild(label);
+
+  /*
+   * **And who drew it, and what for.**  **[BUILT 2026-11-23]**
+   *
+   * Reported from a table as *mark the fate cards with the action or circumstance that makes them
+   * be drawn*, and the reason it had to be asked for is the reason it matters: a `−2` in the
+   * middle of the screen is a card with no question attached. It could be your Strike, the saving
+   * throw your spell just forced, or the injury of the goblin you dropped -- three different pieces
+   * of news wearing the same face, and the only way to tell was to count the cards and guess.
+   *
+   * The NAME first, because the drawer is the half a player cannot infer at all. A goblin's draw
+   * looks exactly like your own, and when two cards are parked side by side under the fate pile
+   * the name is the whole of what distinguishes them.
+   */
+  if (caption) {
+    const why = document.createElement("span");
+    why.className = "cr-fate__why";
+    why.textContent = caption;
+    node.appendChild(why);
+  }
   return node;
 }
 
@@ -190,7 +211,7 @@ function clear(node, slot) {
  * flight can be disturbed by another arriving. A flex row would have been shorter and the second
  * draw of a turn would have shoved the first out of its parked place while it sat there.
  */
-function reveal({ drawn, used }) {
+function reveal({ drawn, used, caption = "" }) {
   const host = layer();
   const height = Math.round(window.innerHeight * REVEAL_HEIGHT);
   const width = Math.round(height * cardRatio(host));
@@ -201,7 +222,7 @@ function reveal({ drawn, used }) {
 
   const kept = used ?? drawn[0];
   const nodes = drawn.map((card, i) => {
-    const node = faceOf(card);
+    const node = faceOf(card, caption);
     place(node, { left: left0 + i * (width + GAP), top, width, height });
     node.classList.add("cr-fate--dealt");
     host.appendChild(node);
@@ -281,10 +302,18 @@ let waiting = Promise.resolve();
 let pending = 0;
 const QUEUE_MAX = 3;
 
-export function showFate({ drawn = [], used = null } = {}) {
+export function showFate({ drawn = [], used = null, actor = null, why = "" } = {}) {
   if (!drawn.length) return;
   if (pending >= QUEUE_MAX) return;
   pending++;
+  /*
+   * **Built here rather than in `faceOf`**, which is handed one card and knows nothing about the
+   * draw it belongs to. Both halves are optional and the separator belongs to neither, so it is
+   * assembled once and the card is handed a finished line -- a draw that names no reason shows the
+   * creature alone, and one from no actor at all shows the reason alone, which is what the oldest
+   * caller of this hook would have sent.
+   */
+  const caption = [actor?.name, why].filter(Boolean).join(" \u00b7 ");
   /*
    * `mode` is in the hook's payload and deliberately not read: **how many cards were drawn already
    * says whether this was an advantage draw**, and `used` already says which one the rule took. A
@@ -293,7 +322,7 @@ export function showFate({ drawn = [], used = null } = {}) {
    * wrong about it.
    */
   waiting = waiting
-    .then(() => reveal({ drawn, used }))
+    .then(() => reveal({ drawn, used, caption }))
     /* A reveal that throws must never take the action down with it: the draw has already happened
      * and the number is already real. It also must not break the chain, or every later draw in the
      * session goes unshown -- which is why this sits inside the link rather than around it. */

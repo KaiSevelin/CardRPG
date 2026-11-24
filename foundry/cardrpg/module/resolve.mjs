@@ -556,6 +556,19 @@ export async function payToCast(actor, slate) {
     return false;
   }
   /*
+   * **And a spell already cast.**  **[RULED 2026-11-24]**
+   *
+   * Beside the one above because it is the same question one state along: *prepared* stopped
+   * meaning *castable* the day a cast began spending the preparation. The tray greys the card and
+   * refuses the click too, which is the better message and the earlier refusal -- but this is the
+   * door every cast comes through, and a gate that lives only in the window is a gate a macro
+   * walks round.
+   */
+  if (slate.system.drained) {
+    ui.notifications.warn(`${slate.name} has been cast. A long rest puts it back in your head.`);
+    return false;
+  }
+  /*
    * **A free hand, which is the other half of what a prepared spell costs (core-rules 4).**
    *
    * `needsFreeHand` is true of every spell slate by construction -- that is what makes it a spell
@@ -578,8 +591,40 @@ export async function payToCast(actor, slate) {
    * **The whole bill, worked out once.** The card in the spell pile prints this same object, so
    * what a player was shown before clicking and what they are charged afterwards cannot differ.
    */
+  /**
+   * **A cast consumes the preparation.**  **[RULED 2026-11-24]**
+   *
+   * Casting a prepared spell cost **nothing but its own price**: no card half, no stamina, no
+   * count. `strength` is a slot cost, so slots bound how many spells you HOLD and nothing bound
+   * how often you cast one -- and **117 of the 147 spells in the content print no price at all**,
+   * so for most of the list a cast was free and unlimited, on your turn, inside a two-halves
+   * budget everybody else obeys.
+   *
+   * So the preparation is the cost. The spell stays in your head and in its slot, spent, and a
+   * **long rest** is what puts it back. That is the engine's own vocabulary rather than a new
+   * field: `drained` is *Spent* for a thing that was never in your hand, which is exactly what
+   * core-rules says a spell reaction spends, and Ward Magic has drained a slate this way since it
+   * was built.
+   *
+   * **The slot stays occupied**, which is the whole of what makes the rest matter: a spell that
+   * merely left your head would free its slot and could be prepared again on the spot, and the
+   * long rest would mean nothing.
+   *
+   * **Here, and after every refusal.** A cast refused for an unaffordable price, a full pair of
+   * hands or a declined Strain charges nothing and so consumes nothing -- every one of those
+   * returns above. A cast that is WARDED does consume it, for the reason the ward's own note
+   * gives: *Unmake* stops a spell from resolving, not from being cast, so the price is gone
+   * either way.
+   */
+  const consume = () => slate.update({ "system.drained": true });
+
   const price = spellPrice(actor, slate);
-  if (!priceTotal(price)) return true;
+  /* The early return is about the chat line -- a spell that charges nothing says nothing -- so
+   * the preparation is spent on the way past it rather than only on the priced road. */
+  if (!priceTotal(price)) {
+    await consume();
+    return true;
+  }
 
   /*
    * You may not kill yourself casting. The floor is 1 rather than 0 because 0 Health is
@@ -643,12 +688,14 @@ export async function payToCast(actor, slate) {
    * a promise about the other six that the rules do not make. */
   const paid = priceWords({ ...price, wilds: added })
     .map(word => `<strong>${word}</strong>`).join(" and ");
+  await consume();
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
     content: `<div class="cardrpg"><p><strong>${actor.name}</strong> pays ${paid} `
       + `for <em>${slate.name}</em>.</p>`
       + (names.length ? `<p>Out of the hand: <em>${names.join("</em>, <em>")}</em>.</p>` : "")
-      + "</div>"
+      + `<p class="cr-note">The preparation is spent: <em>${slate.name}</em> is in your head `
+      + "and used up until a long rest.</p></div>"
   });
   return true;
 }
@@ -1320,7 +1367,30 @@ export const DROPPED = "dropped to 0";
 export async function resolveWound(target, { reason = "", injuryMode = 0 } = {}) {
   if (!target) return false;
   const stack = deckOf(target, "actionDiscard");
-  if (!stack) return false;
+  /*
+   * **A creature with no pile to put a Wound in says so.**  **[FIXED 2026-11-23]**
+   *
+   * This returned `false` in silence, and silence here is the worst possible answer: the blow
+   * landed, the Health went down, and the two rules core-rules 8 hangs off this moment -- the
+   * Wound card and, on a drop to 0, the injury draw -- did not happen, with nothing anywhere
+   * saying they had not. A creature dragged out of the bestiary compendium has no stacks at all
+   * (`buildCreatureDecks`), so this was every such creature, every time, and the table's only
+   * clue was that nothing arrived.
+   *
+   * A line rather than a repair, because repairing it here would be building decks in the middle
+   * of resolving a blow. The wiring is fixed where wiring belongs; this is the report that would
+   * have made it findable in a minute instead of a week.
+   */
+  if (!stack) {
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: target }),
+      content: `<div class="cardrpg"><p><strong>${target.name}</strong> should take a Wound`
+        + `${reason ? ` \u2014 ${reason}` : ""}, and has no discard pile to put one in.</p>`
+        + `<p class="cr-note">Its card stacks were never wired up. Re-saving the creature, or `
+        + `rebuilding world content from the system settings, gives it them.</p></div>`
+    });
+    return false;
+  }
   await stack.createEmbeddedDocuments("Card", [harmCardData("wound", { source: reason })]);
   /*
    * **And this is the one moment a character can be changed forever.**
@@ -1650,10 +1720,28 @@ export function openInjuryCategories(actor) {
  */
 export async function resolveInjury(target, { mode = 0, cause = "" } = {}) {
   if (!target) return null;
-  // No fate deck, no draw. The same shape as a Wound's guard: ask the data, not the type.
-  if (!deckOf(target, "fate")) return null;
+  /*
+   * **No fate deck, and that is now said out loud.**  **[FIXED 2026-11-23]**
+   *
+   * Ask the data and not the type -- that part was always right, and it is what lets a goblin take
+   * an injury on the same terms a hero does. What was wrong is what happened on the `no`: the one
+   * draw in the game that can change a creature for ever was skipped without a word.
+   *
+   * This is the half of *post saves from npc to the chat* that is not about wiring. A creature
+   * this happens to is a creature nothing will draw for, so the line names the cause rather than
+   * the symptom.
+   */
+  if (!deckOf(target, "fate")) {
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: target }),
+      content: `<div class="cardrpg"><p><strong>${target.name}</strong> fell, and has no fate deck `
+        + `to draw an injury from.</p><p class="cr-note">The GM reads it. Its card stacks were `
+        + `never wired up \u2014 see the Wound line above.</p></div>`
+    });
+    return null;
+  }
 
-  const fate = await drawFate(target, 0, mode);
+  const fate = await drawFate(target, 0, mode, { why: "injury draw" });
   const card = fate.used;
   if (!card) return null;
 
@@ -2584,7 +2672,15 @@ export function chooseReaction(options, { incoming, health }) {
 async function spendReaction(actor, choice) {
   /*
    * A spell is not discarded -- it was never in your hand. It is drained, which is Ward Magic's
-   * *Spent* on a thing that lives in a book: gone for the fight, back on a rest.
+   * *Spent* on a thing that lives in a book.
+   *
+   * **Back on a LONG rest, which is now true rather than aspirational.**  **[FIXED 2026-11-24]**
+   * This note used to say *back on a rest* and nothing anywhere cleared it: `rest` swept the Spent
+   * pile and never looked at a slate, and the two rest boundaries in `CARDRPG.recharges` were read
+   * by nothing at all. So a ward spent in the first fight of a campaign was spent for the rest of
+   * it. `rest` honours the boundaries now, and a spell is the one slate whose recharge is a rule
+   * rather than a printed field: a cast consumes the preparation (`payToCast`) and a long rest is
+   * what restores it.
    */
   if (choice.slate) {
     await choice.slate.update({ "system.drained": true });
@@ -3645,7 +3741,8 @@ export async function resolveAttack(actor, {
   const { mode, reasons } = advantageFor(actor, first, {
     ranged, area, when, ignoresCover: effect === "ignoresCover"
   });
-  const fate = await drawFate(actor, before, mode);
+  const fate = await drawFate(actor, before, mode,
+    { why: item ? `${verb} with ${item.name}` : verb });
   /* Spent by the action it was claimed for. The reason is already in `reasons`, so the record
    * survives the claim. */
   await clearEdge(actor);
@@ -4080,7 +4177,8 @@ export async function grantBlock(actor, { amount = 0, radius = 1, includeSelf = 
 /** Healing draws fate, same as damage. */
 export async function resolveHeal(actor, { amount, target = actor, source = "" }) {
   if (refusesAction(actor, { what: "a heal" })) return null;
-  const fate = await drawFate(actor, amount, 0);
+  const fate = await drawFate(actor, amount, 0,
+    { why: source ? `heal with ${source}` : "heal" });
   const healed = Math.min(fate.result, target.system.health.max - target.system.health.value);
   await target.update({ "system.health.value": target.system.health.value + healed });
 
@@ -4347,7 +4445,10 @@ export async function resolveCheck(actor, {
    * for damage and wrong for a margin. A check wants the plain sum, and the Critical is decided by
    * the band rather than by the arithmetic.
    */
-  const { used } = await drawFate(actor, before, draw);
+  const { used } = await drawFate(actor, before, draw, {
+    why: `${game.i18n.localize(CARDRPG.approaches[approach]?.label ?? approach)} check`
+      + (improvise ? ", improvised" : "")
+  });
   /* Spent by the check it was claimed for, the same way an attack spends it. */
   await clearEdge(actor);
   const special = used?.system?.special ?? "";
@@ -4576,7 +4677,8 @@ export async function resolveCondition(actor, { step, target }) {
      * drift. (That they are two copies at all is older than this change and still true: the band
      * lives here and in `checkOutcome`.)
      */
-    const { used } = await drawFate(target, score, 0);
+    const { used } = await drawFate(target, score, 0,
+      { why: `saving throw: ${label(key)}` });
     const miss = used?.system.special === "miss";
     const crit = used?.system.special === "crit";
     const result = score + (miss || crit ? 0 : (used?.system.value ?? 0) * CHECK_SWING);

@@ -71,12 +71,21 @@ export async function drawWildMagic(actor) {
  * Miss and Critical each trigger a reshuffle, which is why the deck always still holds one of each
  * between reshuffles and the remaining count is a live risk readout.
  *
+ * **`why` is what the draw is FOR**, in the words a player would use: *Strike with Goblin Spear*,
+ * *injury draw*, *saving throw: Dazed*. It is carried rather than guessed because only the caller
+ * knows -- five of them draw through here and each one is a different sentence -- and it travels on
+ * the announcement so the card dealt on the screen can say what it answers. A draw with no reason
+ * given still draws; the reveal simply shows the card and nothing else, which is what it did
+ * before any of them said anything.
+ *
  * @param {Actor} actor
  * @param {number} value      The value to modify.
  * @param {number} mode       +1 advantage, -1 disadvantage, 0 normal.
+ * @param {object} [opts]
+ * @param {string} [opts.why] What the draw is for, for the reveal and the record.
  * @returns {Promise<object>} { result, drawn, used, reshuffled }
  */
-export async function drawFate(actor, value, mode = 0) {
+export async function drawFate(actor, value, mode = 0, { why = "" } = {}) {
   const deck = deckOf(actor, "fate");
   const discard = deckOf(actor, "fateDiscard");
   if (!deck) return { result: value, drawn: [], used: null, reshuffled: false };
@@ -123,7 +132,7 @@ export async function drawFate(actor, value, mode = 0) {
    * what makes the reveal unconditional -- initiative does not draw fate, so no round start ever
    * deals eight of these at once.
    */
-  Hooks.callAll("cardrpgFateDrawn", { actor, drawn, used, mode });
+  Hooks.callAll("cardrpgFateDrawn", { actor, drawn, used, mode, why });
 
   const result = used.system.apply ? used.system.apply(value) : applyFate(value, used);
 

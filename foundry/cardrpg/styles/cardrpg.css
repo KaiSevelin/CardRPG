@@ -603,6 +603,25 @@
 .cardrpg .cr-slate-row--drained .cr-slate-row__name { color: var(--cardrpg-dim); text-decoration: line-through; }
 
 /*
+ * **A spell in the book rather than in your head.**  [BUILT 2026-11-24]
+ *
+ * Dimmed and not struck through, which is the difference between the two states this list has: a
+ * drained feature is spent and comes back, a spell in the book was never in play. The tray greys
+ * the same cards for the same reason, and the row is still fully readable either way -- the book
+ * is what you read to decide what to prepare.
+ */
+.cardrpg .cr-slate-row--book .cr-slate-row__name { color: var(--cardrpg-dim); }
+
+/*
+ * **A spell that has been cast.**  [BUILT 2026-11-24]
+ *
+ * Struck through like a drained feature, because it is the same state for the same reason: used
+ * up, and waiting on a boundary to come back. It is NOT dimmed as well -- the book is dim and this
+ * one is in your head, holding a slot, which is the fact the row exists to report.
+ */
+.cardrpg .cr-slate-row--spent .cr-slate-row__name { text-decoration: line-through; }
+
+/*
  * **A deck, read down a column.**  [BUILT 2026-11-14]
  *
  * Deliberately not card-shaped. The tray paints cards because you are choosing between five of
@@ -1653,9 +1672,15 @@
   position: fixed;
   box-sizing: border-box;
   transform-origin: top left;
+  /*
+   * **A column, bottom-anchored**, since the card carries two lines now: the face's name and the
+   * caption saying who drew it and what for. Row direction put them side by side and the name,
+   * which is the number, went off centre.
+   */
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
   padding: 0.4em;
   border: 1px solid var(--cardrpg-ink);
   border-radius: 8px;
@@ -1676,6 +1701,30 @@
   letter-spacing: 0.02em;
   padding: 0.12em 0.4em;
   border-radius: 5px;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--cardrpg-paper);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+/*
+ * **Who drew it and what for**, under the name and over the same scrim.
+ *
+ * Small on purpose: it is the answer to a question, not the card. It scales with the card -- the
+ * flight is a `transform`, so the caption shrinks into the pile row with everything else and the
+ * parked card stays a picture of the draw rather than becoming a label.
+ *
+ * `overflow-wrap` because an item's name is in it and *Rusty Chain Shirt* is longer than a card is
+ * wide, and a word that cannot break would otherwise reach past the paper it is printed on.
+ */
+.cardrpg .cr-fate__why {
+  margin-top: 0.3em;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-size: clamp(0.5rem, 1.5vh, 0.9rem);
+  line-height: 1.15;
+  text-align: center;
+  padding: 0.15em 0.45em;
+  border-radius: 4px;
   background: rgba(0, 0, 0, 0.6);
   color: var(--cardrpg-paper);
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);

@@ -682,6 +682,21 @@ the same turn never ends — so one card left you with greyed halves and nothing
 until a fight started and ended. Now start a fight and check the opposite: inside one, a played
 primary and secondary **do** grey the rest until your next turn.
 
+**And watch the draw pile, the stamina and the discard while you do it.**  **[2026-11-23]** Play
+five or six cards out of combat.
+
+**Expect.** The **draw pile bar does not move**, the **stamina does not move**, the **discard stays
+empty**, and the cards you played are **still in your hand** — the same card can open the next
+door. Nothing reaches the Spent pile either, even from a half printed *Spent*. And your hand is not
+turned sideways afterwards.
+
+**Before today it drained for good.** Each card went to the discard, the hand drew a replacement off
+the draw pile, and only the end of a fight sweeps those back — so a scene of searching ran the
+deck down permanently, and spent stamina never came back either. At zero stamina the remaining draw
+pile is dumped into the discard, which is how a character ended an evening with no deck at all.
+Reported as *the action deck gets empty even outside a fight*. Inside a fight, check the opposite: a
+played card **does** leave the hand and **does** cost 1 stamina.
+
 ## 2e.3 The fate card, dealt and parked
 
 **Do.** Make any check, or play a Strike. Watch the middle of the screen.
@@ -703,8 +718,86 @@ draws again. **There should never be three cards in the middle at once** — the
 single after it has landed. Three together was the fault reported on 2026-11-23, and the third card
 belonged to a different draw with nothing saying so.
 
+**Each card says who drew it and what for.**  **[2026-11-23]** Under the value, in small type:
+*Thora — strike with Goblin Spear*, *Goblin — saving throw: Dazed*, *Goblin — injury draw*.
+Check a goblin's draw especially: before today a card drawn for a creature looked exactly like one
+drawn for you.
+
 **A card with no picture is fine** — the text is the card. What should never happen is a blank
 card with *no text*, or a card that stays on the screen.
+
+## 2e.4 A goblin off the shelf is a goblin  **[2026-11-23]**
+
+**Do.** Open the **Creatures** compendium and drag any creature onto the scene — not one already
+in the sidebar, one straight off the shelf. Then fight it: hit it with something that forces a
+saving throw, and drop it to 0.
+
+**Expect.** A notification as it lands, saying its card stacks were wired up. Then, in the fight:
+the saving throw **draws a fate card** — you see the reveal in the middle of the screen with
+*saving throw* on it — and dropping it to 0 **draws again for its injury**. A chat line for each.
+
+**Before today none of that happened, and nothing said so.** A creature in a compendium carries no
+decks — those slots hold ids of documents in a world, and a compendium has no world to point at
+— and only two routines ever filled them in: the one that builds the starter goblins and the one
+a GM calls by name. So a dragged-in creature had no fate deck, which means its saving throws were
+decided by its passive score alone with **no card drawn and nothing in chat**, and dropping it to 0
+drew no injury. Reported as *post saves from npc to the chat*.
+
+**And if you find one that was already in the world before today**, drop it to 0 and read the chat:
+it should now say in words that there is no pile to put a Wound in and no fate deck to draw an
+injury from, instead of saying nothing at all. Re-saving the creature, or rebuilding world content
+from the system settings, gives it both.
+
+## 2f.1 A caster can find their spells  **[2026-11-24]**
+
+**Do.** Open a caster's sheet and go to the **Spells & features** tab. (If nobody in the party
+casts, give a character a spell from the **Formulas and Miracles** compendium first, and a spell
+slot or two on the Vitals tab.)
+
+**Expect.** A **Spells** block above Features, with the slot budget in the heading — *2 of 3
+slots*. Prepared spells first, the book after them and dimmed. Each row says the school, what it
+costs to **keep** in your head, and on its own line **what each cast takes**: *Each cast: 2 Health*,
+or *Each cast: nothing*, which is the common answer and has to be said rather than left blank.
+
+**Then prepare one.** Click **Prepare** on a spell in the book: it moves up into the prepared group
+and the heading's count goes up. Click **Put back in the book** and it goes the other way. Try one
+whose strength is more than the free slots and it should be **refused in words**, not allowed.
+
+**Then open one.** The dots at the end of a row, then **Edit**. The slate sheet opens on the spell:
+strength, school, the four prices, prepared, and the whole effect.
+
+**Then cast it twice.**  **[2026-11-24]** Target something, click the prepared spell on the tray's
+spell deck, and then click it again.
+
+**Expect.** The first click casts. The second does nothing but say so: *the preparation is spent; a
+long rest puts it back in your head*. On the tray the card is **greyed** with *cast — back on a
+long rest* in its note; on the sheet the row is **struck through** and says the same. The slot is
+still counted — the heading does not go back up — and **Put back in the book is refused**,
+because the slot is what the rest is about.
+
+**Then take a long rest** from the Vitals tab. A chat line names what came back, the row is live
+again, and it casts again. A **short** rest should NOT bring a spell back.
+
+**Also worth one check:** a feature printed *recharges: a long rest* should now come back from one
+too. Nothing had ever honoured either rest boundary — only the end of a fight — so a feature
+or a warded counterspell spent in the first fight of a campaign stayed spent for the whole of it.
+
+**Before today a cast cost nothing and could be repeated for ever.** Strength is a slot cost, so
+slots bounded how many spells you held and no rule bounded the casting, and 117 of the 147 spells
+print no price at all. Casting now spends the preparation, which makes your slots what you can cast
+between sleeps.
+
+**Before today none of this existed and the sheet threw.** Two faults, reported together as *spells
+are not visible on player sheet, spells cannot be viewed or edited*:
+
+- the sheet listed items, features and injuries and **never spells**, so the only road to one was
+  the Items sidebar, which holds the world's spells rather than a character's — and preparing is
+  done by writing that field, so the one decision a caster makes between fights had no surface at
+  all;
+- and the slate sheet **failed to render for a spell**. One option in the step editor printed a
+  timing as an object instead of its label; the error killed the part, the part killed the sheet,
+  and a spell was the only slate kind that reaches that editor. A **card's own config sheet** went
+  with it, so check one of those opens too: right-click a card in a deck in the sidebar.
 
 ---
 

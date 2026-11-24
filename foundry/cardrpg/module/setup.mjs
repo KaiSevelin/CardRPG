@@ -355,22 +355,19 @@ export async function createStarterContent() {
   const warriorFateDiscard = await makeCards("Starter Warrior — Fate Discard", "pile", "warrior.fateDiscard");
   note("warrior decks ready");
 
-  /* --- the goblins' fate deck, which belongs to the TYPE ----------------------
+  /* --- a creature's stacks are not built here any more ----------- [MOVED 2026-11-23]
    *
-   * Every goblin in the line references this one deck, and each is placed as an UNLINKED token so
-   * it keeps its own health while sharing the id. Linked tokens would share health too, which they
+   * The goblin line's fate deck was spelled out at this point, the action deck and the two piles
+   * were spelled out again in `buildCreature` below, and `buildMonster` spelled all five out a
+   * third time. Three copies of one plan -- and the road that had none of them, a creature dragged
+   * out of the bestiary compendium, arrived with no decks at all and silently stopped obeying
+   * three rules. `creatureDecks` is the one plan now and every road goes through it.
+   *
+   * What was true here is still true and is said there: the fate deck belongs to the TYPE, every
+   * goblin in the line references the one deck, and each is placed as an UNLINKED token so it
+   * keeps its own health while sharing the id. Linked tokens would share health too, which they
    * must not.
-   *
-   * **The action deck and the piles are `buildCreature`'s to make**, because a creature's deck is
-   * earned from the intent pool rather than authored (core-rules 9). This routine used to build a
-   * `goblin.action` document from six hand-written cards as well, and point nothing at it: five of
-   * those six had no counterpart in the pool because the pool had replaced them, so the only thing
-   * it did was ship six dead cards into every world.
    */
-  const goblinFate = await makeCards(
-    "Goblin — Fate Deck", "deck", "goblin.fate", fateCards(backOf("fate"), fateArt), "fate");
-  const goblinFateDiscard = await makeCards("Goblin — Fate Discard", "pile", "goblin.fateDiscard");
-  // Each NPC type has its own fate deck, so a Cursed goblin doesn't hex the ogre beside it.
 
   /*
    * The Wild Magic deck belongs to the WORLD, not to a caster: a surge is the world answering, and
@@ -492,20 +489,10 @@ export async function createStarterContent() {
    * rather than a shortcut: the rule exists so a hex on the goblins does not touch the ogre, and a
    * Goblin Archer is not an ogre. One per base; the intent is per kind.
    */
-  const buildCreature = async (creature, fate) => {
-    const kind = creature.system.kind;
-    const npcBack = backOf(`npc.${kind}`) || backOf("npc");
-    const cards = deckFor(creature.system.capabilities ?? [], INTENTS, kind)
-      .map(card => npcCardData(card, { kind, creature: creature.name, back: npcBack }));
-    const deck = await makeCards(`${creature.name} \u2014 Intents`, "deck", `${kind}.deck`,
-      cards, backOf(`npc.${kind}`) ? `npc.${kind}` : "npc");
-    const discard = await makeCards(`${creature.name} \u2014 Discard`, "pile", `${kind}.discard`);
-    const intent = await makeCards(`${creature.name} \u2014 Intent`, "pile", `${kind}.intent`);
-    made.decks += 3;
-    return buildActor(creature, {
-      action: deck.id, actionDiscard: discard.id, intent: intent.id,
-      fate: fate.deck.id, fateDiscard: fate.discard.id
-    });
+  const buildCreature = async creature => {
+    const { decks, created } = await creatureDecks(creature.name, creature.system);
+    made.decks += created;
+    return buildActor(creature, decks);
   };
 
   /*
@@ -515,9 +502,7 @@ export async function createStarterContent() {
    * starter world nobody can find anything in.
    */
   const goblinLine = expandRoster(ROSTER.filter(r => r.system.kind === "goblin"), VARIANTS);
-  for (const creature of goblinLine) {
-    await buildCreature(creature, { deck: goblinFate, discard: goblinFateDiscard });
-  }
+  for (const creature of goblinLine) await buildCreature(creature);
   note(`the goblin line: ${goblinLine.length} creatures`);
 
   /*
@@ -714,6 +699,107 @@ export async function buildCharacterDecks(actor) {
 /* -------------------------------------------- */
 /*  One creature, on demand                     */
 /* -------------------------------------------- */
+/*  A creature's stacks                         */
+/* -------------------------------------------- */
+
+/**
+ * **The five stacks a creature plays out of, found or made.**  **[BUILT 2026-11-23]**
+ *
+ * Keyed on `kind` and not on the actor, which is the rule rather than a saving: one deck per kind
+ * and one fate deck per BASE, so five goblins share one set of intents and the goblin line shares
+ * one fate deck -- *a hex on the goblins must not touch the ogre, and a Goblin Archer is not an
+ * ogre* (core-rules 6). That is why this takes a creature's data rather than an actor: two goblins
+ * ask for the same stacks and must be given the same ones.
+ *
+ * **A creature with no `kind` gets its own**, keyed on whatever id it is given. The schema's
+ * initial for `kind` is the empty string, so a GM's homemade NPC has none -- and keying those on
+ * the blank would have handed **every kindless creature in the world one shared fate deck**, which
+ * is the one thing core-rules 6 is written to prevent.
+ *
+ * `created` is how many of the five did not already exist, so a caller counting what a setup run
+ * produced counts the truth: five goblin variants ask for five intent decks and ONE fate deck
+ * between them, and a flat five per creature would report eight stacks nobody made.
+ *
+ * @returns {Promise<{decks: object, intents: number, created: number}>}
+ */
+export async function creatureDecks(name, system = {}, fallbackKey = "") {
+  const kind = system.kind || fallbackKey || name;
+  /* The base a variant hangs off, for the shared fate deck. A kind the roster has never heard of
+   * is its own base, which is right: nothing else can be a variant of it. */
+  const base = ROSTER.find(r => (VARIANTS[r.system.kind] ?? []).some(v => v.kind === kind))
+    ?? ROSTER.find(r => r.system.kind === kind)
+    ?? null;
+  const baseKind = base?.system.kind ?? kind;
+  const baseName = base?.name ?? name;
+
+  const npcBack = backOf(`npc.${kind}`) || backOf("npc");
+  const art = backOf(`npc.${kind}`) ? `npc.${kind}` : "npc";
+  const cards = deckFor(system.capabilities ?? [], INTENTS, kind)
+    .map(card => npcCardData(card, { kind, creature: name, back: npcBack }));
+
+  const plan = [
+    { slot: "action", type: "deck", called: `${name} \u2014 Intents`, tag: `${kind}.deck`,
+      cards, back: art },
+    { slot: "actionDiscard", type: "pile", called: `${name} \u2014 Discard`,
+      tag: `${kind}.discard` },
+    { slot: "intent", type: "pile", called: `${name} \u2014 Intent`, tag: `${kind}.intent` },
+    { slot: "fate", type: "deck", called: `${baseName} \u2014 Fate Deck`, tag: `${baseKind}.fate`,
+      cards: fateCards(backOf("fate"), fateArt), back: "fate" },
+    { slot: "fateDiscard", type: "pile", called: `${baseName} \u2014 Fate Discard`,
+      tag: `${baseKind}.fateDiscard` }
+  ];
+
+  const decks = {};
+  let created = 0;
+  for (const step of plan) {
+    if (!findExisting(game.cards, step.tag)) created++;
+    const made = await makeCards(step.called, step.type, step.tag, step.cards ?? [],
+      step.back ?? "");
+    decks[step.slot] = made.id;
+  }
+  return { decks, intents: cards.length, created };
+}
+
+/**
+ * **Wire an existing creature up to them.**  **[FIXED 2026-11-23]**
+ *
+ * Reported from a table as *post saves from npc to the chat*, and the reason nothing was in the
+ * chat is that nothing was drawn: **a creature dragged out of the bestiary compendium has no decks
+ * at all.** `system.decks` is deliberately absent from a pack actor -- those slots hold ids of
+ * Cards documents and a compendium has no world to point at (test/build-packs.mjs says so) -- and
+ * only two routines ever filled them in, `createStarterContent` for the goblin line and
+ * `buildMonster` for a creature asked for by name. Drag the same goblin off the shelf instead and
+ * it arrives with none.
+ *
+ * What that cost at the table is quiet and total. `drawFate` with no fate deck returns the value
+ * it was handed, so a saving throw against that goblin was decided by its passive score alone with
+ * **no card drawn, no reveal and nothing in chat**; `resolveWound` returns early with no discard
+ * pile to put a Wound in, so dropping it to 0 drew no injury either. Three rules silently did not
+ * apply, and the only trace was a `console.warn` nobody is looking at.
+ *
+ * **On `createActor`, for the reason the character hook is** (cardrpg.mjs): *does this creature
+ * have a fate deck* has exactly one right answer and nobody should have to ask it.
+ *
+ * Idempotent per slot, like `buildCharacterDecks`: a creature missing one stack gets one stack,
+ * and a creature built by `buildMonster` already has all five and is left alone.
+ *
+ * @returns {Promise<number>} how many slots were filled.
+ */
+export async function buildCreatureDecks(actor) {
+  if (!actor || actor.type !== "npc") return 0;
+  const have = actor.system?.decks ?? {};
+  /* Asked BEFORE any stack is made, so a creature that needs nothing costs nothing: `makeCards`
+   * resyncs what it finds, and resyncing five stacks to answer a question is work for nothing. */
+  const missing = ["action", "actionDiscard", "intent", "fate", "fateDiscard"]
+    .filter(slot => !(have[slot] && game.cards.get(have[slot])));
+  if (!missing.length) return 0;
+
+  const { decks } = await creatureDecks(actor.name, actor.system, actor.id);
+  const wire = {};
+  for (const slot of missing) wire[slot] = decks[slot];
+  await actor.update({ system: { decks: wire } });
+  return missing.length;
+}
 
 /**
  * Build any creature in the roster by name.
@@ -763,45 +849,13 @@ export async function buildMonster(name) {
     slates[gearName] = made;
   }
 
-  const kind = creature.system.kind;
-  const base = ROSTER.find(r => (VARIANTS[r.system.kind] ?? [])
-    .some(v => v.kind === kind)) ?? creature;
-  const baseKind = base.system.kind;
-  const npcBack = backOf(`npc.${kind}`) || backOf("npc");
-
-  const cards = deckFor(creature.system.capabilities ?? [], INTENTS, kind)
-    .map(card => npcCardData(card, { kind, creature: creature.name, back: npcBack }));
-
-  const find = tag => game.cards.find(d => d.getFlag("cardrpg", FLAG) === tag);
-  const art = backOf(`npc.${kind}`) ? `npc.${kind}` : "npc";
-  const deck = find(`${kind}.deck`)
-    ?? await Cards.create({
-      name: `${creature.name} \u2014 Intents`, type: "deck", cards,
-      ...(backOf(art) ? { img: backOf(art) } : {}),
-      flags: { cardrpg: { [FLAG]: `${kind}.deck` } }
-    });
-  const discard = find(`${kind}.discard`)
-    ?? await Cards.create({
-      name: `${creature.name} \u2014 Discard`, type: "pile",
-      flags: { cardrpg: { [FLAG]: `${kind}.discard` } }
-    });
-  const intent = find(`${kind}.intent`)
-    ?? await Cards.create({
-      name: `${creature.name} \u2014 Intent`, type: "pile",
-      flags: { cardrpg: { [FLAG]: `${kind}.intent` } }
-    });
-  /* One fate deck per base, shared by its variants. */
-  const fate = find(`${baseKind}.fate`)
-    ?? await Cards.create({
-      name: `${base.name} \u2014 Fate Deck`, type: "deck", cards: fateCards(backOf("fate"), fateArt),
-      ...(backOf("fate") ? { img: backOf("fate") } : {}),
-      flags: { cardrpg: { [FLAG]: `${baseKind}.fate` } }
-    });
-  const fateDiscard = find(`${baseKind}.fateDiscard`)
-    ?? await Cards.create({
-      name: `${base.name} \u2014 Fate Discard`, type: "pile",
-      flags: { cardrpg: { [FLAG]: `${baseKind}.fateDiscard` } }
-    });
+  /*
+   * **The five stacks, through the one routine that makes them.**  [MOVED 2026-11-23]
+   *
+   * It was written out here and nowhere else, which is why a creature that arrived by any other
+   * road -- dragged out of the compendium -- got none of them. See `buildCreatureDecks`.
+   */
+  const { decks, intents } = await creatureDecks(creature.name, creature.system);
 
   const embedded = [];
   for (const gearName of creature.equipped ?? []) {
@@ -816,18 +870,12 @@ export async function buildMonster(name) {
   const actor = await Actor.create({
     name: creature.name,
     type: "npc",
-    system: {
-      ...creature.system,
-      decks: {
-        action: deck.id, actionDiscard: discard.id, intent: intent.id,
-        fate: fate.id, fateDiscard: fateDiscard.id
-      }
-    },
+    system: { ...creature.system, decks },
     items: embedded,
     prototypeToken: { actorLink: false, name: creature.name },
     flags: { cardrpg: { [FLAG]: `actor.${creature.name}` } }
   });
-  ui.notifications?.info(`${creature.name}: ${cards.length} intents, `
+  ui.notifications?.info(`${creature.name}: ${intents} intents, `
     + `Health ${creature.system.health.base}, speed ${creature.system.speed}.`);
   return actor;
 }

@@ -460,6 +460,53 @@
     {{/if}}
 
     {{#if onFeatures}}
+      {{!-- Spells. This sheet showed none of them until 2026-11-24, which made a spell both
+            invisible and unreachable: the slate sheet has always been able to edit one, and
+            nothing anywhere linked to it. Preparing is done by writing `prepared` and nothing
+            else does it, so the one decision a caster makes between fights had no surface. --}}
+      <section class="cr-block">
+        <h3>Spells
+          <span class="cr-tier" data-tooltip="Base plus nodes, then capped by any vow">{{slotBudget.used}} of {{slotBudget.max}} slots</span>
+        </h3>
+        <p class="cr-note">What is <strong>prepared</strong> is in your head and can be cast; the
+          rest is your book. You change that between fights, never during one. <strong>Two
+          costs:</strong> a spell's strength is the <em>slots</em> it takes up for as long as it is
+          prepared; and <strong>casting it spends the preparation</strong> &mdash; the spell stays in
+          its slot, used up, until a <strong>long rest</strong>. So your slots are what you can cast
+          between sleeps, and any Health, Taint or Strain the spell prints is on top of that.</p>
+        <ul class="cr-slates">
+          {{#each spells as |entry|}}
+            <li class="cr-slate-row{{#unless entry.prepared}} cr-slate-row--book{{/unless}}{{#if entry.spent}} cr-slate-row--spent{{/if}}"
+                data-group="{{entry.doc.system.source}}">
+              <span class="cr-slate-row__name">{{entry.doc.name}}</span>
+              <span class="cr-note">{{entry.keep}}</span>
+              {{#if entry.spent}}
+                {{!-- Cast, and holding its slot until you sleep. Marked rather than hidden: it is
+                      the row that explains where a slot has gone. --}}
+                <span class="cr-recharge" data-tooltip="A cast spends the preparation">
+                  Cast &mdash; back on a long rest
+                </span>
+              {{else}}
+                <span class="cr-note"><strong>Each cast:</strong> {{entry.cast}}</span>
+              {{/if}}
+              {{#if entry.text}}<span class="cr-note">{{entry.text}}</span>{{/if}}
+              <button type="button" data-action="togglePrepared" data-slate-id="{{entry.doc.id}}">
+                {{#if entry.prepared}}Put back in the book{{else}}Prepare{{/if}}
+              </button>
+              <span class="cr-menu">
+                <button type="button" class="cr-menu__dots" data-action="rowMenu"
+                        data-tooltip="More" aria-label="More">&#8943;</button>
+                <span class="cr-menu__items">
+                  <button type="button" data-action="editSlate" data-slate-id="{{entry.doc.id}}">Edit</button>
+                </span>
+              </span>
+            </li>
+          {{else}}
+            <li class="cr-note">No spells. They come from a Way's nodes — see Level up.</li>
+          {{/each}}
+        </ul>
+      </section>
+
       <section class="cr-block">
         <h3>Features</h3>
         <p class="cr-note">A passive feature is simply true. An active one Drains when used and comes

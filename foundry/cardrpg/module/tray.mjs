@@ -1532,6 +1532,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const costs = words.length ? words.join(", ") : "";
     const prepared = slate.system.prepared;
     /*
+     * **And whether it has already been cast.**  **[BUILT 2026-11-24]** A cast consumes the
+     * preparation (`payToCast`), so a prepared spell has two states now and the card has to say
+     * which: in your head, or in your head and used up. `drained` is the field, because that is
+     * what *Spent* means on a thing that was never in your hand -- the same one Ward Magic's
+     * counterspell has always written.
+     */
+    const spent = !!slate.system.drained;
+    /*
      * **The timing, printed and enforced in the same breath.**  [BUILT 2026-11-21]
      *
      * The label existed in the lang file and nothing had ever shown it, which is half of why the
@@ -1577,18 +1585,23 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       icon: CARDRPG.verbs.cast?.icon ?? null,
       lines: lines.length ? lines : ["\u2014"],
       /* The book is not clickable: you change what is prepared between fights, never during one.
-       * Nor is a spell whose moment this is not, nor one whose state you are not in. */
-      passive: !prepared || !!notNow || !!notYet,
+       * Nor is a spell whose moment this is not, nor one whose state you are not in -- nor one
+       * already cast, which is the new one. */
+      passive: !prepared || spent || !!notNow || !!notYet,
       note: `${slate.system.source || "—"} \u00b7 ${slate.system.strength} slot`
         + `${slate.system.strength === 1 ? "" : "s"}`
         + (costs ? ` \u00b7 costs ${costs}` : "")
+        + (spent ? " \u00b7 cast \u2014 back on a long rest" : "")
         + (when ? ` \u00b7 ${when}` : "")
         /* The gate is printed whether or not it holds, and marked when it does: a card that says
          * nothing while the state is true is a card the player has to remember the rule for. */
         + (whileWords ? ` \u00b7 ${whileWords}${held === true ? " \u2014 now" : ""}` : ""),
       tip: !prepared
         ? "In your book. What is prepared changes between fights, not during one."
-        : notNow || notYet || `Cast it.${costs ? ` It costs ${costs}.` : ""}`
+        : spent
+          ? "Cast. The preparation is spent; a long rest puts it back in your head."
+          : notNow || notYet
+            || `Cast it.${costs ? ` It costs ${costs}.` : ""} The preparation is spent either way.`
     };
   }
 
@@ -3461,8 +3474,21 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       for (const { half } of this.staged) this.spentHalves[half] = true;
       this.playedAt = turn;
     }
-    /* The turn's actions are done, so the hand stops being an automatic bill against stamina. */
-    await this.#disarmHand();
+    /*
+     * The turn's actions are done, so the hand stops being an automatic bill against stamina --
+     * **and only inside a fight.**  **[FIXED 2026-11-23]**
+     *
+     * What the sideways hand warns about is a reaction's 1 stamina, and outside a fight nothing
+     * spends stamina at all (decks/play.mjs). So out there it is a warning about a cost that
+     * cannot be charged, and it left a player who had just opened a door looking at five cards on
+     * their side with nothing to do about it.
+     *
+     * Here rather than in `#disarmHand`, because a **breath** is the routine's other caller and a
+     * breath is a declared turn whoever is fighting: *spend your whole turn, playing nothing*. A
+     * player who breathes has said their turn is over and the hand should say so. Playing a card
+     * in a corridor is not a turn at all, which is the whole of core-rules 3's ruling.
+     */
+    if (game.combat?.started) await this.#disarmHand();
     this.#resetPlay();
     this.render();
   }
@@ -4212,6 +4238,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
        * a refused cast must charge nothing -- it says it about affording the Health -- and a turn
        * that does not happen is the same kind of refusal.
        */
+      /*
+       * **A spell already cast is refused in words.**  **[BUILT 2026-11-24]** The card is greyed,
+       * so reaching here means a second road in -- and a guard that fires only after the card is
+       * clickable is a guard that charges for the cast it refuses. Before every price, like the
+       * three below it.
+       */
+      if (slate.system.drained) {
+        return ui.notifications.info(`${slate.name} has been cast. The preparation is spent; a `
+          + "long rest puts it back in your head.");
+      }
       if (refusesAction(this.actor, { what: `casting ${slate.name}` })) return;
       /* And the moment, which the card states and nothing used to read. Here for the same reason
        * and in the same breath: a timing refused after `payToCast` would take the Health and the

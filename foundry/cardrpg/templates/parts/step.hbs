@@ -77,8 +77,12 @@
     <label>Timing
       <select name="{{path}}.timing">
         <option value="">&mdash;</option>
+        {{!-- `this.label` and not `this`: a timing is an OBJECT -- a label plus the two rules
+              that say when it refuses -- and `localize` handed an object reaches
+              `getProperty(translations, stringId)`, which calls `key.split`. That throws, the
+              part fails to render, and **the whole sheet never opens**.  [FIXED 2026-11-24] --}}
         {{#each config.timings}}
-          <option value="{{@key}}" {{#if (crEq @key ../step.timing)}}selected{{/if}}>{{localize this}}</option>
+          <option value="{{@key}}" {{#if (crEq @key ../step.timing)}}selected{{/if}}>{{localize this.label}}</option>
         {{/each}}
       </select>
     </label>

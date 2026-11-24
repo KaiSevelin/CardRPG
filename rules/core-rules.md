@@ -179,6 +179,14 @@ If one side has clearly caught the other — an ambush, a sprung trap, a charge 
   something. The engine enforced the pair out of combat as well, on the reading that *out there
   every turn is the same turn* — which is true, and is exactly why it was wrong, because the same
   turn never ends. The first card you played outside a fight spent its half for good.
+- **And the card costs nothing either.**  **[RULED 2026-11-23]** Same sentence, second half. A
+  played card goes to your discard and comes back when the fight ends; **1 stamina** goes with it
+  and comes back the same way, because stamina measures one fight. Outside a fight neither of
+  those returns — there is no end of a fight to return at — so the deck simply ran down: six
+  doors opened cost six cards off the draw pile and six stamina, permanently, and the only cure was
+  to start a fight and finish it. So out there a played card **stays in your hand** and the stat is
+  not touched. Play it again on the next door. A **Spent** half is not spent either, for the one
+  reason Spent exists: it is out *for the rest of the fight*, and there is no fight.
 - **Two attacks in one turn are allowed** if they come from two different cards, e.g. a Strike primary plus a card with Strike on its secondary. You can never use both halves of the same card.
 
 > **Where double attacks come from.** A card with Strike on its *secondary* half is the strongest kind of card in the game: simulation showed one such card shortens fights by a full round. The rule stays open, but these cards are meant to be **earned through leveling**, not handed out in starter decks. Treat Strike-on-secondary as a reward on a Way's tree, the same way a second attack is a milestone in other games. The mechanism is now specified — it is an **action-card benefit on a Way graph node** ([leveling.md](leveling.md) §4) — and the card is written: *Off-Hand Blow*, Strike on the primary and **Strike −1** on the secondary, in the common minor-node pool any Way may draw from ([way-cards.md](way-cards.md) §3.1). The −1 is what keeps it from making a plain Strike obsolete. The starter deck keeps its one double-strike card.
@@ -665,9 +673,42 @@ is made at the same time — before anything starts. A fighter who brought the w
 another for a Ready. **A caster who prepared the wrong spells has prepared the wrong spells.** That
 is the trade: a caster decides in advance and a fighter decides in the moment.
 
+#### Casting spends the preparation  **[RULED 2026-11-24]**
+
+**You cast a prepared spell once.** The spell stays in its slot, used up, and a **long rest** puts
+it back in your head. Any Health, Taint or Strain the spell prints is paid on top of that, every
+time — but for most of the list the preparation *is* the whole price.
+
+So **your slots are what you can cast between sleeps.** A caster with four slots casts four
+strength-1 spells, or one strength-4 spell, and then they are a person with a free hand.
+
+- **It still costs no card and no stamina.** That part was never wrong: a prepared spell was never
+  in your hand, so there is no half to spend and nothing to discard. What bounds it is the slot.
+- **A used-up spell cannot go back in the book**, which is what makes the rest matter rather than
+  the sleep being a formality: a spell that merely left your head would free its slot, another
+  would go in on the spot, and a caster with three slots and twenty spells would have twenty casts
+  a day. Rearranging what is prepared is still free for anything you have **not** cast.
+- **A warded cast is still spent.** *Unmake* stops a spell from resolving, not from being cast —
+  the same reason the Health goes either way.
+- **A spell reaction is the same rule**, and always was: it spends by draining the slate, which is
+  what *Spent* means on a thing that lives in a book.
+
+> **Why this was ruled.** Nothing limited how often a prepared spell could be cast. Strength is a
+> slot cost, so slots bounded how many spells you **held** and no rule anywhere bounded the
+> casting — and **117 of the 147 spells in the game print no price at all.** For most of the
+> list a cast was free, repeatable and unlimited, on your turn, inside a two-halves budget that
+> every other character obeys. The sentence *a prepared spell is there every fight and costs no
+> half* was written about **reactions** and had quietly become the rule for every cast.
+>
+> Measured against the alternatives: a per-day count would be a second budget beside the slots, and
+> draining on a printed recharge would need a boundary written onto all 147. Spending the
+> preparation needs neither — it makes the slot budget mean something it already looked like it
+> meant.
+
 > **[OPEN]** A later spell or feature that re-prepares one spell mid-fight. It is an obvious thing
 > for a Way of Mind branch to grant, and it should stay rare enough that the choice above still
-> matters.
+> matters. It is a **larger** grant now than it was when this was written: re-preparing is a cast
+> back, not only a change of mind.
 
 #### Two kinds of casting
 
@@ -1512,6 +1553,11 @@ and it is where a counterspell belongs: a dispel on a drawn card is in hand abou
 and is therefore nearly worthless, while a prepared one is there every fight and costs no half. A
 card reaction is spent by discarding the card; a spell reaction by draining the slate, which is what
 *Spent* means on something that was never in your hand.
+
+**And *costs no half* means exactly that and nothing more.**  **[2026-11-24]** It says a prepared
+spell is not a card out of your hand. It does not say a prepared spell is unlimited, and for a while
+the engine read it that way for every cast in the game — see *Casting spends the preparation*.
+A spell reaction has always spent the slate, and an ordinary cast spends it the same way now.
 
 **3a. One thing may gate a primary: what you are holding.**  **[BUILT 2026-11-01]**
 *Take the Shot* requires a **ranged** item, *Second Knife* a **Light** one, *Two-Hand It* **both

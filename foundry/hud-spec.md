@@ -431,6 +431,22 @@ The cards being played are never payable: a half cannot pay for itself. If the r
 too thin to cover the bill, the turn is refused with a notification rather than part-paid -- the
 same shape as an unpaid Ready (§3.5.2).
 
+**Outside a fight a half costs nothing at all.**  **[RULED 2026-11-23]** Not the card, not the
+stamina, not Spent. Reported from a table as *the action deck gets empty even outside a fight*, and
+it did: a card played in a corridor went to the discard, the hand drew a replacement off the draw
+pile, and **nothing ever brought either back** -- the piles are swept into the deck when a FIGHT
+ends, and a fight that never started never ends. Stamina went the same way, and at zero the rest of
+the draw pile is emptied into the discard by rule, so an evening of searching and talking could
+leave a character with no deck and no stamina until somebody started a fight for them.
+
+This is core-rules §3's ruling read twice. The pair of halves is a **turn's** budget and holds
+because a turn comes round again; the discard is where a card waits for a **refill**, and out there
+nothing refills. So the card stays in the hand, the stat is untouched, and the hand is not turned
+sideways afterwards either -- that warning is about a reaction's stamina, which cannot be charged
+out there. A cost the fiction wants is the GM's to ask for.
+
+Inside a fight nothing changes: both costs are paid exactly as the table above says.
+
 ### 3.8 Piles are decks again, under the Play button  **[MOVED 2026-11-22]**
 
 Fate, Discard and Spent sit as a row of **three small deck backs** in the last row of the right
@@ -591,6 +607,15 @@ screen. A table watching somebody swing a sword saw a sentence arrive in the log
   five seconds, so a turn's two cards are in the row together. A backlog past a few is dropped
   rather than shown late — a card dealt half a minute after the action it came from is a lie
   about which action drew it, and the piles have recorded the draw either way.
+- **Each card says who drew it and what for.**  **[BUILT 2026-11-23]** Under the face's name, in
+  small type: *Goblin Spearman — injury draw*, *Thora — strike with Goblin Spear*, *Goblin
+  — saving throw: Dazed*. Asked for from a table as *mark the fate cards with the action or
+  circumstance that makes them be drawn*, and the reason it had to be asked for is the reason it
+  matters: a `−2` in the middle of the screen is a card with no question attached to it. The
+  **name comes first**, because the drawer is the half nobody can infer — a goblin's draw looks
+  exactly like your own, and two cards parked side by side under the fate pile are told apart by
+  nothing else. The caption scales with the card, so the parked copy stays a picture of the draw
+  rather than becoming a label.
 - **Measured, not computed.** Where the pile row is depends on what is in the right column, which
   is a fact about a turn in progress, so the landing place is read off the row itself (the same
   reason §3.11 measures). With no pile row on the screen the card simply goes rather than flying
@@ -1271,6 +1296,54 @@ than *what is clogging it*.
 
 It is a **list and not a hand**: the tray paints cards because you are choosing between five of
 them, and a deck is twenty read down a column.
+
+**And the spells.**  **[FIXED 2026-11-24]** Reported from a table as *spells are not visible on
+player sheet, spells cannot be viewed or edited* — and the two halves were one omission. A spell
+is an embedded slate like a feature or an injury, and this sheet listed items, features and
+injuries and **never spells**. The only road to one was the Items sidebar, which holds the world's
+spells rather than a character's.
+
+**And that road was shut too.** The slate sheet **failed to render for a spell**: the step editor
+printed a timing as an object rather than its label, and localizing an object reaches a key split
+that throws, the part died and the sheet never opened. A spell is the only slate kind that reaches
+that editor, so of the four exactly one was unopenable — and the **card config sheet** was broken by
+the same line, because the step editor is one partial shared by a card half, a spell effect, an
+NPC sequence and a piece of ammunition. The suite now pairs every table that editor loops with the
+table it loops and asks the content which spelling is right, because the mistake is not a typo: it
+is two vocabularies with nothing anywhere saying which table takes which.
+
+Worse than browsing. **Preparing is done by writing `prepared` and nothing else does it**, so the
+one decision a caster makes between fights could not be made at all — while the tray's spell deck
+greyed the book and advised that *what is prepared changes between fights*, which is advice about a
+thing with no surface.
+
+The list is **prepared first, then the book**, which is the tray's order and the tray's argument:
+those are the ones you can do something with. Each row carries the school, the slot cost, **the
+price the caster will actually pay** — asked of the same routine that charges it, so the sheet and
+the card in the tray cannot quote different bills, and a scaled price moves as the line forms —
+and the timing, where the spell has one. The heading carries the budget, *used of max*, and
+preparing past it is **refused**: `spellSlots.free` is derived from the prepared spells and capped
+by any vow, so a prepared list over budget is a state the rules do not have.
+
+The price for *preparing* is collected in one place for both doors (the `updateItem` hook), by the
+one **elected** GM client rather than by every connected one — two GMs at a table billed a caster
+twice, and a player preparing their own spell fired no GM-side check at all.
+
+**Casting spends the preparation.**  **[RULED 2026-11-24]** A cast is once: the spell stays in its
+slot, **used up**, and a long rest puts it back (core-rules, *Casting spends the preparation*). So
+the row has two prepared states and has to say which — in your head, or in your head and spent
+— and a spent row is **struck through** and reads *Cast — back on a long rest* where the cast
+price would be. Dimming it would have been wrong: the book is what dim means here, and a spent
+spell is not in the book, it is holding a slot.
+
+That is also the one thing a caster cannot work out from the budget alone. *2 of 3 slots* with
+nothing castable in them is only explicable if the rows say where the slots went. And **Put back in
+the book is refused** for a spent spell: its slot is what the long rest is about, so a used-up
+spell cannot be swapped out for a fresh one. Rearranging anything you have not cast is still free.
+
+A **spent** spell is greyed on its tray card too, with the same reason in the tip, and the click is
+refused in words as well — a guard that fires only once a card is clickable is a guard that
+charges for what it refuses.
 
 ---
 

@@ -30,6 +30,13 @@
  *   npm run live -- --keep       leave the scratch world behind to look at
  *   npm run live -- --show       a visible browser, for watching it go wrong
  *   npm run live -- --app=<dir>  where Foundry is, if it is somewhere unusual
+ *   npm run live -- --only=a,b    only the probes whose names contain a or b
+ *
+ * `--only` is for writing a probe, not for trusting one: a run that skips nine tenths of the suite
+ * says nothing about the nine tenths. It exists because the server takes half a minute to come up
+ * and a new probe is wrong four times before it is right, and the whole suite between each of
+ * those is the difference between checking a thing and guessing at it. Every claim in a commit
+ * message comes from a run with no `--only` at all.
  *
  * **What it is not.** It is not a replacement for `npm test` and never will be: it asks about a
  * dozen things and the validator asks about a thousand. It is the other half -- the half that can
@@ -280,6 +287,44 @@ async function arm(page) {
      * It returns what it staged, so a probe that finds nothing can say *no Strike in hand*
      * rather than fail on a selector twenty seconds later.
      */
+    /*
+     * **Clean up after a fight rather than leaving it to `settle`.**  **[BUILT 2026-11-24]**
+     *
+     * `deleteCombat` runs `afterCombat` and does not await it, so a probe that ends a fight and
+     * returns hands the NEXT probe a deck that is still being swept. `settle` has guarded against
+     * that since it was written and the guard is a guess: it waits for the hand to stop changing
+     * for a hundred and fifty milliseconds, which is long enough almost always.
+     *
+     * Almost always is the problem. One full run in three ended with a thirteen-check cascade
+     * three hundred lines downstream -- a HUD with nothing in its hand, reported as *a Strike is
+     * staged: false* -- and the probe that caused it had already returned. So a probe that starts
+     * a fight finishes it: wait for the combat to be gone, wait for the card movement to stop,
+     * then CHECK the hand is at size rather than assume the refill held.
+     *
+     * The same three steps `settle` does, in the one place that knows a fight just ended.
+     */
+    globalThis.LIVE.afterFight = async () => {
+      const hero = globalThis.LIVE.hero;
+      for (let i = 0; i < 40 && (game.combats?.size ?? 0); i++) {
+        await new Promise(r => setTimeout(r, 50));
+      }
+      const hand = globalThis.LIVE.deckOf(hero, "actionHand");
+      let last = -1;
+      let same = 0;
+      for (let i = 0; i < 60 && same < 4; i++) {
+        await new Promise(r => setTimeout(r, 50));
+        const n = hand?.cards.size ?? 0;
+        same = n === last ? same + 1 : 0;
+        last = n;
+      }
+      const want = hero.system.handSize?.max ?? 5;
+      for (let i = 0; i < 20 && (hand?.cards.size ?? 0) < want; i++) {
+        await globalThis.LIVE.refill(hero);
+        await new Promise(r => setTimeout(r, 100));
+      }
+      return hand?.cards.size ?? 0;
+    };
+
     globalThis.LIVE.stageStrike = async (half = "primary") => {
       const hand = globalThis.LIVE.deckOf(globalThis.LIVE.hero, "actionHand");
       const card = hand?.cards?.contents
@@ -348,7 +393,10 @@ const check = (name, got, want) => results.push({ name, got, want });
 const missing = new Set();
 
 /** Run one probe in its own try, so a broken probe is one failed row and not a dead run. */
+/* See the usage note at the top: this is for writing a probe, never for trusting a run. */
+const ONLY = (arg("only", null) ?? "").split(",").filter(Boolean);
 async function probe(name, fn) {
+  if (ONLY.length && !ONLY.some(part => name.includes(part))) return;
   try {
     const rows = await fn();
     for (const [label, got, want] of rows) check(label, got, want);
@@ -649,7 +697,6 @@ async function probes(page) {
      */
     await page.evaluate(async () => {
       const { hero } = LIVE;
-      for (const c of [...(game.combats ?? [])]) await c.delete();
       const token = (await hero.getTokenDocument({ x: 1500, y: 1500, actorLink: true }))
         .toObject();
       const [placed] = await canvas.scene.createEmbeddedDocuments("Token", [token]);
@@ -749,6 +796,34 @@ async function probes(page) {
     await settle(page);
     return page.evaluate(async () => {
       const { hero } = LIVE;
+      /*
+       * **Inside a fight, because stamina is a fight's measure.**  [2026-11-23]
+       *
+       * It used to be asked of a quiet world, which worked for as long as the stat could be spent
+       * anywhere. It cannot: nothing charges stamina outside a fight now, because `afterCombat` is
+       * the one routine that gives it back and a fight that never started never ends -- so every
+       * point spent in a corridor was gone for the evening, and at zero the draw pile went with
+       * it. That ruling made this probe a question about a state the rules forbid, and it threw on
+       * the `null` the gate returns, which is the right way for it to have noticed.
+       */
+      for (const c of [...(game.combats ?? [])]) await c.delete();
+      const token = (await hero.getTokenDocument({ x: 1400, y: 1400, actorLink: true }))
+        .toObject();
+      const [placed] = await canvas.scene.createEmbeddedDocuments("Token", [token]);
+      const combat = await Combat.create({ scene: canvas.scene.id });
+      await combat.createEmbeddedDocuments("Combatant",
+        [{ tokenId: placed.id, sceneId: canvas.scene.id, actorId: hero.id }]);
+      await combat.startCombat();
+      /* The round deals every character their hand, and nothing awaits it: a deck read while that
+       * is still moving cards is a deck mid-move. */
+      const hand = LIVE.deckOf(hero, "actionHand");
+      const want = hero.system.handSize?.max ?? 5;
+      for (let i = 0; i < 30 && hand.cards.size < want; i++) {
+        await new Promise(r => setTimeout(r, 100));
+      }
+      await new Promise(r => setTimeout(r, 400));
+      const fighting = !!game.combat?.started;
+
       const max = hero.system.stamina.max;
       await hero.update({ "system.stamina.value": max });
       await LIVE.spendStamina(hero, 1);
@@ -763,13 +838,35 @@ async function probes(page) {
        */
       const held = LIVE.available(deck).length;
       const out = await LIVE.spendStamina(hero, 1);
-      return [
+      const answer = [
+        ["a fight is running, which is the only place stamina is spent", fighting, true],
         ["playing a card costs a point of stamina", max - afterOne, 1],
         ["the draw pile is full before the last point goes", held > 0, true],
         ["at zero the draw pile is discarded", LIVE.available(deck).length, 0],
         ["and it says how many cards that was", out.dumped, held],
         ["stamina never goes below zero", hero.system.stamina.value, 0]
       ];
+      /*
+       * **Stamina back before anything else**, because this probe deliberately took it to nought
+       * and nought is the one state from which the hand cannot be refilled: the wall it measures
+       * dumps the draw pile, and a refill with no stamina to spend draws nothing. `afterFight`
+       * below then spun twenty times and gave up, and a probe four hundred lines later reported
+       * **nothing in hand** -- a true statement about a hand nobody could fill.
+       *
+       * `afterCombat` would do it too, and is what `settle` leans on; a probe that breaks
+       * something on purpose puts it back itself rather than leaving the next one to cope.
+       */
+      await hero.update({ "system.stamina.value": max });
+      /*
+       * Ended, and then WAITED FOR. `deleteCombat` sweeps the piles itself and does not await it,
+       * so a second sweep from here throws over a card the first has already moved -- and simply
+       * returning hands the next probe a deck mid-move. `afterFight` does neither: it waits, then
+       * checks the hand is at size.
+       */
+      await combat.delete();
+      await placed.delete();
+      await LIVE.afterFight();
+      return answer;
     });
   });
 
@@ -1618,6 +1715,24 @@ async function probes(page) {
       const tray = game.cardrpg.openTray(hero);
       tray.waved.clear();
       const whereStrong = async order => {
+        /*
+         * **Mark what is on the screen before asking for a new screen.**  [FIXED 2026-11-23]
+         *
+         * The wait below is *two stack panels with titles in them*, and after the first call of
+         * this closure that is already true -- so the second call polled a condition the OLD
+         * render had satisfied, read the stale panels, and reported `nowhere` for a feature that
+         * was about to arrive in the right half. It failed exactly once in a full run and passed
+         * on its own every time, which is the signature of a wait that cannot tell the two
+         * renders apart.
+         *
+         * The previous fix replaced a fixed pair of frames with this condition and was a real
+         * improvement; it was still a condition about the panel existing rather than about THIS
+         * render having happened. Stamping the outgoing nodes is what makes the difference
+         * observable: a panel carrying the stamp is one the browser has not replaced yet.
+         */
+        for (const panel of document.querySelectorAll(".cr-stack[data-half]")) {
+          panel.dataset.probeStale = "yes";
+        }
         tray.staged = order;
         await tray.render();
         /*
@@ -1639,17 +1754,43 @@ async function probes(page) {
          * so a feature in the wrong half still reports the wrong half rather than waiting for the
          * right one.
          */
-        await LIVE.drawn(() => document.querySelectorAll(".cr-stack[data-half]").length >= 2
-          && [...document.querySelectorAll(".cr-stack[data-half]")]
-            .every(h => h.querySelector(".cr-card__title")));
+        await LIVE.drawn(() => {
+          const panels = [...document.querySelectorAll(".cr-stack[data-half]")];
+          return panels.length >= 2
+            && panels.every(h => h.querySelector(".cr-card__title") && !h.dataset.probeStale);
+        });
         /* `data-half` rather than a class: the template writes the half as an attribute, and
          * sniffing it out of `className` found "secondary" nowhere and reported "primary" for
          * both. */
-        return [...document.querySelectorAll(".cr-stack[data-half]")]
+        const read = () => [...document.querySelectorAll(".cr-stack[data-half]")]
           .filter(h => [...h.querySelectorAll(".cr-card__title")]
             .some(t => t.textContent.trim() === "Strong"))
           .map(h => h.dataset.half)
           .join(",") || "nowhere";
+        /*
+         * **Read until it stops changing, not once.**  **[FIXED 2026-11-24]**
+         *
+         * Every wait this probe has had has been a statement about the panel EXISTING, and a
+         * render that lands late replaces a panel that already existed and already had titles --
+         * so each version was satisfiable by the previous staging's DOM. It failed about one run
+         * in three, always on the second staging, always reporting `nowhere` for a feature that
+         * arrived a moment later; the two fixes before this one (a pair of frames, then a poll
+         * for titles, then stamping the outgoing nodes) each narrowed the window without closing
+         * it.
+         *
+         * Two equal samples a frame-and-a-half apart is a statement about the screen having
+         * SETTLED, which is the thing actually being waited for. It is deliberately not
+         * outcome-aware: it agrees on `nowhere` as readily as on `secondary`, so a feature in the
+         * wrong half is still reported as the wrong half rather than waited for until it moves.
+         */
+        let last = read();
+        for (let i = 0; i < 20; i++) {
+          await new Promise(r => setTimeout(r, 150));
+          const again = read();
+          if (again === last) return again;
+          last = again;
+        }
+        return last;
       };
       const primaryFirst = await whereStrong([
         { cardId: first.id, half: "primary" },
@@ -1690,17 +1831,40 @@ async function probes(page) {
       if (!first || !second) return { skipped: "the staged cards went missing" };
       const tray = game.cardrpg.openTray(hero);
       tray.waved.clear();
+      /* Stamped before the render, for the reason written over the same wait in the probe above:
+       * panels left on the screen by the probe before this one satisfy the condition without this
+       * render having happened at all, and the read then reports a number off the wrong staging --
+       * `NaN`, as it happens, because the panel it read holds no Strike line. */
+      for (const panel of document.querySelectorAll(".cr-stack[data-half]")) {
+        panel.dataset.probeStale = "yes";
+      }
       tray.staged = [
         { cardId: first.id, half: "primary" },
         { cardId: second.id, half: "secondary" }
       ];
       await tray.render();
-      /* And then wait until it is on the screen, for the reason written over the same wait in the
-       * probe above. The condition is the primary stack having cards -- which is the half both of
-       * the rows below read -- rather than a count of frames. */
-      await LIVE.drawn(() => document.querySelectorAll(".cr-stack[data-half]").length >= 2
-        && [...document.querySelectorAll(".cr-stack[data-half]")]
-          .every(h => h.querySelector(".cr-card__title")));
+      await LIVE.drawn(() => {
+        const panels = [...document.querySelectorAll(".cr-stack[data-half]")];
+        return panels.length >= 2
+          && panels.every(h => h.querySelector(".cr-card__title") && !h.dataset.probeStale);
+      });
+      /*
+       * **And settled here too**, for the reason written over the same read in the probe above: a
+       * render that lands late replaces panels that already satisfied every wait, and this read
+       * took a Strike number off the staging before it -- `NaN`, because the panel it read had no
+       * Strike line at all.
+       */
+      const sample = () => [...document.querySelectorAll(".cr-stack[data-half]")]
+        .map(h => `${h.dataset.half}:${[...h.querySelectorAll(".cr-card__title")]
+          .map(t => t.textContent.trim()).join("/")}`)
+        .join("|");
+      let seen = sample();
+      for (let i = 0; i < 20; i++) {
+        await new Promise(r => setTimeout(r, 150));
+        const again = sample();
+        if (again === seen) break;
+        seen = again;
+      }
       /* Per half: the weapons drawn into it, and the Strike number its card prints. */
       const read = which => {
         const box = document.querySelector(`.cr-stack[data-half="${which}"]`);
@@ -3288,6 +3452,291 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **The spells, on the sheet at last.**  **[BUILT 2026-11-24]**
+   *
+   * Reported from a table as *spells are not visible on player sheet, spells cannot be viewed or
+   * edited*, and the two halves were one omission: a spell is an embedded slate like a feature,
+   * the slate sheet has been able to edit one since it was written, and this sheet listed items,
+   * features and injuries and never spells. Every field was editable and nothing linked to it.
+   *
+   * Asked of a browser rather than of the source, because what was wrong was not a missing
+   * function: every piece existed and no screen showed any of it. So the questions are a reader's
+   * -- is the row there, does it say what the cast costs, does the button change what is in the
+   * caster's head -- and the last one is the point. `prepared` is a boolean the data model has
+   * carried since it was written and nothing in the game ever set it.
+   */
+  /*
+   * **Casting spends the preparation.**  **[RULED 2026-11-24]**
+   *
+   * Nothing limited how often a prepared spell could be cast: `strength` is a slot cost, so slots
+   * bounded how many spells a caster HELD and no rule bounded the casting -- and 117 of the 147
+   * spells in the content print no price at all, so for most of the list a cast was free,
+   * repeatable and unlimited, inside a two-halves budget everybody else obeys.
+   *
+   * Asked of `payToCast` rather than of a click, because that is the door every cast comes
+   * through and the rule has to hold for a macro as well as for the window. The rest is asked of
+   * `rest`, for the same reason.
+   */
+  await probe("casting a prepared spell spends it", async () => {
+    await settle(page);
+    const out = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      const wasBase = hero.system.spellSlots?.base ?? 0;
+      await hero.update({ "system.spellSlots.base": 3 });
+      /*
+       * **A hand free, because a prepared spell is gestured** (core-rules 4), and this world's
+       * hero holds a sword and a shield. The first run of this probe reported the very first cast
+       * as refused, which was `payToCast` being right: both hands were full.
+       */
+      const held = hero.items.filter(i => i.type === "item" && i.system.equipped
+        && i.system.equippedSlot === "hands").map(i => i.id);
+      for (const id of held) await hero.items.get(id)?.update({ "system.equipped": false });
+      /* Free to cast on purpose: the common case in the content, and the one where the
+       * preparation IS the whole price. */
+      const [spell] = await hero.createEmbeddedDocuments("Item", [{
+        name: "Probe Cantrip Spent", type: "spell",
+        system: { prepared: true, strength: 1, source: "Probe Magic" }
+      }]);
+
+      const slotsHeld = hero.system.spellSlots?.used ?? 0;
+      const first = await LIVE.payToCast(hero, spell);
+      const drained = !!spell.system.drained;
+      const stillPrepared = !!spell.system.prepared;
+      const slotsAfter = hero.system.spellSlots?.used ?? 0;
+      /* The second cast, which is the whole ruling. */
+      const second = await LIVE.payToCast(hero, spell);
+
+      /* A SHORT rest is not enough. */
+      await LIVE.rest(hero, { long: false });
+      const afterShort = !!spell.system.drained;
+      /* A long one is. */
+      const rested = await LIVE.rest(hero, { long: true });
+      const afterLong = !!spell.system.drained;
+      const third = await LIVE.payToCast(hero, spell);
+
+      /* And a feature that prints a rest boundary, which nothing had ever honoured. */
+      const [feature] = await hero.createEmbeddedDocuments("Item", [{
+        name: "Probe Boundary Feature", type: "feature",
+        system: { drained: true, active: { text: "a probe", boundary: "longRest" } }
+      }]);
+      await LIVE.rest(hero, { long: false });
+      const featureAfterShort = !!feature.system.drained;
+      await LIVE.rest(hero, { long: true });
+      const featureAfterLong = !!feature.system.drained;
+
+      await spell.delete();
+      await feature.delete();
+      await hero.update({ "system.spellSlots.base": wasBase });
+      /* And the hands back as they were found, which the probes further down read. */
+      for (const id of held) {
+        await hero.items.get(id)
+          ?.update({ "system.equipped": true, "system.equippedSlot": "hands" });
+      }
+      return {
+        first, drained, stillPrepared, second, third,
+        slotsHeld, slotsAfter,
+        afterShort, afterLong,
+        woken: (rested?.woken ?? []).join(","),
+        featureAfterShort, featureAfterLong
+      };
+    });
+    return [
+      ["a prepared spell casts", out.first, true],
+      /* The preparation is the cost, in the engine's own vocabulary for a thing that was never in
+       * your hand. */
+      ["and the cast spends it", out.drained, true],
+      /* In your head and used up, not back in the book: the slot is what the rest is about. */
+      ["and it stays in your head", out.stillPrepared, true],
+      ["and still costs its slot", `${out.slotsHeld} then ${out.slotsAfter}`, "1 then 1"],
+      /* **The row this probe exists for.** */
+      ["a second cast is refused", out.second, false],
+      ["and a short rest does not bring it back", out.afterShort, true],
+      ["a long rest does", out.afterLong, false],
+      ["and says what came back", out.woken, "Probe Cantrip Spent"],
+      ["and then it casts again", out.third, true],
+      /* And the two rest boundaries nothing had ever read: only the end of a fight was honoured,
+       * so a feature printed *recharges: a long rest* was drained for the rest of the campaign. */
+      ["a feature that recharges on a long rest survives a short one", out.featureAfterShort, true],
+      ["and comes back from a long one", out.featureAfterLong, false]
+    ];
+  });
+
+  await probe("a caster can see and prepare their spells", async () => {
+    await settle(page);
+    const out = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      /*
+       * **And slots to put them in**, because the hero of this world is a warrior with none.
+       * Without this every Prepare is refused for the right reason and the probe reports the
+       * button as broken -- which is what the first run did, and the row about the refusal passed
+       * at the same time by accident: everything was being refused.
+       */
+      const wasBase = hero.system.spellSlots?.base ?? 0;
+      await hero.update({ "system.spellSlots.base": 3 });
+      /* Two spells, because the interesting states are a pair: one in the head and one in the
+       * book, which is also what the list's order is about. */
+      const made = await hero.createEmbeddedDocuments("Item", [
+        {
+          name: "Probe Spell Prepared", type: "spell",
+          system: { prepared: true, strength: 1, source: "Probe Magic", cost: { health: 2 } }
+        },
+        {
+          name: "Probe Spell Booked", type: "spell",
+          system: { prepared: false, strength: 1, source: "Probe Magic" }
+        }
+      ]);
+      await hero.sheet.render(true);
+      await new Promise(r => setTimeout(r, 600));
+      const tab = hero.sheet.element
+        ?.querySelector('[data-action="switchTab"][data-tab="features"]');
+      tab?.click();
+      await new Promise(r => setTimeout(r, 600));
+
+      const root = hero.sheet.element;
+      const heads = [...(root?.querySelectorAll("h3") ?? [])]
+        .map(h => h.textContent.replace(/\s+/g, " ").trim());
+      const rowOf = name => [...(root?.querySelectorAll(".cr-slate-row") ?? [])]
+        .find(li => li.querySelector(".cr-slate-row__name")?.textContent.trim() === name);
+      const prepared = rowOf("Probe Spell Prepared");
+      const booked = rowOf("Probe Spell Booked");
+      /* The row the sheet shows first is the prepared one, which is the tray's order. */
+      const order = [...(root?.querySelectorAll(".cr-slate-row__name") ?? [])]
+        .map(n => n.textContent.trim())
+        .filter(n => n.startsWith("Probe Spell"))
+        .join(",");
+      const lineOf = row => [...(row?.querySelectorAll(".cr-note") ?? [])]
+        .map(n => n.textContent.replace(/\s+/g, " ").trim()).join(" | ");
+      const priceLine = lineOf(prepared);
+      const bookedLine = lineOf(booked);
+      const bookDimmed = !!booked?.classList.contains("cr-slate-row--book");
+
+      /* And the button, which is the whole report: clicking it changes what is in the head. */
+      const button = booked?.querySelector('[data-action="togglePrepared"]');
+      const freeBefore = hero.system.spellSlots?.free ?? 0;
+      const label = button?.textContent.trim() ?? "nothing";
+      button?.click();
+      for (let i = 0; i < 30 && !made[1].system.prepared; i++) {
+        await new Promise(r => setTimeout(r, 100));
+      }
+      const nowPrepared = !!made[1].system.prepared;
+
+      /* Over budget is refused rather than written: the free slots are derived from what is
+       * prepared, so a list over budget is a state the rules do not have. */
+      const [third] = await hero.createEmbeddedDocuments("Item", [{
+        name: "Probe Spell Huge", type: "spell",
+        system: { prepared: false, strength: 99, source: "Probe Magic" }
+      }]);
+      await hero.sheet.render(true);
+      await new Promise(r => setTimeout(r, 600));
+      const hugeRow = [...(hero.sheet.element?.querySelectorAll(".cr-slate-row") ?? [])]
+        .find(li => li.querySelector(".cr-slate-row__name")?.textContent.trim()
+          === "Probe Spell Huge");
+      hugeRow?.querySelector('[data-action="togglePrepared"]')?.click();
+      await new Promise(r => setTimeout(r, 500));
+      const huge = !!third.system.prepared;
+
+      /*
+       * **And a row opens the document that can edit it**, which is what *cannot be viewed* meant.
+       *
+       * Re-found rather than reused: the render above replaced the list, so the node captured
+       * before it is detached from the document and a click on it bubbles to nothing. The first
+       * run of this probe clicked the old node and reported the sheet as never opening.
+       */
+      const row = [...(hero.sheet.element?.querySelectorAll(".cr-slate-row") ?? [])]
+        .find(li => li.querySelector(".cr-slate-row__name")?.textContent.trim()
+          === "Probe Spell Prepared");
+      /*
+       * **The dots first, because that is where Edit lives.** *Edit* opens a document a player
+       * touches once a session and it sits behind the row menu rather than shouting beside the
+       * name (sheets.mjs). Clicking the hidden button straight was this probe's own first attempt
+       * and nothing happened -- which is correct: a menu that has not been opened has not been
+       * clicked.
+       */
+      row?.querySelector('[data-action="rowMenu"]')?.click();
+      await new Promise(r => setTimeout(r, 200));
+      const opener = row?.querySelector('[data-action="editSlate"]');
+      opener?.click();
+      await new Promise(r => setTimeout(r, 600));
+      const slateSheet = made[0].sheet?.rendered ?? false;
+      const fields = made[0].sheet?.element
+        ? [...made[0].sheet.element.querySelectorAll("[name]")].map(i => i.name)
+        : [];
+      /*
+       * **And a card's own config sheet, which was broken by the same line.** The step editor is
+       * one partial shared by a card half, a spell's effect, an NPC's sequence and a piece of
+       * ammunition -- that is why it is a partial -- so the timing that could not render took
+       * every one of its callers down with it. A spell was the one the table noticed because a
+       * spell has nowhere else to be read.
+       */
+      const anyCard = LIVE.deckOf(hero, "action")?.cards?.contents?.[0];
+      let cardSheet = "no card in the deck";
+      if (anyCard) {
+        try {
+          await anyCard.sheet.render({ force: true });
+          await new Promise(r => setTimeout(r, 500));
+          cardSheet = anyCard.sheet.rendered ? "opens" : "did not open";
+        } catch (err) { cardSheet = String(err?.message ?? err).slice(0, 60); }
+        anyCard.sheet?.close();
+      }
+
+      made[0].sheet?.close();
+      await hero.sheet.close();
+      for (const doc of [...made, third]) await doc.delete();
+      await hero.update({ "system.spellSlots.base": wasBase });
+      return {
+        freeBefore, bookedLine, cardSheet,
+        heads: heads.filter(h => h.startsWith("Spells")).join(" | ") || "nothing",
+        listed: !!prepared && !!booked,
+        order,
+        priceLine,
+        bookDimmed,
+        label,
+        nowPrepared,
+        huge,
+        slateSheet,
+        canEditPrepared: fields.includes("system.prepared"),
+        canEditStrength: fields.includes("system.strength")
+      };
+    });
+    return [
+      /* The section is on the tab, and its heading carries the budget rather than making a caster
+       * add the column up. */
+      ["the sheet has a Spells block", /^Spells/.test(out.heads), true],
+      ["and the heading says the slot budget", /of \d+ slots/.test(out.heads), true],
+      ["both a prepared spell and a booked one are listed", out.listed, true],
+      ["and the prepared one comes first", out.order,
+        "Probe Spell Prepared,Probe Spell Booked"],
+      /* What the cast costs, which is the half a player cannot get from the name. */
+      /*
+       * Two costs, printed as two: slots are paid once to keep it in your head, and the cast price
+       * every time it is cast. **The preparation is part of that second one** since the ruling of
+       * 2026-11-24, which is why no row says *nothing* any more -- a spell that prints no price
+       * still costs the spell, and that was the whole point of the ruling.
+       */
+      ["and the row says what each cast takes", /Each cast: 2 Health/.test(out.priceLine), true],
+      ["and what it costs to keep in your head", /1 slot while prepared/.test(out.priceLine), true],
+      ["and that a cast spends the preparation",
+        /the preparation . back on a long rest/.test(out.priceLine), true],
+      ["and a spell with no price still costs the spell",
+        /Each cast: the preparation/.test(out.bookedLine), true],
+      ["and the book is dimmed rather than hidden", out.bookDimmed, true],
+      /* The button that did not exist: `prepared` had no surface anywhere in the game. */
+      /* And there really was room for it, so the refusal below is the budget talking and not
+       * every Prepare failing. */
+      ["and there is a slot free for it", out.freeBefore > 0, true],
+      ["the booked spell offers Prepare", out.label, "Prepare"],
+      ["and clicking it puts the spell in the caster's head", out.nowPrepared, true],
+      ["but a spell past the budget is refused", out.huge, false],
+      /* And *cannot be viewed or edited*, answered by opening the thing that edits it. */
+      ["a row's menu opens the slate sheet", out.slateSheet, true],
+      ["and that sheet can edit what is prepared", out.canEditPrepared, true],
+      ["and the spell's strength", out.canEditStrength, true],
+      /* The same partial, the same line, every other caller of it. */
+      ["and a card's own config sheet opens too", out.cardSheet, "opens"]
+    ];
+  });
+
   await probe("the cards an actor has, read off the sheet", async () => {
     await settle(page);
     return page.evaluate(async () => {
@@ -4258,11 +4707,32 @@ async function probes(page) {
 
     await page.waitForSelector(".cr-range__at", { timeout: 20000 });
     /** The chips, as text plus whether each is marked out of reach. */
-    const chips = () => page.evaluate(() => [...document.querySelectorAll(".cr-range__at")]
-      .map(el => ({
-        text: el.textContent.replace(/\s+/g, " ").trim(),
-        out: el.classList.contains("cr-range__at--out")
-      })));
+    /*
+     * **Read until it stops changing.**  **[FIXED 2026-11-24]**
+     *
+     * `await tray.render()` resolves when the application has handed its element over, which is
+     * not the moment the browser has laid it out -- so a read on the next line can land on the
+     * render before it. This one did: it reported `Goblin 3`, the chip with nothing staged, for a
+     * Strike it had just staged, about one full run in three. The same shape of failure as the two
+     * stack-panel reads further up, and the same answer: two equal samples is a statement about
+     * the screen having settled, and it is not outcome-aware -- it agrees on the bare chip as
+     * readily as on the staged one, so a chip that is genuinely wrong is still reported wrong.
+     */
+    const chips = () => page.evaluate(async () => {
+      const read = () => [...document.querySelectorAll(".cr-range__at")]
+        .map(el => ({
+          text: el.textContent.replace(/\s+/g, " ").trim(),
+          out: el.classList.contains("cr-range__at--out")
+        }));
+      let last = JSON.stringify(read());
+      for (let i = 0; i < 20; i++) {
+        await new Promise(r => setTimeout(r, 150));
+        const again = JSON.stringify(read());
+        if (again === last) break;
+        last = again;
+      }
+      return JSON.parse(last);
+    });
 
     /* 1. Nothing staged: the distance alone, because it is worth knowing while you are choosing. */
     const bare = await chips();
@@ -4717,10 +5187,20 @@ async function probes(page) {
       const afterLine = hero.system.health.value;
       const lineSaid = /2 Health \(per ally affected\)/.test(said());
 
-      /* And the same spell with the line gone: nobody covered is nothing to pay. */
+      /*
+       * And the same spell with the line gone: nobody covered is nothing to pay.
+       *
+       * **Prepared again first.**  [2026-11-24] A cast spends the preparation now, so casting the
+       * same spell twice in one scene is exactly what the ruling forbids and `payToCast` refused
+       * the second one -- correctly, and in all three runs. This probe is about what a **scaled
+       * price** charges rather than about how often a spell may be cast, so the sleep is granted
+       * rather than the rule bent: putting `drained` back is what a long rest does, and the probe
+       * for the ruling itself asks `rest` to do it properly.
+       */
       for (const doc of made.slice(1)) await doc.delete();
       made.length = 1;
       await pause();
+      await line.update({ "system.drained": false });
       await hero.update({ "system.health.value": full });
       const paidAlone = await r.payToCast(hero, line);
       const afterAlone = hero.system.health.value;
@@ -5601,6 +6081,135 @@ async function probes(page) {
   });
 
   /*
+   * **And it costs nothing either.**  **[BUILT 2026-11-23]**
+   *
+   * The probe above is about the BUDGET and passed all along while the deck drained anyway, which
+   * is the half the table found: *the action deck gets empty even outside a fight*. Every card
+   * played in a corridor went to the discard, the hand drew a replacement off the draw pile, and
+   * only the end of a fight sweeps those back -- so a fight that never started never ended and the
+   * deck ran down for good. Stamina went the same way, and at zero the rest of the draw pile is
+   * emptied by rule.
+   *
+   * Asked of the two routines that charge rather than through a click, because what is being
+   * checked is the gate: `retireCards` is the one place a played card is put away and
+   * `spendStamina` the one place the stat is charged. The same two are then asked again with a
+   * fight running, which is the half that must NOT have changed -- a gate that always says no is
+   * not a rule, it is a removal.
+   */
+  await probe("and costs neither a card nor a point of stamina", async () => {
+    await settle(page);
+    const out = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      for (const c of [...(game.combats ?? [])]) await c.delete();
+      await new Promise(r => setTimeout(r, 1200));
+      await LIVE.afterCombat(hero);
+      await LIVE.refill(hero);
+
+      const hand = LIVE.deckOf(hero, "actionHand");
+      const card = hand.cards.contents[0];
+      const was = {
+        hand: hand.cards.size,
+        deck: LIVE.deckOf(hero, "action").cards.size,
+        discard: LIVE.deckOf(hero, "actionDiscard").cards.size,
+        spent: LIVE.deckOf(hero, "actionSpent").cards.size,
+        stamina: hero.system.stamina.value
+      };
+      const burned = await LIVE.retireCards(hero, [{ cardId: card.id, half: "primary" }]);
+      return {
+        fighting: !!game.combat?.started,
+        burned: burned.length,
+        held: hand.cards.contents.some(c => c.id === card.id),
+        moved: [
+          hand.cards.size - was.hand,
+          LIVE.deckOf(hero, "action").cards.size - was.deck,
+          LIVE.deckOf(hero, "actionDiscard").cards.size - was.discard,
+          LIVE.deckOf(hero, "actionSpent").cards.size - was.spent
+        ].join(","),
+        spentStamina: was.stamina - hero.system.stamina.value
+      };
+    });
+    /* And the same two routines inside a fight, which is where both costs are real. */
+    const inFight = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      /*
+       * A real encounter, built the way the spent-turn probe builds one: a placed token and a
+       * combatant that names the scene. A `Combat` without those is not `game.combat`, and the
+       * first version of this probe read the gate as closed and reported the fix as a removal --
+       * which is the one thing a gate's probe must not get wrong.
+       */
+      for (const c of [...(game.combats ?? [])]) await c.delete();
+      const token = (await hero.getTokenDocument({ x: 1500, y: 1500, actorLink: true }))
+        .toObject();
+      const [placed] = await canvas.scene.createEmbeddedDocuments("Token", [token]);
+      const combat = await Combat.create({ scene: canvas.scene.id });
+      await combat.createEmbeddedDocuments("Combatant",
+        [{ tokenId: placed.id, sceneId: canvas.scene.id, actorId: hero.id }]);
+      await combat.startCombat();
+
+      /*
+       * **Wait for the round's own deal to finish before touching the hand.**
+       *
+       * Starting a fight deals every character their turn hand, and nothing here awaits that: the
+       * first version read a card id out of the hand a second later and `retireCards` threw *Card
+       * ... does not exist* -- the refill was still moving the card it had been handed. A known
+       * state is checked rather than slept for, which is the lesson `settle` carries.
+       */
+      const hand = LIVE.deckOf(hero, "actionHand");
+      const want = hero.system.handSize?.max ?? 5;
+      for (let i = 0; i < 30 && hand.cards.size < want; i++) {
+        await new Promise(r => setTimeout(r, 100));
+      }
+      await new Promise(r => setTimeout(r, 400));
+
+      /* Read here rather than straight after `startCombat`, which resolves before the combat is
+       * the active one: the first version asked a beat too early and reported no fight running in
+       * the breath before the gate it is about opened. */
+      const fighting = !!game.combat?.started;
+      const card = hand.cards.contents[0];
+      const was = {
+        hand: hand.cards.size,
+        discard: LIVE.deckOf(hero, "actionDiscard").cards.size,
+        spent: LIVE.deckOf(hero, "actionSpent").cards.size,
+        stamina: hero.system.stamina.value
+      };
+      await LIVE.retireCards(hero, [{ cardId: card.id, half: "primary" }]);
+      const answer = {
+        left: was.hand - hand.cards.size,
+        /* The discard OR the Spent pile: which of the two a half sends its card to is the half's
+         * own business (core-rules 8), and this probe is about whether it leaves at all. */
+        binned: LIVE.deckOf(hero, "actionDiscard").cards.size - was.discard
+          + LIVE.deckOf(hero, "actionSpent").cards.size - was.spent,
+        spentStamina: was.stamina - hero.system.stamina.value
+      };
+      /*
+       * **The fight is ended and then waited for.**
+       *
+       * `deleteCombat` runs `afterCombat` itself, unawaited, and it walks every pile putting the
+       * hand back. Calling the same routine here as well -- which the first version did, copying
+       * a line from the spent-turn probe -- means two sweeps moving the same cards, and the second
+       * one throws *Card ... does not exist* over a card the first has already moved. `afterFight`
+       * waits for the sweep instead of racing it, and then checks the hand rather than hoping.
+       */
+      await combat.delete();
+      await placed.delete();
+      await LIVE.afterFight();
+      return { ...answer, fighting };
+    });
+    return [
+      ["there is no fight running", out.fighting, false],
+      ["a played card stays in the hand", out.held, true],
+      ["and no stack moves at all", out.moved, "0,0,0,0"],
+      ["and nothing reaches the Spent pile", out.burned, 0],
+      ["and no stamina is charged", out.spentStamina, 0],
+      /* The other side of the gate, which is what says it is a rule and not a removal. */
+      ["and a fight really was running", inFight.fighting, true],
+      ["but inside a fight the card leaves the hand", inFight.left, 1],
+      ["and lands in the discard or the Spent pile", inFight.binned, 1],
+      ["and costs its point", inFight.spentStamina, 1]
+    ];
+  });
+
+  /*
    * **The fate card is shown.**  **[BUILT 2026-11-23]**
    *
    * Every action is a number and a card, and only the number used to reach the player: the draw
@@ -5978,6 +6587,146 @@ async function probes(page) {
        * all in the middle together, not that one of them went missing. */
       ["and three cards were dealt in all", watch.everSeen, 3],
       ["and in the end the screen is clear", after, 0]
+    ];
+  });
+
+  /*
+   * **And each card says who drew it and what for.**  **[BUILT 2026-11-23]**
+   *
+   * The other half of the same complaint the queue above answered. Three cards in the middle of
+   * the screen was the symptom; the disease is that a fate card carried no statement of what it
+   * was answering, so a `-2` could be your Strike, the saving throw your spell forced, or the
+   * injury of the goblin you dropped, and the only way to tell was to count and guess.
+   *
+   * Drawn through `resolveCondition` and not through `drawFate` directly, because the reason is
+   * the CALLER's to supply: five of them draw through that one door and each one is a different
+   * sentence, so a probe that passed its own `why` would be checking the layer that cannot get it
+   * wrong. The goblin is the case that matters -- a creature's draw looked exactly like a hero's.
+   */
+  await probe("a revealed card says whose draw it is", async () => {
+    await settle(page);
+    const seen = await page.evaluate(async () => {
+      const beast = game.actors.find(a => a.type === "npc");
+      await game.cardrpg.openTray(LIVE.hero);
+      await new Promise(r => setTimeout(r, 300));
+      LIVE.resolveCondition(LIVE.hero, {
+        step: { condition: "dazed", duration: 2, resist: "might", dc: 9 }, target: beast
+      });
+      /* Sampled rather than read once: the card is in the middle for under a second before it
+       * flies, and the caption goes with it. */
+      let caption = "";
+      let name = "";
+      for (let i = 0; i < 40 && !caption; i++) {
+        const node = document.querySelector("#cr-fateshow .cr-fate");
+        caption = node?.querySelector(".cr-fate__why")?.textContent ?? "";
+        name = node?.querySelector(".cr-fate__name")?.textContent ?? "";
+        if (!caption) await new Promise(r => setTimeout(r, 100));
+      }
+      await beast.update({ "system.conditions": [] }).catch(() => null);
+      return { caption, name, beast: beast.name };
+    });
+    await page.waitForFunction(
+      () => document.querySelectorAll("#cr-fateshow .cr-fate").length === 0,
+      null, { timeout: 15000 }).catch(() => {});
+    return [
+      ["the card still names its face", seen.name.length > 0, true],
+      /* The drawer first, because that is the half nobody can infer: a goblin's draw and a hero's
+       * are the same picture. */
+      ["and it says who drew it", seen.caption.startsWith(seen.beast), true],
+      ["and what the draw was for", /saving throw: /.test(seen.caption), true],
+      ["and the condition it was against", /Dazed/.test(seen.caption), true]
+    ];
+  });
+
+  /*
+   * **A creature off the compendium shelf is a creature.**  **[FIXED 2026-11-23]**
+   *
+   * Reported from the table as *post saves from npc to the chat*, and the reason nothing was in
+   * the chat is that nothing was drawn. A pack actor carries no `system.decks` -- those slots hold
+   * ids of documents in a world and a compendium has no world to point at -- and until today the
+   * only routines that filled them were the starter build and `buildMonster`. Drag the same goblin
+   * off the shelf instead and it arrived with none, which means **three rules silently stopped
+   * applying**: its saving throws drew no card, dropping it to 0 drew no injury, and neither said
+   * anything at all.
+   *
+   * Built here the way a drag builds one: `Actor.create` with no decks in the data, which is what
+   * a compendium import is once the document is on its way into the world. The `createActor` hook
+   * is what has to notice.
+   */
+  await probe("a creature made with no decks is given them", async () => {
+    await settle(page);
+    const out = await page.evaluate(async () => {
+      const beast = game.actors.find(a => a.type === "npc");
+      /* A copy of a real creature minus the one field a pack strips, which is the whole case. */
+      const data = beast.toObject();
+      delete data._id;
+      delete data.system.decks;
+      data.name = "Probe Shelf Goblin";
+      const made = await Actor.create(data);
+      /* The hook is async and fires on creation, so the wiring lands a beat later. */
+      for (let i = 0; i < 40 && !made.system.decks?.fate; i++) {
+        await new Promise(r => setTimeout(r, 100));
+      }
+      const wired = ["action", "actionDiscard", "intent", "fate", "fateDiscard"]
+        .filter(slot => game.cards.get(made.system.decks?.[slot]));
+      /* And the fate deck is the KIND's, shared with the creature it was copied from, rather than
+       * a twenty-first deck of its own: a hex on the goblins touches the goblins. */
+      const shared = made.system.decks?.fate === beast.system.decks?.fate;
+
+      const before = game.messages.size;
+      await made.update({ "system.health.value": 0 });
+      await LIVE.resolveWound(made, { reason: LIVE.DROPPED });
+      const said = game.messages.contents.slice(before)
+        .map(m => String(m.content).replace(/<[^>]*>/g, " ")).join(" ");
+      await made.delete();
+      return { wired: wired.join(","), shared, said };
+    });
+    return [
+      ["all five stacks are wired up", out.wired,
+        "action,actionDiscard,intent,fate,fateDiscard"],
+      ["and the fate deck is its kind's own, not a new one", out.shared, true],
+      /* The three rules that silently did not apply, asked of the one that leaves a record. */
+      ["and dropping it to 0 draws for an injury", /Injury draw/.test(out.said), true],
+      ["and says so in chat", /fell/.test(out.said), true]
+    ];
+  });
+
+  /*
+   * **And one that cannot be wired says what did not happen.**  **[FIXED 2026-11-23]**
+   *
+   * The repair above fixes creatures made from today on; a world already holding one is not
+   * reached by it. Both guards returned in silence -- no Wound, no injury draw, no line -- which
+   * is the worst answer this moment has, because the blow landed and the Health went down. A
+   * creature whose stacks are missing now says so and names the cure.
+   */
+  await probe("and a creature with no stacks at all says what it could not do", async () => {
+    await settle(page);
+    const said = await page.evaluate(async () => {
+      const beast = game.actors.find(a => a.type === "npc");
+      const data = beast.toObject();
+      delete data._id;
+      delete data.system.decks;
+      data.name = "Probe Deckless Goblin";
+      const made = await Actor.create(data);
+      await new Promise(r => setTimeout(r, 1500));
+      /* Emptied AFTER the hook has had its turn, which is the state a world built before today
+       * holds: an actor nothing will ever wire up on its own. */
+      await made.update({
+        "system.decks.actionDiscard": null, "system.decks.fate": null
+      });
+      const before = game.messages.size;
+      await made.update({ "system.health.value": 0 });
+      await LIVE.resolveWound(made, { reason: LIVE.DROPPED });
+      const lines = game.messages.contents.slice(before)
+        .map(m => String(m.content).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim());
+      await made.delete();
+      return lines.join(" || ");
+    });
+    return [
+      ["it says there is nowhere to put a Wound", /no discard pile to put one in/.test(said), true],
+      ["and names the cure rather than the symptom", /never wired up/.test(said), true],
+      /* And not nothing, which is what it said before. */
+      ["and it is not silent", said.length > 0, true]
     ];
   });
 

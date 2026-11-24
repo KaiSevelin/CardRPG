@@ -9,7 +9,7 @@ import { CARDRPG } from "./module/config.mjs";
 import { registerSheets } from "./module/sheets.mjs";
 import {
   createStarterContent, ensureSetupMacro, buildMonster, rebuildWorldContent,
-  buildCharacterDecks,
+  buildCharacterDecks, buildCreatureDecks,
   rebuildContentMenu
 } from "./module/setup.mjs";
 /* A transformation is ended by somebody, because nothing here owns a timer that survives a
@@ -432,6 +432,18 @@ Hooks.once("ready", async () => {
    * also covers the case this hook most needs to cover -- a PLAYER making their own character,
    * where no GM created anything and so no GM-side `userId` check would fire.
    */
+  /*
+   * **And a creature gets the five it draws out of.**  **[FIXED 2026-11-23]**
+   *
+   * The same hook and the same argument, one road later: a creature dragged out of the bestiary
+   * compendium arrived with no decks either, and a creature with no FATE deck is one that silently
+   * stops obeying three rules -- its saving throws draw no card, dropping it to 0 draws no injury,
+   * and neither says anything in chat. See `buildCreatureDecks`, which has the measurement.
+   *
+   * Both in one handler because they are one question asked of two types, and the builders are
+   * each a no-op on the other's: ordering them is not a decision anybody should have to make
+   * twice.
+   */
   Hooks.on("createActor", async actor => {
     if (!(game.users.activeGM?.isSelf ?? game.user.isGM)) return;
     const made = await buildCharacterDecks(actor);
@@ -439,11 +451,30 @@ Hooks.once("ready", async () => {
       ui.notifications?.info(`Card RPG: built ${made} card stacks for ${actor.name}, `
         + "including their skill deck.");
     }
+    const beastly = await buildCreatureDecks(actor);
+    if (beastly) {
+      ui.notifications?.info(`Card RPG: wired ${beastly} card stacks for ${actor.name}, `
+        + "including the fate deck its kind draws from.");
+    }
   });
 
+  /*
+   * **One charger for two doors.**  **[FIXED 2026-11-24]**
+   *
+   * Preparing is written in two places now -- the slate sheet's checkbox and the character sheet's
+   * Prepare button, which is new -- and the price is collected here for both, which is why neither
+   * of them charges anything itself. A cost paid at the call site would be paid twice the day a
+   * third door opens.
+   *
+   * **`activeGM` and not `isGM`**, for the reason the actor hook gives: `isGM` is every connected
+   * GM, so two of them at one table billed a caster twice for one spell; and it is also what
+   * covers the case this most needs to cover, a PLAYER preparing their own spell, where no
+   * GM-side `userId` check would fire at all. Foundry elects a single GM client for exactly this.
+   */
   Hooks.on("updateItem", async (item, change) => {
     if (item.type !== "spell" || change?.system?.prepared !== true) return;
-    if (!item.parent || !game.user.isGM) return;
+    if (!item.parent) return;
+    if (!(game.users.activeGM?.isSelf ?? game.user.isGM)) return;
     await payToPrepare(item.parent, item);
   });
   /*
