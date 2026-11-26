@@ -188,6 +188,46 @@ If one side has clearly caught the other — an ambush, a sprung trap, a charge 
   not touched. Play it again on the next door. A **Spent** half is not spent either, for the one
   reason Spent exists: it is out *for the rest of the fight*, and there is no fight.
 - **Two attacks in one turn are allowed** if they come from two different cards, e.g. a Strike primary plus a card with Strike on its secondary. You can never use both halves of the same card.
+- **A weapon serves one Strike a turn.** The second attack uses a different weapon — your off hand,
+  a knife on your belt, or your fists if that is all that is left.
+- **A Followup is the exception**, and the only one: a secondary half printed *Followup* swings the
+  **same weapon the primary just swung**. It may only be played as a secondary, and only when the
+  primary is a Strike.
+
+> **[FOUND 2026-11-26, BUILT 2026-11-26] The game's own answer to double attacks did nothing for
+> anyone holding one weapon.**
+>
+> Asked for from a table as *a new action, followup, that reuses a main weapon for a second attack*,
+> and what it turned out to be is a hole rather than an addition.
+>
+> *A weapon serves one Strike a turn* is the right rule and it was already built, but nothing had
+> said what the second Strike reaches for when there is no second weapon: the engine walks down the
+> equipped list and, finding nothing, hands over **bare hands** — Strike 1, and the card's own
+> &minus;1 takes it to **nothing at all**. So *Off-Hand Blow*, the card the note below names as the
+> answer to this question and the first ordinary card any fighter is handed, resolved its secondary
+> to a punch for anyone carrying a single greatsword, halberd or musket. Measured on the starter
+> Warrior: a Longsword face of 5 against a fist of 0.
+>
+> **Two hands, two strikes was a card for a character with two weapons**, and the archetype that
+> most obviously swings twice — the one with both hands on something enormous — was the one it did
+> nothing for. The content had already walked into it: *a Second Knife thrown from a greatsword is
+> not a thing, and neither is the follow-up*.
+>
+> **Priced at &minus;1, which is Off-Hand Blow's price.** The two cards cost the same half and the
+> same stamina and differ only in which weapon answers, so the same number is the honest one. A
+> Followup is still the better card, because your best weapon is better than your second, and that
+> difference is paid for by **where it lives**: Off-Hand Blow is common and handed to everybody,
+> while *Follow Through* is earned on a Strength node — which is the progression the note below
+> asks for when it says these are meant to be earned through levelling.
+>
+> **Secondary only, and the primary must be a Strike.** That is not politeness: the engine spends a
+> weapon in **click order**, so the weapon a Followup reuses exists to be found only once the
+> Strike has been staged. The rule and the resolution are the same fact, and the HUD refuses it
+> with the reason rather than greying it silently.
+>
+> **A card printing Followup cannot print the Strike it follows**, because of the sentence above
+> this note: you can never use both halves of the same card. So *Follow Through* offers a Move 1
+> primary, and the Strike comes from somewhere else in your hand.
 
 > **Where double attacks come from.** A card with Strike on its *secondary* half is the strongest kind of card in the game: simulation showed one such card shortens fights by a full round. The rule stays open, but these cards are meant to be **earned through leveling**, not handed out in starter decks. Treat Strike-on-secondary as a reward on a Way's tree, the same way a second attack is a milestone in other games. The mechanism is now specified — it is an **action-card benefit on a Way graph node** ([leveling.md](leveling.md) §4) — and the card is written: *Off-Hand Blow*, Strike on the primary and **Strike −1** on the secondary, in the common minor-node pool any Way may draw from ([way-cards.md](way-cards.md) §3.1). The −1 is what keeps it from making a plain Strike obsolete. The starter deck keeps its one double-strike card.
 

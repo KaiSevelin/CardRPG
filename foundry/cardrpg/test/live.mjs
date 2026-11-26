@@ -7177,6 +7177,155 @@ async function probes(page) {
     ];
   });
 
+  /*
+   * **A Followup swings the weapon the primary already swung.**  **[BUILT 2026-11-26]**
+   *
+   * Asked for from a table as *a new action, followup, that reuses a main weapon for a second
+   * attack*, and the thing worth measuring is not that it works but **which weapon answers**.
+   * `#claimed` spends a weapon on the first Strike of a turn, so an ordinary second Strike reaches
+   * for the next one down -- and for a character holding a single weapon it reaches `BARE_HANDS`
+   * and strikes for 1. That is the hole: *Off-Hand Blow* is the game's own answer to double
+   * attacks (core-rules 3) and for a greatsword, halberd or musket its secondary is a punch.
+   *
+   * **Two cards in the same position, differing in one flag**, because an absolute number here
+   * would be measuring the starter Warrior's sword rather than the rule. Both carry `strike` with
+   * `mod: -1` on their secondary, so every bonus and every condition applies to both and the
+   * difference between the two faces is the weapon and nothing else.
+   *
+   * Read off the **face** rather than from the resolver, which is where this project has twice
+   * found the two disagreeing: the face prints what the play will deliver, so if the face says
+   * the sword then the sword is what the resolver was handed.
+   */
+  await probe("a Followup swings the primary's weapon again", async () => {
+    await settle(page);
+
+    const setup = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      const hand = LIVE.deckOf(hero, "actionHand");
+      /* The BEST equipped weapon, which is what `#itemsFor` orders by and `#itemFor` picks.
+       * The first one found is not it: this hero also carries a bow, and an earlier version of
+       * this probe measured the bow's 3 against a Longsword's 5 and called the engine wrong. */
+      const armed = hero.items.filter(i => i.type === "item" && i.system.equipped
+        && (i.system.availableVerbs ?? []).includes("strike"));
+      const sword = armed
+        .sort((a, b) => (b.system.verbs?.strike?.value ?? 0)
+          - (a.system.verbs?.strike?.value ?? 0))[0];
+      const made = await hand.createEmbeddedDocuments("Card", [
+        { name: "Probe Followup", type: "action",
+          system: { primary: [{ verb: "move", param: 1 }],
+            secondary: [{ verb: "strike", mod: -1, followup: true }] } },
+        { name: "Probe Plain Second", type: "action",
+          system: { primary: [{ verb: "move", param: 1 }],
+            secondary: [{ verb: "strike", mod: -1 }] } },
+        { name: "Probe Followup Primary", type: "action",
+          system: { primary: [{ verb: "strike", mod: -1, followup: true }],
+            secondary: [{ verb: "move", param: 1 }] } }
+      ]);
+      return {
+        weapon: sword?.name ?? "none",
+        strike: sword?.system.verbs?.strike?.value ?? null,
+        ids: made.map(c => c.id)
+      };
+    });
+
+    /* Stage a Strike primary off some OTHER card, then the card under test as the secondary. */
+    const stage = async (id, name, withPrimary = true, half = "secondary") => {
+      await page.evaluate(async ({ id, withPrimary, half }) => {
+        const { hero } = LIVE;
+        const hand = LIVE.deckOf(hero, "actionHand");
+        const striker = hand.cards.contents.find(c => !c.name.startsWith("Probe ")
+          && (c.system.primary ?? []).some(st => st.verb === "strike"));
+        const tray = game.cardrpg.openTray(hero);
+        tray.side = "action";
+        tray.staged = [
+          ...(withPrimary && striker ? [{ cardId: striker.id, half: "primary" }] : []),
+          { cardId: id, half }
+        ];
+        await tray.render();
+      }, { id, withPrimary, half });
+      /* Two equal samples, because a read that lands mid-render has cost this suite a week. */
+      const once = async () => page.evaluate(({ name, half }) => {
+        /*
+         * **By name, not by `data-card-id`.**  A card id only appears in the markup on a
+         * STAGEABLE half -- it is an attribute of the stage button -- so a card whose halves are
+         * both refused carries the id nowhere, the lookup finds nothing, and every row reads as
+         * *not blocked*. Which is the answer this probe is trying to tell apart from *blocked*.
+         * In the full suite the hero arrives Dazed or with a half spent often enough that this
+         * failed there while passing alone.
+         */
+        const card = [...document.querySelectorAll(".cr-hud__hand .cr-card")].find(el =>
+          el.querySelector(".cr-card__name")?.textContent.trim() === name);
+        const seat = card?.querySelector(`.cr-half--${half}`);
+        /*
+         * **The half's own span, not the first `data-tooltip` in it.** The marker icon carries one
+         * of its own -- `data-tooltip="rank-2"`, the icon's name -- and it comes first in document
+         * order, so a plain descendant search reads the icon and reports the gate as missing. The
+         * blocked face is the unclassed direct child; a playable one is the button.
+         */
+        const tipEl = seat?.querySelector(":scope > span[data-tooltip]:not([class])")
+          ?? seat?.querySelector(":scope > .cr-half__play[data-tooltip]");
+        return {
+          text: (seat?.innerText ?? "").replace(/\s+/g, " ").trim(),
+          blocked: !!seat?.classList.contains("cr-half--blocked"),
+          tip: tipEl?.getAttribute("data-tooltip") ?? ""
+        };
+      }, { name, half });
+      let a = await once();
+      for (let i = 0; i < 40; i++) {
+        const b = await once();
+        if (JSON.stringify(a) === JSON.stringify(b)) return b;
+        a = b;
+      }
+      return a;
+    };
+
+    const [followup, plain, asPrimary] = setup.ids;
+    const withSword = await stage(followup, "Probe Followup");
+    const fallback = await stage(plain, "Probe Plain Second");
+    const noPrimary = await stage(followup, "Probe Followup", false);
+    const onPrimary = await stage(asPrimary, "Probe Followup Primary", true, "primary");
+
+    await page.evaluate(async ids => {
+      const { hero } = LIVE;
+      const tray = game.cardrpg.openTray(hero);
+      tray.staged = [];
+      await tray.render();
+      const hand = LIVE.deckOf(hero, "actionHand");
+      const here = ids.filter(id => hand.cards.get(id));
+      if (here.length) await hand.deleteEmbeddedDocuments("Card", here);
+      await tray.render();
+    }, setup.ids);
+
+    const number = row => Number((/-?\d+/.exec(row.text) ?? [NaN])[0]);
+    return [
+      /* The premise: one weapon, and the primary Strike has already claimed it. */
+      ["the hero strikes with one weapon", setup.weapon.length > 0, true],
+      ["the weapon the primary will claim", setup.weapon, "Longsword"],
+      /*
+       * **Which weapon supplies the value, in the card's own words.** The printed number is the
+       * wrong thing to pin: the face folds in bonuses that are themselves weapon-conditional, so
+       * the Longsword's base 3 reads as 5 and the item's stored value answers for neither. The
+       * tooltip names the weapon, which is the claim being made.
+       */
+      ["and a Followup keeps the weapon", /Longsword supplies the value/.test(withSword.tip),
+        true],
+      ["while a plain second Strike does not", /Longsword/.test(fallback.tip), false],
+      /*
+       * **Relative and not absolute**, because the hero's kit is not this probe's to fix. Alone,
+       * the Warrior holds the Longsword and nothing else and the fallback is bare hands at 0; by
+       * the time the full suite reaches here an earlier probe has equipped a second weapon and it
+       * is 1. Both are correct and neither is the rule. The rule is that the Followup's face is
+       * the better one, and that the tooltips above name different weapons.
+       */
+      ["so the Followup is the better swing", number(withSword) > number(fallback), true],
+      /* And the gate, in the register a player reads rather than only in the handler. */
+      ["a Followup with no Strike in front of it is blocked", noPrimary.blocked, true],
+      ["and says to stage the Strike first", /Stage the Strike first/.test(noPrimary.tip), true],
+      ["a Followup on a primary is blocked", onPrimary.blocked, true],
+      ["and says it is a secondary only", /secondary only/.test(onPrimary.tip), true]
+    ];
+  });
+
   await probe("the system itself", async () => {
     const rows = await page.evaluate(() => {
       const errors = (globalThis.LIVE_ERRORS ?? []).filter(e => !/favicon|DevTools/.test(e));

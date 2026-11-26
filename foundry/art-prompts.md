@@ -1,6 +1,6 @@
 # Art prompts
 
-**790 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**791 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 779 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 780 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -1657,7 +1657,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Per
 
 ## Way of Strength — pool
 
-**16 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/strength/`.
+**17 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/strength/`.
 
 A Way of Strength card: mass, leverage, and weight already moving.
 
@@ -1780,6 +1780,18 @@ SUBJECT. "Call It" — Strike · / Forestall 1 · The secondary names one NPC ty
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing; a motion broken off half-made, and begun again as a different one.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Central Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Follow Through
+
+File: `cards/strength/follow-through.webp`
+
+```text
+SUBJECT. "Follow Through" — Move 1 · / Strike -1 · Secondary only, after a Strike: the same weapon, again.
+
+Draw ground covered -- weight forward, the last footfall still behind; the blow landing, the weaker follow-up, off the hand that was not busy.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Southeast Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Hammerblow

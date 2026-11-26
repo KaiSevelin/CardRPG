@@ -42,6 +42,7 @@ export const CARD_BLURBS = {
 
   /* --- the common pool ----------------------------------------------------- */
   "Off-Hand Blow": "Two hands, two strikes, and the second is the weaker for it.",
+  "Follow Through": "Let the swing finish and bring the same steel back through.",
   "Measure": "Watch where the shield is going and put the point where it is not.",
   "Hold the Line": "Hold the ground, and make them pay for every step onto it.",
   "Press": "Hit them, and follow as they give way.",

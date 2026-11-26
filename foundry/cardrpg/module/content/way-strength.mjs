@@ -99,6 +99,47 @@ export const STRENGTH_POOL = [
     secondary: [{ verb: "ready" }]
   },
   {
+    /*
+     * **The second attack a one-weapon fighter never had.**  **[BUILT 2026-11-26]**
+     *
+     * core-rules 3 settles where double attacks come from -- *Off-Hand Blow*, Strike and
+     * **Strike -1**, in the common pool, "the first ordinary card any fighter is handed", with the
+     * -1 keeping it from making a plain Strike obsolete. What it does not settle is **which
+     * weapon** the second one uses, and the engine's answer was *not the one you just swung*: a
+     * weapon serves one Strike a turn (`#claimed`), so Off-Hand Blow's secondary reaches for the
+     * next weapon down and, for anyone holding a single greatsword, halberd or musket, reaches
+     * `BARE_HANDS` and strikes for 1.
+     *
+     * So *two hands, two strikes* was a card for a character with two weapons, and the archetype
+     * that most obviously swings twice -- the one with both hands on something enormous -- was the
+     * one it did nothing for. This is that character's card, and `followup` is the one rule it
+     * waives.
+     *
+     * **Priced at -1, which is Off-Hand Blow's price**, deliberately and not by copying. The two
+     * cards cost the same half and the same stamina and differ only in which weapon answers, so
+     * the same number is the honest one -- and Follow Through is still the better card, because
+     * your best weapon is better than your second. That difference is paid for by **where it
+     * lives**: Off-Hand Blow is common and handed to everybody, this is earned on a Strength node,
+     * which is the progression core-rules 3 asks for when it says these are *meant to be earned
+     * through leveling, not handed out in starter decks*.
+     *
+     * **A Move 1 primary rather than a Strike**, for two reasons. core-rules 3 forbids using both
+     * halves of one card, so a Strike printed here could never be the Strike this secondary
+     * follows -- it would read as a double attack and deliver one. And Move 1 is what every other
+     * card offers a secondary (see *Call It*), so the card is a real choice on the turns nobody
+     * is standing in reach.
+     *
+     * Not gated on `bothHands`, though that was the other candidate. A gate would make this the
+     * two-handed card specifically, pairing it against dual-wielding -- tidy, and it would also
+     * refuse the sword-and-board fighter a follow-up with the sword, which is not a thing anybody
+     * asked to forbid. The weapon it reuses is whatever the Strike used, and that is gate enough.
+     */
+    name: "Follow Through", copies: 1, pool: "strength", needs: [],
+    primary: [{ verb: "move", param: 1 }],
+    secondary: [{ verb: "strike", mod: -1, followup: true }],
+    text: "Secondary only, after a Strike: the same weapon, again."
+  },
+  {
     name: "Heave", copies: 1, pool: "strength",
     needs: ["a Move that ignores your own encumbrance"],
     primary: [{ verb: "move", param: 2 }],

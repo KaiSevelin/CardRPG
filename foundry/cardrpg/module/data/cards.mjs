@@ -388,6 +388,41 @@ export function stepField() {
       bothHands: new fields.BooleanField({ initial: false })
     }),
 
+    /*
+     * **A Followup: this half swings the weapon the primary already swung.**  **[BUILT 2026-11-26]**
+     *
+     * Asked for from a table as *a new action, followup, that reuses a main weapon for a second
+     * attack*, and it is a **named exception to one rule** rather than a mechanism of its own.
+     * That rule is `#claimed` in tray.mjs: *a weapon serves one Strike a turn*, so a sword swung
+     * on the first Strike is not available to the second and `#itemFor` falls back to the next
+     * weapon -- or, for anyone carrying one, to `BARE_HANDS`.
+     *
+     * **Which is a live hole in the game's own answer to double attacks.** core-rules 3 settles
+     * where a second attack comes from -- *Off-Hand Blow*, Strike and Strike -1, in the common pool
+     * any Way may draw from, "the first ordinary card any fighter is handed" -- and for a character
+     * holding one greatsword, a musket or a halberd, its secondary resolves to **a punch**. The
+     * content had already noticed: way-shade.mjs says *a Second Knife thrown from a greatsword is
+     * not a thing, and neither is the follow-up*. So two hands on one weapon had no second attack
+     * at all, and the card that is supposed to provide one quietly provided the worst Strike in
+     * the game.
+     *
+     * **A flag and not a shadow copy of the item.** The obvious build is to put a second copy of
+     * the weapon in the secondary stack, and it is the wrong one: an owned Item is summed by
+     * `sumGrants`, so a copy of a sword granting +1 armour would grant it **twice** while staged,
+     * and it would land in carry weight, hand capacity and the Items deck as well. That is the
+     * `available()` lesson in new clothes -- *a dealt card is a COPY, and everything that counts
+     * documents finds two*. The panel can still draw it as a ghost of the primary's card; what it
+     * must not do is create a document to draw.
+     *
+     * **Legality is a secondary after a Strike, and the order is load-bearing rather than a
+     * convenience.** `#claimed` reads *earlier by click order*, so a Followup can only find the
+     * weapon if the Strike was staged first. The rule a table was given -- *only as a secondary
+     * action if the primary is a strike* -- is therefore also what makes it resolvable, and the
+     * refusal says so. core-rules 3's *you can never use both halves of the same card* is why the
+     * card that carries one prints it on the secondary and takes its Strike from somewhere else.
+     */
+    followup: new fields.BooleanField({ initial: false }),
+
     // A few words only, for what icons can't express (Taunt, Parry). Prose goes on the sheet.
     text: new fields.StringField({ required: false, blank: true, initial: "" })
   });

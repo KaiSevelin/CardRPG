@@ -702,7 +702,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         if (!reaching && (step.range === null || step.range === undefined)) continue;
         let reach = step.range ?? null;
         if (reach === null && reaching) {
-          const item = this.#itemFor(step.verb, half, step.requires);
+          const item = this.#itemFor(step.verb, half, step.requires, step.followup);
           const line = item?.system?.verbs?.[step.verb];
           reach = line ? this.actor.system.rangeOnLine(line, item) : null;
         }
@@ -987,10 +987,12 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         text: face.text,
         cut: face.cut,
         icon: face.icons[0] ?? null,
-        blocked: face.icons.some(i => blocked.has(i)) || !!face.unmet,
-        tip: face.unmet
-          ? `Needs ${face.unmet}, and nothing it is holding is.`
-          : face.notes.join(" ")
+        blocked: face.icons.some(i => blocked.has(i)) || !!face.unmet || !!face.gate,
+        tip: face.gate
+          ? face.gate
+          : face.unmet
+            ? `Needs ${face.unmet}, and nothing it is holding is.`
+            : face.notes.join(" ")
       };
     };
 
@@ -2274,13 +2276,25 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * would have printed its Move differently from an *Advance* in a hand -- the same number, cut by
    * the same condition, saying so in one place and not the other.
    *
-   * @returns {{text: string, notes: string[], icons: string[], unmet: string, cut: boolean}}
+   * @returns {{text, notes, icons, unmet: string, gate: string, cut: boolean}}
    */
   #stepFace(step, half = "primary") {
     const icons = [];
     /* What this step has to say that the face has no room for. */
     const notes = [];
     let unmet = "";
+    /*
+     * **A reason that is not about kit.**  **[BUILT 2026-11-26]**
+     *
+     * `unmet` is a KIT requirement and both readers wrap it in the only sentence that fits one --
+     * *Needs X in hand. Ready something that is.* A Followup is refused by the shape of the turn
+     * instead, and putting its reason through that wrapper would have printed *Needs A Followup is
+     * a secondary only. in hand*, sending a player to look through their gear for the problem.
+     *
+     * So a second field rather than a second meaning for the first. It blocks the half exactly as
+     * `unmet` does and prints verbatim, because it arrives as a whole sentence.
+     */
+    let gate = "";
     let cut = false;
 
     const icon = CARDRPG.verbs[step.verb]?.icon ?? CARDRPG.effects[step.verb]?.icon ?? null;
@@ -2292,7 +2306,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
     if (step.verb === "strike" || step.verb === "cast") {
       // The face shows the item the player chose, so "Strike 4" is never a guess.
-      const item = this.#itemFor(step.verb, half, step.requires);
+      const item = this.#itemFor(step.verb, half, step.requires, step.followup);
       /*
        * A kit requirement is printed from the field, never from the card's prose, and the same
        * call that printed the number decided whether anything meets it -- so the face and the
@@ -2300,6 +2314,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
        */
       const need = requireText(step.requires);
       if (need && !item) unmet = need;
+      /* A Followup's gate is about the TURN rather than the kit, so it is asked whether or not a
+       * weapon was found -- an illegal Followup still has a perfectly good sword to point at. */
+      if (step.followup) gate = this.#followupBlocked(half);
       const base = item?.system.verbs?.[step.verb]?.value;
       if (base !== null && base !== undefined) {
         /* Through the stack, so the face promises exactly what the play will deliver: a waved
@@ -2383,7 +2400,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
      */
     if (step.text) notes.push(step.text);
 
-    return { text: text.trim(), notes, icons, unmet, cut };
+    return { text: text.trim(), notes, icons, unmet, gate, cut };
   }
 
   /**
@@ -2412,6 +2429,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       const detail = [];
       /* Why this half cannot be played, when it cannot: a kit requirement nothing in hand meets. */
       let unmet = "";
+      /* And the turn-shaped reason, gathered the same way: see `#stepFace`. */
+      let gate = "";
       /* Whether any number on this face differs from the number printed on the card. */
       let cut = false;
 
@@ -2419,6 +2438,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         const face = this.#stepFace(step, name);
         icons.push(...face.icons);
         if (face.unmet) unmet = face.unmet;
+        if (face.gate) gate = face.gate;
         if (face.cut) cut = true;
         bits.push(face.text);
         if (face.notes.length) detail.push(`${face.text} \u2014 ${face.notes.join(" ")}`);
@@ -2452,7 +2472,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
        * answer anywhere the two scopes did not overlap. */
       const usedUp = this.#halfSpent(name);
       const blocked = icons.some(i => blockedIcons.has(i))
-        || (name === "secondary" && dazed) || !!unmet || usedUp;
+        || (name === "secondary" && dazed) || !!unmet || !!gate || usedUp;
 
       return {
         name,
@@ -2479,7 +2499,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
               ? "Exhausted: one card a turn, and you have played it."
               : `Your ${name} is spent this turn. The card stays in your hand, and its reaction `
                 + "is still yours to arm or hold.")
-          : unmet
+          : gate
+            ? gate + (explains ? ` ${explains}` : "")
+            : unmet
             ? `Needs ${unmet} in hand. Ready something that is, or play the other half.`
               + (explains ? ` ${explains}` : "")
             : blocked
@@ -2731,8 +2753,55 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     return taken;
   }
 
-  #itemFor(verb, half = "primary", requires = null) {
-    const taken = this.#claimed(half, verb);
+  /**
+   * **Whether a Followup may be played right now, and why not.**  **[BUILT 2026-11-26]**
+   *
+   * Asked for as *followups can only be played as a secondary action if the primary is a strike*,
+   * and that rule is not only a restriction -- it is what makes the half resolvable at all.
+   * `#claimed` reads *earlier by click order*, so the weapon a Followup reuses exists to be found
+   * only once the Strike has been staged. A Followup staged first would find nothing claimed and
+   * fall through to picking a weapon of its own, which is the one thing the card does not do.
+   *
+   * **One predicate, two readers**, which is this file's standing rule about faces and handlers: a
+   * face that offers what the handler will refuse is the same defect as a face promising a number
+   * the resolver will not deliver. `#stepFace` prints the reason on the card and `#onStage`
+   * refuses with it.
+   *
+   * @returns {string} empty when it is legal, otherwise the sentence to show.
+   */
+  #followupBlocked(half) {
+    if (half !== "secondary") return "A Followup is a secondary only.";
+    if (!this.staged.some(s => s.half === "primary")) {
+      return "Stage the Strike first: a Followup swings that weapon again.";
+    }
+    if (!this.#verbsOf("primary").includes("strike")) {
+      return "A Followup needs a Strike as its primary.";
+    }
+    return "";
+  }
+
+  #itemFor(verb, half = "primary", requires = null, followup = false) {
+    /*
+     * **A Followup reuses what an earlier half swung, rather than picking again.**
+     * **[BUILT 2026-11-26]**
+     *
+     * Two things, and the first is the whole feature: what the primary claimed is **not** spent
+     * for this half. The second matters as much and is easy to miss -- it must be the SAME weapon
+     * rather than merely an allowed one. A character with a greatsword and a knife would otherwise
+     * have the ordinary ranking hand them the knife, because the sword is the one the primary
+     * took, and a card reading *swing it again* would swing something else.
+     *
+     * `BARE_HANDS` is matched by id because it is not an owned item: a primary that struck with a
+     * fist is followed up with the same fist, which is the right answer and the one an
+     * `items.get()` would silently turn into nothing.
+     */
+    if (followup) {
+      for (const id of this.#claimed(half, verb)) {
+        const again = id === BARE_HANDS.id ? BARE_HANDS : this.actor.items.get(id);
+        if (again && itemMeets(again, requires)) return again;
+      }
+    }
+    const taken = followup ? new Set() : this.#claimed(half, verb);
     const candidates = this.#itemsFor(verb, requires).filter(i => !taken.has(i.id));
     /*
      * **And the fist, when there is nothing left.** Unconditional for a Strike that asks for no
@@ -2844,6 +2913,15 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     if (this.staged.length && this.actor.system.exhausted) {
       return ui.notifications.warn("Exhausted: one card per turn.");
+    }
+    /*
+     * **And the Followup gate**, read off the card rather than off `this.staged`: this half is not
+     * staged yet, which is the whole point of asking here. Same predicate the face printed.
+     */
+    const staging = deckOf(this.actor, "actionHand")?.cards.get(cardId);
+    if ((staging?.system?.[half] ?? []).some(st => st.followup)) {
+      const why = this.#followupBlocked(half);
+      if (why) return ui.notifications.warn(why);
     }
     this.staged.push({ cardId, half });
     this.render();
@@ -3685,7 +3763,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       case "strike":
       case "cast": {
         if (!targets.length) return ui.notifications.warn("Target a token first.");
-        const item = source ?? this.#itemFor(step.verb, half, step.requires);
+        const item = source ?? this.#itemFor(step.verb, half, step.requires, step.followup);
         if (!item) {
           const need = requireText(step.requires);
           return ui.notifications.warn(need

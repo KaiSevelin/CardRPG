@@ -667,6 +667,25 @@ still handed to its caller at once; only the **paint** waits for the screen to c
 
 ---
 
+### 3.12 A half refused for a reason that is not its kit  **[BUILT 2026-11-26]**
+
+A card half can be switched off for three different reasons and the tooltip has to tell them apart,
+because a player who cannot will go looking in the wrong place:
+
+| Why | What the tooltip says |
+|---|---|
+| a Blocked icon, or Dazed on a secondary | *Blocked right now. The other half may still be playable, and Brace never is.* |
+| the half needs kit you are not holding | *Needs ranged in hand. Ready something that is, or play the other half.* |
+| **the shape of the turn refuses it** | the sentence itself, verbatim — *Stage the Strike first: a Followup swings that weapon again.* |
+
+The third is new and it is a separate field (`gate`) rather than a second meaning for the kit one.
+Routed through the kit wrapper it would have printed **"Needs A Followup is a secondary only. in
+hand"**, which sends a player to their gear for a problem that is about the order they clicked in.
+
+A Followup is the only thing that uses it today. It is refused as a primary, and refused as a
+secondary until a Strike is staged — and both refusals are the same predicate the click handler
+reads, so a face never offers what the handler will turn down.
+
 ## 4. The two numbers that carry the tension
 
 ### 4.1 Draw pile - a bar, not a number

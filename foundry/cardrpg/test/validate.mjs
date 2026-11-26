@@ -1018,7 +1018,7 @@ const stepKeys = new Set(
  * ever read. A spell's limit is the long rest that re-enables it and a ritual's is the GM's,
  * because nothing in the engine resolves a ritual at all -- so the field could not be read for two
  * of its three users and contradicted the engine on the third. See data/cards.mjs. */
-check("stepField keys read from source", stepKeys.size, 30);
+check("stepField keys read from source", stepKeys.size, 31);
 
 const strayKeys = new Set();
 for (const step of steps) {
@@ -5901,7 +5901,7 @@ const pools = {
   faith: content.FAITH_POOL
 };
 check("Shade's pool", pools.shade.length, 19);
-check("Strength's pool", pools.strength.length, 16);
+check("Strength's pool", pools.strength.length, 17);
 /*
  * Mind's pool is formulas rather than cards, and it is **seventy**, which is a different kind of
  * list from the other two Ways: a Way pool is a dozen cards and this is twelve SCHOOLS, each with
@@ -6621,7 +6621,7 @@ const onSecondary = [...graph.POOL.values(), ...graph.SIGNATURES]
   .filter(c => (c.secondary ?? []).some(st => st.verb === "strike"));
 check("content printing Strike on a secondary half",
   onSecondary.map(c => c.name).sort().join(", "),
-  "Hold the Line, Off-Hand Blow, Pull Them Down, Second Knife");
+  "Follow Through, Hold the Line, Off-Hand Blow, Pull Them Down, Second Knife");
 check("and how many of them are Signatures", onSecondary.filter(c => c.node).length, 0);
 check("way-cards says the band outlived its measurement",
   /band outlived the measurement it was\n> anchored on/.test(wayDoc) ? "yes" : "no", "yes");
@@ -7151,7 +7151,7 @@ check("one behind every school, every god and each martial Way",
  * fence it the way a spell's strength fences a formula. */
 check("cards a martial menu offers",
   [...graph.CARDS_BY_SOURCE].map(([k, v]) => `${k} ${v.length}`).join(", "),
-  "Shade 19, Warrior 15");
+  "Shade 19, Warrior 16");
 check("and the card held back from one",
   [...content.SHADE_POOL, ...content.STRENGTH_POOL].filter(graph.topRung)
     .map(c => c.name).join(", ") || "none",
@@ -7203,7 +7203,7 @@ const choosableCards = new Set(cardMenus
 const poolCards = [...content.COMMON_POOL, ...content.SHADE_POOL, ...content.STRENGTH_POOL];
 const unreachableCards = poolCards.map(c => c.name)
   .filter(name => !namedCards.has(name) && !choosableCards.has(name));
-check("pool cards in total", poolCards.length, 41);
+check("pool cards in total", poolCards.length, 42);
 check("cards no node can hand over at all",
   unreachableCards.length ? unreachableCards.sort().join(", ") : "none", "Dig In, Nothing Held Back, Off-Hand Blow, Press");
 check("and all of them are one of the two declared cases",
@@ -7406,7 +7406,7 @@ const workingCards = audited.filter(c => !c.needs.length).length;
  * field nothing read. Three pieces left this count because the count was wrong, which is the one
  * reason it is allowed to fall.
  */
-check("content the engine does everything for", workingCards, 100);
+check("content the engine does everything for", workingCards, 101);
 check("content with a named gap", audited.filter(c => c.needs.length).length, 122);
 
 /*
@@ -8004,8 +8004,12 @@ check("both heal routes ask one question who to heal",
   (resolveSource.match(/healTargets\(/g) ?? []).length
   + (traySource.match(/healTargets\(/g) ?? []).length, 3);
 
+/* And all three hand it the step's `followup` too, so the face, the click and the range display
+ * cannot disagree about whether this half reuses the primary's weapon or picks its own.
+ * **[CHANGED 2026-11-26]** */
 check("the face, the click and the range display pick through one call",
-  (traySource.match(/#itemFor\(step\.verb, half, step\.requires\)/g) ?? []).length, 3);
+  (traySource.match(/#itemFor\(step\.verb, half, step\.requires, step\.followup\)/g) ?? [])
+    .length, 3);
 /*
  * **The range display: it measures, and it refuses nothing.**  [BUILT 2026-11-21]
  *
@@ -8086,9 +8090,13 @@ check("callers that ask the same predicate for a bonus's tag",
  * tooltip check below passed happily with the half still clickable, so both are needed: the face
  * said "needs ranged in hand" on a button that fired the dagger.
  */
+/* And a Followup's turn-shaped gate blocks it the same way, through its own name rather than by
+ * borrowing this one: see .  **[CHANGED 2026-11-26]** */
 check("an unmet requirement blocks the half",
-  /const blocked = icons\.some[\s\S]{0,90}\|\| !!unmet \|\| usedUp;/.test(traySource)
-    ? "yes" : "no", "yes");
+  /const blocked = icons\.some[\s\S]{0,160}\|\| !!unmet \|\| !!gate \|\| usedUp;/
+    .test(traySource) ? "yes" : "no", "yes");
+check("and a Followup gate blocks it under its own name",
+  /if \(face\.gate\) gate = face\.gate;/.test(traySource) ? "yes" : "no", "yes");
 check("and something sets it",
   /if \(need && !item\) unmet = need;/.test(traySource) ? "yes" : "no", "yes");
 
@@ -8254,7 +8262,7 @@ const artable = (await import("../module/art.mjs")).SHELVES.flatMap(s => s.list 
  * art, because a node wears the art of what it hands over; that is true of what the GRAPH
  * draws and false of what the PANE does, which shows a picture beside three paragraphs of
  * prose about a person. */
-check("pieces of content that take art", artable.length, 779);
+check("pieces of content that take art", artable.length, 780);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -8810,7 +8818,7 @@ const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.m
 /* Every piece the game can hand Foundry a path for, which is all of them: kept as the denominator
  * the three states below have to add up to, and no longer printed as progress. */
 check("pieces the game has a path for", artable.filter(e => artInLive(e)).length
-  + backs.filter(([k]) => backOfLive(k)).length, 790);
+  + backs.filter(([k]) => backOfLive(k)).length, 791);
 /*
  * **And every path the game hands Foundry names a file that is there.**
  *
@@ -8829,7 +8837,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 790);
+check("art paths the game would hand Foundry", artable.length + backs.length, 791);
 /*
  * **The brief's progress line used to be the total, and nobody noticed for months.**
  *
@@ -9148,7 +9156,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 779);
+check("briefs the check actually read", briefs.length, 780);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -11509,7 +11517,7 @@ const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-
 /* 233: Blood Magic dropped its cast line with its refusal -- the rewrite put a stone basin in
  * the frame and nobody at all, and a line opening *if any bare skin shows* under a direction
  * saying there is no skin is the contradiction the refusal was made of. */
-check("cards, signatures and features given an assigned person", castLines.length, 237);
+check("cards, signatures and features given an assigned person", castLines.length, 238);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
@@ -11810,7 +11818,7 @@ check("and each one says what is not in the frame",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 779);
+check("file paths in the brief", rows.length, 780);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -11989,7 +11997,7 @@ for (const entry of everyEntry) {
     for (const st of arr ?? []) everyStep.push({ card: entry.name, st });
   }
 }
-check("steps the timing audit read", everyStep.length, 389);
+check("steps the timing audit read", everyStep.length, 391);
 
 /*
  * **Every key a combo clause uses is a key the clause's schema declares.**
@@ -12638,7 +12646,7 @@ check("and what is left of it",
  * row, because the row reads as authority.
  */
 const documented = ["timing", "delay", "ignoresArmour", "ignoresBlock", "ignoresCover",
-  "readDeck", "whileState", "targets", "ground", "conjure", "shape"];
+  "readDeck", "whileState", "targets", "ground", "conjure", "shape", "followup"];
 /* The TABLE ROW, not a mention. The prose above the table names `targets` and `ground` too, so a
  * bare `includes` was answered by the paragraph while the row itself could be deleted -- which a
  * break test proved by deleting it. The fifth second printer this session, and the first in a
@@ -12750,7 +12758,7 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
 check("documents the stamp sweep read", everyPackDoc.length, 505);
-check("and children beneath them", everyPackChild.length, 394);
+check("and children beneath them", everyPackChild.length, 395);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
     || d._stats?.systemId !== manifest.id
@@ -12865,7 +12873,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 899);
+check("ids the rule actually read", everyId.size, 900);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -14158,7 +14166,38 @@ check("and it is read off the bonus rather than the prose",
  * halves resolve, which is the same rule the lead half follows.
  */
 check("an earlier half's weapon is spent",
-  /const taken = this\.#claimed\(half, verb\);/.test(traySource) ? "yes" : "no", "yes");
+  /const taken = followup \? new Set\(\) : this\.#claimed\(half, verb\);/.test(traySource)
+    ? "yes" : "no", "yes");
+/*
+ * **Unless the half is a Followup, which is the one named exception.**  **[BUILT 2026-11-26]**
+ *
+ * Asked for from a table as *a new action, followup, that reuses a main weapon for a second
+ * attack*. Two halves to it and the second is the one worth pinning: it must take the **same**
+ * weapon rather than merely an allowed one, because the ordinary ranking would hand a character
+ * with a greatsword and a knife the knife -- the sword being the one the primary took -- and a
+ * card reading *swing it again* would swing something else.
+ */
+check("and a Followup reuses what the primary swung",
+  /if \(followup\) \{\n\s+for \(const id of this\.#claimed\(half, verb\)\) \{/
+    .test(traySource) ? "yes" : "no", "yes");
+/* Bare hands by id, because the fist is not an owned item: a primary that punched is followed up
+ * with the same fist, which an `items.get()` would silently turn into nothing. */
+check("and a fist is followed up with the same fist",
+  /id === BARE_HANDS\.id \? BARE_HANDS : this\.actor\.items\.get\(id\)/.test(traySource)
+    ? "yes" : "no", "yes");
+/*
+ * **Legality is one predicate with two readers**, which is this file's standing rule about faces
+ * and handlers. And the rule a table was given -- *only as a secondary action if the primary is a
+ * strike* -- is also what makes it resolvable: `#claimed` reads earlier by click order, so the
+ * weapon exists to be found only once the Strike is staged.
+ */
+check("the Followup gate is one predicate",
+  (traySource.match(/#followupBlocked\(/g) ?? []).length, 3);
+check("and it refuses a Followup on a primary",
+  /if \(half !== "secondary"\) return "A Followup is a secondary only\.";/.test(traySource)
+    ? "yes" : "no", "yes");
+check("and one with no Strike in front of it",
+  /A Followup needs a Strike as its primary\./.test(traySource) ? "yes" : "no", "yes");
 check("and the chooser never offers it again",
   /this\.#itemsFor\(verb, requires\)\.filter\(i => !taken\.has\(i\.id\)\)/.test(traySource)
     ? "yes" : "no", "yes");
@@ -19118,7 +19157,8 @@ check("a spell answers a cast verb line",
   /get verbs\(\) \{[\s\S]{0,400}cast: \{[\s\S]{0,120}value: e\.mod \?\? 0/.test(itemsSource)
     ? "yes" : "no", "yes");
 check("so one resolver serves a card half and a spell alike",
-  /const item = source \?\? this\.#itemFor\(step\.verb, half, step\.requires\);/.test(traySource)
+  /const item = source \?\? this\.#itemFor\(step\.verb, half, step\.requires, step\.followup\);/
+    .test(traySource)
     ? "yes" : "no", "yes");
 check("a spell's effect runs through the step resolver",
   /await this\.#resolveStep\(slate\.system\.effect, "primary", targets, slate\);/.test(traySource)

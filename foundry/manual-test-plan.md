@@ -929,6 +929,32 @@ costs you a breath; a dead card in an intent deck costs a figure that draws one 
 its whole kind an entire round. **Confusion** is the card for that, and it is deliberately not a
 Wound: what it corrupts is the type's *plan*, which is a thing a species really does share.
 
+## 2g.7 A Followup swings the same weapon  **[2026-11-26]**
+
+**Do.** Give the Warrior **Follow Through** (it is a Strength pool card, so a GM can drag it into
+the action deck). Start a fight with one weapon in hand — the Longsword and nothing else. Deal a
+hand, stage an ordinary **Strike** as your primary, then stage Follow Through's **secondary**.
+
+**Expect.** The secondary reads the Longsword's number minus one, and its tooltip says
+**Longsword supplies the value**. Now compare: stage *Off-Hand Blow*'s secondary in the same
+position instead, and it reads **0** — bare hands at 1, less the card's own &minus;1 — because the
+Longsword was spent on the first Strike.
+
+**Then try to play it wrong, twice.** Stage Follow Through's secondary with **nothing** as your
+primary: the half is greyed and the tooltip says *Stage the Strike first: a Followup swings that
+weapon again.* And a Followup printed on a **primary** half is greyed with *A Followup is a
+secondary only.*
+
+**Why.** *A weapon serves one Strike a turn*, which is the right rule — but nothing said what the
+second Strike reaches for when there is no second weapon, and the answer was your fists. So
+*Off-Hand Blow*, the card core-rules §3 names as the game's answer to double attacks and hands to
+every fighter, resolved to a punch for anyone holding a greatsword, halberd or musket. Follow
+Through is that character's card and the one named exception to the rule.
+
+**The order is not politeness.** A weapon is spent in the order you click, so the weapon a Followup
+reuses exists to be found only once the Strike is staged. That is why the refusal names the order
+rather than greying the half without a word.
+
 ---
 
 # 3. What the other person sees

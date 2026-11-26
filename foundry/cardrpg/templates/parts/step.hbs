@@ -258,6 +258,13 @@
       <input type="checkbox" name="{{path}}.requires.bothHands" {{#if step.requires.bothHands}}checked{{/if}}>
       Both hands
     </label>
+    {{!-- A Followup swings the weapon an earlier half already swung, instead of picking its own.
+          Secondary halves only, and the primary has to be a Strike: the tray refuses it with the
+          reason and the card face prints the same sentence. --}}
+    <label class="cr-step__tick">
+      <input type="checkbox" name="{{path}}.followup" {{#if step.followup}}checked{{/if}}>
+      Followup &mdash; reuse the primary's weapon
+    </label>
   </div>
 
   <div class="cr-step__row">

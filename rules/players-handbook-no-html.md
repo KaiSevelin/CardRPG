@@ -2041,6 +2041,7 @@ do not hold them: they are simply true once the node is yours.
 | **Overbear** | Get hold of them while they are going down, and do not let go. | → grappled (2) when they are offBalance | Move 1 | – | 1 |
 | **Shield Wall** | Your shield covers the person beside you as well as yourself. | Defend | Defend, then Block 1 in an area of 1 | Block | 1 |
 | **Two-Hand It** | Both hands on the haft, and nothing kept back for defence. | Strike +2 | Ready | – | 1 |
+| **Follow Through** | Let the swing finish and bring the same steel back through. *Secondary only, after a Strike: the same weapon, again.* | Move 1 | Strike -1 | – | 1 |
 | **Heave** | Lift what should not be liftable, and walk with it. *Carrying any weight without being Slowed.* | Move 2 | Ready | – | 1 |
 | **Armoured Advance** | Come on through it. The plate is doing its job. *Your armor counts +1 until your next turn.* | Move 3 | Move 1 | – | 1 |
 | **Pull Them Down** | Somebody already down or held is somebody you can finish. *The secondary only against a Prone or Grappled target.* | Strike | Strike -1 | – | 1 |

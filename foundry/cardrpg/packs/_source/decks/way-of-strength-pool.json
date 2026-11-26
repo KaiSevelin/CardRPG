@@ -337,6 +337,46 @@
       }
     },
     {
+      "_id": "mCr9hi9ITVBcC2qS",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.mCr9hi9ITVBcC2qS",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 900,
+      "name": "Follow Through",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Follow Through",
+          "img": "systems/cardrpg/art/cards/strength/follow-through.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "strike",
+            "mod": -1,
+            "followup": true
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Secondary only, after a Strike: the same weapon, again."
+      }
+    },
+    {
       "_id": "q9xPy3RHvZvV81tE",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.q9xPy3RHvZvV81tE",
       "_stats": {
@@ -344,7 +384,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 900,
+      "sort": 1000,
       "name": "Heave",
       "type": "action",
       "face": 0,
@@ -382,7 +422,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1000,
+      "sort": 1100,
       "name": "Armoured Advance",
       "type": "action",
       "face": 0,
@@ -421,7 +461,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1100,
+      "sort": 1200,
       "name": "Pull Them Down",
       "type": "action",
       "face": 0,
@@ -459,7 +499,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1200,
+      "sort": 1300,
       "name": "Beat the Blade",
       "type": "action",
       "face": 0,
@@ -500,7 +540,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1300,
+      "sort": 1400,
       "name": "Roar",
       "type": "action",
       "face": 0,
@@ -545,7 +585,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1400,
+      "sort": 1500,
       "name": "Walk It Off",
       "type": "action",
       "face": 0,
@@ -592,7 +632,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1500,
+      "sort": 1600,
       "name": "Nothing Held Back",
       "type": "action",
       "face": 0,
@@ -630,7 +670,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1600,
+      "sort": 1700,
       "name": "Call It",
       "type": "action",
       "face": 0,

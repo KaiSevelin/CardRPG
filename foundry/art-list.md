@@ -1,6 +1,6 @@
 # Art list
 
-**790 pieces**, of which **790** are drawn and **0** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**791 pieces**, of which **790** are drawn and **1** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -51,7 +51,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 779 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 780 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **11 pieces**, 11 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -212,13 +212,14 @@ The minor-node cards of a built Way.
 
 The minor-node cards of a built Way.
 
-**16 pieces**, 16 wired up. Suggested path: `cardrpg/art/cards/strength/`
+**17 pieces**, 16 wired up. Suggested path: `cardrpg/art/cards/strength/`
 
 | | Name | What it is | File |
 |---|---|---|---|
 | ✓ | **Armoured Advance** | Move 3 · / Move 1 · Your armor counts +1 until your next turn. | `cards/strength/armoured-advance.webp` |
 | ✓ | **Beat the Blade** | Strike Disarmed (1) · / Move 1 | `cards/strength/beat-the-blade.webp` |
 | ✓ | **Call It** | Strike · / Forestall 1 · The secondary names one NPC type. | `cards/strength/call-it.webp` |
+|   | **Follow Through** | Move 1 · / Strike -1 · Secondary only, after a Strike: the same weapon, again. | `cards/strength/follow-through.webp` |
 | ✓ | **Hammerblow** | Strike · / Move 1 | `cards/strength/hammerblow.webp` |
 | ✓ | **Heave** | Move 2 · / Ready · Carrying any weight without being Slowed. | `cards/strength/heave.webp` |
 | ✓ | **Nothing Held Back** | Strike · Strain your hand but one, and that card must be played this turn. Strike +1 per card strained. | `cards/strength/nothing-held-back.webp` |
