@@ -2042,6 +2042,8 @@ do not hold them: they are simply true once the node is yours.
 | **Shield Wall** | Your shield covers the person beside you as well as yourself. | Defend | Defend, then Block 1 in an area of 1 | Block | 1 |
 | **Two-Hand It** | Both hands on the haft, and nothing kept back for defence. | Strike +2 | Ready | – | 1 |
 | **Follow Through** | Let the swing finish and bring the same steel back through. *Secondary only, after a Strike: the same weapon, again.* | Move 1 | Strike -1 | – | 1 |
+| **The Whole Arc** | All the way round, nothing held back, and a card off your hand to pay for it. *Secondary only, after a Strike: the same weapon at full value. Strain 1.* | Ready | Strike | – | 1 |
+| **Off Their Feet** | The second blow is not for the wound. It is for the ground. *Secondary only, after a Strike: the same weapon again, and they are Off-Balance.* | Strike | Strike -2 → offBalance (1) | – | 1 |
 | **Heave** | Lift what should not be liftable, and walk with it. *Carrying any weight without being Slowed.* | Move 2 | Ready | – | 1 |
 | **Armoured Advance** | Come on through it. The plate is doing its job. *Your armor counts +1 until your next turn.* | Move 3 | Move 1 | – | 1 |
 | **Pull Them Down** | Somebody already down or held is somebody you can finish. *The secondary only against a Prone or Grappled target.* | Strike | Strike -1 | – | 1 |
@@ -2076,6 +2078,7 @@ do not hold them: they are simply true once the node is yours.
 | **Light Feet** | Rubble, mud and bodies are all the same floor to you. *Ignoring difficult ground.* | Move 3 | Move 2 | Sidestep | 1 |
 | **Slip the Knot** | Whatever had hold of you does not, any more. | Move 2 | Shake 1 | Sidestep | 1 |
 | **Second Knife** | There was always a second knife. | Strike at range 3 | Strike -1 | – | 1 |
+| **Inside the Guard** | They moved the shield to stop the first one. Put the second where it was. *Secondary only, after a Strike with the same light blade. Answers no raised shield.* | Move 2 | Strike -2 (ignores Block) | – | 1 |
 | **Mock** | Say the one thing that makes them stop thinking. | → dazed (1) | Move 1 | – | 1 |
 | **Sleight** | Your hands do two things and they only see one. | Use, then Strike | Ready | Use | 1 |
 | **Vanish** | Be somewhere the eye slides off. *On yourself.* | → invisible (1) | Move 2 | – | 1 |

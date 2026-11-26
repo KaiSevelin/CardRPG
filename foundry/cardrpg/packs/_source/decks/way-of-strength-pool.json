@@ -377,6 +377,89 @@
       }
     },
     {
+      "_id": "C4R6rihD7SX6j1oC",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.C4R6rihD7SX6j1oC",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1000,
+      "name": "The Whole Arc",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Whole Arc",
+          "img": "systems/cardrpg/art/cards/strength/the-whole-arc.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "strike",
+            "followup": true
+          }
+        ],
+        "reaction": "",
+        "costs": {
+          "secondary": {
+            "strain": 1
+          }
+        },
+        "text": "Secondary only, after a Strike: the same weapon at full value. Strain 1."
+      }
+    },
+    {
+      "_id": "9XfSMU6HZRqwvFRm",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.9XfSMU6HZRqwvFRm",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1100,
+      "name": "Off Their Feet",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Off Their Feet",
+          "img": "systems/cardrpg/art/cards/strength/off-their-feet.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "strike",
+            "mod": -2,
+            "followup": true,
+            "condition": "offBalance",
+            "duration": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Secondary only, after a Strike: the same weapon again, and they are Off-Balance."
+      }
+    },
+    {
       "_id": "q9xPy3RHvZvV81tE",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.q9xPy3RHvZvV81tE",
       "_stats": {
@@ -384,7 +467,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1000,
+      "sort": 1200,
       "name": "Heave",
       "type": "action",
       "face": 0,
@@ -422,7 +505,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1100,
+      "sort": 1300,
       "name": "Armoured Advance",
       "type": "action",
       "face": 0,
@@ -461,7 +544,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1200,
+      "sort": 1400,
       "name": "Pull Them Down",
       "type": "action",
       "face": 0,
@@ -499,7 +582,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1300,
+      "sort": 1500,
       "name": "Beat the Blade",
       "type": "action",
       "face": 0,
@@ -540,7 +623,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1400,
+      "sort": 1600,
       "name": "Roar",
       "type": "action",
       "face": 0,
@@ -585,7 +668,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1500,
+      "sort": 1700,
       "name": "Walk It Off",
       "type": "action",
       "face": 0,
@@ -632,7 +715,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1600,
+      "sort": 1800,
       "name": "Nothing Held Back",
       "type": "action",
       "face": 0,
@@ -670,7 +753,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1700,
+      "sort": 1900,
       "name": "Call It",
       "type": "action",
       "face": 0,

@@ -7219,7 +7219,18 @@ async function probes(page) {
             secondary: [{ verb: "strike", mod: -1 }] } },
         { name: "Probe Followup Primary", type: "action",
           system: { primary: [{ verb: "strike", mod: -1, followup: true }],
-            secondary: [{ verb: "move", param: 1 }] } }
+            secondary: [{ verb: "move", param: 1 }] } },
+        /*
+         * A Followup asking for kit the reused weapon has not got, which is *Inside the Guard*
+         * held by somebody who opened with a Longsword. The Longsword is `heavy`, and **bare
+         * hands are `light`** -- so the first build's fall-through answered this with a fist at 0
+         * rather than refusing, and a card reading *the same blade* would have swung no blade.
+         */
+        { name: "Probe Followup Kitless", type: "action",
+          system: { primary: [{ verb: "move", param: 1 }],
+            secondary: [{
+              verb: "strike", mod: -2, followup: true, requires: { tag: "light" }
+            }] } }
       ]);
       return {
         weapon: sword?.name ?? "none",
@@ -7279,11 +7290,12 @@ async function probes(page) {
       return a;
     };
 
-    const [followup, plain, asPrimary] = setup.ids;
+    const [followup, plain, asPrimary, kitless] = setup.ids;
     const withSword = await stage(followup, "Probe Followup");
     const fallback = await stage(plain, "Probe Plain Second");
     const noPrimary = await stage(followup, "Probe Followup", false);
     const onPrimary = await stage(asPrimary, "Probe Followup Primary", true, "primary");
+    const wrongKit = await stage(kitless, "Probe Followup Kitless");
 
     await page.evaluate(async ids => {
       const { hero } = LIVE;
@@ -7322,7 +7334,16 @@ async function probes(page) {
       ["a Followup with no Strike in front of it is blocked", noPrimary.blocked, true],
       ["and says to stage the Strike first", /Stage the Strike first/.test(noPrimary.tip), true],
       ["a Followup on a primary is blocked", onPrimary.blocked, true],
-      ["and says it is a secondary only", /secondary only/.test(onPrimary.tip), true]
+      ["and says it is a secondary only", /secondary only/.test(onPrimary.tip), true],
+      /*
+       * **And it reuses or it does not happen.**  The Longsword is `heavy`; this half asks for
+       * `light`. The answer is a refusal naming the kit, not a different weapon -- and the trap
+       * is that bare hands ARE light, so the fall-through this replaced would have answered with
+       * a fist and called it the same blade.
+       */
+      ["a Followup needing kit the weapon lacks is refused", wrongKit.blocked, true],
+      ["and says which kit", /Needs light in hand/.test(wrongKit.tip), true],
+      ["rather than quietly reaching for a fist", /Strike 0/.test(wrongKit.text), false]
     ];
   });
 

@@ -1,6 +1,6 @@
 # Art list
 
-**791 pieces**, of which **790** are drawn and **1** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**794 pieces**, of which **790** are drawn and **4** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -51,7 +51,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 780 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 783 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **11 pieces**, 11 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -184,7 +184,7 @@ Face-up on the table during a fight, which makes them the art players stare at l
 
 The minor-node cards of a built Way.
 
-**19 pieces**, 19 wired up. Suggested path: `cardrpg/art/cards/shade/`
+**20 pieces**, 19 wired up. Suggested path: `cardrpg/art/cards/shade/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -195,6 +195,7 @@ The minor-node cards of a built Way.
 | ✓ | **Cut and Run** | Strike, Move 2 · / Move 1 | `cards/shade/cut-and-run.webp` |
 | ✓ | **Find the Seam** | Strike -1 ignores armour · / Move 1 · Armour does not apply. A point weaker than a plain Strike. | `cards/shade/find-the-seam.webp` |
 | ✓ | **Half-Hilt** | Strike ignores 2 armor · / Move 1 · Ignores 2 armour. Reversed grip, straight into the gap. | `cards/shade/half-hilt.webp` |
+|   | **Inside the Guard** | Move 2 · / Strike -2 ignores Block · Secondary only, after a Strike with the same light blade. Answers no raised shield. | `cards/shade/inside-the-guard.webp` |
 | ✓ | **Light Feet** | Move 3 · / Move 2 · Ignoring difficult ground. | `cards/shade/light-feet.webp` |
 | ✓ | **Mock** | Dazed (1) · / Move 1 | `cards/shade/mock.webp` |
 | ✓ | **Pin the Shadow** | Strike Slowed (1) · / Move 1 | `cards/shade/pin-the-shadow.webp` |
@@ -212,7 +213,7 @@ The minor-node cards of a built Way.
 
 The minor-node cards of a built Way.
 
-**17 pieces**, 16 wired up. Suggested path: `cardrpg/art/cards/strength/`
+**19 pieces**, 16 wired up. Suggested path: `cardrpg/art/cards/strength/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -223,6 +224,7 @@ The minor-node cards of a built Way.
 | ✓ | **Hammerblow** | Strike · / Move 1 | `cards/strength/hammerblow.webp` |
 | ✓ | **Heave** | Move 2 · / Ready · Carrying any weight without being Slowed. | `cards/strength/heave.webp` |
 | ✓ | **Nothing Held Back** | Strike · Strain your hand but one, and that card must be played this turn. Strike +1 per card strained. | `cards/strength/nothing-held-back.webp` |
+|   | **Off Their Feet** | Strike · / Strike -2 Off Balance (1) · Secondary only, after a Strike: the same weapon again, and they are Off-Balance. | `cards/strength/off-their-feet.webp` |
 | ✓ | **On the Rest** | Ready · / Move 1 · A firearm, levelled on its rest. The first enemy to walk into the ground you are watching takes it, armour and all, out to the b... | `cards/strength/on-the-rest.webp` |
 | ✓ | **Overbear** | Grappled (2) · / Move 1 | `cards/strength/overbear.webp` |
 | ✓ | **Pull Them Down** | Strike · / Strike -1 · The secondary only against a Prone or Grappled target. | `cards/strength/pull-them-down.webp` |
@@ -231,6 +233,7 @@ The minor-node cards of a built Way.
 | ✓ | **Shield Wall** | Defend · / Defend, Block 1 area 1 | `cards/strength/shield-wall.webp` |
 | ✓ | **Shoulder Check** | Strike · / Off Balance (1) · Adjacent. | `cards/strength/shoulder-check.webp` |
 | ✓ | **Sweep the Leg** | Strike Prone (1) · / Move 1 | `cards/strength/sweep-the-leg.webp` |
+|   | **The Whole Arc** | Ready · / Strike · Secondary only, after a Strike: the same weapon at full value. Strain 1. | `cards/strength/the-whole-arc.webp` |
 | ✓ | **Two-Hand It** | Strike +2 · / Ready | `cards/strength/two-hand-it.webp` |
 | ✓ | **Walk It Off** | Heal 2, Shake 2 · / Move 1 · On yourself. | `cards/strength/walk-it-off.webp` |
 

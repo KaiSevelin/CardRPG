@@ -1,6 +1,6 @@
 # Art prompts
 
-**791 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**794 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 780 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 783 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -1338,7 +1338,7 @@ Draw a body already down and the ground churned where it is being worked at, the
 
 ## Way of Shade — pool
 
-**19 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/shade/`.
+**20 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/shade/`.
 
 A Way of Shade card: low light, cover, and the moment before being noticed.
 
@@ -1511,6 +1511,18 @@ Draw a knife held reversed and close, the pommel at the heel of the hand, driven
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Central Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
+### Inside the Guard
+
+File: `cards/shade/inside-the-guard.webp`
+
+```text
+SUBJECT. "Inside the Guard" — Move 2 · / Strike -2 ignores Block · Secondary only, after a Strike with the same light blade. Answers no raised shield.
+
+Draw ground covered -- weight forward, the last footfall still behind; the blow landing, the weaker follow-up, off the hand that was not busy, a short blade, held close and low, going round the shield rather than through it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Caribbean appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
 ### Light Feet
 
 File: `cards/shade/light-feet.webp`
@@ -1657,7 +1669,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Per
 
 ## Way of Strength — pool
 
-**17 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/strength/`.
+**19 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/strength/`.
 
 A Way of Strength card: mass, leverage, and weight already moving.
 
@@ -1830,6 +1842,18 @@ Draw the instant a blow lands, the weapon already through -- never wound up, nev
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Nordic appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
+### Off Their Feet
+
+File: `cards/strength/off-their-feet.webp`
+
+```text
+SUBJECT. "Off Their Feet" — Strike · / Strike -2 Off Balance (1) · Secondary only, after a Strike: the same weapon again, and they are Off-Balance.
+
+Draw the instant a blow lands, the weapon already through -- never wound up, never posing; then the weaker follow-up, off the hand that was not busy; weight in the wrong place.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Slavic appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
 ### On the Rest
 
 File: `cards/strength/on-the-rest.webp`
@@ -1924,6 +1948,18 @@ SUBJECT. "Sweep the Leg" — Strike Prone (1) · / Move 1
 Draw a low horizontal sweep through the back of a knee, drawn from the shins down: the supporting leg folding the wrong way while the other foot is still planted.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Southeast Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Whole Arc
+
+File: `cards/strength/the-whole-arc.webp`
+
+```text
+SUBJECT. "The Whole Arc" — Ready · / Strike · Secondary only, after a Strike: the same weapon at full value. Strain 1.
+
+Draw a weapon coming to hand, caught between carried and held; the instant a blow lands, the weapon already through -- never wound up, never posing.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Nordic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Two-Hand It
@@ -12113,7 +12149,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**305 prompts in 37 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**307 prompts in 38 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **10 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -12140,6 +12176,7 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **4** | 1 | a thing that says who somebody is before they speak | `items/fine-clothes` `items/gaming-set` `items/signet-ring` `items/travelling-cloak` |
 | **3** | 1 | worn unevenly, and the wear is the subject | `items/boots-of-the-long-step` `items/hollow-boots` `items/pilgrims-shoes` |
 | **2** | 1 | pulled toward something against the will | `cards/starter/taunt` `signatures/strength/play-to-the-crowd` |
+| **2** | 1 | a weapon coming to hand, caught between carried and held; the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/common/both-hands` `cards/strength/the-whole-arc` |
 | **26** | — | the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol | `conditions/blessed` `conditions/burdened` `conditions/burning` `conditions/compelled` `conditions/cursed` …+21 |
 | **15** | — | the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all | `nodes/origin/echterhof-born` `nodes/origin/furnace-stock` `nodes/origin/hyrlock` `nodes/origin/kelp-bay` `nodes/origin/regensburg` …+10 |
 | **14** | — | what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame | `injuries/bad-leg` `injuries/compelled-step` `injuries/hexed-blood` `injuries/hollow-eyes` `injuries/lost-eye` …+9 |

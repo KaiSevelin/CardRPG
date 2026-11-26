@@ -955,6 +955,18 @@ Through is that character's card and the one named exception to the rule.
 reuses exists to be found only once the Strike is staged. That is why the refusal names the order
 rather than greying the half without a word.
 
+**And try it with the wrong blade.** Give the Warrior **Inside the Guard** (Shade pool), keep the
+Longsword in hand, stage a Strike and then its secondary. It is greyed and says **needs light in
+hand** — because the card is about the knife, and the Longsword is heavy. It must *not* quietly
+strike for 0: bare hands are light, so the obvious implementation answers a greatsword opening with
+a fist and calls it a follow-up.
+
+**The other two, for the shape of the family.** **The Whole Arc** is the same weapon at **full
+value** and asks you to Strain 1 — you pick a card out of your hand to throw away, and the dialog
+should appear as you play the half. **Off Their Feet** is &minus;2 and leaves the target
+**Off-Balance** for a round; check the condition actually lands on the target's sheet, and that it
+lands on a hit rather than asking for a save.
+
 ---
 
 # 3. What the other person sees

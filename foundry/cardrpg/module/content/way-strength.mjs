@@ -140,6 +140,64 @@ export const STRENGTH_POOL = [
     text: "Secondary only, after a Strike: the same weapon, again."
   },
   {
+    /*
+     * **The whole arc, and a card thrown away to finish it.**  **[BUILT 2026-11-26]**
+     *
+     * The second of the Followup family, and the one that answers *what would a second swing at
+     * FULL value cost*. Not a modifier: `mod` is absent, so this prints the weapon's own number
+     * twice in one turn, which is a bigger thing than *Off-Hand Blow* has ever offered.
+     *
+     * **Strain, not Spent.** Spent was the first candidate and the content already carries three
+     * of them, but cards.mjs is explicit that the Spent ladder is counted against a 16-card deck
+     * and *no branch may offer a third* -- a sentence about deck composition that a fourth Spent
+     * card would quietly argue with. Strain charges the same weight in the currency the fight
+     * actually runs on: a card out of your hand is a card off the next refill, which is the
+     * exhaustion clock, and core-rules 8 is clear that is what a turn's economy is made of. One
+     * card for a full second swing of your best weapon is a trade a player can read.
+     *
+     * A **Ready** primary rather than a Move, so the card has a use on the turn nobody is in
+     * reach and so the family does not read as three Move 1s. Setting your feet, which is what
+     * the swing needs.
+     */
+    name: "The Whole Arc", copies: 1, pool: "strength", needs: [],
+    primary: [{ verb: "ready" }],
+    secondary: [{ verb: "strike", followup: true }],
+    costs: { secondary: { strain: 1 } },
+    text: "Secondary only, after a Strike: the same weapon at full value. Strain 1."
+  },
+  {
+    /*
+     * **The one that sets instead of hitting harder.**  **[BUILT 2026-11-26]**
+     *
+     * core-rules 7 says *setters belong on secondary halves*, and a Followup is a secondary by
+     * construction -- so the third of the family spends its -1 on a **condition** rather than on
+     * damage. Off-Balance is the Strength opening (core-rules 7's own table lists it against
+     * *knockdowns, grapples, follow-up blows*, which is this card's sentence written before the
+     * card existed).
+     *
+     * No `resist`: without one the condition rides on the attack and lands when the attack does,
+     * which is the rule data/cards.mjs states and the right one here. A save would make the card
+     * two rolls for one blow, and the thing being set up is the NEXT turn rather than this one.
+     *
+     * **-2 rather than -1, because the condition is the rest of the price.** *Follow Through* pays
+     * -1 for nothing but the weapon; this pays a point more and gets an opening out of it, which
+     * keeps the family from being one card at three strengths.
+     *
+     * **And a Strike primary**, which is legal and not a double attack: core-rules 3 forbids using
+     * both halves of one card, so what the two halves offer is a CHOICE -- a clean blow, or a
+     * follow-up that puts them on the back foot. It is also what makes the card read differently
+     * from its siblings: the art brief's twin audit caught the first version of this card and
+     * *Follow Through* sharing a shape (Move 1 then Strike -1) closely enough to be one picture,
+     * which is a fair complaint about the design and not only about the prompt.
+     */
+    name: "Off Their Feet", copies: 1, pool: "strength", needs: [],
+    primary: [{ verb: "strike" }],
+    secondary: [{
+      verb: "strike", mod: -2, followup: true, condition: "offBalance", duration: 1
+    }],
+    text: "Secondary only, after a Strike: the same weapon again, and they are Off-Balance."
+  },
+  {
     name: "Heave", copies: 1, pool: "strength",
     needs: ["a Move that ignores your own encumbrance"],
     primary: [{ verb: "move", param: 2 }],

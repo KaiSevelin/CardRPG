@@ -174,6 +174,33 @@ export const SHADE_POOL = [
     secondary: [{ verb: "strike", mod: -1, requires: { tag: "light" } }]
   },
   {
+    /*
+     * **A Followup that goes where the shield has just gone.**  **[BUILT 2026-11-26]**
+     *
+     * Shade's entry in the Followup family, and the one that shows the flag is not a Strength
+     * mechanic. It pays **-2** where *Follow Through* pays -1, and what it buys is `ignoresBlock`:
+     * the first cut is what made them raise the guard, so the second answers nothing. That is the
+     * same trade *Round the Shield* makes with a thrown knife, one half over.
+     *
+     * **`requires` on a followup step, which is the reason that case now refuses rather than
+     * wandering.** The card is about the knife: a character who opened with a greatsword and keeps
+     * a knife on their belt used to be handed the knife here, so *the same blade* became a
+     * different blade. `#itemFor` returns nothing when what the primary swung does not meet the
+     * requirement, and the face says *needs light in hand* -- which is true and is the sentence a
+     * player can act on.
+     *
+     * Not a duplicate of *Second Knife*, which is two strikes needing two knives and a throw.
+     * This one is a single knife used twice.
+     */
+    name: "Inside the Guard", copies: 1, pool: "shade", needs: [],
+    primary: [{ verb: "move", param: 2 }],
+    secondary: [{
+      verb: "strike", mod: -2, followup: true, ignoresBlock: true,
+      requires: { tag: "light" }
+    }],
+    text: "Secondary only, after a Strike with the same light blade. Answers no raised shield."
+  },
+  {
     name: "Mock", copies: 1, pool: "shade", needs: [],
     primary: [{ condition: "dazed", duration: 1, resist: "presence", dc: 5 }],
     secondary: [{ verb: "move", param: 1 }]

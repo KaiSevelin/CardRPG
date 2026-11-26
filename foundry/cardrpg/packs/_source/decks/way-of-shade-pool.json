@@ -551,6 +551,50 @@
       }
     },
     {
+      "_id": "DbwvGarhD9OiH1E9",
+      "_key": "!cards.cards!NHP0PBXJoAQv67Vk.DbwvGarhD9OiH1E9",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1400,
+      "name": "Inside the Guard",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Inside the Guard",
+          "img": "systems/cardrpg/art/cards/shade/inside-the-guard.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "strike",
+            "mod": -2,
+            "followup": true,
+            "ignoresBlock": true,
+            "requires": {
+              "tag": "light"
+            }
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Secondary only, after a Strike with the same light blade. Answers no raised shield."
+      }
+    },
+    {
       "_id": "GEBxoradU81UWqNi",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.GEBxoradU81UWqNi",
       "_stats": {
@@ -558,7 +602,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1400,
+      "sort": 1500,
       "name": "Mock",
       "type": "action",
       "face": 0,
@@ -598,7 +642,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1500,
+      "sort": 1600,
       "name": "Sleight",
       "type": "action",
       "face": 0,
@@ -637,7 +681,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1600,
+      "sort": 1700,
       "name": "Vanish",
       "type": "action",
       "face": 0,
@@ -680,7 +724,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1700,
+      "sort": 1800,
       "name": "Count the Odds",
       "type": "action",
       "face": 0,
@@ -718,7 +762,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1800,
+      "sort": 1900,
       "name": "Scout Ahead",
       "type": "action",
       "face": 0,
@@ -757,7 +801,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1900,
+      "sort": 2000,
       "name": "Smoke and Go",
       "type": "action",
       "face": 0,

@@ -2800,8 +2800,26 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         const again = id === BARE_HANDS.id ? BARE_HANDS : this.actor.items.get(id);
         if (again && itemMeets(again, requires)) return again;
       }
+      /*
+       * **A Followup reuses or it does not happen.**  **[RULED 2026-11-26]**
+       *
+       * Nothing an earlier half swung, or nothing that meets this card's own requirement. Falling
+       * through to the ordinary chooser was the first build and it is wrong twice over.
+       *
+       * It makes `requires` mean something else on a followup step. *Inside the Guard* asks for a
+       * `light` weapon, so a character who opened with a greatsword and a knife on their belt
+       * would have been handed **the knife** -- a card reading *the same blade, inside the guard*
+       * quietly becoming a different blade. The honest answer is that the requirement is not met,
+       * and `unmet` already has the sentence for it.
+       *
+       * And it makes the face promise a number the resolver will not deliver, which is the defect
+       * this file keeps a standing rule about: with no primary staged the half printed its full
+       * weapon value next to a tooltip saying the half was refused. `#followupBlocked` has already
+       * turned it down in that case; the face should print no number rather than a tempting one.
+       */
+      return null;
     }
-    const taken = followup ? new Set() : this.#claimed(half, verb);
+    const taken = this.#claimed(half, verb);
     const candidates = this.#itemsFor(verb, requires).filter(i => !taken.has(i.id));
     /*
      * **And the fist, when there is nothing left.** Unconditional for a Strike that asks for no

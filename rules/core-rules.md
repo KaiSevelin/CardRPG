@@ -193,6 +193,8 @@ If one side has clearly caught the other — an ambush, a sprung trap, a charge 
 - **A Followup is the exception**, and the only one: a secondary half printed *Followup* swings the
   **same weapon the primary just swung**. It may only be played as a secondary, and only when the
   primary is a Strike.
+- **A Followup reuses, or it does not happen.** If the primary swung nothing, or swung something
+  this card will not accept, the half is refused — it never reaches for a different weapon.
 
 > **[FOUND 2026-11-26, BUILT 2026-11-26] The game's own answer to double attacks did nothing for
 > anyone holding one weapon.**
@@ -228,6 +230,32 @@ If one side has clearly caught the other — an ambush, a sprung trap, a charge 
 > **A card printing Followup cannot print the Strike it follows**, because of the sentence above
 > this note: you can never use both halves of the same card. So *Follow Through* offers a Move 1
 > primary, and the Strike comes from somewhere else in your hand.
+>
+> **Four cards, so that it is a family and not a special case.** One card would have made Followup
+> a property of *Follow Through*; the point of a rule is that several things can want it, and each
+> of these wants it for a different reason:
+>
+> | Card | Way | The second swing | What it costs |
+> |---|---|---|---|
+> | *Follow Through* | Strength | &minus;1 | nothing else — the baseline |
+> | *The Whole Arc* | Strength | **full value** | Strain 1: a card out of your hand |
+> | *Off Their Feet* | Strength | &minus;2, and they are **Off-Balance** | the extra point |
+> | *Inside the Guard* | Shade | &minus;2, **answers no raised shield** | the extra point, and it must be a `light` blade |
+>
+> *The Whole Arc* is **Strain** rather than Spent on purpose. Spent was the first candidate, but
+> the Spent ladder is counted against a 16-card deck and *no branch may offer a third* — a sentence
+> about deck composition that a fourth Spent card would quietly argue with. A card out of your hand
+> is a card off the next refill, which is the exhaustion clock itself, and that is the right
+> currency for a full second swing.
+>
+> *Off Their Feet* is the one that spends its point on a **condition** instead of damage, which is
+> §7's *setters belong on secondary halves* — and a Followup is a secondary by construction.
+>
+> *Inside the Guard* is why **a Followup refuses rather than wandering**. It asks for a `light`
+> blade; a character who opened with a greatsword and keeps a knife on their belt was handed the
+> knife by the first build, so *the same blade* silently became a different blade. Worse, **bare
+> hands are light** — so the fall-through answered a greatsword opening with a fist and called it
+> a follow-up. The half is refused now, and the card says *needs light in hand*.
 
 > **Where double attacks come from.** A card with Strike on its *secondary* half is the strongest kind of card in the game: simulation showed one such card shortens fights by a full round. The rule stays open, but these cards are meant to be **earned through leveling**, not handed out in starter decks. Treat Strike-on-secondary as a reward on a Way's tree, the same way a second attack is a milestone in other games. The mechanism is now specified — it is an **action-card benefit on a Way graph node** ([leveling.md](leveling.md) §4) — and the card is written: *Off-Hand Blow*, Strike on the primary and **Strike −1** on the secondary, in the common minor-node pool any Way may draw from ([way-cards.md](way-cards.md) §3.1). The −1 is what keeps it from making a plain Strike obsolete. The starter deck keeps its one double-strike card.
 

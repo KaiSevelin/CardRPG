@@ -55,7 +55,7 @@ schema too, so a face can render without a second convention.
 
 #### `text` was carrying the game  **[MEASURED 2026-11-02]**
 
-**Of 391 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
+**Of 397 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
 when played. `case ""` in the tray broke out of a switch that
 is the end of the method: no effect, no prompt, not a line in chat. The branch below it already
 announced any verb the engine did not recognise, so the arrangement was exactly backwards `-` **a
@@ -104,7 +104,7 @@ prevent.
 | `targets` | **Who the step is for**: `self`, `oneEnemy`, `enemiesInRange`, `oneAlly`, `alliesInRange`, `adjacentAllies`, `everyAlly`, `selfAndAllies`, `everyone`. Blank means one enemy, which is what every card has always meant by saying nothing |
 | `oncePer` | How often it may be played: `fight`, `day`, `pactPerFight`. Three steps said it in prose |
 | `ignoresArmour` / `ignoresBlock` / `ignoresCover` | All of it, where `ignores` above is a NUMBER of armour points. Block and cover are not armour, and core-rules 5 is explicit that `ignores` comes off armour and never off Block |
-| `followup` | This half swings the weapon an **earlier** half already swung, instead of picking its own. A named exception to `#claimed` -- *a weapon serves one Strike a turn* -- and the reason it needs one: for a character holding a single greatsword, halberd or musket, *Off-Hand Blow*'s secondary reached `BARE_HANDS` and struck for 1, so the game's own answer to double attacks did nothing for the archetype that most obviously swings twice. Secondary halves only, and the primary must be a Strike; the order is load-bearing rather than polite, because `#claimed` reads earlier by click order. A flag and **not** a second copy of the item: an owned Item is summed by `sumGrants`, so a shadow sword granting +1 armour would grant it twice |
+| `followup` | This half swings the weapon an **earlier** half already swung, instead of picking its own. A named exception to `#claimed` -- *a weapon serves one Strike a turn* -- and the reason it needs one: for a character holding a single greatsword, halberd or musket, *Off-Hand Blow*'s secondary reached `BARE_HANDS` and struck for 1, so the game's own answer to double attacks did nothing for the archetype that most obviously swings twice. Secondary halves only, and the primary must be a Strike; the order is load-bearing rather than polite, because `#claimed` reads earlier by click order. **It reuses or it does not happen**: a followup step whose `requires` the reused weapon does not meet is refused rather than handed a different one -- bare hands are `light`, so the fall-through answered a greatsword with a fist. Four cards carry it, one per reason (core-rules 3). A flag and **not** a second copy of the item: an owned Item is summed by `sumGrants`, so a shadow sword granting +1 armour would grant it twice |
 | `read` | How many cards a Read looks at. Four steps, two of which are the whole action and two of which ride on one |
 | `readDeck` | Whose fate deck a Read looks at: `other`, `target`, `all`. Read by `resolveRead`, and `other` is where *a Divinator may never read their own* lives |
 | `whileState` | A state of your own the step waits on: hand empty, both hands empty, exactly one card, hand and deck both empty, a thin deck, no ally near. **Seven steps, and whole builds rest on them.** Read by `stateHolds`, gated by `refusesState`, printed on the card |
