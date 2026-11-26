@@ -913,6 +913,22 @@ export const NODES = [
   /* The Strength half of the pair above: same shape, same level, its own list. */
   { id: "strength.repertoire", name: "What You Lean On", after: ["strength"],
     grants: { choose: { from: "Warrior" } } },
+  /*
+   * **And the two the magical Ways could not have.**  **[BUILT 2026-11-26]**
+   *
+   * The paragraph above says *the martial side*, and it had to: Mind and Faith delivered the
+   * thirteen schools and the twelve gods as **spells**, so neither had a card list for a menu to
+   * offer. A scholar's action deck was the starter Warrior's sixteen.
+   *
+   * It had to change the day a prepared spell began costing a \u2726 Cast half (core-rules 4). The
+   * two pools exist now, the two Way-level titles are `Scholar` and `Sworn`, and these are the
+   * same node at the same level behind the same kind of title -- which is the whole argument for
+   * them: the asymmetry was never a design, only a consequence of two Ways having no cards.
+   */
+  { id: "mind.repertoire", name: "What You Prepared For", after: ["mind"],
+    grants: { choose: { from: "Scholar" } } },
+  { id: "faith.repertoire", name: "What You Were Taught", after: ["faith"],
+    grants: { choose: { from: "Sworn" } } },
 
   { id: "strength.drill", name: "Drill", after: ["strength"],
     grants: { card: "Hold the Line", expertise: "might" } },
@@ -1341,15 +1357,34 @@ export const NODES = [
   {
     /* The common card a caster gets is the one about spacing, because where to stand is the hard
      * problem this whole Way's Tactics are written about (way-cards 2.5). */
+    /*
+     * **The card here was *Measure*, a Strike +1, handed to a scholar.** **[CHANGED 2026-11-26]**
+     *
+     * Which was the whole of the old arrangement in one grant: the two magical Ways had no cards,
+     * so their trunks reached into the common pool and took a fighter's. Harmless while a cast
+     * cost nothing and a card half was only ever a Strike you were not going to make.
+     *
+     * A prepared spell is cast off a \u2726 Cast half now, so the one card a caster is **guaranteed**
+     * on the way in should be one they can cast with. *Say the Words* is the common pool's Cast
+     * backbone and deliberately the plainest card in the game -- what makes it good is the formula
+     * behind it, which is the decision this Way is built out of.
+     */
     id: "mind.candle", name: "The Candle", after: ["mind.letters"],
-    grants: { card: "Measure", spellSlots: 1 }
+    grants: { card: "Say the Words", spellSlots: 1 }
   },
   {
     /*
      * A prune, and the reasoning is the exact mirror of Shade's. Cutpurse pays in deck size, so a
-     * prune on its branch would refund the price; a caster's power is not in their action deck at
-     * all, so thinning it costs this Way nothing and is pure gain. The same reward reads as a
-     * refund in one Way and as a gift in another, which is what it means for a price to be real.
+     * prune on its branch would refund the price; thinning a caster's deck costs this Way little
+     * and is close to pure gain. The same reward reads as a refund in one Way and as a gift in
+     * another, which is what it means for a price to be real.
+     *
+     * **[CHANGED 2026-11-26] It used to say *a caster's power is not in their action deck at
+     * all*, and that sentence has expired.** A prepared spell is cast off a \u2726 Cast half now
+     * (core-rules 4), so a scholar's deck is where their casting comes from and a prune takes
+     * something real: a thinner deck is a better hand, but it is also fewer Cast halves between
+     * here and the next refill. The grant is unchanged -- it is still a good node -- but it is a
+     * decision now rather than a free one, which is the better version of the same reward.
      */
     id: "mind.vigil", name: "The Long Vigil", after: ["mind.candle"],
     grants: { spellSlots: 1, prune: 1 }
@@ -1705,8 +1740,11 @@ export const NODES = [
   { id: "faith.vows", name: "Vows", after: ["faith"],
     grants: { skill: ["Kept Faith"], knowHow: "a rite done wrong, and whether it mattered", spellSlots: 1 } },
   {
+    /* *Hold the Line* -- Defend, then Strike \u22121 -- was the card a priest was guaranteed, and
+     * the note on `mind.candle` is the whole reason it is a Cast now. Same change, same day, and
+     * for the Way whose own Signature cards are four and cast on none of them. */
     id: "faith.pilgrimage", name: "Pilgrimage", after: ["faith.vows"],
-    grants: { card: "Hold the Line", spellSlots: 1, expertise: "presence" }
+    grants: { card: "Say the Words", spellSlots: 1, expertise: "presence" }
   },
   { id: "faith.calling", name: "The Calling", after: ["faith.pilgrimage"],
     grants: { skill: ["The Petition"], restTokens: 1, spellSlots: 1 } },

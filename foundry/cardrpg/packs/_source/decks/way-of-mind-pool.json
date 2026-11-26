@@ -1,0 +1,260 @@
+{
+  "_id": "Tyhx5BuMVdoSGJn8",
+  "_key": "!cards!Tyhx5BuMVdoSGJn8",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Way of Mind — Pool",
+  "type": "deck",
+  "img": "systems/cardrpg/art/backs/action.webp",
+  "cards": [
+    {
+      "_id": "uf5B2DZEkM66Udag",
+      "_key": "!cards.cards!Tyhx5BuMVdoSGJn8.uf5B2DZEkM66Udag",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 100,
+      "name": "The Prepared Word",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Prepared Word",
+          "img": "systems/cardrpg/art/cards/mind/the-prepared-word.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast",
+            "mod": 1
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "What was decided this morning, said well."
+      }
+    },
+    {
+      "_id": "zE4QtA9D3lG0tq0K",
+      "_key": "!cards.cards!Tyhx5BuMVdoSGJn8.zE4QtA9D3lG0tq0K",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 200,
+      "name": "Step and Speak",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Step and Speak",
+          "img": "systems/cardrpg/art/cards/mind/step-and-speak.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 2
+          },
+          {
+            "verb": "cast",
+            "mod": -1
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {},
+        "text": "Two squares first, and the words from where you end up."
+      }
+    },
+    {
+      "_id": "PTm7wtaRXpPxWHnf",
+      "_key": "!cards.cards!Tyhx5BuMVdoSGJn8.PTm7wtaRXpPxWHnf",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 300,
+      "name": "The Long Formula",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Long Formula",
+          "img": "systems/cardrpg/art/cards/mind/the-long-formula.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast",
+            "mod": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {
+          "primary": {
+            "strain": 1
+          }
+        },
+        "text": "Strain 1. The longer saying of the same formula, and it costs you the next card."
+      }
+    },
+    {
+      "_id": "cJLyBoVqXF9MW6aO",
+      "_key": "!cards.cards!Tyhx5BuMVdoSGJn8.cJLyBoVqXF9MW6aO",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 400,
+      "name": "Across the Room",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Across the Room",
+          "img": "systems/cardrpg/art/cards/mind/across-the-room.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast",
+            "range": 6
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Out to 6, whatever the formula's own reach. It is not shortened, only lengthened."
+      }
+    },
+    {
+      "_id": "u5wFE6569Z4olVKm",
+      "_key": "!cards.cards!Tyhx5BuMVdoSGJn8.u5wFE6569Z4olVKm",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 500,
+      "name": "Past the Shield",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Past the Shield",
+          "img": "systems/cardrpg/art/cards/mind/past-the-shield.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast",
+            "mod": -1,
+            "ignoresBlock": true
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "No shield was ever raised against a word. Answers no Block."
+      }
+    },
+    {
+      "_id": "m6IbRXvX4YJ5a4Un",
+      "_key": "!cards.cards!Tyhx5BuMVdoSGJn8.m6IbRXvX4YJ5a4Un",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 600,
+      "name": "The Last Word",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Last Word",
+          "img": "systems/cardrpg/art/cards/mind/the-last-word.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast",
+            "mod": 3
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 2
+          }
+        ],
+        "reaction": "",
+        "costs": {
+          "primary": {
+            "spent": true
+          }
+        },
+        "text": "Spent. Everything the formula had, and the card does not come back this fight."
+      }
+    }
+  ]
+}

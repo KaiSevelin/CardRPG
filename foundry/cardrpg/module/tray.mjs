@@ -40,6 +40,12 @@ import {
   BARE_HANDS,
   itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore,
   refusesAction, refusesTiming, refusesState, stateHolds, stateWords, resolveRead,
+  /* The menu a \u2726 Cast half offers is a face, so it asks the same predicate the refusal does. */
+  timingBars,
+  /* What a \u2726 Cast half gives the spell it casts. In the resolver because it is a rule about
+   * steps rather than about this window -- and because arithmetic belongs where it can be run by
+   * the offline suite with planted numbers instead of grepped for. */
+  castWith,
   bookDelayed, healTargets, SKILL_FLOOR,
   /* One strain dialog, one price. A spell pays the same cards a card half does. */
   askStrain, spellPrice, priceWords,
@@ -2317,6 +2323,15 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       /* A Followup's gate is about the TURN rather than the kit, so it is asked whether or not a
        * weapon was found -- an illegal Followup still has a perfectly good sword to point at. */
       if (step.followup) gate = this.#followupBlocked(half);
+      /*
+       * **And a Cast with nothing to cast.**  **[BUILT 2026-11-26]**
+       *
+       * `unmet` cannot say this. It is a KIT requirement and both readers wrap it in the only
+       * sentence that fits one -- *Needs a staff in hand* -- and the honest answer here is that
+       * there is no magic to put through the half from either source: nothing prepared and nothing
+       * in your hands. That is the gate's whole job.
+       */
+      if (step.verb === "cast") gate ||= this.#castBlocked(half);
       const base = item?.system.verbs?.[step.verb]?.value;
       if (base !== null && base !== undefined) {
         /* Through the stack, so the face promises exactly what the play will deliver: a waved
@@ -2939,6 +2954,17 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const staging = deckOf(this.actor, "actionHand")?.cards.get(cardId);
     if ((staging?.system?.[half] ?? []).some(st => st.followup)) {
       const why = this.#followupBlocked(half);
+      if (why) return ui.notifications.warn(why);
+    }
+    /*
+     * **And a Cast with nothing to cast**, refused here rather than when the turn is played, for a
+     * reason the Followup gate did not have: `#onPlay` retires a card whether its step resolved or
+     * warned, so a Cast half staged with an empty book and empty hands would cost the card and
+     * deliver nothing. A refused cast charges nothing, and the only place that can still be true
+     * is this click.
+     */
+    if ((staging?.system?.[half] ?? []).some(st => st.verb === "cast")) {
+      const why = this.#castBlocked(half);
       if (why) return ui.notifications.warn(why);
     }
     this.staged.push({ cardId, half });
@@ -3678,6 +3704,180 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * stop carrying one. Nothing is asked at all unless the weapon takes ammunition and a suitable
    * piece is on the belt.
    */
+  /**
+   * **Why the spell book is shut as a road right now.**  **[RULED 2026-11-26]**
+   *
+   * *Spells can only be used in combat through Cast actions.* Clicking a spell in the book cost
+   * **nothing**: no card, no half, no stamina -- so a caster took two card halves and a cast where
+   * everybody else took two halves, and the costs the game charges for a turn did not reach them.
+   * **Dazed** is the plainest case: it takes a fighter's secondary and took nothing at all from a
+   * caster, because `refusesAction` is only half-aware when it is told which half, and the book
+   * told it nothing.
+   *
+   * So in a fight a prepared spell is cast off a \u2726 Cast half, and the book is how you read your
+   * spells rather than how you throw them. **Out of a fight the book is still the road**, and that
+   * is the same ruling `#halfSpent` already makes about the budget it belongs to: there is no turn
+   * out there to spend, so there is no half to charge and nothing to wait for. Opening a door and
+   * then opening another is two actions in a game that is not counting.
+   *
+   * **A reaction is excused, and it is the one exception the rules already wrote.** core-rules 4:
+   * *a prepared spell may be a reaction; it costs no half, because it was never in your hand to
+   * play.* It fires on a trigger the way a card's reaction row does, and a trigger is not a turn.
+   * Testing the printed timing rather than whose turn it is matters: an ordinary spell clicked
+   * during an enemy's turn would otherwise have been the whole loophole again, one turn over.
+   *
+   * @returns {string} empty when the book may be clicked, otherwise the sentence to show.
+   */
+  #bookShut(slate) {
+    if (!game.combat?.started) return "";
+    if (slate.system.effect?.timing === "reaction") return "";
+    return `In a fight, ${slate.name} is cast off a \u2726 Cast half: stage one from your hand. `
+      + "The book is the road out of a fight, and for reactions.";
+  }
+
+  /**
+   * **What this character could cast off a card half right now.**
+   *
+   * Prepared, not already cast, and nothing about the moment or the state standing in the way --
+   * because what this list feeds is a **menu**, and a menu is a face. Offering a ritual in the
+   * middle of a fight, or a spell that only does anything while you are Burning when you are not,
+   * is a face promising what the resolver will refuse, which is the one defect this file keeps a
+   * standing rule about. `timingBars` and `stateHolds` are the predicates behind the two refusals,
+   * asked here rather than re-spelled.
+   *
+   * `drained` rather than `prepared && !drained` being folded into the data model on purpose: a
+   * spell that has been cast is still prepared and still fills its slot, which is the whole of
+   * what makes the preparation a price (core-rules 4).
+   */
+  #castable() {
+    return this.actor.items.filter(slate =>
+      slate.type === "spell" && slate.system.prepared && !slate.system.drained
+      && !timingBars(this.actor, slate)
+      && stateHolds(this.actor, slate.system.effect?.whileState ?? "") !== false);
+  }
+
+  /**
+   * **Whether a \u2726 Cast half can do anything, and why not.**  **[BUILT 2026-11-26]**
+   *
+   * The same pairing `#followupBlocked` has: one predicate, read by the face and by the handler, so
+   * a half that the handler will refuse does not look playable. It matters more here than it did
+   * there, because a card half is **spent when the card is played** -- `#onPlay` retires the card
+   * whether a step warned or resolved -- so a Cast half staged with nothing to cast would cost a
+   * caster the card and give them nothing. Refusing at the staging click is what keeps the file's
+   * other rule true: a refused cast charges nothing.
+   *
+   * **Only for a character**, read off the structural test rather than the actor type: an NPC's
+   * intent card prints a Cast whose value comes from its own kit and nobody stages it, so a gate
+   * there would be a sentence on a face that cannot be clicked.
+   */
+  #castBlocked(half) {
+    if (!Object.hasOwn(this.actor.system.decks ?? {}, "actionHand")) return "";
+    if (this.#castable().length || this.#itemFor("cast", half)) return "";
+    return "Nothing prepared, and nothing in hand that casts.";
+  }
+
+  /**
+   * **Which magic goes through this half**, when there is more than one answer.
+   *
+   * core-rules 4's *Two kinds of casting* is a table with two columns -- the item's Cast line and a
+   * prepared spell -- and this is that table as a question. One icon, two sources, which is the
+   * same split every other verb has: **the half says you cast and the source says how well.**
+   *
+   * Nothing is asked when there is nothing to ask. No prepared spell at all and the answer is the
+   * implement, exactly as it was before a spell had this road, down to the refusal the caller
+   * prints when nothing is in hand either.
+   *
+   * @returns {{slate: Item}|{implement: true}|null} null when the dialog was dismissed.
+   */
+  async #whatToCast(half) {
+    const book = this.#castable();
+    const implement = this.#itemFor("cast", half);
+    if (!book.length) return { implement: true };
+    if (!implement && book.length === 1) return { slate: book[0] };
+
+    const priced = slate => {
+      const words = priceWords(spellPrice(this.actor, slate)).join(", ");
+      return `${slate.name} \u2014 strength ${slate.system.strength}`
+        + (words ? `, ${words}` : "");
+    };
+    const chosen = await foundry.applications.api.DialogV2.wait({
+      window: { title: "Cast what?" },
+      content: `<div class="cardrpg"><p>The half says you cast; this says how well. A prepared `
+        + `spell is spent until a long rest, whether or not it lands.</p></div>`,
+      buttons: [
+        ...book.map(slate => ({ action: slate.id, label: priced(slate) })),
+        ...(implement
+          ? [{ action: "implement", label: `${implement.name} \u2014 its own magic`, default: true }]
+          : [])
+      ],
+      rejectClose: false
+    });
+    if (!chosen) return null;
+    if (chosen === "implement") return { implement: true };
+    const slate = book.find(s => s.id === chosen);
+    return slate ? { slate } : null;
+  }
+
+  /**
+   * **Cast one prepared spell**, whichever road reached it.  **[MOVED 2026-11-26]**
+   *
+   * Lifted whole out of `#onPlaySlate`, where it was the spell branch, the moment a second road
+   * appeared. Not copied: every guard below is a rule about casting rather than about clicking, and
+   * a \u2726 Cast half with its own copy would have been a cast that paid no Health, spent no
+   * preparation and answered no ward -- which is the same shape of defect as the two vocabularies
+   * this project keeps finding, except that here the second copy would have been the free one.
+   *
+   * **`half` is new and it is the point of the exercise.** `refusesAction` only knows about a half
+   * when it is told which half, and the book told it nothing, so Dazed -- which takes your
+   * secondary -- took nothing from a cast. Now a cast is played on a half, and it is told.
+   *
+   * **The card half's gifts land on the spell's own**, which is the relationship a weapon has to a
+   * Strike read the other way round: there the card modifies the item, here it modifies the slate.
+   * `#castWith` is the rule, and it means a *Cast +1* put behind a condition spell adds nothing --
+   * not an oversight, but the same decision core-rules 4 already makes about preparing the wrong
+   * spells, made one layer up.
+   *
+   * @returns {boolean} whether the cast happened, so a caller can tell a refusal from a cast.
+   */
+  async #castSlate(slate, { half = "primary", targets = [], step = null } = {}) {
+    /*
+     * **A spell already cast is refused in words.**  **[BUILT 2026-11-24]** The card is greyed and
+     * the menu leaves it out, so reaching here means a third road in -- and a guard that fires
+     * only once the card is clickable is a guard that charges for the cast it refuses. Before
+     * every price, like the three below it.
+     */
+    if (slate.system.drained) {
+      ui.notifications.info(`${slate.name} has been cast. The preparation is spent; a long rest `
+        + "puts it back in your head.");
+      return false;
+    }
+    if (refusesAction(this.actor, { half, what: `casting ${slate.name}` })) return false;
+    /* And the moment, which the card states and nothing used to read. Here for the same reason
+     * and in the same breath: a timing refused after `payToCast` would take the Health and the
+     * slot for a cast that never happened. */
+    if (refusesTiming(this.actor, slate, { what: `casting ${slate.name}` })) return false;
+    /* And the state, which is the third question of the same kind and in the same place. These
+     * steps do NOTHING outside their state -- the whole effect is behind the gate -- so a cast
+     * made outside it is a slot and a price spent on nothing at all. */
+    if (refusesState(this.actor, slate, { what: `casting ${slate.name}` })) return false;
+    /*
+     * **Before `payToCast`, which is the whole reason these guards are not left to `#resolveStep`.**
+     * The spell's price is paid here and the effect resolves three lines later; a refusal inside
+     * the resolver would take the Health and the slot and then decline to cast.
+     */
+    if (!await payToCast(this.actor, slate)) return false;
+    /*
+     * The price is paid before the ward fires, and that is deliberate: *Unmake* stops the spell
+     * from RESOLVING, not from being attempted, so the Health and the slot are gone either way.
+     * A counterspell that also refunded the cast would be strictly better than not being cast at.
+     */
+    if (await answerCast(this.actor, slate.name)) return true;
+
+    await this.#resolveStep(
+      step ? castWith(slate.system.effect, step) : slate.system.effect, half, targets, slate);
+    return true;
+  }
+
   async #nock(weapon) {
     const pieces = reachableAmmo(this.actor, weapon);
     if (!pieces.length) return { ammo: null, payload: null };
@@ -3780,6 +3980,27 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     switch (step.verb) {
       case "strike":
       case "cast": {
+        /*
+         * **A \u2726 Cast half is the road to the spell book.**  **[BUILT 2026-11-26]**
+         *
+         * `source` is set when a spell is already the thing being cast, so this is the other
+         * direction: a card half that says *cast* and has not been told what. core-rules 4's *Two
+         * kinds of casting* is the menu, and the half carries its modifier into whichever answer
+         * comes back.
+         *
+         * **Before the target check**, which is not a detail. A miracle that heals you needs no
+         * target at all, and the sentence below belongs to the item's own Cast line -- a card half
+         * answering *Target a token first* to a priest healing himself would be refusing a spell
+         * on behalf of a weapon.
+         */
+        if (step.verb === "cast" && !source) {
+          const chosen = await this.#whatToCast(half);
+          if (!chosen) return;
+          if (chosen.slate) {
+            await this.#castSlate(chosen.slate, { half, targets, step });
+            return;
+          }
+        }
         if (!targets.length) return ui.notifications.warn("Target a token first.");
         const item = source ?? this.#itemFor(step.verb, half, step.requires, step.followup);
         if (!item) {
@@ -4326,42 +4547,17 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
      * spell's effect and a card's step are one shape (data/cards.mjs).
      */
     if (slate.type === "spell") {
+      /*
+       * **In a fight the book is not a road: a cast is a card half.**  **[RULED 2026-11-26]**
+       *
+       * Every guard and every price this used to carry is in `#castSlate` now, because there are
+       * two roads to a cast and they must not be two sets of rules. What stayed here is the one
+       * question that belongs to the road rather than to the spell: whether this road is open.
+       */
+      const shut = this.#bookShut(slate);
+      if (shut) return ui.notifications.warn(shut);
       const targets = [...(game.user.targets ?? [])].map(t => t.actor).filter(a => a);
-      /*
-       * **Before `payToCast`, which is the whole reason this guard is not left to `#resolveStep`.**
-       * The spell's price is paid here and the effect resolves two lines later; a refusal inside the
-       * resolver would take the Health and the slot and then decline to cast. The file already says
-       * a refused cast must charge nothing -- it says it about affording the Health -- and a turn
-       * that does not happen is the same kind of refusal.
-       */
-      /*
-       * **A spell already cast is refused in words.**  **[BUILT 2026-11-24]** The card is greyed,
-       * so reaching here means a second road in -- and a guard that fires only after the card is
-       * clickable is a guard that charges for the cast it refuses. Before every price, like the
-       * three below it.
-       */
-      if (slate.system.drained) {
-        return ui.notifications.info(`${slate.name} has been cast. The preparation is spent; a `
-          + "long rest puts it back in your head.");
-      }
-      if (refusesAction(this.actor, { what: `casting ${slate.name}` })) return;
-      /* And the moment, which the card states and nothing used to read. Here for the same reason
-       * and in the same breath: a timing refused after `payToCast` would take the Health and the
-       * slot for a cast that never happened. */
-      if (refusesTiming(this.actor, slate, { what: `casting ${slate.name}` })) return;
-      /* And the state, which is the third question of the same kind and in the same place. These
-       * steps do NOTHING outside their state -- the whole effect is behind the gate -- so a cast
-       * made outside it is a slot and a price spent on nothing at all. */
-      if (refusesState(this.actor, slate, { what: `casting ${slate.name}` })) return;
-      if (!await payToCast(this.actor, slate)) return;
-      /*
-       * The price is paid before the ward fires, and that is deliberate: *Unmake* stops the spell
-       * from RESOLVING, not from being attempted, so the Health and the slot are gone either way.
-       * A counterspell that also refunded the cast would be strictly better than not being cast at.
-       */
-      const warded = await answerCast(this.actor, slate.name);
-      if (warded) return this.render();
-      await this.#resolveStep(slate.system.effect, "primary", targets, slate);
+      await this.#castSlate(slate, { half: "primary", targets });
       return this.render();
     }
 

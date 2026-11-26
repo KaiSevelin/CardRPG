@@ -471,13 +471,17 @@ Action cards say **what** you do (the verb). Equipped items say **how well** (th
 | Verb | Needs an item? | Notes |
 |---|---|---|
 | **Strike** | Yes – uses the item's *Strike* line | Melee or ranged depends on the item |
-| **Cast** | Yes – uses the item's *Cast* line | Wands, staves, holy symbols |
+| **Cast** | Either – the item's *Cast* line, **or** a prepared spell | Wands, staves, holy symbols; or whatever is in your head |
 | **Defend** | Yes – uses the item's *Defend* line | Shields, weapons that parry |
 | **Use** | Yes – uses the item's *Use* line | Potions, scrolls, tools |
 | **Move X** | No | Move up to X squares |
 | **Ready** | – | Equip or swap one item (see below) |
 
 If an equipped item has no line for a verb, you can't use that verb with that item.
+
+**✦ Cast is the one verb with two sources**, and it is the only row in that table whose answer is
+*either*. The half says you cast; the item or the spell says how well. *Two kinds of casting*,
+below, is the whole of the difference.
 
 ### Ammunition
 
@@ -750,8 +754,9 @@ time — but for most of the list the preparation *is* the whole price.
 So **your slots are what you can cast between sleeps.** A caster with four slots casts four
 strength-1 spells, or one strength-4 spell, and then they are a person with a free hand.
 
-- **It still costs no card and no stamina.** That part was never wrong: a prepared spell was never
-  in your hand, so there is no half to spend and nothing to discard. What bounds it is the slot.
+- **In a fight it also costs a card half**, and that part *was* wrong — see *Casting costs a half*
+  below. Out of a fight the preparation is still the whole price, because out there nobody is
+  counting halves at all.
 - **A used-up spell cannot go back in the book**, which is what makes the rest matter rather than
   the sleep being a formality: a spell that merely left your head would free its slot, another
   would go in on the spot, and a caster with three slots and twenty spells would have twenty casts
@@ -778,6 +783,71 @@ strength-1 spells, or one strength-4 spell, and then they are a person with a fr
 > matters. It is a **larger** grant now than it was when this was written: re-preparing is a cast
 > back, not only a change of mind.
 
+#### Casting costs a half  **[RULED 2026-11-26]**
+
+**In a fight, a prepared spell is cast off a card half printed ✦ Cast.** Not out of the book: the
+book is where your spells live and where you read them, and in a fight it is not a road.
+
+| | **In a fight** | **Out of a fight** |
+|---|---|---|
+| How a prepared spell is cast | play a ✦ Cast half from your hand | click it in your book |
+| What it costs | the card, the half, and the preparation | the preparation |
+| What bounds how many | your hand and the two-halves turn | your slots |
+
+**The preparation is still spent either way.** Everything in *Casting spends the preparation* above
+holds unchanged: the spell stays in its slot, used up, and a long rest is what puts it back. The
+half is a price on top of that and not a replacement for it — a cast in a fight costs a card, a
+half and the preparation, and a cast in a corridor costs the preparation.
+
+**A reaction spell is excused, and it always was.** *Reaction spells* below says why in one line:
+it costs no half because it was never in your hand to play. It fires on a trigger, and a trigger is
+not a turn. That is the only exception, and it is tested by the **printed timing** rather than by
+whose turn it is — an ordinary spell cast on the enemy's turn would be the same free cast, one turn
+over.
+
+**What the card half adds, and the one rule about it: a ✦ Cast half can make a spell better and
+never different.**
+
+- a printed **modifier** adds to the spell's own, so *Cast +1* is one more point of whatever the
+  formula deals — and **nothing at all** to a formula that deals no damage;
+- a printed **range** is a floor and not a replacement: whichever reaches further wins, so a card
+  that reaches 6 lengthens a touch spell and does not shorten a bolt that already flies 8;
+- **straight-through** — armour, Block or cover — is added if the card has it and the spell does
+  not;
+- and **nothing else**. A card cannot turn a bolt into a blast, point a miracle at somebody else,
+  or hang its own condition on the spell's effect. What a card wants beyond this it prints as a
+  **second step on the same half**, where it resolves beside the cast and reads as its own line.
+
+> **Why this was ruled.** The 2026-11-24 ruling above bounded the **day** and left the **round**
+> untouched: slots say how many spells you get between sleeps, and nothing said how many you get in
+> a turn. A caster took two card halves *and* a cast while everyone else took two halves, and four
+> slots could all go in round one on top of them.
+>
+> And the costs the game charges for a turn did not reach a caster at all. **Dazed** takes your
+> secondary half; a cast had no half, so Dazed took nothing from it. The same was true of anything
+> else that will ever be written to cost a half.
+>
+> **What made it possible to rule, and what made it necessary to build.** On the day this was
+> written there were **25 ✦ Cast steps in the whole game and not one of them was on a card**: 18
+> spell effects, 5 signature effects, two `+1 to Cast` bonuses and one goblin shaman's intent —
+> against 87 Strikes, 86 Moves and 20 Readies, every one of them a card half. The verb had an icon,
+> a reach and a resolver, and **none of the 234 cards could reach it.** So a cast cost no half
+> because there was no half to spend, not because anybody had decided a caster should act three
+> times a turn.
+>
+> That is also why this ruling arrived with two **card pools**: Way of Mind and Way of Faith
+> delivered the thirteen schools and the twelve gods as *spells* and had no cards at all, so a
+> magician's action deck was the starter Warrior's sixteen and the common pool's six — every one of
+> them a fighter's card. The trunk said so out loud: a scholar's guaranteed card was **Measure**, a
+> Strike +1. See [way-cards.md](way-cards.md) §3.1, §3.4 and §3.5.
+
+> **[OPEN] A caster's deck is not dense enough in ✦ Cast yet.** A fighter has a Strike in hand
+> almost always — 9 of the Warrior's 16 cards print one, so a hand of five misses about once in
+> two hundred. A caster gets one guaranteed Cast on the trunk and buys the rest a node at a time.
+> The thing that would fix it is a **starter caster action deck**, which the game has never had:
+> there is one starter deck and it is the Warrior's. Until then a caster should take ✦ Cast cards
+> early, and a GM running a caster from level 1 should hand them a few.
+
 #### Two kinds of casting
 
 ✦ Cast comes from two different places, and they ask for different things.
@@ -788,6 +858,13 @@ strength-1 spells, or one strength-4 spell, and then they are a person with a fr
 | Examples | Staff of Healing, Fire Wand, a holy symbol, a scroll | whatever you prepared this morning |
 | Needs | the item **in hand** — which is just the slot rule | a **free hand**, and speech |
 | Limited by | what you are carrying | your spell slots |
+| Costs | the ✦ Cast half | the ✦ Cast half, **and** the preparation |
+| Repeatable | yes, as often as you draw a Cast half | **no** — once, until a long rest |
+
+**Both arrive through the same icon**, which is the point of this table being two columns rather
+than two rules: a ✦ Cast half asks *which* when you have both, and the answer is the one decision
+a caster holding a wand actually makes. The staff is reliable and repeatable; what is in your head
+is better and is gone when you have used it.
 
 A **free hand** means an **empty** one. You gesture with it, and you cannot gesture holding a sword in
 one hand and a shield in the other. An implement does not count — a staff in both hands is casting

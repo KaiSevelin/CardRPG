@@ -682,9 +682,42 @@ The third is new and it is a separate field (`gate`) rather than a second meanin
 Routed through the kit wrapper it would have printed **"Needs A Followup is a secondary only. in
 hand"**, which sends a player to their gear for a problem that is about the order they clicked in.
 
-A Followup is the only thing that uses it today. It is refused as a primary, and refused as a
-secondary until a Strike is staged — and both refusals are the same predicate the click handler
+Two things use it. A **Followup** is refused as a primary, and refused as a secondary until a
+Strike is staged. A **✦ Cast half** is refused when there is nothing to put through it —
+*Nothing prepared, and nothing in hand that casts.* Both are the same predicate the click handler
 reads, so a face never offers what the handler will turn down.
+
+The Cast gate matters more than the Followup one, and the reason is worth writing down: **a card is
+retired when the turn is played, whether its steps resolved or warned.** So a Cast half staged with
+an empty book and empty hands would cost the card and deliver nothing, and *a refused cast charges
+nothing* is a rule this system keeps everywhere else. The staging click is the last place it can
+still be true.
+
+### 3.13 Casting from a ✦ Cast half  **[BUILT 2026-11-26]**
+
+In a fight a prepared spell is cast by playing a half printed ✦ Cast (core-rules §4). The book
+is still the window you read your spells in, and clicking one there says so:
+
+> *In a fight, Boil is cast off a ✦ Cast half: stage one from your hand. The book is the road
+> out of a fight, and for reactions.*
+
+**Playing the half asks which magic goes through it**, when there is more than one answer:
+
+| What you have | What happens |
+|---|---|
+| prepared spells **and** an implement in hand | a dialog, *Cast what?* — each spell with its strength and its price, plus *the staff — its own magic*, which is the default button |
+| one prepared spell, nothing in hand that casts | no dialog; it casts |
+| nothing prepared | no dialog; the implement, exactly as before spells had this road |
+| neither | the half never staged — see §3.12 |
+
+The dialog prints **strength and price** beside each name, because those are the two things that
+decide which one you spend: *Boil — strength 3, 2 Health*. And its one line of body text is the
+rule it is asking you to spend: *A prepared spell is spent until a long rest, whether or not it
+lands.*
+
+**What the menu leaves out it leaves out for the standing reason**: a menu is a face. A ritual in
+the middle of a fight, a spell that only does anything while you are Burning when you are not, and
+one you have already cast today are all absent rather than present-and-refused.
 
 ## 4. The two numbers that carry the tension
 

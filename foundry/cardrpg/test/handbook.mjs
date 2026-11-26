@@ -311,8 +311,9 @@ function actionChapter() {
     ["The common pool, which any Way may draw from", CONTENT.COMMON_POOL],
     ["Way of Strength", [...CONTENT.STRENGTH_POOL, ...CONTENT.STRENGTH_SIGNATURES]],
     ["Way of Shade", [...CONTENT.SHADE_POOL, ...CONTENT.SHADE_SIGNATURES]],
-    ["Way of Mind", [...CONTENT.MIND_POOL, ...CONTENT.MIND_SIGNATURES]],
-    ["Way of Faith", [...CONTENT.FAITH_POOL, ...CONTENT.FAITH_SIGNATURES]],
+    ["Way of Mind", [...CONTENT.MIND_CARDS, ...CONTENT.MIND_POOL, ...CONTENT.MIND_SIGNATURES]],
+    ["Way of Faith",
+      [...CONTENT.FAITH_CARDS, ...CONTENT.FAITH_POOL, ...CONTENT.FAITH_SIGNATURES]],
     ["Way cards", CONTENT.WAY_CARDS]
   ];
   const out = [];

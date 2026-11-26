@@ -7,6 +7,111 @@
 /* -------------------------------------------- */
 
 /**
+ * **Way of Mind's cards.**  **[BUILT 2026-11-26]**
+ *
+ * The two magical Ways had **no card pool at all**. Mind delivers the thirteen schools and Faith
+ * the twelve gods, both as *spells*, so a magician's action deck was the starter Warrior's sixteen
+ * and the common pool's six -- every one of them a fighter's card. The trunk said so out loud:
+ * `mind.candle` granted **Measure**, a Strike +1, to a scholar.
+ *
+ * That was survivable while a cast cost nothing. Now a prepared spell is cast off a \u2726 Cast half
+ * (core-rules 4), and a deck with no Cast in it is a caster who cannot cast -- so this pool is not
+ * a flourish on the ruling, it is the half of it that makes the ruling playable.
+ *
+ * **What a Cast half may print, and why the list is short.** Only what `#castWith` folds onto the
+ * spell: the modifier, the range, and the three straight-throughs. A Cast half can make a spell
+ * **better and never different**, so nothing here prints an `area` that would turn a bolt into a
+ * blast or a `condition` that would make the card's rider into the spell's effect. What a card
+ * wants beyond that it prints as a **second step on the same half**, where it resolves beside the
+ * cast and reads as its own line.
+ *
+ * **Six, and the axis is Preparation.** Mind's resource is spell slots and its claim is that the
+ * decision was made before the fight; so these are about **reach, delivery and price** rather than
+ * about what the magic does. The school decides that, and the school is a spell.
+ */
+export const MIND_CARDS = [
+  {
+    /*
+     * The scholar's plain card, which is *Measure* answered: a point on the cast, and a Ready
+     * rather than a Move on the bottom, because the half before a formula is the half spent
+     * getting the focus into the right hand.
+     */
+    name: "The Prepared Word", copies: 1, pool: "mind", needs: [],
+    primary: [{ verb: "cast", mod: 1 }],
+    secondary: [{ verb: "ready" }],
+    text: "What was decided this morning, said well."
+  },
+  {
+    /*
+     * *Lunge* and *Press* for a caster, and the one card that answers the oldest complaint about
+     * casters in a game with squares: you have to stand still to be any good and standing still is
+     * what kills you. Move first, because a formula spoken from where you were is a formula spoken
+     * into a sword.
+     */
+    name: "Step and Speak", copies: 1, pool: "mind", needs: [], reaction: "sidestep",
+    primary: [{ verb: "move", param: 2 }, { verb: "cast", mod: -1 }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "Two squares first, and the words from where you end up."
+  },
+  {
+    /*
+     * **The first Strain card in the game's card content**, which starter-cards.md called for by
+     * name: *no starter card carries Strain yet -- it is the cost for cards that lean on a whole
+     * hand, and the first ones belong in a caster deck.* A caster's hand is where a caster's
+     * exhaustion lives, so a formula pushed further is paid for out of the next refill.
+     *
+     * **Strain and not Spent.** way-cards 1.3 counts the Spent ladder against a 16-card deck and
+     * says *at most 2*; a pool that spends that ceiling on a modifier has spent it badly, and a
+     * card out of your hand is the clock a fight actually runs on.
+     */
+    name: "The Long Formula", copies: 1, pool: "mind", needs: [],
+    primary: [{ verb: "cast", mod: 2 }],
+    secondary: [{ verb: "move", param: 1 }],
+    costs: { primary: { strain: 1 } },
+    text: "Strain 1. The longer saying of the same formula, and it costs you the next card."
+  },
+  {
+    /*
+     * Range, which is the one gift on this list that improves a spell the modifier cannot touch: a
+     * condition formula with no number at all reaches six squares through this half. `#castWith`
+     * takes the **greater**, so a formula that already reaches further is not shortened by being
+     * put behind it -- a card that made a long spell short would be a card nobody plays twice.
+     */
+    name: "Across the Room", copies: 1, pool: "mind", needs: [],
+    primary: [{ verb: "cast", range: 6 }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "Out to 6, whatever the formula's own reach. It is not shortened, only lengthened."
+  },
+  {
+    /*
+     * A spell is not a blade, and a raised shield was never the thing in its way. The \u22121 is the
+     * price: *Measure* makes exactly this trade one verb over, at +1 rather than \u22121, because a
+     * shield is a smaller obstacle to a sword than it has any right to be and a bigger one to a
+     * bolt of fire than it should be. The asymmetry is the card.
+     */
+    name: "Past the Shield", copies: 1, pool: "mind", needs: [],
+    primary: [{ verb: "cast", mod: -1, ignoresBlock: true }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "No shield was ever raised against a word. Answers no Block."
+  },
+  {
+    /*
+     * The pool's one **Spent** card, and the only rung above *The Long Formula*: the whole formula
+     * at once, out for the fight. Not Spent AND Strain, which way-cards 1.3 reserves at *once in a
+     * deck* and `topRung` keeps off every menu -- a pool card that could never be offered from the
+     * menu its own title carries would be a card in a list nobody can order from.
+     */
+    name: "The Last Word", copies: 1, pool: "mind", needs: [],
+    primary: [{ verb: "cast", mod: 3 }],
+    secondary: [{ verb: "move", param: 2 }],
+    costs: { primary: { spent: true } },
+    text: "Spent. Everything the formula had, and the card does not come back this fight."
+  }
+];
+
+/* -------------------------------------------- */
+
+/**
  * Way of Mind's minor-node formulas (way-cards 3.4).
  *
  * **A minor node grants its TIER-1 school's formula, never the destination's**, and that is the

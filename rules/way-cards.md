@@ -1162,7 +1162,7 @@ column means the card is a re-arrangement of verbs you already have, which is fr
 > **twice on one path**: that is a validator check rather than a writing habit. The bespoke third
 > goes **last on the edge**, immediately before the title it leads to.
 
-### 3.1 The common pool — six cards
+### 3.1 The common pool — eight cards
 
 Any Way's minor nodes may grant these. **They are deliberately dull**, and that is their job: they
 are the backbone §1.5 asks for, and a Signature only feels like a Signature against a background of
@@ -1176,6 +1176,26 @@ ordinary improvement.
 | **Press** | ⚔ Strike, then 👣 Move 1 | 👣 Move 2 | Sidestep | – |
 | **Both Hands** | ⇄ Ready, then ⚔ Strike | ⇄ Ready | Use | – |
 | **Dig In** | ✚ Heal 2 | 👣 Move 1 | Brace | 🔥 **Spent** |
+| **Say the Words** | ✦ Cast | 👣 Move 1 | – | – |
+| **Blade and Word** | ⚔ Strike | ✦ Cast −1 | – | – |
+
+**The two ✦ Cast cards, and why the dull pool is where they go.**  **[BUILT 2026-11-26]**
+
+A prepared spell is cast off a ✦ Cast half now (core-rules §4, *Casting costs a half*), and on
+the day that became the rule **no card in the game printed one**: 25 cast steps across the content,
+and zero of them on any of 234 cards.
+
+They are *here*, and not only in the two magical Ways, because of what this pool is for. It is the
+backbone **any** Way's minor nodes may grant, and a character who casts is not always a Way of Mind
+character: the **Half-mage** is one trick cast with a blade in the other hand, **Tattoo Magic**
+needs neither hand nor voice, **Vax**'s holy symbol is the club already in your fist, and two rings
+set the free hand aside. Every one of those was a caster with nothing in their deck to cast from.
+
+*Say the Words* is the ✦ Cast answer to **Measure** — the floor, with no modifier, because what
+makes it good is the formula a player chose to put behind it. *Blade and Word* is the answer to
+**Off-Hand Blow**: the same card one verb over, at the same −1, and for the same reason. The
+−1 keeps it from making a plain Cast obsolete, which is what this section already says about
+the Strike version.
 
 **Off-Hand Blow is the one that answers an open question.** Core-rules §3 asks where
 Strike-on-a-secondary cards come from and [leveling.md](leveling.md) §4 promises the answer is here:
@@ -1325,7 +1345,48 @@ fishes. So they may be played every time they are drawn.
 > what makes each one its own trick is the **depth** of the reach, not the fact of it. Tattoo Magic
 > still owns it permanently and Asceticism still owns the choice.
 
-### 3.4 Way of Mind — the thirteen schools  **[BUILT 2026-11-01]**
+### 3.4 Way of Mind — six cards and thirteen schools
+
+#### The Scholar's six cards  **[BUILT 2026-11-26]**
+
+**Mind had no card pool, and neither did Faith.** Both Ways delivered their content as *spells* —
+the thirteen schools below and the twelve gods in §3.5 — so a magician's action deck was the starter
+Warrior's sixteen and the common pool's six, every one of them a fighter's card. The trunk said so
+out loud: a scholar's one guaranteed card was **Measure**, a Strike +1.
+
+That was survivable while a cast cost nothing. It stopped being survivable the day a prepared spell
+began costing a ✦ Cast half (core-rules §4), because a deck with no Cast in it is a caster who
+cannot cast. So this pool is not a flourish on that ruling — it is the half of it that makes the
+ruling playable.
+
+| Card | ▲ Primary | ▼ Secondary | ⚡ Reaction | Cost |
+|---|---|---|---|---|
+| **The Prepared Word** | ✦ Cast +1 | ⇄ Ready | – | – |
+| **Step and Speak** | 👣 Move 2, then ✦ Cast −1 | 👣 Move 1 | Sidestep | – |
+| **The Long Formula** | ✦ Cast +2 | 👣 Move 1 | – | ⤵ **Strain 1** |
+| **Across the Room** | ✦ Cast, out to **6** | 👣 Move 1 | – | – |
+| **Past the Shield** | ✦ Cast −1, **answers no Block** | 👣 Move 1 | – | – |
+| **The Last Word** | ✦ Cast +3 | 👣 Move 2 | – | 🔥 **Spent** |
+
+**The axis is Preparation, so these are about reach, delivery and price** — never about what the
+magic does. The school decides that, and the school is a spell. Which is also the constraint the
+engine imposes: a ✦ Cast half can make a spell **better and never different**, so nothing here
+prints an area that would turn a bolt into a blast, or a condition that would stand in for the
+spell's own effect.
+
+- **The Long Formula is the first Strain card in the game's card content**, which
+  [starter-cards.md](starter-cards.md) called for by name: *no starter card carries Strain yet — it
+  is the cost for cards that lean on a whole hand, and the first ones belong in a caster deck.* A
+  caster's hand is where a caster's exhaustion lives.
+- **Strain rather than Spent**, for the reason §1.3 gives: the Spent ladder is counted at *at most
+  2 in a 16-card deck*, and a pool that spent that ceiling on a modifier has spent it badly.
+- **The Last Word takes the one Spent slot** and is the rung above. Not Spent **and** Strain, which
+  §1.3 reserves at *once in a deck* — and a top-rung card is held back from every menu, so a pool
+  card printing both could never be offered from the Scholar list it belongs to.
+- **Step and Speak answers the oldest complaint about casters on a grid**: you have to stand still
+  to be any good, and standing still is what kills you. It is *Lunge* for a formula.
+
+#### The thirteen schools  **[BUILT 2026-11-01]**
 
 **Strength is the slot cost** (§1.4), so the bracketed number is what a formula takes out of the
 budget. The Signature from §2.3 is listed first in each school and marked ✦.
@@ -1747,7 +1808,40 @@ the first of them built, and what it hands over is **Shim and Wedge** (§2.3) an
 nothing on the route to it grants a spell slot, which is what makes *casts nothing at all* true
 rather than decorative. What it spends is **weight** — the shop travels with you.
 
-### 3.5 Way of Faith — the twelve gods  **[BUILT 2026-11-01]**
+### 3.5 Way of Faith — six cards and twelve gods
+
+#### The Sworn's six cards  **[BUILT 2026-11-26]**
+
+§3.4 makes the argument for both pools. Faith's own version of it: `faith.pilgrimage` granted
+**Hold the Line** — Defend, then Strike −1 — to a priest.
+
+| Card | ▲ Primary | ▼ Secondary | ⚡ Reaction | Cost |
+|---|---|---|---|---|
+| **The Office** | ✦ Cast +1 | 🛡 Defend | Parry | – |
+| **The Arm Across** | ✦ Cast, and **Block 1** to an adjacent ally | 👣 Move 1 | – | – |
+| **The Vow Spoken** | ✦ Cast +2 | ✚ Heal 2 | – | ⤵ **Strain 1** |
+| **The Long Prayer** | ✦ Cast, and one ally within 2 is **Blessed (1)** | 👣 Move 1 | – | – |
+| **Nothing Between** | ✦ Cast −1, **answers no cover** | 👣 Move 1 | – | – |
+| **Answer the Call** | ✦ Cast | ⇄ Ready | Bodyguard | – |
+
+**The axis is Support, so these cast at somebody's side.** Faith's claim is *what you do for the
+people beside you rather than to the people in front of you*, and the shape that makes on a card is
+the **second step on the same half**: the miracle goes out and a Block, a mend or a blessing goes to
+the man next to you in the same breath. That is exactly the half of the vocabulary a ✦ Cast
+half will not fold into a spell, which is why this Way is written out of it.
+
+- **The Arm Across is the Way's thesis as one card**, and *The Order's Shield* already says the
+  sentence it is built on: the Block goes to the ally and never to the holder.
+- **The Vow Spoken puts the heal on the secondary**, so the card is a choice between a hard miracle
+  and a quiet mending rather than both — core-rules §3 does not let you play both halves of one
+  card, and that is what makes it a decision.
+- **Nothing Between answers cover where Mind's *Past the Shield* answers Block**, and the split is
+  deliberate: a shield is a thing a man raises and cover is a thing the field gives him, so the two
+  Ways answer different obstacles.
+- **The Long Prayer's blessing takes no save**, like *The Writ*'s naming: nobody resists being
+  prayed for.
+
+#### The twelve gods  **[BUILT 2026-11-01]**
 
 Clerics cast too, and a god's list is built on a different principle from a school's:
 

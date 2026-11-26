@@ -19,7 +19,8 @@ import * as content from "./../module/content.mjs";
 import * as graph from "./../module/graph.mjs";
 
 /* Every pool a minor node or a title can hand a card out of (way-cards.md §3.1--§3.3). */
-const CARD_SOURCES = ["COMMON_POOL", "SHADE_POOL", "STRENGTH_POOL", "WARRIOR_DECK", "WAY_CARDS",
+const CARD_SOURCES = ["COMMON_POOL", "SHADE_POOL", "STRENGTH_POOL", "MIND_CARDS",
+  "FAITH_CARDS", "WARRIOR_DECK", "WAY_CARDS",
   "SHADE_SIGNATURES", "STRENGTH_SIGNATURES"];
 const cardDefs = new Map();
 for (const key of CARD_SOURCES) {

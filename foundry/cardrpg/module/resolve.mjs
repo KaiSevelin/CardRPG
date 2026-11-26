@@ -3796,24 +3796,78 @@ export function refusesState(actor, slate, { what = "that" } = {}) {
  * *before the fight* is precisely the window between those two -- gating on the document's
  * existence would have made the two cards that want it uncastable at the one moment they are for.
  */
-export function refusesTiming(actor, slate, { what = "that" } = {}) {
+/**
+ * **A \u2726 Cast half's gifts, folded onto the spell's own effect.**  **[RULED 2026-11-26]**
+ *
+ * One rule, and it is the whole of what makes a pair of cards readable without a lawyer:
+ * **a Cast half can make a spell better and never different.**
+ *
+ * So each field folds the way its own arithmetic already folds elsewhere in this engine. `mod`
+ * **adds**, because two modifiers on one action have added since the first card half was played.
+ * `range` and `ignores` take the **greater** and the **sum** respectively, which is exactly what
+ * `verbLine` and a step's `ignores` already do one level down -- a bodkin on a crossbow is both
+ * things at once. The three straight-throughs are **or**, which is a boolean's greater-of.
+ *
+ * What is deliberately NOT here is anything that would change the spell instead of improving it.
+ * `area` and `areaKind` would turn a bolt into a blast, `condition` would make a card's rider
+ * into a different spell's effect, and `targets` would point a miracle at somebody the player
+ * who prepared it never chose. A card wanting any of those should print it as a **second step on
+ * the same half**, where it resolves beside the cast and reads as its own line -- which is how
+ * *The Arm Across* gives Block and how *The Writ* names the guilty.
+ *
+ * **A card half with no gifts returns the effect untouched**, same object and all, so a plain
+ * \u2726 Cast is not a cast through a filter.
+ */
+export function castWith(effect, step) {
+  if (!effect) return effect;
+  const better = {};
+  if (step.mod) better.mod = (effect.mod ?? 0) + step.mod;
+  if (step.range && step.range > (effect.range ?? 0)) better.range = step.range;
+  if (step.ignores) better.ignores = (effect.ignores ?? 0) + step.ignores;
+  for (const through of ["ignoresArmour", "ignoresBlock", "ignoresCover"]) {
+    if (step[through] && !effect[through]) better[through] = true;
+  }
+  return Object.keys(better).length ? { ...effect, ...better } : effect;
+}
+
+/**
+ * **What bars this spell's timing right now**, as the key of the rule that bars it.
+ * **[BUILT 2026-11-26]**
+ *
+ * Pulled out of `refusesTiming`, which warned and returned a boolean and was therefore unusable by
+ * anybody who needed the answer without the sentence. A ✦ Cast half offers a **menu** of what you
+ * may cast, and a menu is a face: one listing a ritual in the middle of a fight promises what the
+ * resolver will refuse, which is the defect this file keeps a standing rule about. `stateHolds` is
+ * `refusesState`'s half of the same split and has always been separate; this is the other one.
+ *
+ * @returns {string} "" when the moment allows it, otherwise the barring rule's own flag.
+ */
+export function timingBars(actor, slate) {
   const timing = slate?.system?.effect?.timing ?? "";
   const rule = timing ? CARDRPG.timings[timing] : null;
-  if (!rule) return false;
-  const label = game.i18n?.localize(rule.label) ?? timing;
+  if (!rule) return "";
   const fight = game.combat?.started ? game.combat : null;
+  if (rule.notInFight && fight) return "notInFight";
+  if (rule.notOnYourTurn && fight && fight.combatant?.actor?.id === actor?.id) {
+    return "notOnYourTurn";
+  }
+  return "";
+}
 
-  if (rule.notInFight && fight) {
+export function refusesTiming(actor, slate, { what = "that" } = {}) {
+  const bars = timingBars(actor, slate);
+  if (!bars) return false;
+  const timing = slate?.system?.effect?.timing ?? "";
+  const label = game.i18n?.localize(CARDRPG.timings[timing]?.label) ?? timing;
+
+  if (bars === "notInFight") {
     ui.notifications?.warn(`${slate.name} is ${label}: ${what} cannot happen while the fight `
       + "is on.");
     return true;
   }
-  if (rule.notOnYourTurn && fight && fight.combatant?.actor?.id === actor?.id) {
-    ui.notifications?.warn(`${slate.name} is a ${label}: it answers somebody else's turn, and `
-      + "this one is yours.");
-    return true;
-  }
-  return false;
+  ui.notifications?.warn(`${slate.name} is a ${label}: it answers somebody else's turn, and `
+    + "this one is yours.");
+  return true;
 }
 
 export async function resolveAttack(actor, {

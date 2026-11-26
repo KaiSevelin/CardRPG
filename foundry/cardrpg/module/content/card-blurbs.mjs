@@ -51,6 +51,24 @@ export const CARD_BLURBS = {
   "Press": "Hit them, and follow as they give way.",
   "Both Hands": "Change what you are holding and swing with it in the same motion.",
   "Dig In": "Stop, breathe, and patch whatever is bleeding.",
+  "Say the Words": "Say it properly, with a hand free to shape it.",
+  "Blade and Word": "Steel in one hand, the gesture in the other, and neither waits for the other.",
+
+  /* --- Way of Mind: the Scholar's cards ------------------------------------ */
+  "The Prepared Word": "Everything that makes this work was decided hours ago, somewhere quiet.",
+  "Step and Speak": "Walk out of the sword's reach first. The formula keeps.",
+  "The Long Formula": "The full version, every syllable of it, and your hand is lighter after.",
+  "Across the Room": "No closer. From here, across the whole floor, without raising your voice.",
+  "Past the Shield": "They have put a shield between you. It was never the thing in the way.",
+  "The Last Word": "All of it at once, and nothing left of the card afterwards.",
+
+  /* --- Way of Faith: the Sworn's cards ------------------------------------- */
+  "The Office": "The hours are kept whether or not anybody is listening.",
+  "The Arm Across": "One hand raised for the god, one arm across the man beside you.",
+  "The Vow Spoken": "Said out loud, in front of everyone, and it costs what it costs.",
+  "The Long Prayer": "Someone else's name in it, said long enough that it sticks to them.",
+  "Nothing Between": "They are behind the wall. The wall is not in the conversation.",
+  "Answer the Call": "The blow was meant for somebody else. You were closer.",
 
   /* --- Way of Strength ----------------------------------------------------- */
   "Shoulder Check": "Your whole weight into theirs, at the range where weight wins.",

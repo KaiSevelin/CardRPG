@@ -3878,6 +3878,543 @@ async function probes(page) {
     ];
   });
 
+  /*
+   * **A prepared spell is cast off a \u2726 Cast half, and in a fight only off one.**
+   * **[BUILT 2026-11-26]**
+   *
+   * Clicking a spell in the book cost **nothing**: no card, no half, no stamina. So a caster took
+   * two card halves and a cast where everybody else took two halves, four slots could all go in
+   * round one on top of them, and nothing that costs a half reached a caster at all -- **Dazed**
+   * takes your secondary, and a cast had no half to lose.
+   *
+   * It had been nobody's decision. On the day this was built there were 25 \u2726 Cast steps in the
+   * whole game and **not one of them on any of 234 cards**, so there was no half to spend.
+   *
+   * What the probe has to tell apart is four states, and three of them look alike from outside:
+   * out of a fight the book still casts, in a fight it refuses and spends nothing, the card half
+   * casts, and Dazed on a secondary refuses. A probe that only checked the last would pass against
+   * an engine that had quietly stopped casting altogether.
+   *
+   * **[OPEN 2026-11-26] Green alone, and it fails in the full suite -- read the rows, not the
+   * count.** By the time the run reaches here the world contains a **dangling Token UUID**, and
+   * Foundry resolves one through a strict `EmbeddedCollection.get`:
+   *
+   *     Error: undefined id [...] does not exist in the EmbeddedCollection collection
+   *         at EmbeddedCollection.get ... at Scene.getEmbeddedDocument ... at fromUuid
+   *
+   * Nothing in this system calls `fromUuid`, so it is Foundry resolving a reference some earlier
+   * probe left behind: every fight here places a token and deletes it afterwards. The throw lands
+   * inside whatever is in flight -- a cast paying its price -- and takes the rest of that handler
+   * with it, so from outside it is **exactly** what an engine that declined looks like: no cast, no
+   * card retired, no half booked.
+   *
+   * The id is different on every run, so it is minted during the run rather than carried in by the
+   * world copy. Chat speakers were the obvious holder and clearing them did not fix it, so there is
+   * at least one more. It is left recorded rather than papered over, because the rows that say so
+   * are the ones that found it: *and nothing threw* prints the stack, and *and nothing refused it*
+   * prints what the screen said. Both exist because the first four days of this probe's life were
+   * spent guessing at a silence.
+   */
+  await probe("a prepared spell is cast off a Cast half", async () => {
+    await settle(page);
+    const out = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      /*
+       * **Notifications are the only register a refusal speaks in, so they are read twice.**
+       * **[FOUND 2026-11-26]**
+       *
+       * Wrapping `ui.notifications.warn` is the obvious way and it is not enough on its own: the
+       * object does not belong to this probe, and anything that replaces or re-binds it during the
+       * run takes the wrapper with it -- which makes every *nothing refused it* row pass
+       * **vacuously**, exactly when it is most needed. That is the worst failure a check can have
+       * and it is invisible: an empty list reads the same as a quiet engine.
+       *
+       * So the rendered notifications are scraped as well, and the two are concatenated. The DOM
+       * cannot be re-bound out from under a probe, and a notification that was shown is a
+       * notification a player would have read.
+       */
+      const notes = [];
+      const warn = ui.notifications.warn.bind(ui.notifications);
+      const info = ui.notifications.info.bind(ui.notifications);
+      ui.notifications.warn = m => { notes.push(String(m)); return warn(m); };
+      ui.notifications.info = m => { notes.push(String(m)); return info(m); };
+      const errs = [];
+      const onReject = e => errs.push("REJECT: "
+        + String(e.reason?.stack ?? e.reason ?? "").slice(0, 900));
+      window.addEventListener("unhandledrejection", onReject);
+      const errNote = ui.notifications.error.bind(ui.notifications);
+      ui.notifications.error = (m, o) => {
+        errs.push("ERROR: " + String(m) + " @@ " + String(o?.error?.stack ?? "").slice(0, 900));
+        return errNote(m, o);
+      };
+      const onScreen = () => [...document.querySelectorAll(
+        "#notifications .notification, .notification-pip, #notifications li")]
+        .map(el => (el.textContent ?? "").replace(/\s+/g, " ").trim())
+        .filter(t => t);
+      const said = () => [...new Set([...notes, ...onScreen()])].join(" | ") || "nothing";
+      /*
+       * **And cleared before every measured click**, because a notification stays on screen for
+       * about five seconds: without this, the refusal the previous step was *supposed* to raise
+       * reads as this step's. The first run with the DOM scrape reported the in-fight refusal as
+       * the reason the next turn had not happened.
+       */
+      const clearNotes = () => {
+        notes.length = 0;
+        for (const el of document.querySelectorAll(
+          "#notifications .notification, #notifications li")) el.remove();
+      };
+
+      /*
+       * **Chat messages pointing at tokens that are gone.**  **[FOUND 2026-11-26]**
+       *
+       * Every probe that needs a fight places a token, makes a Combat on it, and deletes the token
+       * afterwards -- and every chat line those turns produced still names that token as its
+       * speaker. Foundry resolves a speaker lazily through `fromUuid`, and a UUID whose Token has
+       * been deleted throws out of `EmbeddedCollection.get`, which is a **strict** get:
+       *
+       *     Error: undefined id [...] does not exist in the EmbeddedCollection collection
+       *         at EmbeddedCollection.get ... at Scene.getEmbeddedDocument ... at fromUuid
+       *
+       * Nothing in this system calls `fromUuid`, so this is Foundry rendering the log. The throw
+       * lands in the middle of whatever created the message -- here, a cast paying its price -- and
+       * takes the rest of that handler with it. From outside it looks exactly like an engine that
+       * declined: no cast, no card retired, no half booked, and no refusal to read.
+       *
+       * So the dangling ones are cleared, and only those: a blunt wipe would take the lines a
+       * neighbouring probe reads. This is the suite's own rot rather than a rule, and it had been
+       * accumulating unseen because no probe before this one read what the screen was saying.
+       */
+      /*
+       * **Every message whose speaker names a token, not only the ones that look dangling.** The
+       * narrower filter -- resolve the scene, ask it for the token -- still left the throw behind,
+       * because a speaker can name a scene this client is not looking at and the id resolves
+       * differently from how `fromUuid` resolves it. A message that names a token is a message
+       * that can rot the moment the token goes, and the token always goes: a probe that places one
+       * deletes it. Lines with no token speaker are left alone, and a probe that reads chat reads
+       * its own, created after this one ran.
+       */
+      const dangling = (game.messages?.contents ?? [])
+        .filter(m => m.speaker?.token).map(m => m.id);
+      if (dangling.length) {
+        await ChatMessage.deleteDocuments(dangling);
+      }
+
+      /*
+       * **The hero arrives carrying whatever the suite put on them**, and three of the conditions
+       * in this game refuse a turn or take a half. A probe about a cast that is really measuring
+       * somebody else's Dazed is a probe that reports the order the file happens to be in, so they
+       * come off here and the one this probe applies itself goes on later.
+       */
+      const worn = (hero.system.activeConditions ?? []).map(c => c.key);
+      for (const key of worn) await LIVE.liftCondition(hero, key);
+
+      const wasBase = hero.system.spellSlots?.base ?? 0;
+      await hero.update({ "system.spellSlots.base": 4 });
+      /*
+       * **Nobody else's spells in the slots.**  **[FOUND 2026-11-26]**
+       *
+       * `strength` is the slot cost, so a spell prepared by an earlier probe spends budget this
+       * one needs -- and the symptom is the worst kind: the cast simply does not happen, with no
+       * refusal to read, because what failed is a derived field rather than a guard. Alone the
+       * probe passed; in the suite it reported *nothing refused it* and nothing cast.
+       *
+       * So every prepared spell is set aside and put back at the end, which is what the hands
+       * below already do and for the same reason.
+       */
+      const booked = hero.items.filter(i => i.type === "spell" && i.system.prepared)
+        .map(i => i.id);
+      for (const id of booked) {
+        await hero.items.get(id)?.update({ "system.prepared": false });
+      }
+      /*
+       * **Both hands empty**, for two reasons at once: a prepared spell is gestured (core-rules 4),
+       * and an implement in hand would raise the *Cast what?* dialog, which no probe can answer.
+       */
+      const held = hero.items.filter(i => i.type === "item" && i.system.equipped
+        && i.system.equippedSlot === "hands").map(i => i.id);
+      for (const id of held) await hero.items.get(id)?.update({ "system.equipped": false });
+
+      /* A miracle that needs no target, so the cast is measured by whether it was SPENT rather
+       * than by whatever it did to somebody. */
+      const make = async name => (await hero.createEmbeddedDocuments("Item", [{
+        name, type: "spell",
+        system: {
+          prepared: true, strength: 1, source: "Probe Magic",
+          effect: { verb: "heal", param: 1, targets: "self" }
+        }
+      }]))[0];
+
+      /*
+       * **The tray is one object for the whole run, so it arrives as the last probe left it.**
+       * **[FOUND 2026-11-26]**
+       *
+       * `pendingEquips` is the one that bites: `#settleReady` refuses a whole turn when a slate
+       * went into play under pressure and no Ready is staged, and the item probes further up leave
+       * entries in it. A turn refused there resolves nothing, retires nothing and books nothing --
+       * and the refusal is about a card this probe never touched.
+       *
+       * `roles` and `waved` change which item a verb reaches for, `flipped` and `openPiles` change
+       * what is drawn, and `playedAt` is a turn this fight has never had. A probe that starts from
+       * the tray the previous one left is a probe measuring the previous one.
+       */
+      const tray = game.cardrpg.openTray(hero);
+      tray.side = "action";
+      tray.staged = [];
+      tray.pendingEquips.clear();
+      tray.roles.clear();
+      tray.waved.clear();
+      tray.flipped.clear();
+      tray.openPiles.clear();
+      tray.playedAt = null;
+      tray.spentHalves = { primary: false, secondary: false };
+      tray.openPiles.add("spells");
+      await tray.render();
+      await new Promise(r => setTimeout(r, 300));
+
+      /*
+       * **Any dialog left open over the tray is closed first.**  **[FOUND 2026-11-26]**
+       *
+       * A modal `<dialog>` makes the rest of the document **inert**, so a click lands on an element
+       * that is found, attached and visible, and dispatches nothing at all. Alone this probe
+       * passed; in the suite both of its clicks did nothing and no refusal was raised, which is
+       * exactly what an inert document looks like from the inside -- the one failure mode that
+       * cannot be told apart from *the engine declined* without asking.
+       */
+      const closeDialogs = () => {
+        const open = [...document.querySelectorAll("dialog[open]")];
+        for (const d of open) {
+          try { d.close(); } catch { d.remove(); }
+        }
+        return open.length;
+      };
+      const dialogsFound = closeDialogs();
+
+      /*
+       * **Re-queried on every attempt, and asked whether it landed.**  **[FOUND 2026-11-26]**
+       *
+       * Creating the spell is a document update and a document update re-renders the tray, so the
+       * element found 300ms ago is **detached** by the time it is clicked -- and a click on a
+       * detached node dispatches nothing. Found, attached when found, gone when used.
+       *
+       * The retry is not a way of hoping. `landed` is the very effect the row asserts, so the loop
+       * stops the moment the engine has answered and the row fails exactly as it did if it never
+       * does. A click that reaches no handler is a harness artefact, and this one cost three
+       * full-suite runs while the probe passed alone every time.
+       */
+      const clickSlate = async (id, landed = () => true) => {
+        for (let i = 0; i < 8; i++) {
+          closeDialogs();
+          await tray.render();
+          await new Promise(r => setTimeout(r, 200));
+          const el = tray.element
+            ?.querySelector(`[data-action="playSlate"][data-slate-id="${id}"]`);
+          if (!el?.isConnected) continue;
+          el.click();
+          for (let j = 0; j < 12 && !landed(); j++) {
+            await new Promise(r => setTimeout(r, 100));
+          }
+          if (landed()) return true;
+        }
+        return !!tray.element?.querySelector(`[data-action="playSlate"][data-slate-id="${id}"]`);
+      };
+
+      /* ---------- out of a fight, the book is still the road ---------- */
+      for (const c of [...(game.combats ?? [])]) await c.delete();
+      await new Promise(r => setTimeout(r, 200));
+      const quiet = await make("Probe Book Out Of Fight");
+      /* The premise, asserted rather than assumed: a spell that did not fit the budget is not
+       * prepared, and an unprepared spell cannot be cast by any road. */
+      const quietPrepared = !!quiet.system.prepared;
+      clearNotes();
+      const quietReached = await clickSlate(quiet.id, () => !!quiet.system.drained);
+      const quietDrained = !!quiet.system.drained;
+      /*
+       * **Why, when it does not.** A cast has five refusals in front of it and four of them are
+       * about the caster rather than about the spell, so a probe that only reported *it did not
+       * cast* would be reporting the state the suite happened to leave the hero in. The sentence
+       * is collected and asserted empty, which turns a contaminated run into a legible one.
+       */
+      let quietSaid = said();
+      const quietState = [
+        ...(hero.system.activeConditions ?? []).map(c => c.key),
+        `hands:${hero.items.filter(i => i.type === "item" && i.system.equipped
+          && i.system.equippedSlot === "hands").length}`,
+        `freehanded:${!!hero.system.castsFreehanded}`,
+        `slots:${hero.system.spellSlots?.used ?? "?"}/${hero.system.spellSlots?.max ?? "?"}`,
+        `needsFreeHand:${!!quiet.system.needsFreeHand}`
+      ].join(" ");
+      /* The state rides along with the refusal rather than being asserted on its own: the hero
+       * carries whatever the suite left on them, and *graven* is not this probe's business. */
+      if (quietSaid !== "nothing") quietSaid += " :: " + quietState;
+      await quiet.delete();
+
+      /* ---------- in a fight, it is shut ---------- */
+      const token = (await hero.getTokenDocument({ x: 1500, y: 1500, actorLink: true }))
+        .toObject();
+      const [placed] = await canvas.scene.createEmbeddedDocuments("Token", [token]);
+      const combat = await Combat.create({ scene: canvas.scene.id });
+      await combat.createEmbeddedDocuments("Combatant",
+        [{ tokenId: placed.id, sceneId: canvas.scene.id, actorId: hero.id }]);
+      await combat.startCombat();
+      /*
+       * **And activated, which nothing in this file had ever done.**  **[FOUND 2026-11-26]**
+       *
+       * `startCombat` sets `round` and `started`; `active` is a separate flag, and `game.combat` is
+       * the **active** combat for the viewed scene. So inside the tray `game.combat?.started` read
+       * **false** while this probe's own `page.evaluate` read true -- two answers to one question
+       * from the same page, because the two reach the combat by different routes.
+       *
+       * What that hid is the turn's own budget. `#onPlay` books the spent halves and turns the hand
+       * sideways behind `if (game.combat?.started)`, so a turn played in an unactivated fight
+       * resolved its steps, retired its cards and spent its stamina -- and then spent **no half**.
+       * Every probe in this file builds its fight the same way, which is why the budget could only
+       * ever be checked by writing `spentHalves` directly, and why the probe that does says so in
+       * its own comment.
+       *
+       * The engine was right the whole time. One line, and the halves book.
+       */
+      await combat.activate();
+      /* The round deals every character a hand and nothing here awaits it; a card read out from
+       * under the refill throws. A known state, not a sleep. */
+      const hand = LIVE.deckOf(hero, "actionHand");
+      const want = hero.system.handSize?.max ?? 5;
+      for (let i = 0; i < 30 && hand.cards.size < want; i++) {
+        await new Promise(r => setTimeout(r, 100));
+      }
+      await new Promise(r => setTimeout(r, 400));
+
+      const shut = await make("Probe Book In Fight");
+      clearNotes();
+      /* This one is refused on purpose, so what it waits for is the refusal arriving. */
+      const shutReached = await clickSlate(shut.id, () => notes.length > 0);
+      const shutSaid = said();
+      const shutDrained = !!shut.system.drained;
+      await shut.delete();
+
+      /* ---------- and off a half, which is the road now ---------- */
+      const bolt = await make("Probe Cast Off A Half");
+      /*
+       * **Two cards, because the play button wants a whole turn.** `canPlay` is *one primary and
+       * one secondary staged* (core-rules 3), and you may never use both halves of one card -- so
+       * the filler is not scaffolding, it is the turn the rule describes. The first version of this
+       * probe staged one half, found the button disabled, and reported four rows about a click that
+       * never happened.
+       */
+      const [card, filler, second] = await hand.createEmbeddedDocuments("Card", [
+        { name: "Probe Cast Half", type: "action",
+          system: {
+            primary: [{ verb: "cast" }],
+            secondary: [{ verb: "move", param: 1 }]
+          } },
+        { name: "Probe Cast Filler", type: "action",
+          system: {
+            primary: [{ verb: "move", param: 1 }],
+            secondary: [{ verb: "move", param: 1 }]
+          } },
+        /* The Dazed run's card: the Cast is on the SECONDARY, which is the half Dazed takes. */
+        { name: "Probe Cast Half Two", type: "action",
+          system: {
+            primary: [{ verb: "move", param: 1 }],
+            secondary: [{ verb: "cast" }]
+          } }
+      ]);
+      tray.staged = [
+        { cardId: card.id, half: "primary" },
+        { cardId: filler.id, half: "secondary" }
+      ];
+      await tray.render();
+      await new Promise(r => setTimeout(r, 300));
+      const playable = !!tray.element?.querySelector('[data-action="play"]:not([disabled])');
+      /*
+       * **The budget is read off the screen rather than off the window object.** `spentHalves`
+       * lives on the application instance, and the instance a probe holds is not reliably the one
+       * the click handler ran on -- the first version of this probe read `playedAt: null` on a turn
+       * that had demonstrably resolved, cast and retired. What a player sees is the stageable
+       * halves going away, and that is the budget core-rules 3 is about.
+       */
+      const stageable = () =>
+        document.querySelectorAll(".cr-hud__hand [data-action=stage]").length;
+      const offersBefore = stageable();
+      /*
+       * **Waited for rather than slept through, and re-queried like the slate above.** The handler
+       * awaits a chat message and a card move before it books the halves, so a fixed wait reads a
+       * turn mid-flight -- and the button is as detachable as anything else the tray draws.
+       */
+      const playTurn = async landed => {
+        for (let i = 0; i < 8; i++) {
+          closeDialogs();
+          const btn = tray.element?.querySelector('[data-action="play"]');
+          if (!btn?.isConnected) {
+            await tray.render();
+            await new Promise(r => setTimeout(r, 200));
+            continue;
+          }
+          btn.click();
+          for (let j = 0; j < 40 && !landed(); j++) {
+            await new Promise(r => setTimeout(r, 100));
+          }
+          if (landed()) return true;
+        }
+        return false;
+      };
+      clearNotes();
+      await playTurn(() => !hand.cards.get(card.id));
+      const halfDrained = !!bolt.system.drained;
+      const cardLeftTheHand = !hand.cards.get(card.id);
+      /*
+       * **And the turn says why, when it does not happen.** `#onPlay` has four refusals in front
+       * of the first step -- a Ready it cannot settle, a Strain declined, and the whole turn
+       * refused for a condition -- and every one of them warns. Collected for the same reason the
+       * book click's are: *it did not cast* is the state the suite left the hero in, not a finding.
+       */
+      const playSaid = said();
+      await new Promise(r => setTimeout(r, 400));
+      const offersAfter = stageable();
+
+      /* ---------- and Dazed takes a secondary Cast, which it never could before ---------- */
+      await bolt.delete();
+      const dazedSpell = await make("Probe Cast While Dazed");
+      /* A fresh pair of halves: the turn above spent both of this one's, and `#halfSpent` would
+       * refuse for that reason instead of for the one being measured. */
+      const [filler2] = await hand.createEmbeddedDocuments("Card", [{
+        name: "Probe Cast Filler Two", type: "action",
+        system: { primary: [{ verb: "move", param: 1 }], secondary: [{ verb: "move", param: 1 }] }
+      }]);
+      await LIVE.resolveCondition(hero, {
+        step: { condition: "dazed", duration: 2 }, target: hero
+      });
+      tray.staged = [
+        { cardId: filler2.id, half: "primary" },
+        { cardId: second.id, half: "secondary" }
+      ];
+      await tray.render();
+      await new Promise(r => setTimeout(r, 300));
+      clearNotes();
+      await playTurn(() => notes.length > 0);
+      const dazedDrained = !!dazedSpell.system.drained;
+      const dazedSaid = said();
+      await LIVE.liftCondition(hero, "dazed");
+
+      /*
+       * ---------- and a Cast half with nothing to cast is refused before it is staged ----------
+       *
+       * A card is retired when the turn is played, whether its steps resolved or warned, so a half
+       * staged with an empty book and empty hands would cost the card and deliver nothing. The
+       * staging click is the last place *a refused cast charges nothing* can still be true.
+       */
+      const [gateCard] = await hand.createEmbeddedDocuments("Card", [{
+        name: "Probe Cast Gate", type: "action",
+        system: { primary: [{ verb: "cast" }], secondary: [{ verb: "move", param: 1 }] }
+      }]);
+      const faceOf = async () => {
+        tray.staged = [];
+        /* **A fresh turn's worth of halves**, because the turn above spent both of this one's and
+         * *your primary is spent this turn* is a different refusal from the one being read. The
+         * budget is booked directly here for the same reason the spent-turn probe books it
+         * directly: what is under test is the Cast gate, not the booking. */
+        tray.playedAt = null;
+        tray.spentHalves = { primary: false, secondary: false };
+        await tray.render();
+        await new Promise(r => setTimeout(r, 400));
+        const el = [...document.querySelectorAll(".cr-hud__hand .cr-card")].find(c =>
+          c.querySelector(".cr-card__name")?.textContent.trim() === "Probe Cast Gate");
+        const seat = el?.querySelector(".cr-half--primary");
+        /* The half's own span, not the marker icon's tooltip, which comes first in document
+         * order: the lesson the Followup probe records further down this file. */
+        const tip = seat?.querySelector(":scope > span[data-tooltip]:not([class])")
+          ?? seat?.querySelector(":scope > .cr-half__play[data-tooltip]");
+        return {
+          blocked: !!seat?.classList.contains("cr-half--blocked"),
+          tip: tip?.getAttribute("data-tooltip") ?? ""
+        };
+      };
+      /* Nothing prepared and nothing in hand: the dazed spell was the last one. */
+      await dazedSpell.update({ "system.prepared": false });
+      const empty = await faceOf();
+      /* And the other side of the gate, which is what makes it a rule and not a removal. */
+      await dazedSpell.update({ "system.prepared": true, "system.drained": false });
+      const armed = await faceOf();
+
+      /* ---------- put the world back ---------- */
+      tray.staged = [];
+      tray.openPiles.delete("spells");
+      await dazedSpell.delete();
+      for (const id of [card.id, filler.id, second.id, filler2.id, gateCard.id]) {
+        if (hand.cards.get(id)) await hand.deleteEmbeddedDocuments("Card", [id]);
+      }
+      await combat.delete();
+      await placed.delete();
+      await hero.update({ "system.spellSlots.base": wasBase });
+      for (const id of booked) await hero.items.get(id)?.update({ "system.prepared": true });
+      for (const id of held) {
+        await hero.items.get(id)
+          ?.update({ "system.equipped": true, "system.equippedSlot": "hands" });
+      }
+      ui.notifications.warn = warn;
+      ui.notifications.info = info;
+      ui.notifications.error = errNote;
+      window.removeEventListener("unhandledrejection", onReject);
+      await tray.render();
+      await LIVE.afterFight();
+
+      return {
+        quietReached, quietDrained, quietSaid, quietPrepared, dialogsFound,
+        shutReached, shutSaid, shutDrained,
+        playable, halfDrained, cardLeftTheHand, offersBefore, offersAfter, playSaid,
+        dazedDrained, dazedSaid,
+        emptyBlocked: empty.blocked, emptyTip: empty.tip,
+        armedBlocked: armed.blocked,
+        dangling: dangling.length,
+        errs: errs.join(" ;; ").slice(0, 2000) || "none"
+      };
+    });
+
+    return [
+      /* The premise: the probe found the spell on the screen in both states, or the three rows
+       * about clicking it would all be rows about an empty selector. */
+      ["no dialog was left open over the tray", out.dialogsFound, 0],
+      ["the probe's own spell is prepared", out.quietPrepared, true],
+      ["the spell is on the screen out of a fight", out.quietReached, true],
+      ["and in one", out.shutReached, true],
+      /*
+       * **Out of a fight the book is the road, and that is the same ruling the half budget makes.**
+       * There is no turn out there to spend, so there is no half to charge: opening a door and then
+       * opening another is two actions in a game that is not counting.
+       */
+      ["out of a fight, clicking it in the book casts it", out.quietDrained, true],
+      ["and nothing refused it", out.quietSaid, "nothing"],
+      ["and nothing threw", out.errs, "none"],
+      /* **And in a fight it does not**, which is the whole increment. */
+      ["in a fight, the book refuses", out.shutDrained, false],
+      ["and says where to go instead", /cast off a .* Cast half/.test(out.shutSaid), true],
+      ["and says the book is still the road out of one", /out of a fight/.test(out.shutSaid), true],
+      /* The road itself. */
+      ["a Cast half is playable", out.playable, true],
+      ["and nothing refused the turn", out.playSaid, "nothing"],
+      ["and playing it casts the spell", out.halfDrained, true],
+      ["and costs the card", out.cardLeftTheHand, true],
+      ["and the hand had halves to stage before the turn", out.offersBefore > 0, true],
+      ["and none after it", out.offersAfter, 0],
+      /*
+       * **Dazed reaches a cast now.** The condition takes your secondary half, and `refusesAction`
+       * only knows about a half when it is told which one -- the book told it nothing, so a caster
+       * carried Dazed for free. The spell must be unspent as well as the turn refused: a refusal
+       * that drained the slate would be the worse of the two bugs.
+       */
+      ["Dazed refuses a Cast on a secondary", out.dazedDrained, false],
+      ["and says which half it took", /secondary half/.test(out.dazedSaid), true],
+      /*
+       * **And the gate, in the register a player reads rather than only in the handler.** The
+       * sentence has to name both empty places, because a player with a full spell book and no
+       * staff and a player with a staff and nothing prepared are both sent somewhere by it.
+       */
+      ["a Cast half with nothing to cast is blocked", out.emptyBlocked, true],
+      ["and says so in words", /Nothing prepared, and nothing in hand that casts/
+        .test(out.emptyTip), true],
+      ["and preparing one gives the half back", out.armedBlocked, false]
+    ];
+  });
+
   await probe("a caster can see and prepare their spells", async () => {
     await settle(page);
     const out = await page.evaluate(async () => {

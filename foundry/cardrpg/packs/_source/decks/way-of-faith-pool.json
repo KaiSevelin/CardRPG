@@ -1,0 +1,259 @@
+{
+  "_id": "l8jXKjbSxyrtDD1N",
+  "_key": "!cards!l8jXKjbSxyrtDD1N",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Way of Faith — Pool",
+  "type": "deck",
+  "img": "systems/cardrpg/art/backs/action.webp",
+  "cards": [
+    {
+      "_id": "mja1jdmvGKREbr3Y",
+      "_key": "!cards.cards!l8jXKjbSxyrtDD1N.mja1jdmvGKREbr3Y",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 100,
+      "name": "The Office",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Office",
+          "img": "systems/cardrpg/art/cards/faith/the-office.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast",
+            "mod": 1
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "defend"
+          }
+        ],
+        "reaction": "parry",
+        "costs": {},
+        "text": "The hours are kept whether or not anything is asked of them."
+      }
+    },
+    {
+      "_id": "UiEl91ue4WIMUXKi",
+      "_key": "!cards.cards!l8jXKjbSxyrtDD1N.UiEl91ue4WIMUXKi",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 200,
+      "name": "The Arm Across",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Arm Across",
+          "img": "systems/cardrpg/art/cards/faith/the-arm-across.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast"
+          },
+          {
+            "verb": "block",
+            "param": 1,
+            "range": 1
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "The Block goes to an adjacent ally. You are busy."
+      }
+    },
+    {
+      "_id": "3SB1HccWj8XvWSTr",
+      "_key": "!cards.cards!l8jXKjbSxyrtDD1N.3SB1HccWj8XvWSTr",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 300,
+      "name": "The Vow Spoken",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Vow Spoken",
+          "img": "systems/cardrpg/art/cards/faith/the-vow-spoken.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast",
+            "mod": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "heal",
+            "param": 2
+          }
+        ],
+        "reaction": "",
+        "costs": {
+          "primary": {
+            "strain": 1
+          }
+        },
+        "text": "Strain 1 on the vow, or nothing at all on the mending. Not both."
+      }
+    },
+    {
+      "_id": "SHorPX4eVdeepjCS",
+      "_key": "!cards.cards!l8jXKjbSxyrtDD1N.SHorPX4eVdeepjCS",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 400,
+      "name": "The Long Prayer",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Long Prayer",
+          "img": "systems/cardrpg/art/cards/faith/the-long-prayer.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast"
+          },
+          {
+            "condition": "blessed",
+            "duration": 1,
+            "range": 2,
+            "targets": "oneAlly"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "One ally within 2 is Blessed for the round. No save: nobody resists being prayed for."
+      }
+    },
+    {
+      "_id": "iXF6qO45q5fDP5i5",
+      "_key": "!cards.cards!l8jXKjbSxyrtDD1N.iXF6qO45q5fDP5i5",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 500,
+      "name": "Nothing Between",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Nothing Between",
+          "img": "systems/cardrpg/art/cards/faith/nothing-between.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast",
+            "mod": -1,
+            "ignoresCover": true
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Cover is a fact about the field, not about the god. Answers none of it."
+      }
+    },
+    {
+      "_id": "WJrqYalWOzD0g4gw",
+      "_key": "!cards.cards!l8jXKjbSxyrtDD1N.WJrqYalWOzD0g4gw",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 600,
+      "name": "Answer the Call",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Answer the Call",
+          "img": "systems/cardrpg/art/cards/faith/answer-the-call.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "bodyguard",
+        "costs": {},
+        "text": "Somebody is owed, and the Way is what they ask."
+      }
+    }
+  ]
+}

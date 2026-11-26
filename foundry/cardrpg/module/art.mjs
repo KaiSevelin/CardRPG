@@ -414,6 +414,14 @@ export const SHELVES = [
   { key: "cards/npc", list: content.INTENTS },
   { key: "cards/shade", list: content.SHADE_POOL },
   { key: "cards/strength", list: content.STRENGTH_POOL },
+  /*
+   * **The two magical Ways' cards**, under `cards/` and not under `spells/`, which is the one
+   * thing worth saying about these two rows: `spells/mind` and `spells/faith` below are the
+   * formulas and the miracles, and a card is a different object with a different back. The lists
+   * are named differently in the content for the same reason.
+   */
+  { key: "cards/mind", list: content.MIND_CARDS },
+  { key: "cards/faith", list: content.FAITH_CARDS },
   { key: "cards/way", list: content.WAY_CARDS },
   { key: "cards/skill", list: content.WARRIOR_SKILLS },
   { key: "cards/wild", list: content.WILD_MAGIC },

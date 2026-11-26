@@ -463,6 +463,52 @@ export const COMMON_POOL = [
     primary: [{ verb: "heal", param: 2 }],
     secondary: [{ verb: "move", param: 1 }],
     costs: { primary: { spent: true } }
+  },
+  /*
+   * --- the two Cast cards, and why the dull pool is where they belong ---
+   *
+   * **[BUILT 2026-11-26]** A prepared spell is cast off a \u2726 Cast half now (core-rules 4), and
+   * the day that became the rule there were **no Cast halves in the game at all**: 25 cast steps
+   * across the content, 18 of them spell effects, 5 signature effects, one a goblin shaman's
+   * intent, two a `+1 to Cast` bonus -- and **zero on any of the 234 cards**. The verb had an
+   * icon, a reach and a whole case in the resolver, and nothing could reach it.
+   *
+   * They are here rather than only in the two magical Ways because of what this pool is for. It is
+   * the backbone *any* Way's minor nodes may grant (way-cards 3.1), and a character who casts is
+   * not always a Way of Mind character: the **Half-mage** title is one trick cast with a blade in
+   * the other hand, **Tattoo Magic** needs neither hand nor voice, **Vax**'s holy symbol is the
+   * club already in your fist, and two rings set the free hand aside. Every one of those was a
+   * caster with nothing in their deck to cast from.
+   *
+   * Dull on purpose, like the six above them. *Say the Words* is the \u2726 Cast answer to *Measure*
+   * and *Blade and Word* is the answer to *Off-Hand Blow* -- the same card, one verb over, at the
+   * same \u22121 and for the same reason.
+   */
+  {
+    /*
+     * The backbone, and the plainest card in the game: the half says you cast and the spell says
+     * how well (core-rules 4, *Two kinds of casting*). No modifier, because a pool whose job is to
+     * be the floor should hand over the floor -- what makes this card good is the formula a player
+     * chose to put behind it, which is the decision the Way of Mind is built out of.
+     */
+    name: "Say the Words", copies: 1, pool: "common", needs: [],
+    primary: [{ verb: "cast" }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "Speech and a free hand, or the item in it. Silenced stops both."
+  },
+  {
+    /*
+     * *Off-Hand Blow* one verb over, and the \u22121 does the same job: it keeps the card from making
+     * a plain Cast obsolete. way-cards 3.1 says that about the Strike version in so many words.
+     *
+     * No `requires`, deliberately. A free hand is what a prepared spell needs and `payToCast`
+     * already asks -- a card that also named a weapon tag would be charging twice for one rule,
+     * and it would shut out the half-mage with a staff whose magic is its own.
+     */
+    name: "Blade and Word", copies: 1, pool: "common", needs: [],
+    primary: [{ verb: "strike" }],
+    secondary: [{ verb: "cast", mod: -1 }],
+    text: "The blade in one hand and the words in the other. The hand that gestures must be empty."
   }
 ];
 

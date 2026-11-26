@@ -244,6 +244,82 @@
           }
         }
       }
+    },
+    {
+      "_id": "FnY46y7FSXVDRQBc",
+      "_key": "!cards.cards!YVYpVkRry9xB4xNb.FnY46y7FSXVDRQBc",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 700,
+      "name": "Say the Words",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Say the Words",
+          "img": "systems/cardrpg/art/cards/common/say-the-words.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Speech and a free hand, or the item in it. Silenced stops both."
+      }
+    },
+    {
+      "_id": "rbkmyV3T5ijjZJmx",
+      "_key": "!cards.cards!YVYpVkRry9xB4xNb.rbkmyV3T5ijjZJmx",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 800,
+      "name": "Blade and Word",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Blade and Word",
+          "img": "systems/cardrpg/art/cards/common/blade-and-word.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "cast",
+            "mod": -1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "The blade in one hand and the words in the other. The hand that gestures must be empty."
+      }
     }
   ]
 }

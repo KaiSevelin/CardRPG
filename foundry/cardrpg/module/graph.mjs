@@ -22,6 +22,8 @@
 
 import {
   NODES, COMMON_POOL, WAY_CARDS, SHADE_POOL, STRENGTH_POOL, MIND_POOL, FAITH_POOL, LANGUAGES,
+  /* The two magical Ways' CARDS, which are a different list from their spells of the same name. */
+  MIND_CARDS, FAITH_CARDS,
   FORMULAS, SHADOW_FORMULAS,
   SHADE_SIGNATURES, TACTICS, STRENGTH_SIGNATURES, STRENGTH_TACTICS,
   MIND_SIGNATURES, MIND_TACTICS, FAITH_SIGNATURES, FAITH_TACTICS,
@@ -59,6 +61,7 @@ export const ROOT = "root";
  * against.
  */
 export const POOL = new Map([...COMMON_POOL, ...WAY_CARDS, ...SHADE_POOL, ...STRENGTH_POOL,
+  ...MIND_CARDS, ...FAITH_CARDS,
   ...SIGNATURES.filter(s => s.kind === "card")].map(c => [c.name, c]));
 
 /**
@@ -123,7 +126,17 @@ export const TEACHINGS = [...MIND_POOL, ...FAITH_POOL, ...FORMULAS, ...SHADOW_FO
  * be the same string. A Way's title is `Shade` and `Warrior`, so those are the names here -- not
  * "Way of Shade", which reads better and would put the menu behind nothing.
  */
-export const CARD_SOURCES = { shade: "Shade", strength: "Warrior" };
+/*
+ * **And the two magical Ways, which had no card list to put behind a title.**
+ * **[BUILT 2026-11-26]**
+ *
+ * `Scholar` and `Sworn` are the Way-level titles, exactly as `Shade` and `Warrior` are, so the
+ * two strings are the same string the rule above asks for. They could not be here before, because
+ * Mind and Faith delivered spells and nothing else: a magician's deck was the starter Warrior's.
+ */
+export const CARD_SOURCES = {
+  shade: "Shade", strength: "Warrior", mind: "Scholar", faith: "Sworn"
+};
 
 /**
  * **What the top rung of the cost ladder does to a menu, and why one card is not on one.**
@@ -148,7 +161,7 @@ export const topRung = card => [card?.costs?.primary, card?.costs?.secondary]
 
 export const CARDS_BY_SOURCE = (() => {
   const out = new Map();
-  for (const card of [...SHADE_POOL, ...STRENGTH_POOL]) {
+  for (const card of [...SHADE_POOL, ...STRENGTH_POOL, ...MIND_CARDS, ...FAITH_CARDS]) {
     const label = CARD_SOURCES[card.pool];
     if (!label || topRung(card)) continue;
     if (!out.has(label)) out.set(label, []);

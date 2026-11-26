@@ -733,14 +733,14 @@ casting Ways, because they are printed on a prepared spell rather than on a card
 |---|---|---|---|
 | **Overwatch** | an enemy walks into the ground you are watching | A held shot, loosed at the first enemy to walk into the ground you are watching: your weapon's own range, through a sixty degree arc on the way you are facing, and no further than you can see. The weapon decides what arrives, so a thrown knife and a musket are the same card and nothing like each other. | 3 cards |
 | **Brace** | you are hit | Reduce the damage, barely. Any card whose own reaction cannot fire is still worth this much, which is deliberately too little to be worth spending a good card on. | any card that cannot answer otherwise |
-| **Parry** | you are hit | Turn the blow with what you are already holding. Reduces the damage by your weapon's own Defend value, so a sword parries better than a knife. | 10 cards |
+| **Parry** | you are hit | Turn the blow with what you are already holding. Reduces the damage by your weapon's own Defend value, so a sword parries better than a knife. | 11 cards |
 | **Block** | you are hit | The shield comes up. Reduces the damage by the shield's Defend value and one more for being a shield, which is the best answer to a hit in the game. | 6 cards |
 | **Use** | you are hit | Something off your belt, drunk or broken open as the blow lands. Heals you by the item's Use value, and the item is spent doing it. | 4 cards |
 | **Deflect** | you are hit | You move the attacker's arm, and one of their own takes the blow instead. It has to be a serious one, and it has to be somebody standing next to them. | a prepared spell |
-| **Sidestep** | an enemy ends its move next to you | Step out of reach as they arrive, by the number the card prints. The attack that was walking toward you never arrives. | 12 cards |
+| **Sidestep** | an enemy ends its move next to you | Step out of reach as they arrive, by the number the card prints. The attack that was walking toward you never arrives. | 13 cards |
 | **Counter** | an enemy ends its move next to you | They walked onto your point. A free Strike at the enemy that just arrived, for your weapon's full value, and it is the only reaction in the game that deals damage. | 1 card |
 | **Heckle** | an enemy ends its move next to you | A word, at the moment they close. The enemy that just arrived draws fate with disadvantage, so the attack it came to make is already spoiled. | 1 card |
-| **Bodyguard** | an ally within reach is hit | The blow meant for your friend arrives at you instead. It is settled before any other answer, because stepping in front of somebody has to happen first. | 1 card |
+| **Bodyguard** | an ally within reach is hit | The blow meant for your friend arrives at you instead. It is settled before any other answer, because stepping in front of somebody has to happen first. | 2 cards |
 | **Mend** | an ally within reach is hit | Help reaches an ally on the turn they were hit rather than on yours, which is most of what makes it worth a prepared slot. | a prepared spell |
 | **Unmake** | a spell is cast | You have felt this spell before, and that is the only reason you can stop it. | a prepared spell |
 | **Hold to the Bargain** | a check fails | A check you had just failed is intervened in, once, by something that owes you. | a prepared spell |
@@ -2044,6 +2044,8 @@ do not hold them: they are simply true once the node is yours.
 | **Press** | Hit them, and follow as they give way. | Strike, then Move 1 | Move 2 | Sidestep | 1 |
 | **Both Hands** | Change what you are holding and swing with it in the same motion. | Ready, then Strike | Ready | Use | 1 |
 | **Dig In** | Stop, breathe, and patch whatever is bleeding. | Heal 2 | Move 1 | – | 1 |
+| **Say the Words** | Say it properly, with a hand free to shape it. *Speech and a free hand, or the item in it. Silenced stops both.* | Cast | Move 1 | – | 1 |
+| **Blade and Word** | Steel in one hand, the gesture in the other, and neither waits for the other. *The blade in one hand and the words in the other. The hand that gestures must be empty.* | Strike | Cast -1 | – | 1 |
 
 ### Way of Strength
 
@@ -2115,6 +2117,12 @@ do not hold them: they are simply true once the node is yours.
 
 | Card | What it is | Primary | Secondary | Reaction | Copies |
 |---|---|---|---|---|---|
+| **The Prepared Word** | Everything that makes this work was decided hours ago, somewhere quiet. *What was decided this morning, said well.* | Cast +1 | Ready | – | 1 |
+| **Step and Speak** | Walk out of the sword's reach first. The formula keeps. *Two squares first, and the words from where you end up.* | Move 2, then Cast -1 | Move 1 | Sidestep | 1 |
+| **The Long Formula** | The full version, every syllable of it, and your hand is lighter after. *Strain 1. The longer saying of the same formula, and it costs you the next card.* | Cast +2 | Move 1 | – | 1 |
+| **Across the Room** | No closer. From here, across the whole floor, without raising your voice. *Out to 6, whatever the formula's own reach. It is not shortened, only lengthened.* | Cast at range 6 | Move 1 | – | 1 |
+| **Past the Shield** | They have put a shield between you. It was never the thing in the way. *No shield was ever raised against a word. Answers no Block.* | Cast -1 (ignores Block) | Move 1 | – | 1 |
+| **The Last Word** | All of it at once, and nothing left of the card afterwards. *Spent. Everything the formula had, and the card does not come back this fight.* | Cast +3 | Move 2 | – | 1 |
 | **Hold to the Bargain** | Something that owes you intervenes, once. *It was going to fail. Something intervened, once, because it owes you.* | – | – | Hold to the Bargain | 1 |
 | **Turn Aside** | Their shield is suddenly worth twice what it was. *You do not stop the blow; you make their shield worth twice what it was for exactly as long as it takes.* | – | – | Mend | 1 |
 | **Shake It Off** | Whatever is on them comes off now, not on their turn. *Whatever is on them, off, on the turn it happened rather than on yours. Three is enough for anything the game can print.* | – | – | Mend | 1 |
@@ -2126,6 +2134,12 @@ do not hold them: they are simply true once the node is yours.
 
 | Card | What it is | Primary | Secondary | Reaction | Copies |
 |---|---|---|---|---|---|
+| **The Office** | The hours are kept whether or not anybody is listening. *The hours are kept whether or not anything is asked of them.* | Cast +1 | Defend | Parry | 1 |
+| **The Arm Across** | One hand raised for the god, one arm across the man beside you. *The Block goes to an adjacent ally. You are busy.* | Cast, then Block 1 at range 1 | Move 1 | – | 1 |
+| **The Vow Spoken** | Said out loud, in front of everyone, and it costs what it costs. *Strain 1 on the vow, or nothing at all on the mending. Not both.* | Cast +2 | Heal 2 | – | 1 |
+| **The Long Prayer** | Someone else's name in it, said long enough that it sticks to them. *One ally within 2 is Blessed for the round. No save: nobody resists being prayed for.* | Cast, then at range 2 → blessed (1) | Move 1 | – | 1 |
+| **Nothing Between** | They are behind the wall. The wall is not in the conversation. *Cover is a fact about the field, not about the god. Answers none of it.* | Cast -1 | Move 1 | – | 1 |
+| **Answer the Call** | The blow was meant for somebody else. You were closer. *Somebody is owed, and the Way is what they ask.* | Cast | Ready | Bodyguard | 1 |
 | **Bear It for Them** | You take what is on them onto yourself, entire. *Whatever is on them is on you instead, at its full duration. The Spirit's priests are the only ones who can do this and the only ones who would.* | – | – | Mend | 1 |
 | **The Turning Tide** | The sea is not fair, and today it is not fair to them. *The sea is not fair. They draw again and must keep the second card, and a Miss joins your own deck for having asked.* | – | – | Mend | 1 |
 | **The Close Work** | You move his arm, and the man behind him takes it. *You move his arm. The man behind him takes it, and neither of them understands what happened.* | – | – | Deflect | 1 |

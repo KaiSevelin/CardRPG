@@ -2397,8 +2397,8 @@ for (const block of wayDoc.split(/\n\s*\n/)) {
 }
 const column = poolRows.filter(e => e.cell && e.cell !== "-" && e.cell !== "\u2013");
 const bare = column.filter(e => reactionKeys.includes(e.cell.toLowerCase()) || e.cell === "Brace");
-check("reaction cells in the card pools", column.length, 16);
-check("cells that are a bare key", bare.length, 14);
+check("reaction cells in the card pools", column.length, 19);
+check("cells that are a bare key", bare.length, 17);
 const needKeys = column.filter(e => !bare.includes(e)).map(e => e.name);
 check("cells no key could express", needKeys.join(", "), "Set Spear, Roll With It");
 /* Which must be exactly the cards the engine carries, or the selection rule is a story. */
@@ -3433,7 +3433,7 @@ const byId = graph.GRAPH;
 
 /* 232 since 2026-11-13: Birth gained ten origins and twelve backgrounds, taken at creation
  * and free, so the graph is 22 nodes larger and not one level deeper. */
-check("nodes defined", nodes.length, 243);
+check("nodes defined", nodes.length, 245);
 check("duplicate node ids", nodes.length === byId.size ? "none" : "yes", "none");
 
 /* Every prerequisite must resolve, or a branch is silently unreachable. */
@@ -4161,7 +4161,7 @@ check("a pool card granted twice on one path",
  */
 const minors = nodes.filter(n => !n.title && n.id !== graph.ROOT && !n.free);
 const bespoke = minors.filter(n => n.bespoke);
-check("minor nodes", minors.length, 157);
+check("minor nodes", minors.length, 159);
 check("bespoke minor nodes", bespoke.length, 29);
 /*
  * **The budget is a ceiling, and it is the number of bespoke PIECES.** leveling 1 sizes it exactly
@@ -4181,7 +4181,7 @@ check("bespoke pieces, against a budget of about forty", bespoke.length <= 40, t
  * because bespoke content was DELETED would move this number too, and would have to be explained.
  */
 check("the bespoke share is under the budget ceiling", bespoke.length / minors.length <= 0.4, true);
-check("and what the share is now", (bespoke.length / minors.length).toFixed(3), "0.185");
+check("and what the share is now", (bespoke.length / minors.length).toFixed(3), "0.182");
 /*
  * And each bespoke node sits LAST on its run -- which asked for the title it leads to until Way of
  * Faith had no titles to lead to. Faith spends its depth sideways: the gods are the titles and they
@@ -4273,7 +4273,7 @@ check("Mind cells that drifted from the document",
   mindDrift.length ? mindDrift.join("; ") : "none", "none");
 
 const mindAll = nodes.filter(n => n.id === "mind" || n.id.startsWith("mind."));
-check("Way of Mind nodes", mindAll.length, 55);
+check("Way of Mind nodes", mindAll.length, 56);
 /* One predecessor each, so there is no crossing and no `all` node anywhere in the Way. */
 /*
  * The WAY ROOT is carved out of both sweeps below.  [CHANGED 2026-11-14] A Way follows the twelve
@@ -5479,11 +5479,23 @@ const unraised = Object.keys(CARDRPG.reactionTriggers)
 check("triggers with no code that raises them",
   unraised.length ? unraised.join(", ") : "none", "none");
 /* And the newest one needed casting to exist first, which is why it could not have come earlier. */
+/*
+ * **The wording moved with the code.**  **[MOVED 2026-11-26]** The spell branch of `#onPlaySlate`
+ * is `#castSlate` now, because there are two roads to a cast -- a \u2726 Cast card half in a fight and
+ * a click in the book out of one -- and every guard and price along it has to hold on both. These
+ * four pins followed it rather than being deleted: what they were written to protect is the same
+ * sentence, one function over.
+ */
 check("the Cast event is raised where a spell is cast",
-  /const warded = await answerCast\(this\.actor, slate\.name\);/.test(traySource) ? "yes" : "no",
-  "yes");
+  /if \(await answerCast\(this\.actor, slate\.name\)\) return true;/.test(traySource)
+    ? "yes" : "no", "yes");
+/* **And a warded Cast does not resolve, which the `return` IS.** It reads `true` rather than
+ * `false`, and that is the ward's own rule rather than a slip: *Unmake* stops the spell from
+ * resolving and not from being cast, so the caller is told the cast happened -- the Health and the
+ * slot are gone, and the step below this line is the only thing skipped. */
 check("and a warded Cast does not resolve",
-  /if \(warded\) return this\.render\(\);/.test(traySource) ? "yes" : "no", "yes");
+  /answerCast\(this\.actor, slate\.name\)\) return true;\n\n    await this\.#resolveStep\(/
+    .test(traySource) ? "yes" : "no", "yes");
 /*
  * The price is paid before the ward fires: *Unmake* stops a Cast RESOLVING, not being attempted, so
  * the Health and the slot are gone either way. A counterspell that also refunded the cast would
@@ -5938,12 +5950,28 @@ const spellTables = (() => {
   let group = "";
   let kind = "";
   for (const line of lines.slice(from, to === -1 ? lines.length : to)) {
-    if (line.startsWith("### 3.4")) kind = "formula";
-    else if (line.startsWith("### 3.5")) kind = "miracle";
+    /*
+     * **A `###` heading clears the group, and that was a latent leak.**  **[FIXED 2026-11-26]**
+     *
+     * `group` survived from one section into the next, so a table in §3.5 sitting BEFORE its first
+     * god heading was attributed to the last school of §3.4 -- and read as a formula of it. No row
+     * had ever sat there, so nothing had found it; the Sworn's card table landed in exactly that
+     * spot and six cards were reported as miracles of Divination.
+     */
+    if (line.startsWith("### 3.4")) { kind = "formula"; group = ""; }
+    else if (line.startsWith("### 3.5")) { kind = "miracle"; group = ""; }
     else if (line.startsWith("#### ")) {
-      /* A school's heading is "Name -- axis, paid in ...". A prose heading has no dash. */
+      /*
+       * A school's heading is "Name -- axis, paid in ...". A prose heading has no dash.
+       *
+       * **Which is now the test rather than a list of the prose headings there happen to be.**
+       * **[CHANGED 2026-11-26]** It matched `The principle` and `What a 4` by name, so the two
+       * card tables added under their Ways arrived as a school called *The Scholar's six cards*
+       * with six formulas in it. The sentence above this was always the rule; the whitelist was
+       * only the rule applied to the two cases that existed.
+       */
       const head = line.slice(5).split(/—|--/)[0].trim();
-      group = /^(The principle|What a 4)/.test(head) ? "" : head;
+      group = head === line.slice(5).trim() ? "" : head;
     } else if (line.startsWith("|") && group) {
       const cells = line.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
       if (cells.length < 3) continue;
@@ -6953,7 +6981,7 @@ const hollow = capstones.filter(n => {
   const keys = Object.keys(n.grants ?? {});
   return keys.length > 0 && keys.every(k => FLAVOUR.has(k));
 });
-check("capstones", capstones.length, 44);
+check("capstones", capstones.length, 46);
 check("capstones granting nothing a fight would notice",
   hollow.map(n => `${n.name} (lv ${graph.levelFor(n.id)})`).join(", ") || "none", "none");
 /*
@@ -6999,8 +7027,21 @@ const branchRoute = god => {
     const best = [...graph.reachable(owned, shut)]
       .filter(id => !owned.has(id) && !shut.has(id) && id.startsWith("faith.")
         && graph.canTake(id, owned, shut))
+      /*
+       * **A card menu is not a miracle.**  **[FIXED 2026-11-26]**
+       *
+       * `choose` was worth 5 unconditionally, which was right while every menu in the graph named
+       * a school or a god: the dearest thing on a spell list is a strength-5 formula, so a menu is
+       * worth the best of them. Way of Faith has a CARD menu now (`faith.repertoire`, from the
+       * Sworn list), and a greedy route that valued it at 5 took it over every miracle on the
+       * branch -- so this audit, which is entirely about *how many miracles a priest holds*,
+       * started measuring a route that deliberately acquires none.
+       *
+       * The route is still allowed to take it; it is simply worth what it is worth to the question
+       * being asked, which is nothing.
+       */
       .map(id => ({ id, v: (graph.SPELLS.get(byId.get(id)?.grants?.spell)?.strength ?? 0)
-        + (byId.get(id)?.grants?.choose ? 5 : 0) }))
+        + (graph.SPELLS_BY_SOURCE.has(byId.get(id)?.grants?.choose?.from ?? "") ? 5 : 0) }))
       .sort((a, b) => b.v - a.v)[0];
     if (!best) break;
     owned.add(best.id);
@@ -7049,12 +7090,12 @@ const reachOneWay = titleId => {
   return [...owned].filter(id => id !== graph.ROOT && !graph.GRAPH.get(id)?.free).length;
 };
 const sizeOf = way => nodes.filter(n => n.id === way || n.id.startsWith(`${way}.`)).length;
-check("nodes in each Way", WAYS.map(w => `${w} ${sizeOf(w)}`).join(", "), "strength 40, shade 43, mind 55, faith 77");
+check("nodes in each Way", WAYS.map(w => `${w} ${sizeOf(w)}`).join(", "), "strength 40, shade 43, mind 56, faith 78");
 check("and how many of them one character can ever own",
   [["strength.infantry", "strength"], ["shade.thief", "shade"], ["mind.blood", "mind"]]
-    .map(([t, w]) => `${w} ${reachOneWay(t)}/${sizeOf(w)}`).join(", "), "strength 40/40, shade 43/43, mind 55/55");
+    .map(([t, w]) => `${w} ${reachOneWay(t)}/${sizeOf(w)}`).join(", "), "strength 40/40, shade 43/43, mind 56/56");
 check("a priest of a pantheon, and of a lone god",
-  `${reachOneWay("faith.sessyfyn")}/77, ${reachOneWay("faith.vax")}/77`, "33/77, 21/77");
+  `${reachOneWay("faith.sessyfyn")}/77, ${reachOneWay("faith.vax")}/77`, "34/77, 22/77");
 
 /*
  * The two casting Ways' lists, against the world's own sizing: priest magic is *a shorter list than
@@ -7133,7 +7174,7 @@ const ladderOrder = [...graph.SPELLS_BY_SOURCE.values()]
 check("source lists that are not in strength order", ladderOrder.length, 0);
 
 const menuNodes = nodes.filter(n => n.grants?.choose?.from);
-check("nodes that offer a choice", menuNodes.length, 27);
+check("nodes that offer a choice", menuNodes.length, 29);
 /*
  * **Twenty-six now: one behind every school, every god, and each martial Way.**
  * **[BUILT 2026-11-07]**
@@ -7146,15 +7187,16 @@ check("nodes that offer a choice", menuNodes.length, 27);
  * the reasoning, was what needed extending.
  */
 check("one behind every school, every god and each martial Way",
-  new Set(menuNodes.map(n => n.grants.choose.from)).size, 27);
+  new Set(menuNodes.map(n => n.grants.choose.from)).size, 29);
 /* And what each martial menu may offer, which is every rung of the cost ladder but the top one:
  * way-cards 1.3 reserves Spent + Strain at "once in a deck", and a card has no slot budget to
  * fence it the way a spell's strength fences a formula. */
 check("cards a martial menu offers",
   [...graph.CARDS_BY_SOURCE].map(([k, v]) => `${k} ${v.length}`).join(", "),
-  "Shade 20, Warrior 18");
+  "Shade 20, Warrior 18, Scholar 6, Sworn 6");
 check("and the card held back from one",
-  [...content.SHADE_POOL, ...content.STRENGTH_POOL].filter(graph.topRung)
+  [...content.SHADE_POOL, ...content.STRENGTH_POOL, ...content.MIND_CARDS, ...content.FAITH_CARDS]
+    .filter(graph.topRung)
     .map(c => c.name).join(", ") || "none",
   "Nothing Held Back");
 /* Each sits directly behind its own title, which is the earliest the choice can honestly be
@@ -7179,7 +7221,7 @@ check("menu nodes marked bespoke",
 const spellMenus = menuNodes.filter(n => graph.SPELLS_BY_SOURCE.has(n.grants.choose.from));
 const cardMenus = menuNodes.filter(n => graph.CARDS_BY_SOURCE.has(n.grants.choose.from));
 check("menu nodes, split by the kind of list they name",
-  `${spellMenus.length} spell, ${cardMenus.length} card`, "25 spell, 2 card");
+  `${spellMenus.length} spell, ${cardMenus.length} card`, "25 spell, 4 card");
 
 const namedByNodes = nodes.filter(n => n.grants?.spell).map(n => n.grants.spell);
 const choosable = new Set(spellMenus
@@ -7204,9 +7246,9 @@ const choosableCards = new Set(cardMenus
 const poolCards = [...content.COMMON_POOL, ...content.SHADE_POOL, ...content.STRENGTH_POOL];
 const unreachableCards = poolCards.map(c => c.name)
   .filter(name => !namedCards.has(name) && !choosableCards.has(name));
-check("pool cards in total", poolCards.length, 45);
+check("pool cards in total", poolCards.length, 47);
 check("cards no node can hand over at all",
-  unreachableCards.length ? unreachableCards.sort().join(", ") : "none", "Dig In, Nothing Held Back, Off-Hand Blow, Press");
+  unreachableCards.length ? unreachableCards.sort().join(", ") : "none", "Blade and Word, Dig In, Nothing Held Back, Off-Hand Blow, Press");
 check("and all of them are one of the two declared cases",
   unreachableCards.every(name => {
     const card = poolCards.find(c => c.name === name);
@@ -7407,7 +7449,7 @@ const workingCards = audited.filter(c => !c.needs.length).length;
  * field nothing read. Three pieces left this count because the count was wrong, which is the one
  * reason it is allowed to fall.
  */
-check("content the engine does everything for", workingCards, 104);
+check("content the engine does everything for", workingCards, 106);
 check("content with a named gap", audited.filter(c => c.needs.length).length, 122);
 
 /*
@@ -8263,7 +8305,7 @@ const artable = (await import("../module/art.mjs")).SHELVES.flatMap(s => s.list 
  * art, because a node wears the art of what it hands over; that is true of what the GRAPH
  * draws and false of what the PANE does, which shows a picture beside three paragraphs of
  * prose about a person. */
-check("pieces of content that take art", artable.length, 783);
+check("pieces of content that take art", artable.length, 797);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -8819,7 +8861,7 @@ const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.m
 /* Every piece the game can hand Foundry a path for, which is all of them: kept as the denominator
  * the three states below have to add up to, and no longer printed as progress. */
 check("pieces the game has a path for", artable.filter(e => artInLive(e)).length
-  + backs.filter(([k]) => backOfLive(k)).length, 794);
+  + backs.filter(([k]) => backOfLive(k)).length, 808);
 /*
  * **And every path the game hands Foundry names a file that is there.**
  *
@@ -8838,7 +8880,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 794);
+check("art paths the game would hand Foundry", artable.length + backs.length, 808);
 /*
  * **The brief's progress line used to be the total, and nobody noticed for months.**
  *
@@ -8944,6 +8986,8 @@ check("and those naming a file that is not there",
 const ART_SLOTS = {
   "cards/starter": "face", "cards/common": "face", "cards/npc": "face", "cards/shade": "face",
   "cards/strength": "face", "cards/way": "face", "cards/skill": "face", "cards/wild": "face",
+  /* The two magical Ways' cards, which are faces like every other card and nothing new. */
+  "cards/mind": "face", "cards/faith": "face",
   "signatures/shade": "face", "signatures/strength": "face", "signatures/mind": "face",
   "signatures/faith": "face", "spells/elemental": "face", "spells/shadow": "face",
   "spells/mind": "face", "spells/faith": "face",
@@ -8982,7 +9026,7 @@ const ART_SLOTS = {
 };
 const briefDirs = [...new Set([...artList.matchAll(/Suggested path: `cardrpg\/art\/(.+?)\/`/g)]
   .map(m => m[1]))];
-check("directories the brief commissions into", briefDirs.length, 32);
+check("directories the brief commissions into", briefDirs.length, 34);
 check("and every one of them has a slot",
   briefDirs.filter(d => !(d in ART_SLOTS)).join(", ") || "none", "none");
 /* And no slot is declared for a group that is not in the brief, or this list rots quietly. */
@@ -9157,7 +9201,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 783);
+check("briefs the check actually read", briefs.length, 797);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -9347,6 +9391,9 @@ check("directed pieces still sent the sentence they override",
  */
 const everyActionCard = new Set();
 for (const list of ["WARRIOR_DECK", "SHADE_DECK", "COMMON_POOL", "STRENGTH_POOL", "SHADE_POOL",
+  /* And the two magical Ways' CARDS, which are a different list from their spells: `MIND_POOL`
+   * beside `MIND_CARDS` is the pair, and only one of them holds anything with a half on it. */
+  "MIND_CARDS", "FAITH_CARDS",
   "MIND_POOL", "FAITH_POOL", "STRENGTH_SIGNATURES", "SHADE_SIGNATURES", "MIND_SIGNATURES",
   "FAITH_SIGNATURES", "WAY_CARDS"]) {
   for (const e of content[list] ?? []) {
@@ -11518,7 +11565,7 @@ const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-
 /* 233: Blood Magic dropped its cast line with its refusal -- the rewrite put a stone basin in
  * the frame and nobody at all, and a line opening *if any bare skin shows* under a direction
  * saying there is no skin is the contradiction the refusal was made of. */
-check("cards, signatures and features given an assigned person", castLines.length, 241);
+check("cards, signatures and features given an assigned person", castLines.length, 255);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
@@ -11555,7 +11602,7 @@ check("western ancestries among them, which had nearly vanished",
    * against 33.7%, which is the proportion holding rather than a seventh shelf of westerners.
    * The number this check is really about is that ratio. 60 of 178 once `find-the-gap` dropped
    * its cast line -- see NO_PERSON in art-prompts.mjs, and the refusal it was added for. */
-  castLines.filter(m => EURO.has(m[2])).length, 79);
+  castLines.filter(m => EURO.has(m[2])).length, 83);
 check("and every ancestry on the list is used somewhere",
   new Set(castLines.map(m => m[2])).size, 15);
 
@@ -11819,7 +11866,7 @@ check("and each one says what is not in the frame",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 783);
+check("file paths in the brief", rows.length, 797);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -11942,18 +11989,46 @@ check("and every one of them has a string to print",
  */
 check("the moment is refused by one routine",
   /export function refusesTiming\(actor, slate/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **Pinned on `timingBars` rather than on the string.**  **[CHANGED 2026-11-26]** The table lookup
+ * occurs twice in the file now -- the predicate and the sentence are two functions since a \u2726 Cast
+ * half began offering a MENU of what you may cast -- and a grep that matches twice is a check whose
+ * own subject could be deleted in one place and go on passing, which this file has a rule about.
+ */
 check("and it reads the rule rather than naming the timings",
-  /CARDRPG\.timings\[timing\]/.test(resolveSource)
+  /const rule = timing \? CARDRPG\.timings\[timing\] : null;/.test(resolveSource)
     && !/case "(outOfCombat|beforeFight)"/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **And the predicate behind it, which is what the menu asks.**  **[BUILT 2026-11-26]**
+ *
+ * `refusesTiming` warned and returned a boolean, so nobody could ask the question without getting
+ * the sentence -- and a face needs the answer silently. One predicate, two readers: the tray's
+ * `#castable` leaves a ritual out of the menu in a fight, and the refusal below still says why if
+ * a second road reaches it anyway. `stateHolds` is the same split, and it has always been split.
+ */
+check("the moment is one predicate the refusal reads",
+  /export function timingBars\(actor, slate\) \{/.test(resolveSource) ? "yes" : "no", "yes");
+check("and the refusal asks it rather than deciding again",
+  /const bars = timingBars\(actor, slate\);\n  if \(!bars\) return false;/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("and the menu asks the same one",
+  /&& !timingBars\(this\.actor, slate\)/.test(traySource) ? "yes" : "no", "yes");
 /*
  * **Before the price, which is why the call sits where it does.** `#onPlaySlate` pays for the cast
  * two lines later, and the comment above that payment already says a refusal inside the resolver
  * would take the Health and the slot for a cast that never happened. A timing refused afterwards
  * would do exactly that.
  */
+/*
+ * **An order inside the function that holds it, rather than a span across the file.**
+ * **[CHANGED 2026-11-26]** This was `A[\s\S]{0,600}?B`, and the move into `#castSlate` gave the
+ * gap a docblock to swallow -- the exact failure mode the span rule above was written for, arriving
+ * on a commit where the order never changed. `inOrder` says what was meant and has no width to
+ * spend.
+ */
 check("and it is asked before the cast is paid for",
-  /refusesTiming\(this\.actor, slate[\s\S]{0,600}?await payToCast/.test(traySource)
-    ? "yes" : "no", "yes");
+  inOrder(bodyOf(traySource, "async #castSlate(slate,"),
+    ["refusesTiming(this.actor, slate", "await payToCast(this.actor, slate)"]), "in order");
 /*
  * **And the state guard joined that queue, so the order is pinned as an order.**  [2026-11-22]
  *
@@ -11998,7 +12073,7 @@ for (const entry of everyEntry) {
     for (const st of arr ?? []) everyStep.push({ card: entry.name, st });
   }
 }
-check("steps the timing audit read", everyStep.length, 397);
+check("steps the timing audit read", everyStep.length, 401);
 
 /*
  * **Every key a combo clause uses is a key the clause's schema declares.**
@@ -12714,7 +12789,7 @@ const planned = packs.planDocuments();
 
 check("compendium packs", planned.length, 8);
 check("and what each one holds",
-  planned.map(p => `${p.name}:${p.docs.length}`).join(" "), "creatures:112 characters:1 items:187 features:23 spells:124 injuries:14 signatures:31 decks:13");
+  planned.map(p => `${p.name}:${p.docs.length}`).join(" "), "creatures:112 characters:1 items:187 features:23 spells:124 injuries:14 signatures:31 decks:15");
 /* Faults the generator records rather than throws: a filename collision silently drops a document,
  * so the build reports it and this refuses to pass with one outstanding. */
 check("faults the generator reported", planned[0].faults.join("; ") || "none", "none");
@@ -12758,8 +12833,8 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
  */
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
-check("documents the stamp sweep read", everyPackDoc.length, 505);
-check("and children beneath them", everyPackChild.length, 398);
+check("documents the stamp sweep read", everyPackDoc.length, 507);
+check("and children beneath them", everyPackChild.length, 412);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
     || d._stats?.systemId !== manifest.id
@@ -12794,7 +12869,7 @@ const packedFromContent = {
     .filter(s => !graph.SIGNATURES.some(g => g.kind === "spell" && g.name === s.name)).length,
   injuries: content.INJURIES.length,
   signatures: graph.SIGNATURES.filter(s => s.kind !== "card").length,
-  decks: 13
+  decks: 15
 };
 /*
  * And the features count as a literal beside the derivation. This check's own comment says why -- *a
@@ -12841,7 +12916,7 @@ check("pack sources that disagree with the content",
   stale.length ? `${stale.length}: ${stale.slice(0, 4).join(", ")}` : "none", "none");
 /* A comparison that read no files would report "none" for a repository with no packs at all. */
 check("documents the comparison actually read",
-  planned.reduce((n, p) => n + p.docs.length, 0), 505);
+  planned.reduce((n, p) => n + p.docs.length, 0), 507);
 
 /*
  * **An id is a promise.** A world that imports a creature keeps the pack's id, and so does every
@@ -12874,7 +12949,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 903);
+check("ids the rule actually read", everyId.size, 919);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -13619,7 +13694,7 @@ check("the indexes are refilled rather than replaced",
 /* ---- what it refuses, asked rather than read ---- */
 
 const coreNodes = [...graph.LIVE_NODES];
-check("the graph starts as core content", coreNodes.length, 243);
+check("the graph starts as core content", coreNodes.length, 245);
 
 /* A prerequisite that does not exist: the first price section 8 names. */
 check("a node following nothing that exists",
@@ -13682,7 +13757,7 @@ check("and the graph is still whole", graph.GRAPH.has("shade.thief"), true);
 
 /* Back to core, so every check after this section is asking about the shipped graph. */
 check("the graph can be put back", graph.rebuildGraph({}).length, 0);
-check("and it is core again", graph.LIVE_NODES.length, 243);
+check("and it is core again", graph.LIVE_NODES.length, 245);
 check("with the replaced node restored", graph.GRAPH.get("shade.footwork")?.name, "Footwork");
 
 /* ---- the lock, which is the answer to "not in an active campaign" ---- */
@@ -18762,7 +18837,7 @@ check("a mastery is always deeper than that Way's expertise",
   }).map(m => m.id).join(", ") || "none", "none");
 
 /* Nothing new was added to the graph for any of it. */
-check("nodes in the graph", nodes.length, 243);
+check("nodes in the graph", nodes.length, 245);
 check("and every expertise rides a node that was already there",
   expertiseNodes.filter(n => Object.keys(n.grants).length < 2).map(n => n.id).join(", ") || "none",
   "none");
@@ -19135,7 +19210,7 @@ const blockSteps = [...graph.POOL.values(), ...graph.SPELLS.values()]
     .filter(st => st.verb === "block").map(st => ({ name: c.name, ...st })));
 check("content that gives Block away",
   [...new Set(blockSteps.map(b => b.name))].sort().join(", "),
-  "No Step Back, Shield Wall, Shoulder to Shoulder, The Order's Shield");
+  "No Step Back, Shield Wall, Shoulder to Shoulder, The Arm Across, The Order's Shield");
 check("and every one of them says how much",
   blockSteps.every(b => (b.param ?? 0) > 0), true);
 /*
@@ -19176,8 +19251,46 @@ check("so one resolver serves a card half and a spell alike",
     .test(traySource)
     ? "yes" : "no", "yes");
 check("a spell's effect runs through the step resolver",
-  /await this\.#resolveStep\(slate\.system\.effect, "primary", targets, slate\);/.test(traySource)
-    ? "yes" : "no", "yes");
+  /await this\.#resolveStep\(\n\s+step \? castWith\(slate\.system\.effect, step\)/
+    .test(traySource) ? "yes" : "no", "yes");
+
+/*
+ * **What a \u2726 Cast half gives the spell it casts, run as arithmetic.**  **[BUILT 2026-11-26]**
+ *
+ * One rule: **a Cast half can make a spell better and never different.** It is in the resolver
+ * rather than in the tray precisely so this can be asked with planted numbers instead of grepped
+ * for -- a grep on a merge function says the lines are still written and nothing about what they
+ * compute, which is this suite's oldest lesson and the one it relearned on the Wound guard four
+ * days ago.
+ *
+ * The negative half matters as much as the positive one. `area` would turn a bolt into a blast and
+ * `targets` would point a miracle at somebody the caster never chose, so a card carrying either
+ * must change nothing at all -- and a card carrying NO gifts must hand back the very same object,
+ * because a plain Cast is not a cast through a filter.
+ */
+const { castWith } = await import("../module/resolve.mjs");
+const bolt = { mod: 3, range: 2, ignores: 0, ignoresBlock: false, condition: "", area: null };
+check("a card's modifier adds to the spell's", castWith(bolt, { mod: 1 }).mod, 4);
+check("and a negative one subtracts", castWith(bolt, { mod: -1 }).mod, 2);
+check("a card's range lengthens a shorter spell", castWith(bolt, { range: 6 }).range, 6);
+check("and never shortens a longer one", castWith(bolt, { range: 1 }).range, 2);
+check("a card's straight-through is added", castWith(bolt, { ignoresBlock: true }).ignoresBlock,
+  true);
+check("and the spell keeps its own", castWith({ ...bolt, ignoresCover: true }, {}).ignoresCover,
+  true);
+check("armour points add, as they do one level down", castWith(bolt, { ignores: 2 }).ignores, 2);
+/* The four a card may not hand over, each asked for and each refused. */
+check("a card cannot turn a bolt into a blast",
+  `${castWith(bolt, { area: 3, areaKind: "blast" }).area}`, "null");
+check("nor hang its own condition on the spell",
+  castWith(bolt, { condition: "burning", duration: 2 }).condition, "");
+check("nor point it at somebody else",
+  `${castWith(bolt, { targets: "oneAlly" }).targets}`, "undefined");
+check("nor delay it", `${castWith(bolt, { delay: 2 }).delay}`, "undefined");
+/* And a half with nothing to give hands back the same object rather than a copy of it. */
+check("a plain Cast is not a cast through a filter", castWith(bolt, { verb: "cast" }) === bolt,
+  true);
+check("and a spell with no effect at all is left alone", `${castWith(null, { mod: 2 })}`, "null");
 
 /* The price, and the two rules around it. */
 check("the schema carries a cast cost",
@@ -19254,7 +19367,7 @@ check("and on both roads out",
 /* The spell's own wording, not the shape: a drained FEATURE is refused two branches below in
  * exactly the same three lines, and a grep either could answer is a grep about neither. */
 check("and the tray refuses one already cast",
-  /has been cast\. The preparation is spent; a `/.test(traySource) ? "yes" : "no", "yes");
+  /has been cast\. The preparation is spent; a long rest `/.test(traySource) ? "yes" : "no", "yes");
 /* And so does the door every cast comes through, which is the one that matters: a gate that lives
  * only in the window is a gate a macro walks round. Beside the *in your book* refusal, because it
  * is the same question one state along -- `prepared` stopped meaning *castable*. */
@@ -19580,7 +19693,8 @@ check("the wording of the price was found", payLine >= 0, true);
 check("the message makes no promise about how long they stay",
   /for good/.test(resolveSource.slice(payLine)) ? "no" : "yes", "yes");
 check("and paying is what gates the effect",
-  /if \(!await payToCast\(this\.actor, slate\)\) return;/.test(traySource) ? "yes" : "no", "yes");
+  /if \(!await payToCast\(this\.actor, slate\)\) return false;/.test(traySource) ? "yes" : "no",
+  "yes");
 /*
  * ---- and the three prices that were collected by NOTHING ----  [FIXED 2026-11-21]
  *

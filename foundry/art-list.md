@@ -1,6 +1,6 @@
 # Art list
 
-**794 pieces**, of which **790** are drawn and **4** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**808 pieces**, of which **790** are drawn and **18** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -51,7 +51,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 783 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 797 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **11 pieces**, 11 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -117,16 +117,18 @@ The other half of a first session, and the half that was on no shelf at all unti
 
 Six cards every Way draws on, so each one is seen by every character in the game.
 
-**6 pieces**, 6 wired up. Suggested path: `cardrpg/art/cards/common/`
+**8 pieces**, 6 wired up. Suggested path: `cardrpg/art/cards/common/`
 
 | | Name | What it is | File |
 |---|---|---|---|
+|   | **Blade and Word** | Strike · / Cast -1 · The blade in one hand and the words in the other. The hand that gestures must be empty. | `cards/common/blade-and-word.webp` |
 | ✓ | **Both Hands** | Ready, Strike · / Ready | `cards/common/both-hands.webp` |
 | ✓ | **Dig In** | Heal 2 · / Move 1 | `cards/common/dig-in.webp` |
 | ✓ | **Hold the Line** | Defend · / Strike -1 | `cards/common/hold-the-line.webp` |
 | ✓ | **Measure** | Strike +1 ignores Block · / Move 1 | `cards/common/measure.webp` |
 | ✓ | **Off-Hand Blow** | Strike · / Strike -1 | `cards/common/off-hand-blow.webp` |
 | ✓ | **Press** | Strike, Move 1 · / Move 2 | `cards/common/press.webp` |
+|   | **Say the Words** | Cast · / Move 1 · Speech and a free hand, or the item in it. Silenced stops both. | `cards/common/say-the-words.webp` |
 
 ## NPC intent cards
 
@@ -236,6 +238,36 @@ The minor-node cards of a built Way.
 |   | **The Whole Arc** | Ready · / Strike · Secondary only, after a Strike: the same weapon at full value. Strain 1. | `cards/strength/the-whole-arc.webp` |
 | ✓ | **Two-Hand It** | Strike +2 · / Ready | `cards/strength/two-hand-it.webp` |
 | ✓ | **Walk It Off** | Heal 2, Shake 2 · / Move 1 · On yourself. | `cards/strength/walk-it-off.webp` |
+
+## undefined
+
+undefined
+
+**6 pieces**. Suggested path: `cardrpg/art/cards/mind/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+|   | **Across the Room** | Cast range 6 · / Move 1 · Out to 6, whatever the formula's own reach. It is not shortened, only lengthened. | `cards/mind/across-the-room.webp` |
+|   | **Past the Shield** | Cast -1 ignores Block · / Move 1 · No shield was ever raised against a word. Answers no Block. | `cards/mind/past-the-shield.webp` |
+|   | **Step and Speak** | Move 2, Cast -1 · / Move 1 · Two squares first, and the words from where you end up. | `cards/mind/step-and-speak.webp` |
+|   | **The Last Word** | Cast +3 · / Move 2 · Spent. Everything the formula had, and the card does not come back this fight. | `cards/mind/the-last-word.webp` |
+|   | **The Long Formula** | Cast +2 · / Move 1 · Strain 1. The longer saying of the same formula, and it costs you the next card. | `cards/mind/the-long-formula.webp` |
+|   | **The Prepared Word** | Cast +1 · / Ready · What was decided this morning, said well. | `cards/mind/the-prepared-word.webp` |
+
+## undefined
+
+undefined
+
+**6 pieces**. Suggested path: `cardrpg/art/cards/faith/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+|   | **Answer the Call** | Cast · / Ready · Somebody is owed, and the Way is what they ask. | `cards/faith/answer-the-call.webp` |
+|   | **Nothing Between** | Cast -1 · / Move 1 · Cover is a fact about the field, not about the god. Answers none of it. | `cards/faith/nothing-between.webp` |
+|   | **The Arm Across** | Cast, Block 1 range 1 · / Move 1 · The Block goes to an adjacent ally. You are busy. | `cards/faith/the-arm-across.webp` |
+|   | **The Long Prayer** | Cast, range 2 Blessed (1) · / Move 1 · One ally within 2 is Blessed for the round. No save: nobody resists being prayed for. | `cards/faith/the-long-prayer.webp` |
+|   | **The Office** | Cast +1 · / Defend · The hours are kept whether or not anything is asked of them. | `cards/faith/the-office.webp` |
+|   | **The Vow Spoken** | Cast +2 · / Heal 2 · Strain 1 on the vow, or nothing at all on the mending. Not both. | `cards/faith/the-vow-spoken.webp` |
 
 ## Way cards
 

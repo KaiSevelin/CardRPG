@@ -967,6 +967,75 @@ should appear as you play the half. **Off Their Feet** is &minus;2 and leaves th
 **Off-Balance** for a round; check the condition actually lands on the target's sheet, and that it
 lands on a hit rather than asking for a save.
 
+## 2g.8 A spell is cast off a ✦ Cast half  **[2026-11-26]**
+
+**Set up.** Any character with a prepared spell. Give them **Say the Words** (common pool: ✦
+Cast on the primary, Move 1 on the secondary) and put it in the action deck.
+
+**Out of a fight, first.** With no combat running, click the spell in the book. It casts, exactly as
+it always has, and the preparation is spent. **There is no turn out there to spend**, which is the
+same ruling the half budget already makes: playing a card in a corridor is not a turn.
+
+**Now start a fight and click the spell in the book again.** It refuses, in words that say where to
+go instead: *In a fight, &lt;spell&gt; is cast off a ✦ Cast half: stage one from your hand. The
+book is the road out of a fight, and for reactions.* Nothing is spent — check the spell is still
+castable and your Health has not moved.
+
+**Then do it properly.** Target a token, deal a hand, stage **Say the Words**' primary, and play the
+turn. The spell resolves as it does from the book: same chat line, same price, same preparation
+spent. The difference is that the card is in your discard and your primary half is gone.
+
+**Expect, specifically:**
+
+- the card is **retired** and the primary is spent, like any other card half;
+- the spell is **drained** — one cast, back on a long rest, unchanged by this;
+- **Dazed takes it.** Put Dazed on the caster and try to cast off a **secondary** Cast half: it
+  refuses with *loses the secondary half*. Before this, Dazed took a fighter's secondary and took
+  nothing whatever from a caster, because a cast had no half to lose.
+
+**With a wand as well as a book.** Equip a Fire Wand and play the half: a dialog, **Cast what?**,
+listing each prepared spell with its strength and its price and, as the default button, *Fire Wand
+— its own magic*. Pick the wand and it behaves exactly as a Cast half did before any of this.
+
+**And the modifier rides on the spell.** Play **The Prepared Word** (✦ Cast +1, Way of Mind) and
+put a damaging formula through it: one more point than the formula prints. Put a **condition**
+formula through it instead and the +1 does nothing at all — which is the rule and not a bug. A
+✦ Cast half can make a spell better, never different.
+
+**Where it should refuse before you ever play it.** Unprepare everything, hold nothing that casts,
+and try to stage a ✦ Cast half. It is greyed and says *Nothing prepared, and nothing in hand
+that casts.* It must refuse at the **staging click** rather than when the turn is played: a card is
+retired whether its steps resolved or warned, so a refusal any later costs you the card.
+
+**Why.** A cast cost nothing at all: no card, no half, no stamina. A caster took two card halves and
+a spell where everyone else took two halves, four slots could all go in round one, and nothing that
+costs a half — Dazed above all — reached a caster. And the reason it had been nobody's decision:
+**no card in the game printed a ✦ Cast**, so there was no half to spend. 25 cast steps in the
+content and not one of them on any of 234 cards.
+
+## 2g.9 A caster has cards of their own  **[2026-11-26]**
+
+**Do.** Walk a character into **Way of Mind** on the level-up pane. The Way grants the Scholar
+title; the node behind it, **What You Prepared For**, offers a menu of six cards. Take one. Then
+walk the trunk to **The Candle** and check what it hands over.
+
+**Expect.** The menu lists *Across the Room*, *Past the Shield*, *Step and Speak*, *The Last Word*,
+*The Long Formula* and *The Prepared Word*. The Candle grants **Say the Words** — not *Measure*,
+which is what it granted until today. Do the same on **Way of Faith**: **What You Were Taught**
+offers the Sworn's six, and **Pilgrimage** grants Say the Words.
+
+**Why.** Mind and Faith delivered the thirteen schools and the twelve gods as *spells* and had no
+cards at all, so a magician's deck was the starter Warrior's sixteen plus the common pool's six —
+every one of them a fighter's card, and the one card a scholar was guaranteed was a Strike +1. The
+martial Ways have had a *What You Favour* menu since 2026-11-07; the magical ones could not have
+one, because there was no list to put behind it.
+
+**One thing to notice while playing it, which is the open question.** A fighter has a Strike in hand
+almost always: 9 of 16 cards print one. A caster starts with **one** Cast card and buys the rest a
+node at a time, so hands with nothing castable in them will happen. That is the gap a **starter
+caster deck** would close, and there is no such deck yet — the game has one starter deck and it is
+the Warrior's. Note how often it bit.
+
 ---
 
 # 3. What the other person sees

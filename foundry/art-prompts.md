@@ -1,6 +1,6 @@
 # Art prompts
 
-**794 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**808 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 783 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 797 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -609,7 +609,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of L
 
 ## The common pool
 
-**6 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/common/`.
+**8 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/common/`.
 
 Every character in the game draws this one, so it belongs to nobody in particular: no Way's colour, no named hero, no signature weapon.
 
@@ -697,6 +697,18 @@ Use the full range, both ends of it:
 
 </details>
 
+### Blade and Word
+
+File: `cards/common/blade-and-word.webp`
+
+```text
+SUBJECT. "Blade and Word" — Strike · / Cast -1 · The blade in one hand and the words in the other. The hand that gestures must be empty.
+
+Draw the instant a blow lands, the weapon already through -- never wound up, never posing; the shape forming between the hands, the weaker follow-up, off the hand that was not busy.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of North African appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
 ### Both Hands
 
 File: `cards/common/both-hands.webp`
@@ -767,6 +779,18 @@ SUBJECT. "Press" — Strike, Move 1 · / Move 2
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing; ground covered -- weight forward, the last footfall still behind.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Levantine appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Say the Words
+
+File: `cards/common/say-the-words.webp`
+
+```text
+SUBJECT. "Say the Words" — Cast · / Move 1 · Speech and a free hand, or the item in it. Silenced stops both.
+
+Draw a shape held in the air between the hands, half-finished and still forming.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of East Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## NPC intent cards
@@ -1984,6 +2008,330 @@ SUBJECT. "Walk It Off" — Heal 2, Shake 2 · / Move 1 · On yourself.
 Draw somebody walking a wound off instead of tending it -- a hand pressed flat to one side, head up, the stride deliberately ordinary. The refusal to stop is the subject.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of West African appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+## undefined
+
+**6 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/mind/`.
+
+
+
+<details><summary><b>The capsule — paste this once, at the top of a fresh chat</b></summary>
+
+```text
+A single illustration for a playing card in a tabletop fantasy RPG.
+
+THIS GROUP. 
+
+FORMAT.
+- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
+- Full bleed, edge to edge. No border, no frame, no card template, no rounded corners, no drop
+  shadow, no mat, no margin.
+- ABSOLUTELY NO TEXT of any kind: no letters, numerals, runes, glyphs, signature, watermark, or
+  anything that reads as writing. Not on a shield, not on a banner, not in the background.
+
+COMPOSITION. The card prints its own name and rules text over this image in opaque panels, so the
+layout is fixed and has been measured:
+- Crop in **close**: one subject, filling the frame from side to side.
+  Never a whole figure standing in a landscape, never an object laid out on a table.
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
+  no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
+  it is a narrow strip rather than an empty upper third.
+- **All of the dark lives in the band from an eighth of the height down to just under halfway**,
+  and it begins immediately under the bare strip with nothing empty between the two. The
+  near-black contour, the deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
+  the picture actually happens.
+- **Below the halfway line the picture goes pale** and stays pale: the wash thins out, the ground
+  falls away to bare paper, and there is no dark mass down there at all. The card prints its rules
+  across that half, so that half has to be the quiet one.
+- Together those two make the test: **the picture must still read with its bottom half covered.**
+  Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
+- ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
+  card is drawn at in this game.
+
+PALETTE.
+- Line and darks: **#1b1714**
+- Paper and lights: **#f4efe6**
+- Mid tone: **#c9bda8**
+- One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
+  one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
+STYLE.
+Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
+with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
+light falls. Loose and economical -- a few strokes doing the work of many. Visible bleed and
+granulation where a wash pools, dry-brush where it runs out.
+
+Three things this style does wrong at card size, and must not do here:
+- **Never neutral grey.** Every wash is warm: sepia, bistre, burnt earth. If a passage reads as
+  grey it is wrong.
+- **Never soft all over.** The contour is near-black #1b1714 and holds a hard edge. Only the
+  washes are soft. A picture with no true black in it has failed.
+- **Never evenly toned.** The darkest mass must sit directly against untouched paper, so the
+  subject separates from the ground in one glance at thumbnail size.
+
+Use the full range, both ends of it:
+- The lightest passage is **bare #f4efe6 paper, near white**, and there is a lot of it.
+- The darkest line is **near-black #1b1714**, and the two touch each other somewhere.
+- A picture whose every value sits between those ends is the failure above, however warm and
+  however well drawn. Mid tone is the background, not the picture.
+```
+
+</details>
+
+### Across the Room
+
+File: `cards/mind/across-the-room.webp`
+
+```text
+SUBJECT. "Across the Room" — Cast range 6 · / Move 1 · Out to 6, whatever the formula's own reach. It is not shortened, only lengthened.
+
+Draw the shape forming between the hands, landing 6 squares from the one who threw it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Caribbean appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Past the Shield
+
+File: `cards/mind/past-the-shield.webp`
+
+```text
+SUBJECT. "Past the Shield" — Cast -1 ignores Block · / Move 1 · No shield was ever raised against a word. Answers no Block.
+
+Draw the shape forming between the hands, the weaker follow-up, off the hand that was not busy, going round the shield rather than through it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Nordic appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Step and Speak
+
+File: `cards/mind/step-and-speak.webp`
+
+```text
+SUBJECT. "Step and Speak" — Move 2, Cast -1 · / Move 1 · Two squares first, and the words from where you end up.
+
+Draw ground covered -- weight forward, the last footfall still behind; the shape forming between the hands, the weaker follow-up, off the hand that was not busy.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of West African appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Last Word
+
+File: `cards/mind/the-last-word.webp`
+
+```text
+SUBJECT. "The Last Word" — Cast +3 · / Move 2 · Spent. Everything the formula had, and the card does not come back this fight.
+
+Draw the shape forming between the hands, thrown with the whole body, nothing held back.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Persian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Long Formula
+
+File: `cards/mind/the-long-formula.webp`
+
+```text
+SUBJECT. "The Long Formula" — Cast +2 · / Move 1 · Strain 1. The longer saying of the same formula, and it costs you the next card.
+
+Draw the shape forming between the hands, thrown with the whole body, nothing held back.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Slavic appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Prepared Word
+
+File: `cards/mind/the-prepared-word.webp`
+
+```text
+SUBJECT. "The Prepared Word" — Cast +1 · / Ready · What was decided this morning, said well.
+
+Draw the shape forming between the hands, the one that found its moment; a weapon coming to hand, caught between carried and held.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of West African appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+## undefined
+
+**6 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/faith/`.
+
+
+
+<details><summary><b>The capsule — paste this once, at the top of a fresh chat</b></summary>
+
+```text
+A single illustration for a playing card in a tabletop fantasy RPG.
+
+THIS GROUP. 
+
+FORMAT.
+- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
+- Full bleed, edge to edge. No border, no frame, no card template, no rounded corners, no drop
+  shadow, no mat, no margin.
+- ABSOLUTELY NO TEXT of any kind: no letters, numerals, runes, glyphs, signature, watermark, or
+  anything that reads as writing. Not on a shield, not on a banner, not in the background.
+
+COMPOSITION. The card prints its own name and rules text over this image in opaque panels, so the
+layout is fixed and has been measured:
+- Crop in **close**: one subject, filling the frame from side to side.
+  Never a whole figure standing in a landscape, never an object laid out on a table.
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
+  no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
+  it is a narrow strip rather than an empty upper third.
+- **All of the dark lives in the band from an eighth of the height down to just under halfway**,
+  and it begins immediately under the bare strip with nothing empty between the two. The
+  near-black contour, the deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
+  the picture actually happens.
+- **Below the halfway line the picture goes pale** and stays pale: the wash thins out, the ground
+  falls away to bare paper, and there is no dark mass down there at all. The card prints its rules
+  across that half, so that half has to be the quiet one.
+- Together those two make the test: **the picture must still read with its bottom half covered.**
+  Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
+- ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
+  card is drawn at in this game.
+
+PALETTE.
+- Line and darks: **#1b1714**
+- Paper and lights: **#f4efe6**
+- Mid tone: **#c9bda8**
+- One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
+  one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
+STYLE.
+Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
+with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
+light falls. Loose and economical -- a few strokes doing the work of many. Visible bleed and
+granulation where a wash pools, dry-brush where it runs out.
+
+Three things this style does wrong at card size, and must not do here:
+- **Never neutral grey.** Every wash is warm: sepia, bistre, burnt earth. If a passage reads as
+  grey it is wrong.
+- **Never soft all over.** The contour is near-black #1b1714 and holds a hard edge. Only the
+  washes are soft. A picture with no true black in it has failed.
+- **Never evenly toned.** The darkest mass must sit directly against untouched paper, so the
+  subject separates from the ground in one glance at thumbnail size.
+
+Use the full range, both ends of it:
+- The lightest passage is **bare #f4efe6 paper, near white**, and there is a lot of it.
+- The darkest line is **near-black #1b1714**, and the two touch each other somewhere.
+- A picture whose every value sits between those ends is the failure above, however warm and
+  however well drawn. Mid tone is the background, not the picture.
+```
+
+</details>
+
+### Answer the Call
+
+File: `cards/faith/answer-the-call.webp`
+
+```text
+SUBJECT. "Answer the Call" — Cast · / Ready · Somebody is owed, and the Way is what they ask.
+
+Draw a shape held in the air between the hands, half-finished and still forming; a weapon coming to hand, caught between carried and held.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of South Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Nothing Between
+
+File: `cards/faith/nothing-between.webp`
+
+```text
+SUBJECT. "Nothing Between" — Cast -1 · / Move 1 · Cover is a fact about the field, not about the god. Answers none of it.
+
+Draw the shape forming between the hands, the weaker follow-up, off the hand that was not busy.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Persian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Arm Across
+
+File: `cards/faith/the-arm-across.webp`
+
+```text
+SUBJECT. "The Arm Across" — Cast, Block 1 range 1 · / Move 1 · The Block goes to an adjacent ally. You are busy.
+
+Draw a shape held in the air between the hands, half-finished and still forming; the blow stopped flat, landing 1 square from the one who threw it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Southeast Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Long Prayer
+
+File: `cards/faith/the-long-prayer.webp`
+
+```text
+SUBJECT. "The Long Prayer" — Cast, range 2 Blessed (1) · / Move 1 · One ally within 2 is Blessed for the round. No save: nobody resists being prayed for.
+
+Draw a shape held in the air between the hands, half-finished and still forming; light that chose someone.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Mediterranean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Office
+
+File: `cards/faith/the-office.webp`
+
+```text
+SUBJECT. "The Office" — Cast +1 · / Defend · The hours are kept whether or not anything is asked of them.
+
+Draw the shape forming between the hands, the one that found its moment; a guard closing: shield, forearm or shoulder set against something off-frame.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Slavic appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Vow Spoken
+
+File: `cards/faith/the-vow-spoken.webp`
+
+```text
+SUBJECT. "The Vow Spoken" — Cast +2 · / Heal 2 · Strain 1 on the vow, or nothing at all on the mending. Not both.
+
+Draw the shape forming between the hands, thrown with the whole body, nothing held back; breath coming back -- a chest filling again, a hand steady that was not steady. No wound, no blood and no bandage in the frame.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Persian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## Way cards
@@ -12149,7 +12497,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**307 prompts in 38 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**309 prompts in 39 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **10 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -12194,6 +12542,7 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **3** | — | shaped to a skull, the hollow drawn most carefully | `items/crown-of-the-quiet-mind` `items/far-sight-monocle` `items/helm-of-the-watchful` |
 | **3** | — | hung at the hip, the strap cut off at the frame | `items/drowned-bell` `items/marked-arrowhead` `items/quartermasters-belt` |
 | **3** | — | armour as worn metal and strap, not as a costume | `items/leather-armor` `items/light-helm` `items/mail-shirt` |
+| **2** | — | the shape forming between the hands, thrown with the whole body, nothing held back | `cards/mind/the-last-word` `cards/mind/the-long-formula` |
 | **2** | — | scribed and calibrated, unreadable to anybody not taught it | `items/fire-wand` `items/staff-of-healing` |
 
 ## Directions that match no piece

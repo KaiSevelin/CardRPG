@@ -216,6 +216,94 @@ export const FAITH_SIGNATURES = [
 /* -------------------------------------------- */
 
 /**
+ * **Way of Faith's cards.**  **[BUILT 2026-11-26]**
+ *
+ * Mind's pool makes the argument for both (way-mind.mjs): a prepared spell is cast off a \u2726 Cast
+ * half now, and neither magical Way had a card to cast from. `faith.pilgrimage` granted **Hold the
+ * Line** -- Defend, then Strike \u22121 -- to a priest.
+ *
+ * **The axis is Support, so these cast at somebody's side.** Faith's claim is *what you do for the
+ * people beside you rather than to the people in front of you*, and the shape that makes on a card
+ * is the **second step on the same half**: the cast goes out and a Block, a mend or a blessing goes
+ * to the man next to you in the same breath. That is the half of the vocabulary `#castWith`
+ * deliberately will not fold into a spell, and it is the half this Way is written out of.
+ */
+export const FAITH_CARDS = [
+  {
+    /*
+     * The sworn's plain card. A point on the cast and a Defend underneath, because a priest who
+     * has nothing to say this turn is still standing in the line -- which is the whole difference
+     * between this pool's floor and the scholar's.
+     */
+    name: "The Office", copies: 1, pool: "faith", needs: [], reaction: "parry",
+    primary: [{ verb: "cast", mod: 1 }],
+    secondary: [{ verb: "defend" }],
+    text: "The hours are kept whether or not anything is asked of them."
+  },
+  {
+    /*
+     * The Way's thesis as one card, and the pattern the other four follow: the miracle at the enemy
+     * and the Block at the ally, in the same half. *The Order's Shield* already gives Block away
+     * and never to the holder; this is that sentence with a cast in front of it.
+     */
+    name: "The Arm Across", copies: 1, pool: "faith", needs: [],
+    primary: [{ verb: "cast" }, { verb: "block", param: 1, range: 1 }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "The Block goes to an adjacent ally. You are busy."
+  },
+  {
+    /*
+     * The other half of the same idea, paid for rather than given: Faith's Strain card, and the
+     * mirror of Mind's *The Long Formula*. The heal is on the **secondary**, so the card is a
+     * choice between a hard miracle and a quiet one rather than both at once -- core-rules 3 does
+     * not let you play both halves of one card, and that is what makes this a decision.
+     */
+    name: "The Vow Spoken", copies: 1, pool: "faith", needs: [],
+    primary: [{ verb: "cast", mod: 2 }],
+    secondary: [{ verb: "heal", param: 2 }],
+    costs: { primary: { strain: 1 } },
+    text: "Strain 1 on the vow, or nothing at all on the mending. Not both."
+  },
+  {
+    /*
+     * A blessing riding beside the cast, written the way *The Writ* writes a condition: a step with
+     * a condition and no verb **is** the condition, and `targets` points it at an ally so the
+     * engine offers the right tokens. Blessed is the god's own tell and it is never resisted,
+     * because nobody resists being prayed for.
+     */
+    name: "The Long Prayer", copies: 1, pool: "faith", needs: [],
+    primary: [{ verb: "cast" }, { condition: "blessed", duration: 1, range: 2, targets: "oneAlly" }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "One ally within 2 is Blessed for the round. No save: nobody resists being prayed for."
+  },
+  {
+    /*
+     * The miracle that goes where cover does not reach, which is the one straight-through this Way
+     * has any claim to: a god is not standing behind the barrel. `ignoresCover` rather than
+     * `ignoresBlock`, which is Mind's -- a shield is a thing a man raises and cover is a thing the
+     * field gives him, and the two Ways answer different ones.
+     */
+    name: "Nothing Between", copies: 1, pool: "faith", needs: [],
+    primary: [{ verb: "cast", mod: -1, ignoresCover: true }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "Cover is a fact about the field, not about the god. Answers none of it."
+  },
+  {
+    /*
+     * The support card whose support is in the bottom row: the cast on top, and a reaction that
+     * takes a blow meant for somebody else. `bodyguard` is the one reaction in the game that is
+     * entirely about the person beside you, which makes it this Way's and nobody else's.
+     */
+    name: "Answer the Call", copies: 1, pool: "faith", needs: [], reaction: "bodyguard",
+    primary: [{ verb: "cast" }],
+    secondary: [{ verb: "ready" }],
+    text: "Somebody is owed, and the Way is what they ask."
+  }
+];
+
+/* -------------------------------------------- */
+
+/**
  * The miracles a Faith minor node hands over (way-cards 3.5).
  *
  * The same rule Mind's pool follows, and easier here: a god's branch leads nowhere but deeper into
