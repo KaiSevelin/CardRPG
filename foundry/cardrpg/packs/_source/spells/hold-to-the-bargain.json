@@ -16,7 +16,6 @@
     "description": "<p>It was going to fail. Something intervened, once, because it owes you.</p>",
     "effect": {
       "timing": "reaction",
-      "oncePer": "pactPerFight",
       "targets": "oneAlly",
       "text": "an ally's failed check becomes a Partial"
     },

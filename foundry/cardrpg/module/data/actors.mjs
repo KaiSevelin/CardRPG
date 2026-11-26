@@ -950,11 +950,28 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     return id ? game.cards?.get(id) : null;
   }
 
-  /** Count cards of a subtype across draw, hand, discard and spent. */
+  /**
+   * Count cards of a subtype across draw, hand, discard and spent.
+   *
+   * **Through `available`, so a card on loan is counted once.**  **[FIXED 2026-11-24]**
+   *
+   * A dealt card is a COPY: Foundry marks the home card `drawn` and creates a second document in
+   * the destination, and `cards` reports both -- which `available` exists to say and says in as
+   * many words, *anything that draws has to filter it out or it will try to deal the same card
+   * twice*. This loop asked for `cards` and so counted the pair.
+   *
+   * What that cost is two wrong numbers, in opposite directions of harm. **Taint** was counted
+   * twice from the moment one was drawn until the end of the fight swept the copy home -- so
+   * **Afflicted could bite at two real Taint** instead of three, taking 3 Health off a character
+   * who had not earned it. And the **deck size** on the Deck tab read the hand twice, so a legal
+   * 18-card deck reported 23 against a limit of 20 while a hand was out.
+   *
+   * The same shape as the bug `available` was written for, in the one counter that did not use it.
+   */
   #countCards(type) {
     const out = { total: 0, body: 0, mind: 0 };
     for (const which of ["action", "actionHand", "actionDiscard", "actionSpent"]) {
-      for (const card of this.#deck(which)?.cards ?? []) {
+      for (const card of available(this.#deck(which))) {
         if (card.type !== type) continue;
         out.total++;
         if (card.system?.flavour) out[card.system.flavour]++;
@@ -1105,8 +1122,35 @@ export class NpcData extends foundry.abstract.TypeDataModel {
      */
     const granted = sumGrants(this.parent.items, NPC_GRANTS);
 
+    /*
+     * **Elite or boss, and every point of it derived.**  **[BUILT 2026-11-24]**
+     *
+     * Derived and not stored, which is the whole of *unticking it reverses it*: there is nothing
+     * to undo, because nothing was written. A version that raised `health.base` on the tick would
+     * have to remember what the base had been, and the day somebody edited the base in between it
+     * would remember wrong.
+     *
+     * **The order matters.** The share is taken AFTER a feature's grants, so *Thick Hide*'s 4
+     * Health is elite-boosted too: a boss version of a creature is a boss version of everything
+     * that creature is. `ceil`, so a 1.5x on an odd number rounds in the monster's favour -- an
+     * elite is never worse off for the arithmetic.
+     *
+     * `health.value` clamps DOWN when the tick is removed, and that is right rather than a loss:
+     * a boss cut to 30 of 45 that stops being a boss is a creature on 30 of 30, which is the same
+     * creature with the same wounds. Nothing hands health back.
+     */
+    const d = CARDRPG.defaults;
     this.health.max = Math.max(1, this.health.base + granted.health);
+    if (this.elite) this.health.max = Math.ceil(this.health.max * d.eliteHealth);
     this.health.value = Math.min(this.health.value, this.health.max);
+    if (this.elite && !this.armorZeroed) this.armor += d.eliteArmor;
+    /*
+     * Read by `passiveScore`, which is the one place a passive is turned into a number -- rather
+     * than added to `this.passive`, which is a STORED field the sheet edits: raising it here would
+     * put the boosted number in the box and the next form submit would save it, and the tick would
+     * stop being reversible the first time a GM touched the sheet.
+     */
+    this.elitePassive = this.elite ? d.elitePassive : 0;
     // NPCs never exhaust and hold no hand (core-rules 9).
     this.exhausted = false;
   }

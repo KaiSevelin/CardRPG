@@ -173,10 +173,24 @@ export function stepField() {
         choices: [...CARDRPG.itemTags, ""]
       })
     }),
-    oncePer: new fields.StringField({
-      required: false, blank: true, initial: "",
-      choices: [...Object.keys(CARDRPG.limits), ""]
-    }),
+    /*
+     * **`oncePer` was retired here.**  **[RULED 2026-11-24]**
+     *
+     * Three steps carried it and **no rule ever read it**, which a sweep for unread fields found.
+     * The three were not one case:
+     *
+     * - *The Bargain* is an automatic **reaction** and printed *once per pact per fight*. A spell
+     *   reaction spends by draining the slate, and since 2026-11-24 a drained spell comes back on
+     *   a **long rest** -- which is the only rule for a spell, by ruling. So the field was not
+     *   merely unread on that card, it contradicted the engine.
+     * - the two Household **rituals** printed *once a day*. A ritual is never prepared and never
+     *   cast, so nothing in the engine resolves one at all: challenges are run at the table. Their
+     *   limit is the GM's and always was, so it belongs in the text the GM reads -- which is where
+     *   it is now.
+     *
+     * A field that cannot be read for two of its three users and is wrong for the third is not a
+     * field. `CARDRPG.limits` went with it.
+     */
     /*
      * **What this step goes straight through.** `ignores` above is a NUMBER of armour points, which
      * is the ordinary case -- a bodkin finds a gap. These three are all of it, and Block and cover

@@ -66,14 +66,6 @@
         {{/each}}
       </select>
     </label>
-    <label>Once per
-      <select name="{{path}}.oncePer">
-        <option value="">&mdash;</option>
-        {{#each config.limits}}
-          <option value="{{@key}}" {{#if (crEq @key ../step.oncePer)}}selected{{/if}}>{{localize this}}</option>
-        {{/each}}
-      </select>
-    </label>
     <label>Timing
       <select name="{{path}}.timing">
         <option value="">&mdash;</option>

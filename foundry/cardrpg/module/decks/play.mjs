@@ -589,12 +589,77 @@ async function clearFear(actor) {
   return gone;
 }
 
-/** A rest returns Spent cards. A long rest also heals 5 and removes a Wound. */
+/**
+ * **Take one Wound out of a character, wherever it is sitting.**  **[BUILT 2026-11-24]**
+ *
+ * There was no such routine. The rules give a Wound two ways out -- *a long rest removes 1* and
+ * *treatment: a Lore check with a Healer's Kit removes 1* -- and **neither had an engine path**,
+ * so a Wound was permanent in practice: swept into the deck at the end of a fight and dealt back
+ * into the hand for ever after, one card of a hand of five gone to a hit taken weeks ago.
+ *
+ * One routine, because there are two ways out and the cards must leave the same way whichever it
+ * was -- the argument `liftInjury` makes about its own intruders, and the reason this takes the
+ * `how` rather than knowing it: a long rest and a Healer's Kit remove the same card for different
+ * reasons, and the chat line is the only place that difference exists.
+ *
+ * **Any stack, because a Wound travels.** It is created in the discard, swept into the deck by
+ * `afterCombat`, and dealt into the hand by a refill -- so asking one pile would find nothing
+ * about two thirds of the time. `removeCard` is what copes with a dealt card being a copy whose
+ * home is in the deck.
+ *
+ * @returns {Promise<boolean>} whether one was found and taken.
+ */
+export async function removeWound(actor, { how = "rest" } = {}) {
+  for (const stack of allStacks(actor)) {
+    const wound = [...(stack?.cards ?? [])].find(c => c.type === "wound");
+    if (!wound) continue;
+    await removeCard(actor, wound);
+    return true;
+  }
+  return false;
+}
+
+/**
+ * **A rest, and all of what one does.**
+ *
+ * It returned the action deck's Spent cards, healed, and set the rest tokens. Three other things
+ * the rules give a rest it did not do, and two of them were described in this file's own comments:
+ *
+ * - **The skill deck never came back.**  **[FIXED 2026-11-24]** skill-rules 1 is explicit --
+ *   *the skill discard pile is not reshuffled automatically; it comes back on a short rest (needs
+ *   a rest token) or a long rest* -- and `dealSkillHand` relies on it in as many words: *a deck
+ *   that has run out stays run out until somebody rests*. Nobody resting ever brought it back, so
+ *   a skill deck drained across a session for good: every check played, every Strain paid at
+ *   preparing, every Doubt cleared at a scene's end. The same defect the action deck was reported
+ *   for on 2026-11-23, in the other deck, found by sweeping for fields nothing reads.
+ * - **A long rest removed no Wound.**  **[FIXED 2026-11-24]** The Rests table says *Wounds:
+ *   remove 1*, and the one-line comment that used to sit on this function said so too. It healed
+ *   5 and removed nothing, and **nothing anywhere else removed a Wound either** -- so a Wound was
+ *   permanent, and the treatment the rules offer (a Lore check with a Healer's Kit) had no engine
+ *   path to pay out into. `removeWound` is that path now and this is its first caller.
+ * - **And a rest said nothing at all.** Reported as *the button should work*: a short rest with a
+ *   full hand, full health and no Spent cards changed one invisible number and posted no line, so
+ *   pressing it looked like pressing nothing. It reports now, every time, even when the answer is
+ *   that there was nothing to put right.
+ *
+ * **A short rest costs a token, and that is refused here rather than only on the button.** The
+ * sheet disables the button at nought, which is a real gate for a player and no gate at all for a
+ * macro -- the same door-and-window distinction `payToCast` was given on 2026-11-24.
+ *
+ * @returns {Promise<object|null>} what the rest did, or null if it was refused.
+ */
 export async function rest(actor, { long = false } = {}) {
   const deck = deckOf(actor, "action");
   const spent = deckOf(actor, "actionSpent");
 
-  if (spent?.cards.size) {
+  if (!long && (actor.system.rest?.tokens ?? 0) < 1) {
+    ui.notifications?.warn(`${actor.name} has no rest token left. A short rest costs one; `
+      + "a long rest returns them all.");
+    return null;
+  }
+
+  const returned = spent?.cards.size ?? 0;
+  if (returned) {
     /*
      * Every Spent card comes back. There is no longer a set held out by being Overloaded: that
      * drawback is two points of stamina now and never touches a card.
@@ -603,9 +668,33 @@ export async function rest(actor, { long = false } = {}) {
   }
   await deck?.shuffle({ chatNotification: false });
 
+  /*
+   * **And the skill deck, on either rest.** A pile rather than a Spent stack, because the skill
+   * side has no Spent pile: a played skill card goes to the discard and the discard is what a rest
+   * returns (skill-rules 1). Shuffled, because what comes back must not come back in the order it
+   * was played.
+   */
+  const skill = deckOf(actor, "skill");
+  const skillDiscard = deckOf(actor, "skillDiscard");
+  const relearned = skillDiscard?.cards.size ?? 0;
+  if (relearned && skill) {
+    await move(skillDiscard, skill, skillDiscard.cards.map(c => c.id));
+    await skill.shuffle({ chatNotification: false });
+  }
+
+  /*
+   * **A long rest takes one Wound**, which is the Rests table read literally. A short one does
+   * not: that asymmetry is the whole reason there are two rests.
+   */
+  const wound = long ? await removeWound(actor, { how: "a long rest" }) : false;
+
   const update = { "system.stamina.value": actor.system.stamina?.max ?? CARDRPG.defaults.stamina };
   const heal = long ? 5 : 1;
-  update["system.health.value"] = Math.min(actor.system.health.max, actor.system.health.value + heal);
+  /* What was actually gained rather than what was offered: *heals 5* beside a character who was
+   * one short of full is a line that is wrong about the only number it carries. */
+  const before = actor.system.health.value;
+  update["system.health.value"] = Math.min(actor.system.health.max, before + heal);
+  const healed = update["system.health.value"] - before;
   if (long) update["system.rest.tokens"] = actor.system.rest.max;
   else update["system.rest.tokens"] = Math.max(0, actor.system.rest.tokens - 1);
   await actor.update(update);
@@ -636,16 +725,39 @@ export async function rest(actor, { long = false } = {}) {
     await slate.update({ "system.drained": false, "system.drainedFor": null });
     woken.push(slate.name);
   }
-  /* Said only when something came back, because a rest that restores nothing is the common case
-   * and a line reporting none of it is noise in the log every time anybody sleeps. */
-  if (woken.length) {
-    await ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor }),
-      content: `<div class="cardrpg"><p><strong>${actor.name}</strong> rests: `
-        + `<em>${woken.join("</em>, <em>")}</em> ${woken.length === 1 ? "is" : "are"} ready `
-        + "again.</p></div>"
-    });
-  }
+  /*
+   * **It says what it did, every time.**  **[FIXED 2026-11-24]**
+   *
+   * Reported as *the button should work*, and the button did work: a short rest moved health,
+   * stamina and a token, and if the character was unhurt with nothing Spent it moved none of
+   * them visibly and posted nothing. A control that cannot be told from a broken one is a broken
+   * control.
+   *
+   * So the line is unconditional and lists only what actually happened -- and when nothing did,
+   * it says that too, because *there was nothing to put right* is the answer the player wanted
+   * and could not get.
+   */
+  const did = [];
+  if (healed) did.push(`heals <strong>${healed}</strong>`);
+  if (returned) did.push(`takes back <strong>${returned}</strong> Spent card`
+    + `${returned === 1 ? "" : "s"}`);
+  if (relearned) did.push(`shuffles <strong>${relearned}</strong> skill card`
+    + `${relearned === 1 ? "" : "s"} back into the skill deck`);
+  if (wound) did.push("sheds a <strong>Wound</strong>");
+  if (woken.length) did.push(`has <em>${woken.join("</em>, <em>")}</em> ready again`);
 
-  return { heal, long, woken };
+  const left = actor.system.rest?.tokens ?? 0;
+  const tokens = long
+    ? `Rest tokens back to <strong>${left}</strong>.`
+    : `<strong>${left}</strong> rest token${left === 1 ? "" : "s"} left.`;
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> takes `
+      + `${long ? "a long rest" : "a short rest"}`
+      + (did.length ? ` and ${did.join(", ")}.` : " and there was nothing to put right.")
+      + `</p><p class="cr-note">${tokens}</p></div>`
+  });
+
+  return { heal: healed, long, woken, returned, relearned, wound };
 }

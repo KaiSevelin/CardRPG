@@ -37,9 +37,17 @@
     <label class="cr-stat">Block
       <input type="number" name="system.block" value="{{system.block}}" min="0">
     </label>
-    <label class="cr-stat cr-stat--check">
+    {{!-- What the tick is worth is core-rules' ruling of 2026-11-24, and the tooltip says it
+          because the numbers beside it move when it is ticked and nothing else would explain why.
+          Every point of it is derived, so unticking takes all of it back. --}}
+    <label class="cr-stat cr-stat--check"
+           data-tooltip="Health x1.5 rounded up, +1 armour, +1 to every passive. What it deals is unchanged. Unticking reverses it.">
       <input type="checkbox" name="system.elite" {{#if system.elite}}checked{{/if}}> Elite or boss
     </label>
+    {{#if system.elite}}
+      <div class="cr-stat cr-stat--wide cr-note">Elite: Health &times;1.5, +1 armour, +1 to every
+        passive. What it deals is unchanged.</div>
+    {{/if}}
   </section>
 
   {{!--

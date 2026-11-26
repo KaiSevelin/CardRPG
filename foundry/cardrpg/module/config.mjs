@@ -1110,10 +1110,11 @@ CARDRPG.targets = {
  * per-fight limit arrives with the first card that wants one, because a value nobody writes is an
  * entry in a dropdown and nothing else.
  */
-CARDRPG.limits = {
-  day: "CARDRPG.Limit.Day",
-  pactPerFight: "CARDRPG.Limit.PactPerFight"
-};
+/*
+ * **`CARDRPG.limits` was retired on 2026-11-24**, with the `oncePer` step field it was the choices
+ * for. Nothing ever read either: a spell's limit is the long rest that re-enables it, and a
+ * ritual's is the GM's, because no ritual is resolved by the engine at all. See data/cards.mjs.
+ */
 
 /**
  * **Whose fate deck a Read looks at** (core-rules 6).  **[WIRED 2026-11-22]**
@@ -1481,6 +1482,32 @@ CARDRPG.defaults = {
    */
   startingHealth: 12,
   restTokens: 1,
+  /*
+   * **What *Elite or boss* is worth.**  **[BUILT 2026-11-24]**
+   *
+   * The checkbox existed on every creature's sheet and **nothing in the game asked about it**: a
+   * GM ticked *Elite or boss* and the monster was exactly as hard as before. Found by sweeping
+   * for declared fields no rule reads.
+   *
+   * **A share rather than a number, because the roster spans a Scrip and a god.** Health is the
+   * stated measure of a creature's weight class -- *every number is a multiple of the one creature
+   * that was measured* -- so a proportion is the only boost that means the same thing to a goblin
+   * on 6 and a Troll King on 59. A flat +10 would make the goblin unkillable and the king
+   * unchanged.
+   *
+   * **Armour and the passives are flat +1**, because both are small integer ladders rather than
+   * magnitudes: armour runs 0-4 across the whole catalogue and a passive 2-7, so +1 is a real step
+   * at either end. +1 passive is the elite being harder to hold, trick, outrun and shout down,
+   * which is most of what a boss needs that Health does not give it.
+   *
+   * **What it deliberately does NOT touch is damage.** An elite that hits harder is a different
+   * card, and intent values are content: a tick box that quietly rewrote what a creature's cards
+   * do would make the same card mean two things. Tougher is what was asked for and tougher is what
+   * this is.
+   */
+  eliteHealth: 1.5,
+  eliteArmor: 1,
+  elitePassive: 1,
   handSize: 5,
   /*
    * **[2026-11-12] The ceiling on hand size, and the first one the stat has ever had.**

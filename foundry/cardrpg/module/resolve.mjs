@@ -1786,6 +1786,74 @@ export async function resolveInjury(target, { mode = 0, cause = "" } = {}) {
 }
 
 /**
+ * **A Cleansing: the one thing that takes Taint back out.**  **[BUILT 2026-11-24]**
+ *
+ * core-rules 8 names two ways Taint leaves -- *a cure: priest magic, a rare potion or a special
+ * item* and *a **Cleansing**: a downtime challenge (Lore, Progress 4) with a healer or a temple* --
+ * and **neither had an engine path**. So Taint only ever accumulated: it survives rests by rule,
+ * and nothing in the game could remove one card of it. A character three Taint deep was Afflicted
+ * for the rest of the campaign, which is not the rule, it is the absence of one.
+ *
+ * `liftInjury` is the shape this follows and the reason it is shaped that way: **the challenge is
+ * played at the table and this is what happens when it is won.** Challenges are not in the engine
+ * -- a GM runs the Progress and Pressure tracks -- so what the engine owes the arrangement is the
+ * part a human would get wrong: finding every card, in whichever pile it drifted to, and leaving
+ * the bound ones alone.
+ *
+ * **Bound Taint is the exception and it is now a live one.** *Taint an obligation put in your deck
+ * is not a sickness, and neither a cure nor Cleansing lifts it* -- the `bound` flag has carried
+ * that sentence since it was written and nothing read it, because the thing it was an exception to
+ * did not exist. It does now, so the flag means what it says.
+ *
+ * **Everything by default, because the rules put no number on it.** A Cleansing is a downtime
+ * challenge with Pressure 4 against a cure that is a potion; what it buys is being clean. An
+ * `amount` is there for a partial -- a cure, which is the other road and takes what it takes.
+ *
+ * @param {Actor} actor
+ * @param {object} [opts]
+ * @param {number|null} [opts.amount] How many to take; null is all of them.
+ * @param {string} [opts.how] What did it, for the line -- a Cleansing, or the cure that was drunk.
+ * @returns {Promise<{taken: number, bound: number}>}
+ */
+export async function resolveCleansing(actor, { amount = null, how = "a Cleansing" } = {}) {
+  if (!actor) return { taken: 0, bound: 0 };
+
+  /* Every pile, because Taint travels: it is dealt into a discard, swept into the deck at the end
+   * of a fight and drawn into a hand after that. One pile would find about a third of it. */
+  const found = [];
+  let bound = 0;
+  for (const stack of allStacks(actor)) {
+    for (const card of [...(stack?.cards ?? [])]) {
+      if (card.type !== "taint") continue;
+      if (card.system.bound) { bound++; continue; }
+      found.push(card);
+    }
+  }
+
+  const take = amount === null ? found.length : Math.max(0, Math.min(amount, found.length));
+  for (const card of found.slice(0, take)) await removeCard(actor, card);
+
+  /*
+   * Said even when it took nothing, because *there was none to take* and *the ritual did not work*
+   * are the same silence otherwise -- and the bound count is the half a player most needs, since
+   * it is the one number a second Cleansing will not change.
+   */
+  const left = bound
+    ? ` <strong>${bound}</strong> bound Taint stay${bound === 1 ? "s" : ""}: an obligation put `
+      + "it there, and only what the obligation names takes it back."
+    : "";
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> is cleansed by ${how}: `
+      + (take
+        ? `<strong>${take}</strong> Taint out of the decks.`
+        : "there was none a cleansing could reach.")
+      + `${left}</p></div>`
+  });
+  return { taken: take, bound };
+}
+
+/**
  * Put a named injury on a character, with its cap and its teeth.
  *
  * **The teeth are the interesting part.** Five of the fourteen injuries own **intruder cards**
@@ -3886,8 +3954,29 @@ export async function resolveAttack(actor, {
       await resolveWound(taker, { reason: dropped ? DROPPED : "a heavy blow" });
     }
 
+    /*
+     * **How far away it was, and how far the blow reaches.**  **[BUILT 2026-11-24]**
+     *
+     * Range is **deliberately not enforced** -- the engine does not know about the rope, the ledge
+     * or the thing the table has agreed about -- and the suite pins that absence so it cannot be
+     * added by accident. What was missing is the other half of a deliberate non-rule: **somebody
+     * has to be told.** The HUD has warned the player since distance could be measured (a chip
+     * reading `3/1`, marked out of reach), and the chat card said nothing at all -- so a GM reading
+     * the log could not see that a Strike with a reach of 1 had just killed something three squares
+     * off. The one person who has to adjudicate it was the one person not told.
+     *
+     * Measured against the target that was actually hit rather than the first, because an Area
+     * catches several at different distances and the near one does not excuse the far one.
+     */
+    const away = squaresBetween(actor, taker);
+    const reach = step.range ?? actor.system.rangeOnLine?.(line, item) ?? 1;
+
     rows.push({
       name: taker.name, armor, block, combo, dealt,
+      /* `null` when there is no geometry to measure -- an unplaced fight has no distance, and a
+       * guess would be worse than the silence this replaces. */
+      away, reach,
+      beyond: away !== null && reach !== null && away > reach,
       /* What was gone through, and how much of it: a defence that silently did not apply looks
        * exactly like a defence the target never had. */
       pierced: pierced ? hadArmor : 0,
@@ -4073,6 +4162,19 @@ async function attackCard(actor, info) {
         + `&mdash; <em>${row.reaction.card}</em> spent`
         + (row.reaction.item ? ` with ${row.reaction.item}` : "")
         + `; ${row.reaction.because}.</p>`);
+    }
+
+    /*
+     * **The hint, and it is a hint rather than a refusal.** The wording says who decides: it
+     * resolved, and whether it should have is the table's call. Phrased the same way the HUD's own
+     * tip is, so the player who was warned before clicking and the GM who reads the log afterwards
+     * are reading one sentence rather than two.
+     */
+    if (row.beyond) {
+      parts.push(`<p class="cr-note">Out of reach: <strong>${row.name}</strong> is `
+        + `${row.away} ${row.away === 1 ? "square" : "squares"} away and this ${verb} reaches `
+        + `${row.reach}. It resolved anyway &mdash; nothing stops you playing it, and the engine `
+        + "does not know about the rope.</p>");
     }
   }
 
@@ -4615,7 +4717,16 @@ export function passiveScore(actor, approach) {
   }
   /* An approach the creature says nothing about falls through to its weight class. `null` is the
    * schema's way of saying nothing, so `??` and not `||`: a passive of 0 is a real number. */
-  return actor?.system.passives?.[approach] ?? actor?.system.passive ?? 2;
+  const printed = actor?.system.passives?.[approach] ?? actor?.system.passive ?? 2;
+  /*
+   * **And the elite's step, on top of whichever baseline applied.**  **[BUILT 2026-11-24]**
+   *
+   * On top rather than instead: an authored override says what that creature is specialist at, and
+   * a boss version of a specialist is still a specialist. A character has no such field, so the
+   * `?? 0` is what makes this one line serve both types -- the same shape the rest of this
+   * function already has.
+   */
+  return printed + (actor?.system.elitePassive ?? 0);
 }
 
 /**

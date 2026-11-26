@@ -137,7 +137,32 @@ export async function moveRandom(from, to, n = 1) {
  */
 export async function move(from, to, ids) {
   if (!from || !to || !ids?.length) return [];
-  const moved = (await from.pass(to, ids, { chatNotification: false })) ?? [];
+  /*
+   * **A card that has already gone is not moved, and does not take the routine down with it.**
+   * **[FIXED 2026-11-24]**
+   *
+   * `Cards#pass` throws on an id that is not in the source, and it throws for the WHOLE call -- so
+   * one stale id loses every other card in the same move. That is the wrong failure mode for the
+   * one door every card movement goes through, because the ids reaching it are often read a tick
+   * or two earlier and this game has several routines that sweep piles without being awaited:
+   * `deleteCombat` runs `afterCombat` that way by design.
+   *
+   * Twice measured today. A probe that ended a fight and refilled in the same breath threw
+   * *Card "..." does not exist*, taking a hand of five with it; and a rest returning the skill
+   * discard threw *you may not pass...* about one run in three, which lost the whole return.
+   *
+   * **Said out loud rather than swallowed.** A stale id means something moved a card while this
+   * call was being assembled, and that is worth knowing even though it is survivable -- so the
+   * ones that are gone are named and the rest still move.
+   */
+  const present = ids.filter(id => from.cards.has(id));
+  if (present.length !== ids.length) {
+    const gone = ids.filter(id => !from.cards.has(id));
+    console.warn(`cardrpg | ${gone.length} card(s) had already left ${from.name}: `
+      + `${gone.join(", ")}. The rest were moved.`);
+  }
+  if (!present.length) return [];
+  const moved = (await from.pass(to, present, { chatNotification: false })) ?? [];
   if (moved.length) {
     const home = to.type === "deck";
     const fixes = moved

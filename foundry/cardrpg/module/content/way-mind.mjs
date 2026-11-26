@@ -90,8 +90,11 @@ export const MIND_POOL = [
     reaction: "bargain",
     description: "<p>It was going to fail. Something intervened, once, because it owes you.</p>",
     effect: {
-      timing: "reaction", oncePer: "pactPerFight",
+      timing: "reaction",
       targets: "oneAlly",
+      /* No *once per fight* on it any more: casting a prepared spell spends it and a long rest is
+       * what brings it back, which is the only rule a spell has (core-rules, *Casting spends the
+       * preparation*). A reaction spends the same way. */
       text: "an ally's failed check becomes a Partial"
     }
   },
@@ -982,8 +985,10 @@ export const MIND_POOL = [
       + "Once a day, and the elf-kin keep the tally &mdash; which is this school's price doing "
       + "exactly what a price should.</p>",
     effect: {
-      timing: "ritual", oncePer: "day",
-      text: "the party sheds every Wound and all rest tokens return"
+      timing: "ritual",
+      /* *Once a day* is in the text because it is the GM's to keep: a ritual is never prepared and
+       * never cast, so nothing in the engine could enforce it from a field. */
+      text: "once a day: the party sheds every Wound and all rest tokens return"
     }
   },
   {
@@ -993,8 +998,8 @@ export const MIND_POOL = [
       + "opened before. It is the school's thesis: a householder is never far from anywhere "
       + "they have been.</p>",
     effect: {
-      timing: "ritual", oncePer: "day",
-      text: "a door you have opened leads to any other you have opened"
+      timing: "ritual",
+      text: "once a day: a door you have opened leads to any other you have opened"
     }
   },
 

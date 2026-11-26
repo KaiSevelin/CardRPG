@@ -799,6 +799,96 @@ are not visible on player sheet, spells cannot be viewed or edited*:
   and a spell was the only slate kind that reaches that editor. A **card's own config sheet** went
   with it, so check one of those opens too: right-click a card in a deck in the sidebar.
 
+## 2g.1 A rest does everything a rest does  **[2026-11-24]**
+
+**Do.** Play two skill cards so the skill discard is not empty. Take a Wound (any hit of 5, or drop
+to 0). Then **short rest** from the Vitals tab, and read the chat.
+
+**Expect.** A line saying what the rest did: the skill cards shuffled **back into the skill deck**,
+the health healed, the Spent cards taken back, and how many rest tokens are left. The skill discard
+is **empty**. The Wound is **still there** — a short rest does not shed one.
+
+**Then press Short rest again.** The button should be **greyed**, because you have no token left.
+(If you reach the routine another way — a macro — it refuses in words.)
+
+**Then long rest.** The Wound goes, health heals 5, every rest token comes back, and the chat line
+says so.
+
+**Before today a rest did three things and claimed four.** The skill discard never came back on any
+rest, though skill-rules says it does and the deal routine's own comment relies on it — so a skill
+deck drained across a session permanently, exactly like the action deck did out of combat. A long
+rest removed no Wound, though the Rests table and the function's own comment both said it did, and
+**nothing anywhere removed a Wound at all**. And a rest on a healthy character with nothing Spent
+posted no line, so the button could not be told from a broken one.
+
+## 2g.2 Elite or boss  **[2026-11-24]**
+
+**Do.** Open a goblin's sheet, note its Health, Total armor and the six passives. Tick **Elite or
+boss**. Untick it.
+
+**Expect.** Ticked: Health **×1.5 rounded up**, armour **+1**, and every passive **+1**. A note
+beside the box says exactly that. Unticked: all three back where they were. What the creature
+**deals** does not change, by decision — an elite that hits harder is a different card.
+
+Then fight one and check the passives bite: an opposed check or a saving throw against an elite
+should be one harder than against its ordinary twin.
+
+**Before today the tick did nothing whatsoever.** It was a boolean on every creature's sheet that
+no rule read.
+
+## 2g.3 A Cleansing  **[2026-11-24]**
+
+**Do.** Give a character three Taint (or play until they have it) and check they are **Afflicted**
+— max Health —3. Then, as GM, run the Cleansing challenge at the table (Lore, Progress 4,
+Pressure 4) and when it is won call `game.cardrpg.cleanse(actor)` from a macro or the console.
+
+**Expect.** A chat line naming how many Taint left the decks, and the Taint is gone from every pile
+— the deck, the discard and the hand. Afflicted lifts once the character's sheet next updates.
+
+**And the exception.** If any of that Taint was **bound** — put there by an obligation — it
+**stays**, and the line says so: *only what the obligation names takes it back*. That sentence has
+been on the data since Taint was built and nothing read it, because the thing it was an exception
+to did not exist until today.
+
+**Before today nothing in the game removed Taint.** It survives rests by rule, and the two ways out
+the rules give — a cure and a Cleansing — had no engine path at all, so a character three
+Taint deep was Afflicted for the rest of the campaign.
+
+## 2g.4 One Taint is one Taint  **[2026-11-24]**
+
+**Do.** Open the character sheet beside the HUD. Take Taint one at a time (a tainting card, a
+miracle's price, or the GM adding one) and watch the sheet as each arrives. Then draw one out of the
+deck and look again.
+
+**Expect.** The Taint count goes up **as each one arrives**, with nothing else touching the sheet.
+At **three** the character is **Afflicted** and max Health drops by 3 on the spot. A Taint that has
+been **drawn** out of the deck still counts as **one**. Remove them and Afflicted lifts.
+
+**Also check the Deck tab while a hand is out.** The card count should be the size of your deck,
+not your deck plus your hand.
+
+**Before today both halves were wrong.** A dealt card is a copy — the home card stays in the deck
+marked drawn and a second document goes where it went — and this was the one counter in the system
+that asked for *every* card document rather than the real ones. So one Taint read as two from the
+moment it was drawn, and **Afflicted could bite at two instead of three**: 3 Health off somebody who
+had not earned it. A legal 16-card deck reported 21 against a limit of 20. And nothing recomputed
+any of it when a card moved, because a card is not part of the actor — so the numbers were right
+whenever something else happened to touch the sheet, and stale until then.
+
+## 2g.5 Out of reach, and nobody stopping you  **[2026-11-24]**
+
+**Do.** Stand three squares from a goblin with a sword in hand, target it, and Strike.
+
+**Expect.** Before you click: the range chip reads **3/1** and is marked out of reach, with a tip
+saying nothing stops you playing it. After you click: the attack **resolves**, and the chat card
+carries a note — *out of reach: Goblin is 3 squares away and this strike reaches 1. It resolved
+anyway.* Then stand next to it and Strike again: **no note**, because there is nothing to say.
+
+**Range stays unenforced on purpose** — the engine does not know about the rope, the ledge or
+whatever the table has agreed. What changed is that the **GM** is now told, in the log, after the
+fact. Before today only the player clicking was warned, and the person who has to adjudicate it saw
+a clean kill.
+
 ---
 
 # 3. What the other person sees

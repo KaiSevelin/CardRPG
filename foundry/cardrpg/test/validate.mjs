@@ -1012,8 +1012,13 @@ const stepKeys = new Set(
 /* 30 since 2026-11-16: `shove`, core-rules 11's push, pull and throw as one signed number.
  * **31 since 2026-11-22**: `read`, the amount a Read looks at. `readDeck` said whose deck for a
  * fortnight with no field for how many, which is why the two cards whose Read is the whole action
- * put the amount in `param` beside a verb that means something else. */
-check("stepField keys read from source", stepKeys.size, 31);
+ * put the amount in `param` beside a verb that means something else.
+ *
+ * **30 again since 2026-11-24**, and this is the first field to LEAVE: `oncePer`, which no rule
+ * ever read. A spell's limit is the long rest that re-enables it and a ritual's is the GM's,
+ * because nothing in the engine resolves a ritual at all -- so the field could not be read for two
+ * of its three users and contradicted the engine on the third. See data/cards.mjs. */
+check("stepField keys read from source", stepKeys.size, 30);
 
 const strayKeys = new Set();
 for (const step of steps) {
@@ -2017,6 +2022,23 @@ check("the flag exists", /export const RESERVED = "reserved"/.test(decksSource) 
  */
 const moveBody = decksSource.slice(decksSource.indexOf("export async function move(from, to, ids)"),
   decksSource.indexOf("/* -------------------------------------------- */\n/*  Reserved"));
+/*
+ * **One stale id does not lose the whole move.**  **[FIXED 2026-11-24]**
+ *
+ * `Cards#pass` throws on an id that is not in the source, and it throws for the entire call -- so
+ * one card that has already gone loses every other card moving with it. The ids reaching this door
+ * are often read a tick earlier, and several routines sweep piles without being awaited
+ * (`deleteCombat` runs `afterCombat` that way by design). Measured twice in one day: *Card "..."
+ * does not exist* took a hand of five with it, and a rest returning the skill discard threw about
+ * one run in three.
+ */
+check("a card that has already gone does not lose the others",
+  /const present = ids\.filter\(id => from\.cards\.has\(id\)\);/.test(decksSource)
+    ? "yes" : "no", "yes");
+/* Named rather than swallowed: a stale id means something moved a card while this call was being
+ * assembled, which is survivable and still worth knowing. */
+check("and the ones that had gone are named",
+  /had already left \$\{from\.name\}/.test(decksSource) ? "yes" : "no", "yes");
 check("moving a card clears it",
   /flags\.cardrpg\.-=\$\{RESERVED\}/.test(moveBody) ? "yes" : "no", "yes");
 /*
@@ -11962,7 +11984,6 @@ check("combo-clause keys content uses that the schema would drop",
 for (const [what, count, read] of [
   ["leave ground behind", 9, s => s.st.ground?.shape],
   ["say who they are for", 34, s => s.st.targets],
-  ["say how often they may be played", 3, s => s.st.oncePer],
   /* Five, not three: *Measure* and *Bring It Down* joined when the fields became readable, and
    * the conditional pair on *Between the Plates* hangs off its opening rather than its step. Eight
    * now, and the three that joined are Way of Shade cards written for exactly this: the Way that
@@ -12161,7 +12182,6 @@ check("and the ones that reach a creature which packs",
 for (const [name, table, read] of [
   ["ground shapes", CARDRPG.groundShapes, s => s.st.ground?.shape],
   ["targets", CARDRPG.targets, s => s.st.targets],
-  ["limits", CARDRPG.limits, s => s.st.oncePer],
   ["read targets", CARDRPG.readDecks, s => s.st.readDeck],
   ["states", CARDRPG.whileStates, s => s.st.whileState]
 ]) {
@@ -12178,8 +12198,10 @@ for (const [name, table, read] of [
  * not -- which is why `targets` is not checked for saying it twice.
  */
 const saidTwice = everyStep.filter(s =>
-  (s.st.oncePer && /\bOnce (a day|per)\b/i.test(s.st.text ?? ""))
-  || (s.st.whileState && /^while\b/i.test(s.st.text ?? ""))
+  /* `oncePer` was a term here until 2026-11-24, when the field was retired: the two rituals that
+   * carried it say *once a day* in their text now, which is the only place it can be said at all
+   * -- no engine resolves a ritual, so the limit is the GM's to keep. */
+  (s.st.whileState && /^while\b/i.test(s.st.text ?? ""))
   || ((s.st.ignoresArmour || s.st.ignoresBlock || s.st.ignoresCover)
     && /\bignoring\b/i.test(s.st.text ?? ""))
   || (s.st.readDeck && /fate deck/i.test(s.st.text ?? ""))
@@ -12561,7 +12583,7 @@ check("and what is left of it",
  * the schema is a reader sent to look for something that is not there -- which is worse than no
  * row, because the row reads as authority.
  */
-const documented = ["timing", "delay", "oncePer", "ignoresArmour", "ignoresBlock", "ignoresCover",
+const documented = ["timing", "delay", "ignoresArmour", "ignoresBlock", "ignoresCover",
   "readDeck", "whileState", "targets", "ground", "conjure", "shape"];
 /* The TABLE ROW, not a mention. The prose above the table names `targets` and `ground` too, so a
  * bare `includes` was answered by the paragraph while the row itself could be deleted -- which a
@@ -14753,8 +14775,11 @@ check("and the lift matches on it rather than on the face",
 check("and the intruder cards it owns are matched the same way",
   /if \(card\.type !== kind \|\| card\.system\.source !== injury\.name\) continue;/
     .test(resolveSource) ? "yes" : "no", "yes");
+/* Scoped to the injury's own body: `resolveCleansing` takes Taint out by the same call for the
+ * same reason, and a grep either could answer is a grep about neither. */
 check("and they go home before they are deleted",
-  /await removeCard\(actor, card\);/.test(resolveSource) ? "yes" : "no", "yes");
+  /await removeCard\(actor, card\);/.test(bodyOf(resolveSource,
+    "export async function liftInjury(actor, injury) {")) ? "yes" : "no", "yes");
 
 /*
  * **An injury is simply true**, the law grants.mjs encodes -- and the word in it had to widen. It
@@ -15067,7 +15092,8 @@ check("step fields the editor cannot set",
 const stepLoops = [...stepPart.matchAll(
   /\{\{#each config\.(\w+)\}\}([\s\S]{0,400}?)\{\{\/each\}\}/g)]
   .map(m => ({ table: m[1], body: m[2] }));
-check("tables the step editor loops", new Set(stepLoops.map(l => l.table)).size, 14);
+/* 13 since 2026-11-24: `config.limits` left with the `oncePer` field it offered choices for. */
+check("tables the step editor loops", new Set(stepLoops.map(l => l.table)).size, 13);
 const badLabels = stepLoops.filter(({ table, body }) => {
   const values = Object.values(CARDRPG[table] ?? {});
   if (!values.length) return true;
@@ -15336,8 +15362,12 @@ check("hooks the system listens on", hooksUsed.length, 16);
 const apiBlock = entrySource.slice(entrySource.indexOf("game.cardrpg = {"));
 const api = [...new Set([...apiBlock.matchAll(/^\s{4}([a-zA-Z]+):/gm)].map(m => m[1]))];
 /* One member shorter since 2026-11-13: the award counter it raised is retired, and a name on
- * this object is a promise, so removing one is a breaking change worth a line. */
-check("the macro API", api.join(", "), "config, openTray, levelUp");
+ * this object is a promise, so removing one is a breaking change worth a line.
+ *
+ * **And one longer since 2026-11-24**: `cleanse`. A Cleansing is a downtime challenge the GM runs,
+ * so the engine owes it the payout and not a button -- a button would say the software had decided
+ * the challenge was won. The same arrangement `liftInjury` has had since rituals were built. */
+check("the macro API", api.join(", "), "config, openTray, levelUp, cleanse");
 /*
  * **The bare members, listed rather than measured.**  [FIXED 2026-11-13]
  *
@@ -15528,8 +15558,11 @@ check("derived values nothing reads", unread.length ? unread.join(", ") : "none"
 /* A detector that found nothing to look at would pass the line above while checking nothing. */
 /* **[2026-11-16] 22, from 20**: `castsSilenced` and the `exemptFrom` it resolves to. This check
  * is the reason the second of those exists -- the flag was read as `this[c.setAsideBy]` off the
- * config entry, which works and which nothing could find, and the line above reported it unread. */
-check("derived values on the character", assigned.length, 24);
+ * config entry, which works and which nothing could find, and the line above reported it unread.
+ *
+ * **[2026-11-24] 25, from 24**: `elitePassive`, which is the whole of how *Elite or boss* reaches
+ * a passive score without touching the stored number the sheet edits. */
+check("derived values on the character", assigned.length, 25);
 
 /* And the three that were found, now shown rather than deleted. */
 check("the sheet shows which Ways were walked",
@@ -19139,10 +19172,242 @@ check("and a spell comes back on a long rest, whatever it prints",
   /slate\.type === "spell"\s*\n\s*\? long/.test(restBody) ? "yes" : "no", "yes");
 check("and no spell in the content prints a recharge boundary",
   [...graph.SPELLS.values()].filter(sp => sp.active?.boundary).length, 0);
-/* Said in chat only when something came back: a rest that restores nothing is the common case, and
- * a line reporting none of it is noise every time anybody sleeps. */
+/* And it says so, in a line a rest now always posts: a control that cannot be told from a broken
+ * one is a broken control, which is what *the button should work* was reporting. */
 check("and it says what came back",
-  /is "ready" : "are ready"|\$\{woken\.length === 1 \? "is" : "are"\} ready/.test(restBody)
+  /has <em>\$\{woken\.join/.test(restBody) ? "yes" : "no", "yes");
+
+/*
+ * **And the three other things the rules give a rest, two of which this file's own comments
+ * described.**  **[FIXED 2026-11-24]** Found by sweeping for declared fields no rule reads, which
+ * is how `rest` came to be read closely at all.
+ */
+/*
+ * **The skill deck.** skill-rules 1: *the skill discard pile is not reshuffled automatically; it
+ * comes back on a short rest (needs a rest token) or a long rest* -- and `dealSkillHand` relies on
+ * it in as many words: *a deck that has run out stays run out until somebody rests*. Nobody
+ * resting ever brought it back, so a skill deck drained across a session for good. The same defect
+ * the action deck was reported for the day before, in the other deck.
+ */
+check("a rest shuffles the skill discard back into the skill deck",
+  /await move\(skillDiscard, skill, skillDiscard\.cards\.map\(c => c\.id\)\);/.test(restBody)
+    ? "yes" : "no", "yes");
+/* Shuffled, because what comes back must not come back in the order it was played. */
+check("and shuffles it",
+  /await skill\.shuffle\(\{ chatNotification: false \}\);/.test(restBody) ? "yes" : "no", "yes");
+/* Either rest, which is what skill-rules says: the asymmetry between the two rests is the Wound
+ * and the tokens, not the deck. */
+check("and on either rest, not only a long one",
+  /if \(relearned && skill\) \{/.test(restBody) ? "yes" : "no", "yes");
+check("skill-rules still says a rest is what returns it",
+  /It comes back on a \*\*short rest\*\* \(needs a rest token\) or a \*\*long rest\*\*/.test(skillDoc)
+    ? "yes" : "no", "yes");
+/*
+ * **A Wound, on a long rest only.** The Rests table says *Wounds: remove 1*, and the one-line
+ * comment that used to sit on `rest` said so too -- it healed 5 and removed nothing, and nothing
+ * anywhere else removed a Wound either. So a Wound was permanent in practice, and the treatment
+ * the rules offer (a Lore check with a Healer's Kit) had no engine path to pay out into.
+ */
+check("a long rest sheds a Wound",
+  /const wound = long \? await removeWound\(actor, \{ how: "a long rest" \}\) : false;/
+    .test(restBody) ? "yes" : "no", "yes");
+check("and there is one routine that takes one out",
+  /export async function removeWound\(actor, \{ how = "rest" \} = \{\}\) \{/.test(decksSource)
+    ? "yes" : "no", "yes");
+/* Any stack, because a Wound travels: created in the discard, swept into the deck at the end of a
+ * fight, dealt into the hand by a refill. One pile would find nothing two thirds of the time. */
+const woundBody2 = bodyOf(decksSource,
+  'export async function removeWound(actor, { how = "rest" } = {}) {');
+check("and it looks in every pile",
+  /for \(const stack of allStacks\(actor\)\)/.test(woundBody2) ? "yes" : "no", "yes");
+check("and takes exactly one",
+  /await removeCard\(actor, wound\);\s*\n\s*return true;/.test(woundBody2) ? "yes" : "no", "yes");
+check("core-rules still asks a long rest for one",
+  /\| \*\*Wounds\*\* \| \u2013 \| Remove \*\*1\*\* \|/.test(coreRules) ? "yes" : "no", "yes");
+/*
+ * **And a short rest costs a token, refused at the door rather than only on the button.** The
+ * sheet disables the control at nought, which is a real gate for a player and no gate at all for
+ * a macro -- the same door-and-window distinction `payToCast` was given the same day.
+ */
+check("a short rest with no token is refused",
+  /if \(!long && \(actor\.system\.rest\?\.tokens \?\? 0\) < 1\)/.test(restBody) ? "yes" : "no", "yes");
+check("and the button is still disabled at nought",
+  /data-action="shortRest" \{\{#unless system\.rest\.tokens\}\}disabled/.test(charTemplate)
+    ? "yes" : "no", "yes");
+/* And a long rest hands them all back, which is the only way any come back. */
+check("a long rest returns every token",
+  /if \(long\) update\["system\.rest\.tokens"\] = actor\.system\.rest\.max;/.test(restBody)
+    ? "yes" : "no", "yes");
+/*
+ * **And the line a rest always posts.** Reported as *the button should work*: a short rest on an
+ * unhurt character with nothing Spent moved one invisible number and said nothing, and a control
+ * that cannot be told from a broken one is a broken control.
+ */
+check("a rest says what it did",
+  /and there was nothing to put right\./.test(restBody) ? "yes" : "no", "yes");
+/* The number gained rather than the number offered: *heals 5* beside a character one short of full
+ * is a line that is wrong about the only number it carries. */
+check("and heals by what was actually gained",
+  /const healed = update\["system\.health\.value"\] - before;/.test(restBody) ? "yes" : "no", "yes");
+
+/*
+ * **A Cleansing, which core-rules named and nothing could do.**  **[BUILT 2026-11-24]**
+ *
+ * core-rules 8 gives Taint two ways out -- a cure, and a Cleansing -- and neither had an engine
+ * path, so Taint only ever accumulated: it survives rests by rule and nothing could remove a card
+ * of it. A character three Taint deep was Afflicted for the rest of the campaign.
+ */
+check("a cleansing exists",
+  /export async function resolveCleansing\(actor, \{ amount = null, how = "a Cleansing" \} = \{\}\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+const cleanseBody = bodyOf(resolveSource, "export async function resolveCleansing(actor,");
+check("and it looks in every pile, because Taint travels",
+  /for \(const stack of allStacks\(actor\)\)/.test(cleanseBody) ? "yes" : "no", "yes");
+/*
+ * **And `bound` finally means something.** *Taint an obligation put in your deck is not a sickness,
+ * and neither a cure nor Cleansing lifts it* -- the flag carried that sentence from the day it was
+ * written and nothing read it, because the thing it was an exception to did not exist.
+ */
+check("and bound Taint is left where it is",
+  /if \(card\.system\.bound\) \{ bound\+\+; continue; \}/.test(cleanseBody) ? "yes" : "no", "yes");
+check("and the line says why it stayed",
+  /only what the obligation names takes it back/.test(cleanseBody) ? "yes" : "no", "yes");
+/* Everything by default, because the rules put no number on a Cleansing; `amount` is for the cure,
+ * which is the other road and takes what it takes. */
+check("and it takes all of it unless asked for fewer",
+  /amount === null \? found\.length : Math\.max\(0, Math\.min\(amount, found\.length\)\)/
+    .test(cleanseBody) ? "yes" : "no", "yes");
+check("core-rules still names the two ways Taint leaves",
+  /\*\*Cleansing\*\*: a downtime challenge \(Lore, Progress 4\)/.test(coreRules) ? "yes" : "no",
+  "yes");
+
+/*
+ * **Elite or boss, which was a checkbox with no consequence.**  **[RULED 2026-11-24]**
+ *
+ * A GM ticked it and the creature was exactly as hard as before. Found by the same sweep.
+ */
+check("the elite dials are in config",
+  [CARDRPG.defaults.eliteHealth, CARDRPG.defaults.eliteArmor, CARDRPG.defaults.elitePassive]
+    .join(", "), "1.5, 1, 1");
+/* The creature model's own body, so a pin about an elite cannot be answered by the character's
+ * `prepareDerivedData` -- both classes have one, and a grep over the file would read either. */
+const eliteBody = actorSource.slice(actorSource.indexOf("export class NpcData"));
+check("an elite's Health is a share of what it already has",
+  /if \(this\.elite\) this\.health\.max = Math\.ceil\(this\.health\.max \* d\.eliteHealth\);/
+    .test(eliteBody) ? "yes" : "no", "yes");
+/* After the grants, so a boss version of a creature is a boss version of everything it is. */
+check("and taken after its features have granted theirs",
+  eliteBody.indexOf("granted.health") < eliteBody.indexOf("d.eliteHealth") ? "after" : "before",
+  "after");
+check("and its armour goes up by one",
+  /if \(this\.elite && !this\.armorZeroed\) this\.armor \+= d\.eliteArmor;/.test(eliteBody)
+    ? "yes" : "no", "yes");
+/* Zeroed armour stays zeroed: Exposed is a condition about having none, and +1 of none is none. */
+check("unless something has stripped it",
+  /this\.elite && !this\.armorZeroed/.test(eliteBody) ? "yes" : "no", "yes");
+check("and every passive goes up by one",
+  /this\.elitePassive = this\.elite \? d\.elitePassive : 0;/.test(eliteBody) ? "yes" : "no", "yes");
+/*
+ * **Every point of it derived, which is the whole of *unticking it reverses it*.** There is nothing
+ * to undo because nothing was written -- and a version that raised `health.base` on the tick would
+ * have to remember what the base was, and would remember wrong the day somebody edited it.
+ */
+check("and nothing elite is ever written to the document",
+  /"system\.elite"/.test(resolveSource) || /elite: true/.test(sheetSource) ? "no" : "yes", "yes");
+check("core-rules says what the tick is worth",
+  /^#### What Elite is worth/m.test(coreRules) ? "yes" : "no", "yes");
+/* A local read, because `npcTemplate` is declared two thousand lines below and a pin above its
+ * own variable is a ReferenceError -- the trap this file carries three notes about. */
+/*
+ * **Afflicted, which was wrong twice over.**  **[FIXED 2026-11-24]**
+ *
+ * `taint`, `afflicted`, `wounds` and the Health penalty that follows are all counted out of the
+ * Cards documents an actor points at, and both halves of that counting were broken.
+ */
+/*
+ * **A card on loan was counted twice.** A dealt card is a COPY -- Foundry marks the home card
+ * `drawn` and creates a second document where it went -- which is what `available` exists to say
+ * and says in as many words: *anything that draws has to filter it out or it will try to deal the
+ * same card twice*. This was the one counter in the system that asked for `cards` instead.
+ *
+ * Measured: one Taint in the draw pile is one document, the same Taint drawn out of it is **two**.
+ * So one real Taint read as two from the moment it was drawn, and **Afflicted could bite at two
+ * instead of three** -- 3 Health off a character who had not earned it. The deck size had it too:
+ * 21 against a limit of 20, for a legal 16-card deck with a hand out.
+ */
+check("the one counter that feeds derived data counts each card once",
+  /for \(const card of available\(this\.#deck\(which\)\)\)/.test(actorSource) ? "yes" : "no", "yes");
+/* And it is the shared helper rather than a second copy of the predicate, which is the whole
+ * reason that helper exists. */
+check("and through the helper written for it",
+  /^import \{ available \} from "\.\.\/decks\.mjs";$/m.test(actorSource) ? "yes" : "no", "yes");
+/*
+ * **And nothing recomputed it.** A Card is not embedded in an actor, so creating one does not
+ * re-prepare the actor at all: the numbers were right whenever something else happened to touch
+ * it and stale until then. Three Taint in the decks with `afflicted` reading false is a true
+ * statement about prepared data and a false one about the game.
+ */
+check("a card changing re-prepares the actors whose decks hold it",
+  /for \(const hook of \["createCard", "updateCard", "deleteCard"\]\) Hooks\.on\(hook, recount\);/
+    .test(entrySource) ? "yes" : "no", "yes");
+const recountBody = bodyOf(entrySource, "  const recount = card => {");
+/* Filtered on the type, or every draw in the game re-prepares every actor that owns the deck. The
+ * set is what `#countCards` is asked for rather than a guess: `taint`, `wound`, `action`. */
+check("and only for the kinds that are counted into it",
+  /COUNTED_INTO_DERIVED\.has\(card\?\.type\)/.test(recountBody) ? "yes" : "no", "yes");
+check("and the set is the three that are",
+  /new Set\(\["taint", "wound", "action"\]\)/.test(entrySource) ? "yes" : "no", "yes");
+/* The actors that point at THAT stack, not every actor: a goblin's deck changing is nothing to do
+ * with a hero's derived data. */
+check("and only the actors that point at that stack",
+  /Object\.values\(actor\.system\?\.decks \?\? \{\}\)\.includes\(stack\)/.test(recountBody)
+    ? "yes" : "no", "yes");
+/*
+ * **`reset`, not `prepareData`.**  **[FIXED 2026-11-24]** `prepareData` re-runs the derivation over
+ * the already-derived data; `reset` discards it and re-initializes from the source first. This
+ * model clamps a stored value in place -- `health.value = min(health.value, health.max)` -- so
+ * deriving twice applies the clamp to its own output: three Taint took the maximum to 9 and the
+ * value with it, and once the Taint were gone `min(9, 12)` was **9 for ever** while the source
+ * still said 12. A derivation that is not idempotent must not be invited to run twice.
+ */
+check("and it resets rather than re-deriving over derived data",
+  /actor\.reset\(\);/.test(recountBody) ? "yes" : "no", "yes");
+check("and never asks for a second derivation in place",
+  /actor\.prepareData\(\)/.test(recountBody) ? "no" : "yes", "yes");
+/* A sheet standing open does not redraw itself off a card hook; the tray already does. */
+check("and a sheet standing open is redrawn",
+  /if \(actor\.sheet\?\.rendered\) actor\.sheet\.render\(false\);/.test(recountBody)
+    ? "yes" : "no", "yes");
+check("and the tray was already listening to the same three",
+  /"createCard", "updateCard", "deleteCard"/.test(traySource) ? "yes" : "no", "yes");
+
+check("and the sheet says it too, beside the box",
+  /Health &times;1\.5, \+1 armour, \+1 to every/.test(
+    fs.readFileSync(path.join(root, "templates/actor-npc.hbs"), "utf8")) ? "yes" : "no", "yes");
+
+/*
+ * **Out of reach, said to the person who adjudicates it.**  **[BUILT 2026-11-24]**
+ *
+ * Range is deliberately NOT enforced -- the engine does not know about the rope -- and the ledger
+ * below pins that absence so it cannot be added by accident. What was missing is the other half of
+ * a deliberate non-rule: somebody has to be told. The HUD has warned the player since distance
+ * could be measured, and the chat card said nothing, so a GM reading the log could not see that a
+ * Strike reaching 1 had just killed something three squares away.
+ */
+check("an attack measures how far away each target was",
+  /const away = squaresBetween\(actor, taker\);/.test(resolveSource) ? "yes" : "no", "yes");
+check("and how far the blow reaches",
+  /const reach = step\.range \?\? actor\.system\.rangeOnLine\?\.\(line, item\) \?\? 1;/
+    .test(resolveSource) ? "yes" : "no", "yes");
+check("and the card says so when it did not",
+  /Out of reach: <strong>\$\{row\.name\}<\/strong> is `/.test(resolveSource) ? "yes" : "no", "yes");
+/* A hint and not a refusal, and the wording says who decides -- the same sentence the HUD's own
+ * tip carries, so the warning before the click and the note afterwards read as one thing. */
+check("and says it resolved anyway",
+  /It resolved anyway &mdash; nothing stops you playing it/.test(resolveSource) ? "yes" : "no",
+  "yes");
+check("and the HUD still says it before the click",
+  /Nothing stops you playing it; the engine does not know about the rope\./.test(traySource)
     ? "yes" : "no", "yes");
 
 /*
@@ -21347,8 +21612,20 @@ check("passives are filled in where every creature is produced",
  * NPC had six identical scores however carefully the content said otherwise.
  */
 check("a passive score asks the creature about the approach",
-  /return actor\?\.system\.passives\?\.\[approach\] \?\? actor\?\.system\.passive \?\? 2;/
+  /const printed = actor\?\.system\.passives\?\.\[approach\] \?\? actor\?\.system\.passive \?\? 2;/
     .test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **And an elite's step goes on top of whichever baseline applied.**  **[BUILT 2026-11-24]**
+ *
+ * On top rather than instead: an authored override says what that creature is a specialist at, and
+ * a boss version of a specialist is still a specialist. Read here rather than added to
+ * `system.passive`, which is a STORED field the sheet edits -- raising that would put the boosted
+ * number in the box, the next form submit would save it, and the tick would stop being reversible
+ * the first time a GM touched the sheet.
+ */
+check("and an elite's step is added to it",
+  /return printed \+ \(actor\?\.system\.elitePassive \?\? 0\);/.test(resolveSource)
+    ? "yes" : "no", "yes");
 /*
  * **And it only counts cards for an actor that has a skill deck.**  [FOUND IN PLAY 2026-11-15]
  *
@@ -21698,6 +21975,11 @@ const absentGreps = [
    * only shape this rule can be checked in. */
   String.raw`and not for the five seconds after it :: setTimeout\(resolve, hold \+ TIMING\.fly \+ TIMING\.parked\)`,
   String.raw`and nothing anywhere refuses an action for being out of range :: out of range[\s\S]{0,40}return|notifications\.warn\([^)]*too far`,
+  /* Elite is derived and never stored, which is the whole of *unticking it reverses it*:
+   * there is nothing to undo because nothing was written. These two are what being written
+   * would look like. */
+  String.raw`and nothing elite is ever written to the document :: "system\.elite"`,
+  String.raw`and nothing elite is ever written to the document :: elite: true`,
   String.raw`and nothing ever puts a condition in the waved set :: waved\.add\(.*condition`,
   String.raw`and nothing in the content deals an injury directly :: verb: "maiming"[\s\S]{0,120}injury:`,
   String.raw`and nothing matches a document back by its escaped name :: find\(card => card\.name === name\)`,

@@ -2736,6 +2736,36 @@ NPCs don't have hands. Each NPC **type** has a small deck of 5–8 cards, and ea
 - **Elite / boss** NPCs may keep 1–2 cards face-up as reactions, shown to the players.
 - NPCs still use items for their Strike and Cast values, so the same goblin deck works for a spear goblin and a bow goblin.
 
+#### What Elite is worth  **[RULED 2026-11-24]**
+
+Ticking **Elite or boss** makes that creature tougher, by a fixed amount measured against what it
+already is:
+
+| | |
+|---|---|
+| **Health** | **×1.5**, rounded up, after anything its features grant |
+| **Armour** | **+1** |
+| **Every passive score** | **+1** |
+| **What it deals** | **unchanged** |
+
+**A share of its Health rather than a number**, because the roster runs from a Scrip to a god and
+Health is the stated measure of a weight class — every number in it is a multiple of the one
+creature that was measured. A flat +10 would make a goblin unkillable and the Troll King no
+different. Armour and the passives are flat **+1** because both are short integer ladders: armour
+runs 0–4 across the whole catalogue and a passive 2–7, so one step is a real step at either end.
+The passive is most of what a boss needs that Health does not give it — harder to hold, to trick,
+to outrun and to shout down.
+
+**It deliberately does not touch what the creature deals.** An elite that hits harder is a
+different card: intent values are content, and a tick box that quietly rewrote what a creature's
+own cards do would make one card mean two things. If a boss should hit harder, give it a boss's
+gear or a boss's deck.
+
+**Unticking it takes all of it back**, because none of it is stored: the numbers are derived every
+time they are read. The one thing that does not come back is Health already lost — a boss cut to
+30 of 45 that stops being a boss is a creature on 30 of 30, which is the same creature with the
+same wounds.
+
 ### A common intent pool  **[BUILT 2026-11-02]**
 
 > **One pool of shapes, and a creature draws the subset it has earned.** The NPC side was a single

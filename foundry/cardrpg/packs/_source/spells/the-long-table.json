@@ -15,8 +15,7 @@
     "description": "<p>One meal, taken together, and nobody is carrying anything from before it. Once a day, and the elf-kin keep the tally &mdash; which is this school's price doing exactly what a price should.</p>",
     "effect": {
       "timing": "ritual",
-      "oncePer": "day",
-      "text": "the party sheds every Wound and all rest tokens return"
+      "text": "once a day: the party sheds every Wound and all rest tokens return"
     },
     "kind": "formula",
     "prepared": false

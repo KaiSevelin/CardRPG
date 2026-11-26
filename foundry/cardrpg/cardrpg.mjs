@@ -14,7 +14,7 @@ import {
 } from "./module/setup.mjs";
 /* A transformation is ended by somebody, because nothing here owns a timer that survives a
  * reload -- so the duration on the card is what the table reads and this is how it is settled. */
-import { endTransformation, payToPrepare } from "./module/resolve.mjs";
+import { endTransformation, payToPrepare, resolveCleansing } from "./module/resolve.mjs";
 import { CardRPGCombat, registerCombatHooks } from "./module/combat.mjs";
 import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
 import { registerGroundHooks, imposeGround, springTraps } from "./module/ground.mjs";
@@ -363,6 +363,15 @@ Hooks.once("ready", async () => {
      */
     buildMonster,
     /*
+     * **A Cleansing, and the cure that is the other road.**  **[BUILT 2026-11-24]**
+     *
+     * A downtime challenge is run at the table -- the GM keeps the Progress and Pressure tracks --
+     * so the engine owes it only the payout, the same arrangement `liftInjury` has. Here rather
+     * than on a sheet button for the same reason: a button would imply the software decided the
+     * challenge was won.
+     */
+    cleanse: resolveCleansing,
+    /*
      * **Ending a transformation is a thing somebody has to do**, and nothing in this system owns a
      * timer that survives a reload -- so the duration on the card is what the table reads and this
      * is how it is settled. A form that expired silently would be worse than one that waits.
@@ -471,6 +480,62 @@ Hooks.once("ready", async () => {
    * covers the case this most needs to cover, a PLAYER preparing their own spell, where no
    * GM-side `userId` check would fire at all. Foundry elects a single GM client for exactly this.
    */
+  /*
+   * **Derived data that is counted from the decks has to be recomputed when a deck changes.**
+   * **[FIXED 2026-11-24]**
+   *
+   * `taint`, `afflicted`, `wounds` and the Health penalty that follows from Afflicted are all
+   * counted out of the Cards documents an actor points at -- and a card is not embedded in the
+   * actor, so **creating one does not re-prepare the actor at all.** Foundry re-prepares a document
+   * when the document or something embedded in it changes; a Card lives in a Cards document, which
+   * is neither.
+   *
+   * So the numbers were right whenever anything else happened to touch the actor and stale until
+   * then: three Taint in the decks and `afflicted` reading false, which is a true statement about
+   * the prepared data and a false one about the game. Found by a live probe asserting the
+   * threshold still bites, which it did not until something re-prepared the hero.
+   *
+   * **Filtered on the type, because the alternative is re-preparing every actor on every draw.**
+   * Only these two kinds are counted into derived data; an action card moving between a deck and a
+   * hand changes `actionDeck.size`, which is counted the same way -- so it is in the set too, and
+   * the set is the list of what `#countCards` is asked for rather than a guess.
+   *
+   * **Every client, because derived data is per-client.** The hook fires wherever the change
+   * arrives, and each client re-prepares its own copy -- which is the same reason the tray's own
+   * refresh listens to the same three hooks.
+   */
+  const COUNTED_INTO_DERIVED = new Set(["taint", "wound", "action"]);
+  const recount = card => {
+    if (!COUNTED_INTO_DERIVED.has(card?.type)) return;
+    const stack = card.parent?.id;
+    if (!stack) return;
+    for (const actor of game.actors ?? []) {
+      if (!Object.values(actor.system?.decks ?? {}).includes(stack)) continue;
+      /*
+       * **`reset` and not `prepareData`, and the difference is a one-way ratchet.**
+       * **[FIXED 2026-11-24]**
+       *
+       * `prepareData` re-runs the derivation **over the already-derived data**; `reset` throws the
+       * derived data away and re-initializes from the source first. That matters here because this
+       * model clamps a stored value in place -- `health.value = min(health.value, health.max)` --
+       * so running the derivation twice applies the clamp to its own output.
+       *
+       * Measured: three Taint take the maximum from 12 to 9 and the clamp writes the value down to
+       * 9; take the Taint away and `prepareData` computes `min(9, 12)`, which is **9 for ever**.
+       * The source still said 12, the sheet said 9, and no later update could put it right because
+       * every one of them re-derived from the ratcheted value. The hero walked out of one probe
+       * three Health down and the probe after it reported *the hero started at full health: 9*.
+       *
+       * A derivation that is not idempotent must not be invited to run twice. `reset` is the call
+       * written for exactly that, and `_initialize` is all it does.
+       */
+      actor.reset();
+      /* The tray redraws off the same hooks already; a sheet standing open does not. */
+      if (actor.sheet?.rendered) actor.sheet.render(false);
+    }
+  };
+  for (const hook of ["createCard", "updateCard", "deleteCard"]) Hooks.on(hook, recount);
+
   Hooks.on("updateItem", async (item, change) => {
     if (item.type !== "spell" || change?.system?.prepared !== true) return;
     if (!item.parent) return;

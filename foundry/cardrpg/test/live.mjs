@@ -3478,6 +3478,322 @@ async function probes(page) {
    * through and the rule has to hold for a macro as well as for the window. The rest is asked of
    * `rest`, for the same reason.
    */
+  /*
+   * **Afflicted, which was wrong in two different ways.**  **[FIXED 2026-11-24]**
+   *
+   * `taint`, `afflicted`, `wounds` and the Health penalty that follows are counted out of the
+   * Cards documents an actor points at, and both halves of that counting were broken.
+   *
+   * - **A card on loan was counted twice.** A dealt card is a COPY: Foundry marks the home card
+   *   `drawn` and creates a second document where it went, and this counter asked for `cards`
+   *   rather than `available` -- the one helper written to say exactly that. Measured below: one
+   *   Taint in the draw pile is one document, the same Taint drawn out of it is **two**. So one
+   *   real Taint read as two from the moment it was drawn, and **Afflicted could bite at two
+   *   instead of three**, taking 3 Health off a character who had not earned it. The deck size had
+   *   it too: 21 against a limit of 20 for a legal 16-card deck with a hand out.
+   * - **And nothing recomputed it.** A Card is not embedded in the actor, so creating one does not
+   *   re-prepare the actor at all -- the numbers were right whenever something else happened to
+   *   touch it and stale until then. Found by a probe asserting the threshold bites, which it did
+   *   not until something re-prepared the hero.
+   *
+   * No `prepareData` anywhere below: the hook is half of what is being tested.
+   */
+  await probe("one Taint is one Taint, wherever it is sitting", async () => {
+    await settle(page);
+    const out = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      const stacks = ["action", "actionHand", "actionDiscard", "actionSpent"];
+      const documents = () => stacks.flatMap(w => [...(LIVE.deckOf(hero, w)?.cards ?? [])])
+        .filter(c => c.type === "taint").length;
+      /*
+       * What to put back, read before any of this. The MAXIMUM moves while they are Afflicted, so
+       * restoring *to the maximum* afterwards writes whatever the maximum happens to be then.
+       */
+      const wasHealth = hero.system.health.value;
+      const deck = LIVE.deckOf(hero, "action");
+      const taint = () => ({
+        ...LIVE.harmCardData("taint", { source: "A Probe" }),
+        system: { flavour: "body", source: "A Probe" }
+      });
+
+      /* ---- one, in the draw pile ---- */
+      const [made] = await deck.createEmbeddedDocuments("Card", [taint()]);
+      const atHome = { docs: documents(), counted: hero.system.taint.total };
+
+      /* ---- and the same one, drawn out of it ---- */
+      await LIVE.move(deck, LIVE.deckOf(hero, "actionDiscard"), [made.id]);
+      const onLoan = { docs: documents(), counted: hero.system.taint.total };
+
+      /* ---- and up to the threshold, which is where it bites ---- */
+      const health = hero.system.health.max;
+      await deck.createEmbeddedDocuments("Card", [taint(), taint()]);
+      const atThree = {
+        counted: hero.system.taint.total,
+        afflicted: hero.system.afflicted,
+        health: hero.system.health.max
+      };
+
+      for (const w of stacks) {
+        const st = LIVE.deckOf(hero, w);
+        const ids = [...(st?.cards ?? [])].filter(c => c.type === "taint").map(c => c.id);
+        if (ids.length) await st.deleteEmbeddedDocuments("Card", ids);
+      }
+      const after = { counted: hero.system.taint.total, afflicted: hero.system.afflicted };
+      /* `reset` rather than `prepareData`: this model clamps a value in place, so re-deriving
+               * over derived data applies the clamp to its own output and ratchets it down. */
+              hero.reset();
+      await hero.update({ "system.health.value": wasHealth });
+      return { atHome, onLoan, atThree, after, health };
+    });
+    return [
+      ["a Taint in the draw pile is one document", out.atHome.docs, 1],
+      ["and counts as one", out.atHome.counted, 1],
+      /* **The measurement this probe exists for.** The engine leaves two documents behind. */
+      ["drawn out of it, there are two documents", out.onLoan.docs, 2],
+      ["and it still counts as one", out.onLoan.counted, 1],
+      /* And the threshold, with no re-prepare asked for above: the hook is the claim. */
+      ["three Taint counts as three", out.atThree.counted, 3],
+      ["and that is Afflicted, without anything else touching the actor",
+        out.atThree.afflicted, true],
+      ["and it costs the Health the rules say", out.health - out.atThree.health, 3],
+      /* And it lifts again when they go, which is the same hook from the other side. */
+      ["taking them away lifts it", out.after.afflicted, false],
+      ["and the count goes back to nothing", out.after.counted, 0]
+    ];
+  });
+
+  /*
+   * **Out of reach: pinned offline, and NOT probed here.**  **[2026-11-24]**
+   *
+   * The chat note a blow out of reach now carries (resolve.mjs) is checked by the offline suite,
+   * and the HUD's half -- the chip reading `3/1`, marked out of reach -- is checked by the range
+   * probe above. What is deliberately absent is a live probe of the note itself, and the reason is
+   * worth writing down rather than quietly leaving a gap.
+   *
+   * Such a probe has to put two figures a measured distance apart and swing. The engine measures
+   * **actor to actor**, so both need exactly one token, which means either borrowing the board
+   * from every other probe or building a creature of its own -- and three versions of it each cost
+   * three unrelated checks two hundred lines away:
+   *
+   *   - deleting the other tokens and restoring them put **nothing** back, because `toObject()`
+   *     carries an `_id` and a create that is not told `keepId` discards the document;
+   *   - the version that passed `keepId` threw when the id was still settling;
+   *   - and the version that built its own creature still left the hero three Health down, because
+   *     two real Strikes provoke answers that are not all awaited and land after the probe has
+   *     returned and tidied up.
+   *
+   * Every one of those was a probe fault rather than an engine one, and every one read as a broken
+   * feature somewhere else. The manual plan walks it instead (2g.5), which is the right place for
+   * a check whose setup is two figures and a tape measure.
+   */
+  /*
+   * **A rest, and the three things it did not do.**  **[BUILT 2026-11-24]**
+   *
+   * Found by sweeping the schema for fields no rule reads, which is how `rest` came to be read at
+   * all. It returned the action deck's Spent cards, healed, and set the tokens -- and skill-rules
+   * says the skill discard comes back on a rest, the Rests table says a long rest takes a Wound,
+   * and a short rest said nothing at all when it had nothing visible to do.
+   */
+  await probe("a rest brings back everything a rest brings back", async () => {
+    await settle(page);
+    const out = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      const size = which => LIVE.deckOf(hero, which)?.cards.size ?? 0;
+
+      /* Put the three things a rest is supposed to answer into the world. */
+      const skillHand = LIVE.deckOf(hero, "skillHand");
+      if (!skillHand.cards.size) await LIVE.dealSkillHand(hero);
+      const played = skillHand.cards.contents.slice(0, 2).map(c => c.id);
+      if (played.length) await LIVE.discardSkillCards(hero, played);
+      const inDiscard = size("skillDiscard");
+      /*
+       * **`available` and not `cards.size`.** A dealt card is a COPY: the home card stays in the
+       * deck marked `drawn` and the copy lives where it went, so moving the copy back clears the
+       * flag rather than adding a document. The size never changes and the first run of this probe
+       * read that as the cards not coming back.
+       */
+      const inDeck = LIVE.available(LIVE.deckOf(hero, "skill")).length;
+      await LIVE.resolveWound(hero, { reason: "a probe" });
+      const woundsBefore = [...LIVE.allStacks(hero)]
+        .flatMap(st => [...st.cards]).filter(c => c.type === "wound").length;
+
+      await hero.update({ "system.health.value": 1, "system.rest.tokens": 1 });
+      const before = game.messages.size;
+
+      /* ---- the short rest ---- */
+      await LIVE.rest(hero, { long: false });
+      const afterShort = {
+        discard: size("skillDiscard"),
+        deck: LIVE.available(LIVE.deckOf(hero, "skill")).length,
+        wounds: [...LIVE.allStacks(hero)].flatMap(st => [...st.cards])
+          .filter(c => c.type === "wound").length,
+        tokens: hero.system.rest.tokens,
+        health: hero.system.health.value
+      };
+      /* ---- and a second one, with no token left ---- */
+      const refused = await LIVE.rest(hero, { long: false });
+      const stillTokens = hero.system.rest.tokens;
+
+      /* ---- then the long rest ---- */
+      await LIVE.rest(hero, { long: true });
+      const afterLong = {
+        wounds: [...LIVE.allStacks(hero)].flatMap(st => [...st.cards])
+          .filter(c => c.type === "wound").length,
+        tokens: hero.system.rest.tokens
+      };
+      const said = game.messages.contents.slice(before)
+        .map(m => String(m.content).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim())
+        .join(" || ");
+
+      /* The Wound this probe made is gone with the long rest; the health it spent is not. */
+      await hero.update({ "system.health.value": hero.system.health.max });
+      for (const which of ["actionDiscard", "actionHand", "action"]) {
+        const ids = [...(LIVE.deckOf(hero, which)?.cards ?? [])]
+          .filter(c => c.type === "wound").map(c => c.id);
+        if (ids.length) await LIVE.deckOf(hero, which).deleteEmbeddedDocuments("Card", ids);
+      }
+      return {
+        hadDiscard: inDiscard > 0, inDeck,
+        woundsBefore,
+        shortDiscard: afterShort.discard, shortDeck: afterShort.deck,
+        shortWounds: afterShort.wounds, shortTokens: afterShort.tokens,
+        healedShort: afterShort.health - 1,
+        refused: refused === null, stillTokens,
+        longWounds: afterLong.wounds, longTokens: afterLong.tokens,
+        said
+      };
+    });
+    return [
+      /* The setup really happened, or every row below is about an empty discard. */
+      ["two skill cards were played", out.hadDiscard, true],
+      ["and a Wound was taken", out.woundsBefore >= 1, true],
+      /* **The row this probe exists for.** */
+      ["a short rest empties the skill discard", out.shortDiscard, 0],
+      ["and the cards are back in the skill deck", out.shortDeck > out.inDeck, true],
+      /* The asymmetry between the two rests is the Wound and the tokens, not the deck. */
+      ["a short rest sheds no Wound", out.shortWounds, out.woundsBefore],
+      ["and heals 1", out.healedShort, 1],
+      ["and costs the token", out.shortTokens, 0],
+      /* The gate at the door rather than only on the button. */
+      ["a second short rest is refused", out.refused, true],
+      ["and takes nothing for it", out.stillTokens, 0],
+      /* And the long rest, which is the only thing that sheds one. */
+      ["a long rest sheds a Wound", out.longWounds, out.woundsBefore - 1],
+      ["and hands every token back", out.longTokens >= 1, true],
+      /* A control that cannot be told from a broken one is a broken control. */
+      ["and a rest says what it did", /takes a short rest and/.test(out.said), true],
+      ["naming the skill cards it shuffled back",
+        /skill cards? back into the skill deck/.test(out.said), true],
+      ["and the Wound it shed", /sheds a Wound/.test(out.said), true]
+    ];
+  });
+
+  /*
+   * **Elite or boss, which was a checkbox with no consequence.**  **[BUILT 2026-11-24]**
+   *
+   * A GM ticked it and the creature was exactly as hard as before. Asked of a creature rather than
+   * of the source because the whole claim is that the numbers MOVE -- and then move back, which is
+   * what being derived rather than stored buys and the half a source reading cannot see.
+   */
+  await probe("ticking Elite makes a creature tougher, and unticking it does not", async () => {
+    await settle(page);
+    const out = await page.evaluate(async () => {
+      const beast = game.actors.find(a => a.type === "npc");
+      const was = !!beast.system.elite;
+      const read = () => ({
+        health: beast.system.health.max,
+        armor: beast.system.armor,
+        might: LIVE.passiveScore(beast, "might"),
+        shadow: LIVE.passiveScore(beast, "shadow")
+      });
+      await beast.update({ "system.elite": false });
+      const plain = read();
+      await beast.update({ "system.elite": true });
+      const elite = read();
+      await beast.update({ "system.elite": false });
+      const back = read();
+      /* And nothing was written while it was ticked: the stored numbers are what they were. */
+      const stored = {
+        base: beast.system.health.base,
+        armorBase: beast.system.armorBase,
+        passive: beast.system.passive
+      };
+      await beast.update({ "system.elite": was });
+      return { plain, elite, back, stored, name: beast.name };
+    });
+    return [
+      ["an elite has half again the Health", out.elite.health,
+        Math.ceil(out.plain.health * 1.5)],
+      ["and a point more armour", out.elite.armor - out.plain.armor, 1],
+      ["and a point on every passive",
+        `${out.elite.might - out.plain.might},${out.elite.shadow - out.plain.shadow}`, "1,1"],
+      /* **The row the ruling turns on.** Derived, so there is nothing to undo. */
+      ["unticking it takes all of it back",
+        `${out.back.health},${out.back.armor},${out.back.might}`,
+        `${out.plain.health},${out.plain.armor},${out.plain.might}`],
+      /* And the stored numbers were never touched, which is WHY it comes back. */
+      ["and the stored numbers were never touched",
+        out.stored.base === out.plain.health && out.stored.passive === out.plain.might, true]
+    ];
+  });
+
+  /*
+   * **A Cleansing, which core-rules named and nothing could do.**  **[BUILT 2026-11-24]**
+   *
+   * Taint survives rests by rule, and the two ways out the rules give -- a cure and a Cleansing --
+   * had no engine path at all, so a character three Taint deep was Afflicted for the rest of the
+   * campaign. And `bound` carried *neither a cure nor Cleansing lifts it* from the day it was
+   * written with nothing reading it, because the thing it was an exception to did not exist.
+   */
+  await probe("a cleansing takes Taint out, and leaves what an obligation put there", async () => {
+    await settle(page);
+    const out = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      const taints = () => [...LIVE.allStacks(hero)].flatMap(st => [...st.cards])
+        .filter(c => c.type === "taint");
+      const wasHealth = hero.system.health.value;
+
+      /* Two of the ordinary kind and one an obligation put there. */
+      await LIVE.resolveTaint(hero, { amount: 2, target: hero, flavour: "body", quiet: true });
+      const discard = LIVE.deckOf(hero, "actionDiscard");
+      await discard.createEmbeddedDocuments("Card", [{
+        ...LIVE.harmCardData("taint", { source: "A Probe Obligation" }),
+        system: { flavour: "body", source: "A Probe Obligation", bound: true }
+      }]);
+      const before = taints().length;
+      const boundBefore = taints().filter(c => c.system.bound).length;
+
+      const done = await LIVE.resolveCleansing(hero, { how: "a probe's Cleansing" });
+      const after = taints();
+      const said = String(game.messages.contents.at(-1)?.content ?? "")
+        .replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+
+      for (const card of after) await LIVE.removeCard(hero, card);
+      /* Afflicted takes the maximum and lifting it does not heal, so the value is put back by
+       * hand -- and to the number this probe found rather than to whatever the maximum is now. */
+      /* `reset` rather than `prepareData`: this model clamps a value in place, so re-deriving
+               * over derived data applies the clamp to its own output and ratchets it down. */
+              hero.reset();
+      await hero.update({ "system.health.value": wasHealth });
+      return {
+        before, boundBefore,
+        taken: done.taken, boundLeft: done.bound,
+        left: after.length, leftBound: after.filter(c => c.system.bound).length,
+        said
+      };
+    });
+    return [
+      ["three Taint went in", out.before, 3],
+      ["one of them bound", out.boundBefore, 1],
+      /* **The rows this probe exists for.** */
+      ["a cleansing takes the ordinary ones", out.taken, 2],
+      ["and leaves the bound one where it is", out.leftBound, 1],
+      ["so one card is left", out.left, 1],
+      ["and it reports the bound Taint it could not touch", out.boundLeft, 1],
+      ["saying why it stayed", /only what the obligation names takes it back/.test(out.said), true]
+    ];
+  });
+
   await probe("casting a prepared spell spends it", async () => {
     await settle(page);
     const out = await page.evaluate(async () => {

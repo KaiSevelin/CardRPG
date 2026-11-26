@@ -6369,7 +6369,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-door-home.webp`
 
 ```text
-SUBJECT. "The Door Home" — strength 5 · a door you have opened leads to any other you have opened
+SUBJECT. "The Door Home" — strength 5 · once a day: a door you have opened leads to any other you have opened
 
 A door you have opened before becomes a door to any other door you have opened before. It is the school's thesis: a householder is never far from anywhere they have been.
 
@@ -6597,7 +6597,7 @@ Draw the ground covered, thrown with the whole body, nothing held back.
 File: `spells/mind/the-long-table.webp`
 
 ```text
-SUBJECT. "The Long Table" — strength 3 · the party sheds every Wound and all rest tokens return
+SUBJECT. "The Long Table" — strength 3 · once a day: the party sheds every Wound and all rest tokens return
 
 One meal, taken together, and nobody is carrying anything from before it. Once a day, and the elf-kin keep the tally — which is this school's price doing exactly what a price should.
 

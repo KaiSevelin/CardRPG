@@ -642,7 +642,7 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 | ✓ | **The Broken Word** | strength 5 · Spent: one spell or miracle is unlearned by its caster for the rest of the day | `spells/mind/the-broken-word.webp` |
 | ✓ | **The Clean Pot** | strength 1 · a day's rations for the party, every day | `spells/mind/the-clean-pot.webp` |
 | ✓ | **The Crowded Room** | strength 4 · until your next turn every enemy attacks a random figure in reach, chosen by a fate draw | `spells/mind/the-crowded-room.webp` |
-| ✓ | **The Door Home** | strength 5 · a door you have opened leads to any other you have opened | `spells/mind/the-door-home.webp` |
+| ✓ | **The Door Home** | strength 5 · once a day: a door you have opened leads to any other you have opened | `spells/mind/the-door-home.webp` |
 | ✓ | **The Empty Deck** | strength 4 · you cannot be harmed at all | `spells/mind/the-empty-deck.webp` |
 | ✓ | **The Evil Eye** | strength 2 · range 3 Cursed | `spells/mind/the-evil-eye.webp` |
 | ✓ | **The Face of a Friend** | strength 3 · range 3 one enemy treats you as an ally -- it will not attack you and will take a hit for you -- until you attack it | `spells/mind/the-face-of-a-friend.webp` |
@@ -661,7 +661,7 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 | ✓ | **The Long Masquerade** | strength 5 · you and your whole party appear to be other people for a day | `spells/mind/the-long-masquerade.webp` |
 | ✓ | **The Long Preparation** | strength 1 · name one enemy type: your Casts against it are +2 all fight | `spells/mind/the-long-preparation.webp` |
 | ✓ | **The Long Step** | strength 1 · Move +4 through anything, if you begin and end in shadow | `spells/mind/the-long-step.webp` |
-| ✓ | **The Long Table** | strength 3 · the party sheds every Wound and all rest tokens return | `spells/mind/the-long-table.webp` |
+| ✓ | **The Long Table** | strength 3 · once a day: the party sheds every Wound and all rest tokens return | `spells/mind/the-long-table.webp` |
 | ✓ | **The Mark of Things to Come** | strength 2 · range 99 Marked (1) | `spells/mind/the-mark-of-things-to-come.webp` |
 | ✓ | **The Mended Seam** | strength 1 · Repair 1 repair one item overnight, including corroded armour | `spells/mind/the-mended-seam.webp` |
 | ✓ | **The Mirror** | strength 3 · Spent: a Cast aimed at you resolves against its own caster | `spells/mind/the-mirror.webp` |
