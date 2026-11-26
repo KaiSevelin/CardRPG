@@ -1895,6 +1895,52 @@ shuffled into your own decks, where they clog your hand until you get rid of the
 > type: the routine asks for the target's own action discard and stops if there is none. A creature
 > without a deck of its own is a creature that cannot hold a dead card.
 >
+> > **[FOUND 2026-11-26, FIXED 2026-11-26] That guard leaned on an accident, and the accident was
+> > deliberately removed nineteen days later.**
+> >
+> > Reported from a table as *all goblins should not be wounded when one dies*, which is this
+> > ruling being asked for a second time.
+> >
+> > The paragraph above is right about the rule and wrong about what was enforcing it. An NPC had
+> > no action discard **because nothing in the engine had ever built one** — not because anything
+> > checked. On **2026-11-23** that was fixed on purpose: a creature dragged out of the bestiary
+> > compendium arrived with no stacks at all, so a saving throw against it drew no fate card and
+> > dropping it drew no injury, and `buildCreatureDecks` now gives every creature in the world its
+> > five. From that day a dropped goblin had somewhere to put a Wound, and the Wound went into the
+> > pile its whole **kind** shuffles back into its intent deck. One goblin's death became a dead
+> > round for every goblin of that kind — the exact outcome the paragraph above forbids, arrived at
+> > by fixing something else.
+> >
+> > The chat line added the same day made it worse than silent. It read *should take a Wound, and
+> > has no discard pile to put one in — re-saving the creature gives it them*, so the engine was
+> > **instructing the GM to cause this**.
+> >
+> > **The guard now tests something true by construction.** A character's deck schema declares an
+> > `actionHand`; an NPC's does not, because an NPC has no hand — it has an intent pile holding one
+> > card for its whole kind. A Wound's entire text is a sentence about a hand (*Can't be played. End
+> > of your turn: discard this card*) and its entire cost is a hand slot and the refill that follows,
+> > so **a figure with no hand has nowhere to hold a dead card**. That is not a `type` test in
+> > disguise; it is the reason itself, asked at the one place the two kinds of figure differ.
+> >
+> > **A solo creature with stacks of its own is refused too**, and Confusion says why: *it cannot be
+> > used to simply delete a round of a boss's existence*. A dead card in a five-card hand costs a
+> > breath. A dead card in an intent deck of ten costs a whole round, to a figure that gets one card
+> > a round for its entire kind. Those are not the same price, and a Wound is priced as the first.
+> >
+> > **Nothing is posted when a creature is not wounded**, unlike the no-stack line above: here
+> > nothing is supposed to happen, and a line saying so would be a rules lecture attached to every
+> > goblin death in the campaign. **The injury draw was moved out from behind it** — it used to sit
+> > after the early return, so refusing the Wound would have taken the injury draw with it. Section
+> > 8 gives *drop to 0* as the trigger for both, separately: a figure with nowhere to hold a dead
+> > card still fell over.
+> >
+> > **And the lesson about the suite.** The offline pin read *and the guard is the target having a
+> > deck of its own* and tested that the line `deckOf(target, "actionDiscard")` was still written
+> > there. It passed every day the rule was broken, because a pin on the **shape** of a guard cannot
+> > tell you the guard still guards anything — the thing it was guarding against had become
+> > reachable somewhere else entirely. The pin is now on the condition, and there is a live probe
+> > that drops a goblin and counts the shared pile.
+>
 > **[DECIDED] Wounds are a player-side mechanic.** *The Long Table* (every Wound shed and every rest
 > token returned) is unaffected and always was — it is about the people at the table.
 >

@@ -1366,32 +1366,74 @@ export const DROPPED = "dropped to 0";
 
 export async function resolveWound(target, { reason = "", injuryMode = 0 } = {}) {
   if (!target) return false;
-  const stack = deckOf(target, "actionDiscard");
+
   /*
-   * **A creature with no pile to put a Wound in says so.**  **[FIXED 2026-11-23]**
+   * **A Wound is a dead card in a hand, so a figure with no hand has nowhere to hold one.**
+   * **[FIXED 2026-11-26]**
+   *
+   * Reported from a table as *Wound cards should only be added to individual decks, all goblins
+   * should not be wounded when one dies*, and the rule being asked for is one core-rules decided
+   * on 2026-11-07 and spells out twice. Section 3 draws NPC intent **one card per type** --
+   * *one for all the goblins* -- so a creature's deck belongs to its species while a Wound
+   * belongs to an individual, and Confusion's entry names the consequence in so many words:
+   * *a species shares the deck a Wound would have gone in, which is **fatal for a wound** and
+   * exactly right for this*. Confusion is the card that corrupts a type's **plan**, because a
+   * plan is a thing a species really does share. A Wound is not.
+   *
+   * **The guard was right and then quietly stopped existing.** It used to be this routine asking
+   * for the target's own action discard and stopping if there was none, and the note in
+   * core-rules says so approvingly: *the guard in the engine is that fact rather than a check on
+   * type*. But the fact it leaned on was an accident -- an NPC had no stacks because nothing had
+   * ever built any -- and **[FIXED 2026-11-23]** removed that accident deliberately, giving every
+   * creature in the world the five stacks it needs for a saving throw and an injury draw. From
+   * that day a dropped goblin put a Wound into the pile its whole kind shuffles back into its
+   * intent deck, and one goblin's death was a dead round for every goblin of that kind. The chat
+   * line below made it worse than silent: it told the GM the creature *should* take a Wound and
+   * to go and wire its stacks up, which is an instruction to cause this.
+   *
+   * **So the guard now tests something that is true by construction rather than by accident.**
+   * A character's `decks` schema declares `actionHand`; an NPC's does not, because an NPC has no
+   * hand -- it has an intent pile holding one card for its whole kind. That is not a check on
+   * `type` dressed up: it is the reason itself, in the one place the two kinds of figure actually
+   * differ. *Can't be played. End of your turn: discard this card* is a sentence about a hand,
+   * and every cost a Wound has is paid out of a hand slot and a refill. Where there is no hand
+   * there is no cost to pay, only a deck to poison.
+   *
+   * A solo creature with stacks of its own is refused too, and the Confusion entry is why: *it
+   * cannot be used to simply delete a round of a boss's existence*. A dead card in a five-card
+   * hand costs a breath; a dead card in an intent deck of ten costs an entire round.
+   *
+   * **And nothing is said about it**, unlike the no-stack line below. 2026-11-23 added a line
+   * because something that should have happened silently did not. Here nothing should happen, so
+   * a line would be a rules lecture attached to every goblin death in the campaign.
+   */
+  const holdsAHand = Object.hasOwn(target.system.decks ?? {}, "actionHand");
+  const stack = holdsAHand ? deckOf(target, "actionDiscard") : null;
+
+  /*
+   * **A figure that has a hand and no pile to put a Wound in says so.**  **[FIXED 2026-11-23]**
    *
    * This returned `false` in silence, and silence here is the worst possible answer: the blow
    * landed, the Health went down, and the two rules core-rules 8 hangs off this moment -- the
    * Wound card and, on a drop to 0, the injury draw -- did not happen, with nothing anywhere
-   * saying they had not. A creature dragged out of the bestiary compendium has no stacks at all
-   * (`buildCreatureDecks`), so this was every such creature, every time, and the table's only
-   * clue was that nothing arrived.
+   * saying they had not.
    *
    * A line rather than a repair, because repairing it here would be building decks in the middle
    * of resolving a blow. The wiring is fixed where wiring belongs; this is the report that would
    * have made it findable in a minute instead of a week.
    */
-  if (!stack) {
+  if (holdsAHand && !stack) {
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: target }),
       content: `<div class="cardrpg"><p><strong>${target.name}</strong> should take a Wound`
         + `${reason ? ` \u2014 ${reason}` : ""}, and has no discard pile to put one in.</p>`
-        + `<p class="cr-note">Its card stacks were never wired up. Re-saving the creature, or `
-        + `rebuilding world content from the system settings, gives it them.</p></div>`
+        + `<p class="cr-note">Their card stacks were never wired up. Re-saving the character, or `
+        + `rebuilding world content from the system settings, gives them theirs.</p></div>`
     });
-    return false;
+  } else if (stack) {
+    await stack.createEmbeddedDocuments("Card", [harmCardData("wound", { source: reason })]);
   }
-  await stack.createEmbeddedDocuments("Card", [harmCardData("wound", { source: reason })]);
+
   /*
    * **And this is the one moment a character can be changed forever.**
    *
@@ -1406,9 +1448,18 @@ export async function resolveWound(target, { reason = "", injuryMode = 0 } = {})
    * has paid for that shape twice already: the Wound threshold was a constant read in two places,
    * and `wound || taint` was written out three times before the intruder table closed it. The
    * `maiming` keyword is the modifier, and it is disadvantage on this draw and nothing else.
+   *
+   * **And it is reached whether or not a Wound card landed.**  **[FIXED 2026-11-26]** It used to
+   * sit after an early `return false`, which tied the one permanent consequence in the game to a
+   * card arriving -- so refusing the Wound above would have taken the injury draw with it, and a
+   * dropped goblin would have stopped drawing for the injury a table watched working on
+   * 2026-11-23. core-rules 8 gives *drop to 0* as the trigger for both, separately: a figure that
+   * has nowhere to hold a dead card still fell over.
    */
   if (reason === DROPPED) await resolveInjury(target, { mode: injuryMode, cause: reason });
-  return true;
+  /* True when a Wound card actually landed, which is not the same question as whether the figure
+   * was dropped -- see above. No caller reads it today; the honest answer is cheap to keep. */
+  return !!stack;
 }
 export async function resolveTaint(actor,
   /* `quiet` is for a price rather than an effect: `payToCast` says what a cast cost in one line of
@@ -1736,7 +1787,8 @@ export async function resolveInjury(target, { mode = 0, cause = "" } = {}) {
       speaker: ChatMessage.getSpeaker({ actor: target }),
       content: `<div class="cardrpg"><p><strong>${target.name}</strong> fell, and has no fate deck `
         + `to draw an injury from.</p><p class="cr-note">The GM reads it. Its card stacks were `
-        + `never wired up \u2014 see the Wound line above.</p></div>`
+        + `never wired up. Re-saving the creature, or rebuilding world content from the system `
+        + `settings, gives it them.</p></div>`
     });
     return null;
   }

@@ -2139,16 +2139,57 @@ check("times the Wound threshold is read at all",
  * are tight because of that. **Dropping to nought** can happen on all three -- a blow, a tick
  * (burning to death is still dropping) and a fast dose of Taint.
  *
- * And the guard that stops an NPC being wounded is `deckOf`, not a type test: core-rules 3 draws
- * intent **one card per type**, so a species shares the deck a Wound would sit in and an
- * individual has nowhere to hold one. A creature with no action discard cannot hold a dead card,
- * which is the same sentence read as code.
+ * And the guard that stops an NPC being wounded is below, restated once since.
  */
 check("the routine that makes a Wound",
   /export async function resolveWound\(target, \{ reason = "", injuryMode = 0 \} = \{\}\)/
     .test(resolveSource) ? "yes" : "no", "yes");
-check("and the guard is the target having a deck of its own",
-  /const stack = deckOf\(target, "actionDiscard"\);/.test(resolveSource) ? "yes" : "no", "yes");
+
+/*
+ * **The guard that stops an NPC being wounded, and the accident it used to lean on.**
+ * **[FIXED 2026-11-26]**
+ *
+ * core-rules 3 draws NPC intent **one card per type** -- *one for all the goblins* -- so a
+ * creature's deck belongs to its species while a Wound belongs to an individual, and core-rules 8
+ * decided on 2026-11-07 that an NPC therefore cannot be wounded. Confusion's entry names the
+ * consequence of getting it wrong: *a species shares the deck a Wound would have gone in, which is
+ * **fatal for a wound** and exactly right for this*.
+ *
+ * **The pin that used to stand here passed every day the rule was broken.** It read *and the guard
+ * is the target having a deck of its own* and tested that the line `deckOf(target,
+ * "actionDiscard")` was still written in this routine. Both halves were true throughout. What was
+ * not true was the premise underneath: an NPC had no action discard **because nothing had ever
+ * built one**, and **[FIXED 2026-11-23]** built them on purpose, so every creature in the world
+ * could take a saving throw and an injury draw. From that day a dropped goblin put a Wound into
+ * the pile its whole kind reshuffles into its intent deck, and the pin went on passing.
+ *
+ * A pin on the **shape** of a guard cannot tell you the guard still guards anything. These ones
+ * are on the condition, and the condition is now true by construction: a character's deck schema
+ * declares an `actionHand` and an NPC's does not, because an NPC has no hand -- it has an intent
+ * pile holding one card for its whole kind. Every cost a Wound has is a hand slot and the refill
+ * after it, so a figure with no hand has nowhere to hold a dead card. There is a live probe that
+ * drops a goblin and counts the shared pile, because an offline pin cannot answer that question.
+ */
+check("and the guard is whether the figure has a hand at all",
+  /const holdsAHand = Object\.hasOwn\(target\.system\.decks \?\? \{\}, "actionHand"\);/
+    .test(resolveSource) ? "yes" : "no", "yes");
+check("and a Wound is placed only when that found a pile",
+  /\} else if \(stack\) \{\n {4}await stack\.createEmbeddedDocuments\("Card",/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * The schema half of the same sentence, counted rather than read: exactly one of the two actor
+ * models declares a hand. If an NPC ever gains one the count goes to two and this fails, which is
+ * the right moment to reread the ruling rather than to update a number.
+ */
+check("actor models that declare an action hand",
+  (actorsSource.match(/actionHand: new fields\.DocumentIdField\(\)/g) ?? []).length, 1);
+/*
+ * And the refusal is silent. 2026-11-23 added a line because something that should have happened
+ * did not; here nothing should happen, so a line would be a rules lecture attached to every goblin
+ * death in the campaign. The no-pile line is for a figure that HAS a hand, which is a real fault.
+ */
+check("and only a figure with a hand is told its pile is missing",
+  /if \(holdsAHand && !stack\) \{/.test(resolveSource) ? "yes" : "no", "yes");
 /*
  * **And the `no` is said out loud.**  **[FIXED 2026-11-23]**
  *
@@ -2166,6 +2207,19 @@ check("and a creature with no pile to put one in is told so",
 check("and so is one with no fate deck to draw an injury from",
   /has no fate deck `\s*\n\s*\+ `to draw an injury from/.test(resolveSource) ? "yes" : "no",
   "yes");
+/*
+ * **The injury draw is not behind the Wound landing.**  **[FIXED 2026-11-26]**
+ *
+ * It used to sit after an early `return false`, which tied the one permanent consequence in the
+ * game to a card arriving. Refusing an NPC's Wound would then have taken the injury draw with it
+ * -- and a dropped goblin drawing for its injury is a thing a table watched working on 2026-11-23.
+ * core-rules 8 gives *drop to 0* as the trigger for both, separately: a figure that has nowhere to
+ * hold a dead card still fell over. One `return false` left in the routine, for no target at all.
+ */
+check("ways out of the Wound routine before the injury gate",
+  (woundBody.match(/return false;/g) ?? []).length, 1);
+check("and it reports whether a Wound landed, not whether the figure fell",
+  /return !!stack;/.test(woundBody) ? "yes" : "no", "yes");
 /* One Wound per blow: the rule says *you gain 1 Wound when* and then lists two triggers. */
 check("a blow that both drops you and deals five gives one Wound",
   /if \(dropped \|\| dealt >= CARDRPG\.defaults\.woundAt\) \{/.test(resolveSource)

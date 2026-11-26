@@ -7008,12 +7008,102 @@ async function probes(page) {
   });
 
   /*
+   * **One goblin's death does not wound the whole kind.**  **[FIXED 2026-11-26]**
+   *
+   * Reported from a table as *Wound cards should only be added to individual decks, all goblins
+   * should not be wounded when one dies*, and **caused by the probe above**. core-rules 8 decided
+   * on 2026-11-07 that an NPC cannot be wounded, and the guard it described was this routine
+   * asking for the target's own action discard and stopping if there was none. That guard leaned
+   * on an accident: an NPC had no discard **because nothing had ever built one**. Nineteen days
+   * later the probe above made building them the fix for something else, and from that moment a
+   * dropped goblin had somewhere to put a Wound -- the pile its whole **kind** reshuffles into its
+   * intent deck. core-rules 3 draws intent one card per type, so one goblin's death became a dead
+   * round for every goblin of that kind.
+   *
+   * **Two goblins, by construction**, because one creature cannot show this. The twin is a copy of
+   * a real one, so it shares every stack with the original the way five goblins on a board do --
+   * which is first measured and then relied on. Then it is dropped, and the question is asked of
+   * the pile the OTHER one draws from.
+   *
+   * **And the hero in the same breath, because the answer has to differ.** A rule that refuses
+   * everybody is not this rule. The same call, the two kinds of figure, and the difference is a
+   * hand: every cost a Wound has is a hand slot and the refill after it, and a creature has no
+   * hand -- it has an intent pile holding one card for its whole kind.
+   *
+   * **The injury draw is asked for separately**, because it used to sit behind the Wound landing
+   * and refusing the Wound would have taken it with it. A figure with nowhere to hold a dead card
+   * still fell over.
+   */
+  await probe("one goblin's death does not wound the whole kind", async () => {
+    await settle(page);
+    const out = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      const woundsIn = stack => [...(stack?.cards ?? [])].filter(c => c.type === "wound").length;
+
+      const beast = game.actors.find(a => a.type === "npc" && a.system.decks?.actionDiscard);
+      const data = beast.toObject();
+      delete data._id;
+      data.name = "Probe Second Goblin";
+      const twin = await Actor.create(data);
+      /* The premise, measured rather than assumed: the two of them draw out of one pile. */
+      const shared = twin.system.decks?.actionDiscard === beast.system.decks?.actionDiscard;
+      const pile = LIVE.deckOf(beast, "actionDiscard");
+
+      const before = woundsIn(pile);
+      const msgs = game.messages.size;
+      await twin.update({ "system.health.value": 0 });
+      const took = await LIVE.resolveWound(twin, { reason: LIVE.DROPPED });
+      const after = woundsIn(pile);
+      const said = game.messages.contents.slice(msgs)
+        .map(m => String(m.content).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim())
+        .join(" || ");
+      await twin.delete();
+
+      /*
+       * And the hero, who has one. Only the cards this probe put there are taken back out: a
+       * Wound left in the discard is a dead card every later refill deals into a hand, and that
+       * is the shape of three probe-hygiene faults this harness has already paid for.
+       */
+      const heroPile = LIVE.deckOf(hero, "actionDiscard");
+      const was = new Set([...heroPile.cards].map(c => c.id));
+      const heroBefore = woundsIn(heroPile);
+      const heroTook = await LIVE.resolveWound(hero, { reason: "a probe" });
+      const heroAfter = woundsIn(heroPile);
+      const mine = [...heroPile.cards].filter(c => !was.has(c.id)).map(c => c.id);
+      if (mine.length) await heroPile.deleteEmbeddedDocuments("Card", mine);
+
+      return { shared, before, after, took, said, heroTook,
+        gained: heroAfter - heroBefore, left: woundsIn(heroPile) };
+    });
+    return [
+      ["the two creatures draw out of one pile", out.shared, true],
+      /* The whole report, in one row: drop one and count the other's. */
+      ["Wounds in the pile the kind shares", `${out.before} then ${out.after}`, "0 then 0"],
+      ["and the routine says no Wound was placed", out.took, false],
+      /* Silent, not apologetic: a line here would be a rules lecture on every goblin death. */
+      ["and nothing in chat asks for one", /should take a Wound/.test(out.said), false],
+      /* The consequence that is NOT the Wound, which used to sit behind it. */
+      ["but it still drew for the injury", /Injury draw/.test(out.said), true],
+      ["and said the creature fell", /fell/.test(out.said), true],
+      /* The other answer, from the same call. */
+      ["a figure with a hand still takes one", out.gained, 1],
+      ["and the routine says so", out.heroTook, true],
+      ["and this probe leaves none behind", out.left, 0]
+    ];
+  });
+
+  /*
    * **And one that cannot be wired says what did not happen.**  **[FIXED 2026-11-23]**
    *
    * The repair above fixes creatures made from today on; a world already holding one is not
    * reached by it. Both guards returned in silence -- no Wound, no injury draw, no line -- which
-   * is the worst answer this moment has, because the blow landed and the Health went down. A
-   * creature whose stacks are missing now says so and names the cure.
+   * is the worst answer this moment has, because the blow landed and the Health went down.
+   *
+   * **[CHANGED 2026-11-26]** Half of what this probe used to measure was the defect above: it
+   * asserted that a deckless *creature* was told there was nowhere to put a Wound, and that line
+   * was the engine instructing a GM to go and cause the shared-deck wound core-rules 8 forbids.
+   * A creature is never wounded, so there is nothing to report about one. What is still missing
+   * for a creature with no stacks is the **injury draw**, and that is what it says now.
    */
   await probe("and a creature with no stacks at all says what it could not do", async () => {
     await settle(page);
@@ -7039,10 +7129,51 @@ async function probes(page) {
       return lines.join(" || ");
     });
     return [
-      ["it says there is nowhere to put a Wound", /no discard pile to put one in/.test(said), true],
+      ["it says there was no fate deck to draw an injury from",
+        /no fate deck to draw an injury from/.test(said), true],
       ["and names the cure rather than the symptom", /never wired up/.test(said), true],
       /* And not nothing, which is what it said before. */
-      ["and it is not silent", said.length > 0, true]
+      ["and it is not silent", said.length > 0, true],
+      /* And not the line that used to be here, which asked a GM to cause the defect above. */
+      ["and asks nobody to give it a pile for a Wound",
+        /no discard pile to put one in/.test(said), false]
+    ];
+  });
+
+  /*
+   * **The figure that line IS for.**  **[BUILT 2026-11-26]**
+   *
+   * 2026-11-23 added it because a dropped figure silently took no Wound, and that reason still
+   * holds for a character: a hand is where a Wound is a cost, so a character with no discard pile
+   * has a real wiring fault and nothing else would ever say so. Narrowing the guard to figures
+   * with a hand could have quietly taken this with it, and nothing offline can tell the two
+   * branches apart -- both are one `if` in the same routine.
+   *
+   * The pile is taken away and given back in a `finally`, because a hero left without a discard
+   * pile is a cascade of thirty checks in the probes downstream rather than a failure here.
+   */
+  await probe("and a character with no discard pile is still told", async () => {
+    await settle(page);
+    const out = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      const had = hero.system.decks.actionDiscard;
+      const msgs = game.messages.size;
+      try {
+        await hero.update({ "system.decks.actionDiscard": null });
+        await LIVE.resolveWound(hero, { reason: "a probe" });
+      } finally {
+        await hero.update({ "system.decks.actionDiscard": had });
+      }
+      const said = game.messages.contents.slice(msgs)
+        .map(m => String(m.content).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim())
+        .join(" || ");
+      return { said, back: hero.system.decks.actionDiscard === had };
+    });
+    return [
+      ["it says there is nowhere to put a Wound",
+        /no discard pile to put one in/.test(out.said), true],
+      ["and names the cure rather than the symptom", /never wired up/.test(out.said), true],
+      ["and the pile is given back", out.back, true]
     ];
   });
 

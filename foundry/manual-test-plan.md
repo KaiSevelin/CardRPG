@@ -743,10 +743,16 @@ a GM calls by name. So a dragged-in creature had no fate deck, which means its s
 decided by its passive score alone with **no card drawn and nothing in chat**, and dropping it to 0
 drew no injury. Reported as *post saves from npc to the chat*.
 
-**And if you find one that was already in the world before today**, drop it to 0 and read the chat:
-it should now say in words that there is no pile to put a Wound in and no fate deck to draw an
-injury from, instead of saying nothing at all. Re-saving the creature, or rebuilding world content
-from the system settings, gives it both.
+**And if you find one that was already in the world before today**, drop it to 0 and read the
+chat: it should now say in words that there is no fate deck to draw an injury from, instead of
+saying nothing at all. Re-saving the creature, or rebuilding world content from the system
+settings, gives it one.
+
+> **[CHANGED 2026-11-26]** This step used to expect a second line, about there being no pile to
+> put a **Wound** in. There is no such line for a creature any more, and there should never have
+> been: a creature is not wounded at all (2g.6 below). Asking a GM to go and give a goblin a pile
+> for a Wound was the engine instructing them to cause the defect 2g.6 is about. A **character**
+> with no discard pile still gets that line, which is the figure it was always for.
 
 ## 2f.1 A caster can find their spells  **[2026-11-24]**
 
@@ -888,6 +894,40 @@ anyway.* Then stand next to it and Strike again: **no note**, because there is n
 whatever the table has agreed. What changed is that the **GM** is now told, in the log, after the
 fact. Before today only the player clicking was warned, and the person who has to adjudicate it saw
 a clean kill.
+
+## 2g.6 One goblin dies and the others are fine  **[2026-11-26]**
+
+**Do.** Put **two goblins of the same kind** on the scene and start a fight. Drop one of them to 0.
+Then let the round turn over and look at what the goblins intend to do next.
+
+**Expect.** The dropped goblin **falls and draws for its injury** — a fate reveal and a chat line,
+exactly as before. What must **not** happen is a **Wound** card appearing anywhere: not in the
+goblins' discard, not in their intent deck, and not as a chat line asking for one. Open the
+goblins' **Discard** from the tray and count: no Wound in it. Keep playing for a few rounds and the
+intent that comes up is always a plan — never a dead card.
+
+**Then do the same to a character.** Drop a hero to 0: they take a **Wound** into their action
+discard, the way they always have, and it comes back into their hand on a Catch Breath. Same call
+in the engine, different answer, and the difference is that a hero has a **hand**.
+
+**Why.** Reported as *Wound cards should only be added to individual decks, all goblins should not
+be wounded when one dies* — and the rule being asked for is one core-rules decided on 2026-11-07:
+an NPC cannot be wounded. Intent is drawn **one card per type**, *one for all the goblins*, so a
+creature's deck belongs to its species while a Wound belongs to an individual. A Wound in that pile
+is reshuffled into the deck every goblin of that kind draws its plan from, so hurting one goblin
+would have cost the whole kind a round, over and over, for the rest of the fight.
+
+**It broke by being fixed somewhere else.** The old guard was that a creature had no discard pile
+to put a Wound in — and it had none because nothing had ever built one, not because anything
+checked. 2e.4 above is the day that was fixed on purpose, so that a creature off the compendium
+shelf could take a saving throw and an injury draw at all. From that day every creature had a pile,
+and the Wound went into it. The guard now asks whether the figure has a **hand**, which is the
+actual reason and cannot quietly stop being true.
+
+**A boss is refused too**, even one with stacks nobody else shares. A dead card in a five-card hand
+costs you a breath; a dead card in an intent deck costs a figure that draws one card a round for
+its whole kind an entire round. **Confusion** is the card for that, and it is deliberately not a
+Wound: what it corrupts is the type's *plan*, which is a thing a species really does share.
 
 ---
 
