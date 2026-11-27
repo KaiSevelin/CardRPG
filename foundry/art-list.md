@@ -1,6 +1,6 @@
 # Art list
 
-**818 pieces**, of which **790** are drawn and **28** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**828 pieces**, of which **790** are drawn and **38** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -51,7 +51,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 807 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 817 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **11 pieces**, 11 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -112,6 +112,25 @@ The other half of a first session, and the half that was on no shelf at all unti
 | ✓ | **Quick Step** | Move 3 · / Move 2 | `cards/shade-starter/quick-step.webp` |
 | ✓ | **Shed the Blow** | Block 2 · / Move 2 | `cards/shade-starter/shed-the-blow.webp` |
 | ✓ | **Slip In** | Move 2, Strike · / Move 1 | `cards/shade-starter/slip-in.webp` |
+
+## undefined
+
+undefined
+
+**10 pieces**. Suggested path: `cardrpg/art/cards/caster-starter/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+|   | **Back Away** | Move 3 · / Move 2 | `cards/caster-starter/back-away.webp` |
+|   | **Hand and Word** | Cast · / Ready the wand out, or away so both hands are free | `cards/caster-starter/hand-and-word.webp` |
+|   | **Open the Book** | Cast · / Move 1 | `cards/caster-starter/open-the-book.webp` |
+|   | **Step and Word** | Move 2, Cast · / Move 1 | `cards/caster-starter/step-and-word.webp` |
+|   | **The Crooked Word** | range 3 Off Balance (1) · / Ready | `cards/caster-starter/the-crooked-word.webp` |
+|   | **The Long Word** | Cast +2 · / Move 1 | `cards/caster-starter/the-long-word.webp` |
+|   | **The Second Breath** | Heal 2 · / Use | `cards/caster-starter/the-second-breath.webp` |
+|   | **The Sharp Word** | Cast +1 · / Move 1 | `cards/caster-starter/the-sharp-word.webp` |
+|   | **Turn the Blow** | Block 2 · / Move 1 | `cards/caster-starter/turn-the-blow.webp` |
+|   | **Wand Work** | Use · / Ready | `cards/caster-starter/wand-work.webp` |
 
 ## The common pool
 

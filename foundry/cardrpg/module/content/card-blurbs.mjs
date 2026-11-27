@@ -38,6 +38,18 @@ export const CARD_BLURBS = {
   "Light Fingers": "Use it without being seen to use it.",
   "Bind the Wound": "Press the cloth hard and keep moving.",
   "Jeer": "A word in the right place, and they lose the thread of what they were doing.",
+
+  /* --- the starter caster -------------------------------------------------- */
+  "Open the Book": "No gesture worth watching. The page, the breath, and the thing happens.",
+  "The Sharp Word": "The same words said properly, with the wand doing the arguing.",
+  "Step and Word": "Two steps out of reach first, because the words take a moment.",
+  "Turn the Blow": "A ward the width of a hand, held exactly where the blow was going.",
+  "Back Away": "Distance is the whole defence, and it is cheaper than a shield.",
+  "Hand and Word": "Speak with one hand and sort out the other while you do it.",
+  "Wand Work": "The stopper comes out without the words stopping.",
+  "The Second Breath": "Borrow against tomorrow and keep standing today.",
+  "The Crooked Word": "One syllable at their feet, and the ground stops agreeing with them.",
+  "The Long Word": "The long form, which costs you a card you were holding for something else.",
   "Off Hand": "The second blade comes out and goes to work.",
 
   /* --- the common pool ----------------------------------------------------- */

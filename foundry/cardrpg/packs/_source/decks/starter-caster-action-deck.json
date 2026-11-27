@@ -1,0 +1,633 @@
+{
+  "_id": "OpNUWDsD7AXd4uuf",
+  "_key": "!cards!OpNUWDsD7AXd4uuf",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Starter Caster — Action Deck",
+  "type": "deck",
+  "img": "systems/cardrpg/art/backs/action.webp",
+  "cards": [
+    {
+      "_id": "FQcpblAmApj6YNua",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.FQcpblAmApj6YNua",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 100,
+      "name": "Open the Book",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Open the Book",
+          "img": "systems/cardrpg/art/cards/caster-starter/open-the-book.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "j2Wid9c0i5hMHkZQ",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.j2Wid9c0i5hMHkZQ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 200,
+      "name": "Open the Book",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Open the Book",
+          "img": "systems/cardrpg/art/cards/caster-starter/open-the-book.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "cZ8Nv58QRwv6bym6",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.cZ8Nv58QRwv6bym6",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 300,
+      "name": "Open the Book",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Open the Book",
+          "img": "systems/cardrpg/art/cards/caster-starter/open-the-book.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "jyNBZAPAMzZN3zoY",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.jyNBZAPAMzZN3zoY",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 400,
+      "name": "The Sharp Word",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Sharp Word",
+          "img": "systems/cardrpg/art/cards/caster-starter/the-sharp-word.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast",
+            "mod": 1,
+            "requires": {
+              "tag": "arcane"
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "QmdoNzEyVFA2UFgP",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.QmdoNzEyVFA2UFgP",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 500,
+      "name": "The Sharp Word",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Sharp Word",
+          "img": "systems/cardrpg/art/cards/caster-starter/the-sharp-word.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast",
+            "mod": 1,
+            "requires": {
+              "tag": "arcane"
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "sAHBrNBYgt8cSgzw",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.sAHBrNBYgt8cSgzw",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 600,
+      "name": "Step and Word",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Step and Word",
+          "img": "systems/cardrpg/art/cards/caster-starter/step-and-word.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 2
+          },
+          {
+            "verb": "cast"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "ABrgw5xHeSMwuXCg",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.ABrgw5xHeSMwuXCg",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 700,
+      "name": "Turn the Blow",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Turn the Blow",
+          "img": "systems/cardrpg/art/cards/caster-starter/turn-the-blow.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "block",
+            "param": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "use",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "H7em0tezpS9PyHpk",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.H7em0tezpS9PyHpk",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 800,
+      "name": "Turn the Blow",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Turn the Blow",
+          "img": "systems/cardrpg/art/cards/caster-starter/turn-the-blow.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "block",
+            "param": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "use",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "PIPBKKsDhBmQ5sAN",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.PIPBKKsDhBmQ5sAN",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 900,
+      "name": "Back Away",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Back Away",
+          "img": "systems/cardrpg/art/cards/caster-starter/back-away.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 3
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 2
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "8QNcS9HVhSH6n6WV",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.8QNcS9HVhSH6n6WV",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1000,
+      "name": "Back Away",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Back Away",
+          "img": "systems/cardrpg/art/cards/caster-starter/back-away.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 3
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 2
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "EopORiIPdBFTHlPg",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.EopORiIPdBFTHlPg",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1100,
+      "name": "Hand and Word",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Hand and Word",
+          "img": "systems/cardrpg/art/cards/caster-starter/hand-and-word.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready",
+            "text": "the wand out, or away so both hands are free"
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "FaQWhqFGmkWCqh2A",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.FaQWhqFGmkWCqh2A",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1200,
+      "name": "Hand and Word",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Hand and Word",
+          "img": "systems/cardrpg/art/cards/caster-starter/hand-and-word.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready",
+            "text": "the wand out, or away so both hands are free"
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "wlhjRpPoDTH6SG5Y",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.wlhjRpPoDTH6SG5Y",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1300,
+      "name": "Wand Work",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Wand Work",
+          "img": "systems/cardrpg/art/cards/caster-starter/wand-work.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "use"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "use",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "0eCfO6EIzzW2pncV",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.0eCfO6EIzzW2pncV",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1400,
+      "name": "The Second Breath",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Second Breath",
+          "img": "systems/cardrpg/art/cards/caster-starter/the-second-breath.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "heal",
+            "param": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "use"
+          }
+        ],
+        "reaction": "",
+        "costs": {
+          "primary": {
+            "spent": true
+          }
+        }
+      }
+    },
+    {
+      "_id": "AQ0J41xGrrQeGP88",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.AQ0J41xGrrQeGP88",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1500,
+      "name": "The Crooked Word",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Crooked Word",
+          "img": "systems/cardrpg/art/cards/caster-starter/the-crooked-word.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "condition": "offBalance",
+            "duration": 1,
+            "range": 3,
+            "resist": "agility",
+            "dc": 5
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "1xkFDw5Pi9jOjHNE",
+      "_key": "!cards.cards!OpNUWDsD7AXd4uuf.1xkFDw5Pi9jOjHNE",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1600,
+      "name": "The Long Word",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Long Word",
+          "img": "systems/cardrpg/art/cards/caster-starter/the-long-word.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "cast",
+            "mod": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {
+          "primary": {
+            "strain": 1
+          }
+        }
+      }
+    }
+  ]
+}

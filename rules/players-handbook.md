@@ -735,9 +735,9 @@ casting Ways, because they are printed on a prepared spell rather than on a card
 | **Brace** | you are hit | Reduce the damage, barely. Any card whose own reaction cannot fire is still worth this much, which is deliberately too little to be worth spending a good card on. | any card that cannot answer otherwise |
 | **Parry** | you are hit | Turn the blow with what you are already holding. Reduces the damage by your weapon's own Defend value, so a sword parries better than a knife. | 11 cards |
 | **Block** | you are hit | The shield comes up. Reduces the damage by the shield's Defend value and one more for being a shield, which is the best answer to a hit in the game. | 6 cards |
-| **Use** | you are hit | Something off your belt, drunk or broken open as the blow lands. Heals you by the item's Use value, and the item is spent doing it. | 4 cards |
+| **Use** | you are hit | Something off your belt, drunk or broken open as the blow lands. Heals you by the item's Use value, and the item is spent doing it. | 7 cards |
 | **Deflect** | you are hit | You move the attacker's arm, and one of their own takes the blow instead. It has to be a serious one, and it has to be somebody standing next to them. | a prepared spell |
-| **Sidestep** | an enemy ends its move next to you | Step out of reach as they arrive, by the number the card prints. The attack that was walking toward you never arrives. | 13 cards |
+| **Sidestep** | an enemy ends its move next to you | Step out of reach as they arrive, by the number the card prints. The attack that was walking toward you never arrives. | 18 cards |
 | **Counter** | an enemy ends its move next to you | They walked onto your point. A free Strike at the enemy that just arrived, for your weapon's full value, and it is the only reaction in the game that deals damage. | 1 card |
 | **Heckle** | an enemy ends its move next to you | A word, at the moment they close. The enemy that just arrived draws fate with disadvantage, so the attack it came to make is already spoiled. | 1 card |
 | **Bodyguard** | an ally within reach is hit | The blow meant for your friend arrives at you instead. It is settled before any other answer, because stepping in front of somebody has to happen first. | 2 cards |

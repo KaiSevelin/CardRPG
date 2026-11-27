@@ -1,6 +1,6 @@
 # Art prompts
 
-**818 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**828 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 807 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 817 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -605,6 +605,216 @@ SUBJECT. "Slip In" — Move 2, Strike · / Move 1
 Draw ground covered -- weight forward, the last footfall still behind; the instant a blow lands, the weapon already through -- never wound up, never posing.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Levantine appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+## undefined
+
+**10 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/caster-starter/`.
+
+
+
+<details><summary><b>The capsule — paste this once, at the top of a fresh chat</b></summary>
+
+```text
+A single illustration for a playing card in a tabletop fantasy RPG.
+
+THIS GROUP. 
+
+FORMAT.
+- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
+- Full bleed, edge to edge. No border, no frame, no card template, no rounded corners, no drop
+  shadow, no mat, no margin.
+- ABSOLUTELY NO TEXT of any kind: no letters, numerals, runes, glyphs, signature, watermark, or
+  anything that reads as writing. Not on a shield, not on a banner, not in the background.
+
+COMPOSITION. The card prints its own name and rules text over this image in opaque panels, so the
+layout is fixed and has been measured:
+- Crop in **close**: one subject, filling the frame from side to side.
+  Never a whole figure standing in a landscape, never an object laid out on a table.
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
+  no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
+  it is a narrow strip rather than an empty upper third.
+- **All of the dark lives in the band from an eighth of the height down to just under halfway**,
+  and it begins immediately under the bare strip with nothing empty between the two. The
+  near-black contour, the deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
+  the picture actually happens.
+- **Below the halfway line the picture goes pale** and stays pale: the wash thins out, the ground
+  falls away to bare paper, and there is no dark mass down there at all. The card prints its rules
+  across that half, so that half has to be the quiet one.
+- Together those two make the test: **the picture must still read with its bottom half covered.**
+  Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
+- ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
+  card is drawn at in this game.
+
+PALETTE.
+- Line and darks: **#1b1714**
+- Paper and lights: **#f4efe6**
+- Mid tone: **#c9bda8**
+- One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
+  one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
+STYLE.
+Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
+with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
+light falls. Loose and economical -- a few strokes doing the work of many. Visible bleed and
+granulation where a wash pools, dry-brush where it runs out.
+
+Three things this style does wrong at card size, and must not do here:
+- **Never neutral grey.** Every wash is warm: sepia, bistre, burnt earth. If a passage reads as
+  grey it is wrong.
+- **Never soft all over.** The contour is near-black #1b1714 and holds a hard edge. Only the
+  washes are soft. A picture with no true black in it has failed.
+- **Never evenly toned.** The darkest mass must sit directly against untouched paper, so the
+  subject separates from the ground in one glance at thumbnail size.
+
+Use the full range, both ends of it:
+- The lightest passage is **bare #f4efe6 paper, near white**, and there is a lot of it.
+- The darkest line is **near-black #1b1714**, and the two touch each other somewhere.
+- A picture whose every value sits between those ends is the failure above, however warm and
+  however well drawn. Mid tone is the background, not the picture.
+```
+
+</details>
+
+### Back Away
+
+File: `cards/caster-starter/back-away.webp`
+
+```text
+SUBJECT. "Back Away" — Move 3 · / Move 2
+
+Draw ground covered -- weight forward, the last footfall still behind.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Southeast Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Hand and Word
+
+File: `cards/caster-starter/hand-and-word.webp`
+
+```text
+SUBJECT. "Hand and Word" — Cast · / Ready the wand out, or away so both hands are free
+
+Draw a shape held in the air between the hands, half-finished and still forming; a weapon coming to hand, caught between carried and held.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Levantine appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Open the Book
+
+File: `cards/caster-starter/open-the-book.webp`
+
+```text
+SUBJECT. "Open the Book" — Cast · / Move 1
+
+Draw a shape held in the air between the hands, half-finished and still forming.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Nordic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Step and Word
+
+File: `cards/caster-starter/step-and-word.webp`
+
+```text
+SUBJECT. "Step and Word" — Move 2, Cast · / Move 1
+
+Draw ground covered -- weight forward, the last footfall still behind; a shape held in the air between the hands, half-finished and still forming.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Nordic appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Crooked Word
+
+File: `cards/caster-starter/the-crooked-word.webp`
+
+```text
+SUBJECT. "The Crooked Word" — range 3 Off Balance (1) · / Ready
+
+Draw a weapon coming to hand, caught between carried and held; weight in the wrong place.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of East Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Long Word
+
+File: `cards/caster-starter/the-long-word.webp`
+
+```text
+SUBJECT. "The Long Word" — Cast +2 · / Move 1
+
+Draw the shape forming between the hands, thrown with the whole body, nothing held back.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Levantine appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Second Breath
+
+File: `cards/caster-starter/the-second-breath.webp`
+
+```text
+SUBJECT. "The Second Breath" — Heal 2 · / Use
+
+Draw breath coming back -- a chest filling again, a hand steady that was not steady. No wound, no blood and no bandage in the frame; a hand working an object, the object mid-use rather than held up to be seen.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Slavic appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Sharp Word
+
+File: `cards/caster-starter/the-sharp-word.webp`
+
+```text
+SUBJECT. "The Sharp Word" — Cast +1 · / Move 1
+
+Draw the shape forming between the hands, the one that found its moment.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of North African appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Turn the Blow
+
+File: `cards/caster-starter/turn-the-blow.webp`
+
+```text
+SUBJECT. "Turn the Blow" — Block 2 · / Move 1
+
+Draw a blow stopped flat, its force going sideways.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Caribbean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Wand Work
+
+File: `cards/caster-starter/wand-work.webp`
+
+```text
+SUBJECT. "Wand Work" — Use · / Ready
+
+Draw a hand working an object, the object mid-use rather than held up to be seen; a weapon coming to hand, caught between carried and held.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of West African appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## The common pool
@@ -12617,24 +12827,25 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**309 prompts in 39 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**318 prompts in 42 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
-**10 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
+**11 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
 Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and regenerating. The row shrinks or disappears when it is done.
 
 | Pieces | Bare | They share | Keys |
 |---|---|---|---|
+| **4** | 3 | ground covered -- weight forward, the last footfall still behind | `cards/starter/advance` `cards/shade-starter/quick-step` `cards/caster-starter/back-away` `signatures/shade/over-and-past` |
+| **3** | 3 | a hand working an object, the object mid-use rather than held up to be seen; a weapon coming to hand, caught between carried and held | `cards/starter/quick-hands` `cards/shade-starter/light-fingers` `cards/caster-starter/wand-work` |
 | **18** | 2 | a glass vial, stoppered, with less in it than there was | `items/bottle-of-borrowed-pain` `items/brewers-reserve` `items/draught-of-lead` `items/draught-of-second-breath` `items/draught-of-the-hollow` …+13 |
 | **13** | 2 | one round out of the bundle, its point drawn sharply | `items/blunt-head` `items/bodkin-points` `items/chalked-shaft` `items/frost-dipped-bolt` `items/grapnel-bolt` …+8 |
 | **8** | 2 | the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/strike` `cards/shade-starter/knife-work` `cards/npc/rattle` `cards/strength/nothing-held-back` `signatures/shade/double-or-nothing` …+3 |
 | **7** | 2 | an object with more inside it than its size allows | `features/arcane-focus` `items/focus-pendant` `items/holy-symbol` `items/pilgrims-token` `items/reliquary-band` …+2 |
 | **6** | 2 | used up in the open: cloth, wax or powder, half gone | `items/antidote` `items/cleansing-draught` `items/firepot` `items/flask-of-ink` `items/flask-of-oil` …+1 |
 | **4** | 2 | a tool worn exactly where a hand goes and nowhere else | `items/climbing-rope` `items/hunting-traps` `items/lantern` `items/repair-kit` |
-| **3** | 2 | ground covered -- weight forward, the last footfall still behind | `cards/starter/advance` `cards/shade-starter/quick-step` `signatures/shade/over-and-past` |
 | **3** | 2 | ground covered -- weight forward, the last footfall still behind; the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/lunge` `cards/shade-starter/slip-in` `signatures/strength/the-lance` |
 | **3** | 2 | an edge, worn and sharpened back more than once | `items/arming-sword` `items/trident` `items/npc/goblin-spear` |
-| **2** | 2 | a hand working an object, the object mid-use rather than held up to be seen; a weapon coming to hand, caught between carried and held | `cards/starter/quick-hands` `cards/shade-starter/light-fingers` |
+| **2** | 2 | a blow stopped flat, its force going sideways | `cards/shade-starter/shed-the-blow` `cards/caster-starter/turn-the-blow` |
 | **70** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `cards/fate/critical` `cards/fate/minus-one` `cards/fate/minus-two` `cards/fate/miss` `cards/fate/plus-one` …+65 |
 | **9** | 1 | set down on nothing, carried a long way among other things | `items/beggars-bowl` `items/cairn-stone` `items/cracked-spyglass` `items/locked-casket` `items/loose-cobble` …+4 |
 | **7** | 1 | an object that means nothing except in trained hands | `features/good-aim` `features/good-name` `features/hard-hands` `features/light-step` `features/quick-eye` …+2 |
@@ -12642,8 +12853,10 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **5** | 1 | made well, by somebody who signed nothing | `items/fine-longsword` `items/marching-boots` `items/masterwork-crossbow` `items/proofed-mail` `items/smiths-hammer` |
 | **4** | 1 | the weapon drawn and held at tension | `items/crossbow` `items/matchlock-pistol` `items/shortbow` `items/npc/goblin-shortbow` |
 | **4** | 1 | a thing that says who somebody is before they speak | `items/fine-clothes` `items/gaming-set` `items/signet-ring` `items/travelling-cloak` |
+| **3** | 1 | the shape forming between the hands, thrown with the whole body, nothing held back | `cards/caster-starter/the-long-word` `cards/mind/the-last-word` `cards/mind/the-long-formula` |
 | **3** | 1 | worn unevenly, and the wear is the subject | `items/boots-of-the-long-step` `items/hollow-boots` `items/pilgrims-shoes` |
 | **2** | 1 | pulled toward something against the will | `cards/starter/taunt` `signatures/strength/play-to-the-crowd` |
+| **2** | 1 | a shape held in the air between the hands, half-finished and still forming | `cards/caster-starter/open-the-book` `cards/common/say-the-words` |
 | **2** | 1 | a weapon coming to hand, caught between carried and held; the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/common/both-hands` `cards/strength/the-whole-arc` |
 | **26** | — | the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol | `conditions/blessed` `conditions/burdened` `conditions/burning` `conditions/compelled` `conditions/cursed` …+21 |
 | **15** | — | the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all | `nodes/origin/echterhof-born` `nodes/origin/furnace-stock` `nodes/origin/hyrlock` `nodes/origin/kelp-bay` `nodes/origin/regensburg` …+10 |
@@ -12662,7 +12875,7 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **3** | — | shaped to a skull, the hollow drawn most carefully | `items/crown-of-the-quiet-mind` `items/far-sight-monocle` `items/helm-of-the-watchful` |
 | **3** | — | hung at the hip, the strap cut off at the frame | `items/drowned-bell` `items/marked-arrowhead` `items/quartermasters-belt` |
 | **3** | — | armour as worn metal and strap, not as a costume | `items/leather-armor` `items/light-helm` `items/mail-shirt` |
-| **2** | — | the shape forming between the hands, thrown with the whole body, nothing held back | `cards/mind/the-last-word` `cards/mind/the-long-formula` |
+| **2** | — | a shape held in the air between the hands, half-finished and still forming; a weapon coming to hand, caught between carried and held | `cards/caster-starter/hand-and-word` `cards/faith/answer-the-call` |
 | **2** | — | scribed and calibrated, unreadable to anybody not taught it | `items/fire-wand` `items/staff-of-healing` |
 
 ## Directions that match no piece

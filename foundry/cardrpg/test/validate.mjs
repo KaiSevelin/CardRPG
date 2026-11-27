@@ -768,7 +768,14 @@ check("cards carrying Ready", content.WARRIOR_DECK.filter(c =>
  */
 const deckBudget = (deck) => {
   const t = {
-    cards: 0, designs: deck.length, strikeHalves: 0, movePrinted: 0, movePrimary: 0,
+    /*
+     * **`castHalves` beside `strikeHalves`, because the third chassis is the swap.**
+     * **[2026-11-27]** A caster deck with nine Cast halves and no Strikes would otherwise read as
+     * a deck nine attack halves short of its budget -- the field that was the attack count while
+     * every chassis attacked with a weapon has to become two fields and a sum the moment one does
+     * not. `attackHalves` below is the line the budget actually cares about.
+     */
+    cards: 0, designs: deck.length, strikeHalves: 0, castHalves: 0, movePrinted: 0, movePrimary: 0,
     readyCards: 0, spent: 0, strain: 0, heal: 0, conditions: 0, use: 0,
     reactionCopies: 0, reactionDesigns: 0, defensivePrimaries: 0
   };
@@ -784,6 +791,7 @@ const deckBudget = (deck) => {
     for (const [half, steps] of [["primary", primary], ["secondary", secondary]]) {
       for (const s of steps) {
         if (s.verb === "strike") t.strikeHalves += n;
+        if (s.verb === "cast") t.castHalves += n;
         if (s.verb === "move") {
           t.movePrinted += n * (s.param ?? 0);
           if (half === "primary") t.movePrimary += n * (s.param ?? 0);
@@ -798,15 +806,78 @@ const deckBudget = (deck) => {
 };
 const warriorBudget = deckBudget(content.WARRIOR_DECK);
 const shadeBudget = deckBudget(content.SHADE_DECK);
+const casterBudget = deckBudget(content.CASTER_DECK);
 check("Shade deck total cards", shadeBudget.cards, 16);
 check("Shade distinct designs", shadeBudget.designs, 10);
-/* The whole method in one line: name every field where the two decks differ. */
-check("budget fields where the two starter decks differ",
-  Object.keys(warriorBudget).filter(k => warriorBudget[k] !== shadeBudget[k]).join(", ")
-    || "none",
+check("Caster deck total cards", casterBudget.cards, 16);
+check("Caster distinct designs", casterBudget.designs, 10);
+/* The whole method in one line: name every field where a deck differs from the first one. */
+const differsFromWarrior = (other) =>
+  Object.keys(warriorBudget).filter(k => warriorBudget[k] !== other[k]).join(", ") || "none";
+check("budget fields where the Shade deck differs", differsFromWarrior(shadeBudget),
   "movePrinted");
 check("and the Warrior's printed Move against the Shade's",
   `${warriorBudget.movePrinted} vs ${shadeBudget.movePrinted}`, "21 vs 23");
+/*
+ * **The third chassis, and its three differences are the chassis.**  **[BUILT 2026-11-27]**
+ *
+ * The swap is two fields rather than one because the budget counts the attack verbs separately,
+ * and `strain` is the third: starter-cards.md has asked for a Strain card *in a caster deck* by
+ * name since the Warrior's sixteen were written. Everything else is the Warrior's number,
+ * including the printed Move -- 21 rather than the Shade's 23, because the two points Shade
+ * spends on secondaries are points a caster would rather not need.
+ */
+check("budget fields where the Caster deck differs", differsFromWarrior(casterBudget),
+  "strikeHalves, castHalves, strain");
+/*
+ * **And the sum of the two attack fields is the line that has to hold**, which is what makes the
+ * swap a swap rather than a discount: nine attack halves in sixteen cards, three times over. A
+ * caster deck one Cast short would pass the field check above and still be a worse deck for a
+ * reason nothing named.
+ */
+const attackHalves = (b) => b.strikeHalves + b.castHalves;
+check("attack halves in each starter deck",
+  [warriorBudget, shadeBudget, casterBudget].map(attackHalves).join(", "), "9, 9, 9");
+/* And the caster's are all Casts, which is the whole of what the chassis means. */
+check("and the Caster's are Casts rather than Strikes",
+  `${casterBudget.castHalves} cast, ${casterBudget.strikeHalves} strike`, "9 cast, 0 strike");
+/* The Strain, which is one card and is the only above-budget thing in the deck. */
+check("Strain in the starter decks",
+  [warriorBudget, shadeBudget, casterBudget].map(b => b.strain).join(", "), "0, 0, 1");
+check("and the card that carries it",
+  content.CASTER_DECK.filter(c => c.costs?.primary?.strain || c.costs?.secondary?.strain)
+    .map(c => c.name).join(", "), "The Long Word");
+/*
+ * **It keeps no attack on a secondary**, which is the one place this chassis departs from *hold
+ * the exception in common* -- and the departure is pinned rather than left to be noticed. way-cards
+ * 1.2 allows each starter deck exactly one (*Weapon Swap*, *Off Hand*), and a Cast there is a
+ * different object: swinging twice is tempo, casting twice spends **two prepared spells**, which
+ * is the thing 2026-11-26's ruling exists to stop. Stated in starter-cards.md.
+ */
+const attackOnSecondary = (deck) => deck.filter(c =>
+  (c.secondary ?? []).some(st => st.verb === "strike" || st.verb === "cast"))
+  .reduce((n, c) => n + (c.copies ?? 1), 0);
+check("attacks printed on a secondary, deck by deck",
+  [content.WARRIOR_DECK, content.SHADE_DECK, content.CASTER_DECK]
+    .map(attackOnSecondary).join(", "), "1, 1, 0");
+/*
+ * **And the deck's ✦ Cast halves have something to answer them.** A Cast half with no prepared
+ * spell and no implement in hand is a blocked half (hud-spec 3.12), so a chassis of nine of them
+ * is only playable if the game HAS an implement -- which is two items, and the one-handed one is
+ * what leaves a hand free to gesture. A deck whose whole attack verb had no equipment behind it
+ * would be the same defect as a verb no card could reach, one layer up.
+ */
+const implements_ = content.ITEMS.filter(i => i.verbs?.cast);
+check("items in the game that can Cast", implements_.map(i => i.name).sort().join(", "),
+  "Fire Wand, Staff of Healing");
+check("and the one that leaves a hand free to gesture",
+  implements_.filter(i => (i.hands ?? 2) === 1).map(i => i.name).join(", "), "Fire Wand");
+/* And the two designs that ask for one ask by the tag the catalogue actually writes. */
+check("Caster designs that need an arcane item",
+  content.CASTER_DECK.filter(c => [...(c.primary ?? []), ...(c.secondary ?? [])]
+    .some(st => st.requires?.tag === "arcane")).map(c => c.name).join(", "), "The Sharp Word");
+check("and the tag is one the items carry",
+  implements_.every(i => (i.tags ?? []).includes("arcane")) ? "yes" : "no", "yes");
 /*
  * **And the document's table is the content's table.** A second deck doubles the chance of the
  * failure this whole file exists against -- a rule written in prose that the code never agreed to --
@@ -825,6 +896,14 @@ check("the Shade deck's table matches the content",
   docDeck("Shade") || "(no rows parsed)", contentDeck(content.SHADE_DECK));
 check("and the Warrior's does too",
   docDeck("Warrior") || "(no rows parsed)", contentDeck(content.WARRIOR_DECK));
+check("and the Caster's",
+  docDeck("Caster") || "(no rows parsed)", contentDeck(content.CASTER_DECK));
+/* And the reason the third deck keeps no attack on a secondary is written down where a reader
+ * will meet it, rather than only in this file. `starterDoc` is read just above, which is why this
+ * sits here and not beside the count it belongs to: the TDZ trap this file has a rule about. */
+check("and the document says why the third is nought",
+  /twice in a turn spends .*two prepared spells/.test(starterDoc)
+    ? "yes" : "no", "yes");
 
 const fate = content.fateCards();
 check("fate deck size", fate.length, 20);
@@ -8435,7 +8514,7 @@ const artable = (await import("../module/art.mjs")).SHELVES.flatMap(s => s.list 
  * art, because a node wears the art of what it hands over; that is true of what the GRAPH
  * draws and false of what the PANE does, which shows a picture beside three paragraphs of
  * prose about a person. */
-check("pieces of content that take art", artable.length, 807);
+check("pieces of content that take art", artable.length, 817);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -8991,7 +9070,7 @@ const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.m
 /* Every piece the game can hand Foundry a path for, which is all of them: kept as the denominator
  * the three states below have to add up to, and no longer printed as progress. */
 check("pieces the game has a path for", artable.filter(e => artInLive(e)).length
-  + backs.filter(([k]) => backOfLive(k)).length, 818);
+  + backs.filter(([k]) => backOfLive(k)).length, 828);
 /*
  * **And every path the game hands Foundry names a file that is there.**
  *
@@ -9010,7 +9089,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 818);
+check("art paths the game would hand Foundry", artable.length + backs.length, 828);
 /*
  * **The brief's progress line used to be the total, and nobody noticed for months.**
  *
@@ -9124,7 +9203,7 @@ const ART_SLOTS = {
   "cards/harm": "face", "cards/ritual": "face",
   /* Both newly commissioned: the other starter deck, and the twist deck now that the
    * argument against drawing it has been withdrawn. Both are card faces like the rest. */
-  "cards/shade-starter": "face", "cards/twist": "face",
+  "cards/shade-starter": "face", "cards/caster-starter": "face", "cards/twist": "face",
   /* A card face like the rest of them, however little is drawn on it. */
   "cards/fate": "face", "cards/crit": "face",
   features: "item", items: "item", "items/npc": "item", "items/natural": "item",
@@ -9156,7 +9235,7 @@ const ART_SLOTS = {
 };
 const briefDirs = [...new Set([...artList.matchAll(/Suggested path: `cardrpg\/art\/(.+?)\/`/g)]
   .map(m => m[1]))];
-check("directories the brief commissions into", briefDirs.length, 34);
+check("directories the brief commissions into", briefDirs.length, 35);
 check("and every one of them has a slot",
   briefDirs.filter(d => !(d in ART_SLOTS)).join(", ") || "none", "none");
 /* And no slot is declared for a group that is not in the brief, or this list rots quietly. */
@@ -9331,7 +9410,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 807);
+check("briefs the check actually read", briefs.length, 817);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -9520,7 +9599,8 @@ check("directed pieces still sent the sentence they override",
  * reason is the same.
  */
 const everyActionCard = new Set();
-for (const list of ["WARRIOR_DECK", "SHADE_DECK", "COMMON_POOL", "STRENGTH_POOL", "SHADE_POOL",
+for (const list of ["WARRIOR_DECK", "SHADE_DECK", "CASTER_DECK", "COMMON_POOL", "STRENGTH_POOL",
+  "SHADE_POOL",
   /* And the two magical Ways' CARDS, which are a different list from their spells: `MIND_POOL`
    * beside `MIND_CARDS` is the pair, and only one of them holds anything with a half on it. */
   "MIND_CARDS", "FAITH_CARDS",
@@ -11695,7 +11775,7 @@ const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-
 /* 233: Blood Magic dropped its cast line with its refusal -- the rewrite put a stone basin in
  * the frame and nobody at all, and a line opening *if any bare skin shows* under a direction
  * saying there is no skin is the contradiction the refusal was made of. */
-check("cards, signatures and features given an assigned person", castLines.length, 255);
+check("cards, signatures and features given an assigned person", castLines.length, 265);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
@@ -11731,8 +11811,12 @@ check("western ancestries among them, which had nearly vanished",
   /* 61 of 179 since the critical deck joined the cast, against 58 of 172 before it: 34.1%
    * against 33.7%, which is the proportion holding rather than a seventh shelf of westerners.
    * The number this check is really about is that ratio. 60 of 178 once `find-the-gap` dropped
-   * its cast line -- see NO_PERSON in art-prompts.mjs, and the refusal it was added for. */
-  castLines.filter(m => EURO.has(m[2])).length, 83);
+   * its cast line -- see NO_PERSON in art-prompts.mjs, and the refusal it was added for.
+   *
+   * **86 of 265 with the caster deck's ten on the list [2026-11-27]: 32.5%, against 83 of 255,
+   * which is 32.5%.** Ten new cards cast three westerners, and the ratio did not move in the
+   * third decimal place -- which is the thing to watch rather than either number. */
+  castLines.filter(m => EURO.has(m[2])).length, 86);
 check("and every ancestry on the list is used somewhere",
   new Set(castLines.map(m => m[2])).size, 15);
 
@@ -11996,7 +12080,7 @@ check("and each one says what is not in the frame",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 807);
+check("file paths in the brief", rows.length, 817);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -12968,7 +13052,7 @@ const planned = packs.planDocuments();
 
 check("compendium packs", planned.length, 8);
 check("and what each one holds",
-  planned.map(p => `${p.name}:${p.docs.length}`).join(" "), "creatures:112 characters:1 items:187 features:23 spells:134 injuries:14 signatures:31 decks:15");
+  planned.map(p => `${p.name}:${p.docs.length}`).join(" "), "creatures:112 characters:1 items:187 features:23 spells:134 injuries:14 signatures:31 decks:17");
 /* Faults the generator records rather than throws: a filename collision silently drops a document,
  * so the build reports it and this refuses to pass with one outstanding. */
 check("faults the generator reported", planned[0].faults.join("; ") || "none", "none");
@@ -13012,8 +13096,8 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
  */
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
-check("documents the stamp sweep read", everyPackDoc.length, 517);
-check("and children beneath them", everyPackChild.length, 412);
+check("documents the stamp sweep read", everyPackDoc.length, 519);
+check("and children beneath them", everyPackChild.length, 444);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
     || d._stats?.systemId !== manifest.id
@@ -13048,7 +13132,7 @@ const packedFromContent = {
     .filter(s => !graph.SIGNATURES.some(g => g.kind === "spell" && g.name === s.name)).length,
   injuries: content.INJURIES.length,
   signatures: graph.SIGNATURES.filter(s => s.kind !== "card").length,
-  decks: 15
+  decks: 17
 };
 /*
  * And the features count as a literal beside the derivation. This check's own comment says why -- *a
@@ -13095,7 +13179,7 @@ check("pack sources that disagree with the content",
   stale.length ? `${stale.length}: ${stale.slice(0, 4).join(", ")}` : "none", "none");
 /* A comparison that read no files would report "none" for a repository with no packs at all. */
 check("documents the comparison actually read",
-  planned.reduce((n, p) => n + p.docs.length, 0), 517);
+  planned.reduce((n, p) => n + p.docs.length, 0), 519);
 
 /*
  * **An id is a promise.** A world that imports a creature keeps the pack's id, and so does every
@@ -13128,7 +13212,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 929);
+check("ids the rule actually read", everyId.size, 963);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);

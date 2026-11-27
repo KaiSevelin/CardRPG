@@ -410,6 +410,12 @@ export const SHELVES = [
    * rendering ten blank rows is what found it.
    */
   { key: "cards/shade-starter", list: content.SHADE_DECK },
+  /*
+   * **The third chassis, shelved on the day it was written.** The row above was found by a reader
+   * eighteen days after the deck it belongs to, because a deck that is not on a shelf is a deck
+   * the brief reports as complete. One line, at the same time as the content, is the whole lesson.
+   */
+  { key: "cards/caster-starter", list: content.CASTER_DECK },
   { key: "cards/common", list: content.COMMON_POOL },
   { key: "cards/npc", list: content.INTENTS },
   { key: "cards/shade", list: content.SHADE_POOL },

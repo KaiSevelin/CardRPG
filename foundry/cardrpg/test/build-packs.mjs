@@ -384,6 +384,23 @@ const PACK_PLAN = [
     docs: () => [
       { name: "Starter Warrior — Action Deck", back: "action",
         build: actionCardData, list: expand(content.WARRIOR_DECK, d => d) },
+      /*
+       * **The other two chassis, which no session could reach.**  **[FIXED 2026-11-27]**
+       *
+       * One starter deck was in this pack and three exist. The Shade deck has been content, a
+       * document table and (since a reader found it) an art shelf for twenty days, and `setup.mjs`
+       * deliberately does not deal it -- which left **no road at all** to a deck the rules
+       * describe: not dealt, not in a compendium, not draggable. core-rules 4 now says *a GM
+       * running a caster from level 1 hands out this deck in place of the Warrior's*, and that
+       * sentence is only true if the deck is somewhere they can pick it up.
+       *
+       * The setup routine still deals the Warrior. Choosing a chassis is character creation
+       * (core-rules 12) and a compendium is where a GM goes to choose.
+       */
+      { name: "Starter Shade — Action Deck", back: "action",
+        build: actionCardData, list: expand(content.SHADE_DECK, d => d) },
+      { name: "Starter Caster — Action Deck", back: "action",
+        build: actionCardData, list: expand(content.CASTER_DECK, d => d) },
       { name: "The Common Pool", back: "action", build: actionCardData,
         list: expand(content.COMMON_POOL, d => d) },
       { name: "Way of Shade — Pool", back: "action", build: actionCardData,

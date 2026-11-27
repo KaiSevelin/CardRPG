@@ -1,0 +1,625 @@
+{
+  "_id": "VhqVLJyPwDGUE5jJ",
+  "_key": "!cards!VhqVLJyPwDGUE5jJ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Starter Shade — Action Deck",
+  "type": "deck",
+  "img": "systems/cardrpg/art/backs/action.webp",
+  "cards": [
+    {
+      "_id": "RoGRaiNAgQnoRtBT",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.RoGRaiNAgQnoRtBT",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 100,
+      "name": "Knife Work",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Knife Work",
+          "img": "systems/cardrpg/art/cards/shade-starter/knife-work.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "parry",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "iqd7DdXAurC6n3UA",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.iqd7DdXAurC6n3UA",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 200,
+      "name": "Knife Work",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Knife Work",
+          "img": "systems/cardrpg/art/cards/shade-starter/knife-work.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "parry",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "YG2UB6Qf6GHeQsEC",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.YG2UB6Qf6GHeQsEC",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 300,
+      "name": "Knife Work",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Knife Work",
+          "img": "systems/cardrpg/art/cards/shade-starter/knife-work.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "parry",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "Z8EUzjvGdhxg48wG",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.Z8EUzjvGdhxg48wG",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 400,
+      "name": "Open Vein",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Open Vein",
+          "img": "systems/cardrpg/art/cards/shade-starter/open-vein.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "mod": 1,
+            "requires": {
+              "tag": "light"
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "ruXG2k50KhlyrEl7",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.ruXG2k50KhlyrEl7",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 500,
+      "name": "Open Vein",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Open Vein",
+          "img": "systems/cardrpg/art/cards/shade-starter/open-vein.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "mod": 1,
+            "requires": {
+              "tag": "light"
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "jGerHXieiC2qxsAV",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.jGerHXieiC2qxsAV",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 600,
+      "name": "Slip In",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Slip In",
+          "img": "systems/cardrpg/art/cards/shade-starter/slip-in.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 2
+          },
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "WjmGB4cuIytkgjQZ",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.WjmGB4cuIytkgjQZ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 700,
+      "name": "Shed the Blow",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Shed the Blow",
+          "img": "systems/cardrpg/art/cards/shade-starter/shed-the-blow.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "block",
+            "param": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 2
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "82avJ2SfLNGIcOHG",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.82avJ2SfLNGIcOHG",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 800,
+      "name": "Shed the Blow",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Shed the Blow",
+          "img": "systems/cardrpg/art/cards/shade-starter/shed-the-blow.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "block",
+            "param": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 2
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "mD6S4tTxjVIn8q4S",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.mD6S4tTxjVIn8q4S",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 900,
+      "name": "Quick Step",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Quick Step",
+          "img": "systems/cardrpg/art/cards/shade-starter/quick-step.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 3
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 2
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "rLF1vNK91kvfMgNH",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.rLF1vNK91kvfMgNH",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1000,
+      "name": "Quick Step",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Quick Step",
+          "img": "systems/cardrpg/art/cards/shade-starter/quick-step.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 3
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 2
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "nkcfcGpliru5ujQm",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.nkcfcGpliru5ujQm",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1100,
+      "name": "Draw the Knife",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Draw the Knife",
+          "img": "systems/cardrpg/art/cards/shade-starter/draw-the-knife.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "t64tF64PmM1BpCTl",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.t64tF64PmM1BpCTl",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1200,
+      "name": "Draw the Knife",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Draw the Knife",
+          "img": "systems/cardrpg/art/cards/shade-starter/draw-the-knife.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "4uePmmhaBzWgO9B0",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.4uePmmhaBzWgO9B0",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1300,
+      "name": "Light Fingers",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Light Fingers",
+          "img": "systems/cardrpg/art/cards/shade-starter/light-fingers.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "use"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "use",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "RUdr4EzwSSHWXmLn",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.RUdr4EzwSSHWXmLn",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1400,
+      "name": "Bind the Wound",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Bind the Wound",
+          "img": "systems/cardrpg/art/cards/shade-starter/bind-the-wound.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "heal",
+            "param": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "use"
+          }
+        ],
+        "reaction": "",
+        "costs": {
+          "primary": {
+            "spent": true
+          }
+        }
+      }
+    },
+    {
+      "_id": "cmioZDKXFhpOZlFk",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.cmioZDKXFhpOZlFk",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1500,
+      "name": "Jeer",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Jeer",
+          "img": "systems/cardrpg/art/cards/shade-starter/jeer.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "condition": "dazed",
+            "duration": 1,
+            "resist": "presence",
+            "dc": 5
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "Q1YNOHq3FOKlgEdg",
+      "_key": "!cards.cards!VhqVLJyPwDGUE5jJ.Q1YNOHq3FOKlgEdg",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1600,
+      "name": "Off Hand",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Off Hand",
+          "img": "systems/cardrpg/art/cards/shade-starter/off-hand.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    }
+  ]
+}

@@ -34,8 +34,9 @@ rest of the fight, back only on a rest (core-rules §8). A heal worth having onc
 same heal coming round again every time the discard recycles is just more Health. Its *secondary*
 costs nothing, so using it to drink a potion keeps the heal in the deck — which is the decision.
 
-No starter card carries **Strain** yet. It is the cost for cards that lean on a whole hand, and the
-Warrior has nothing that expensive; the first ones belong in a caster deck.
+No **Warrior** card carries **Strain**. It is the cost for cards that lean on a whole hand, and the
+Warrior has nothing that expensive; the first one belongs in a caster deck &mdash; and **[KEPT
+2026-11-27]** that is where it now is: *The Long Word*, below.
 
 ### Reactions
 
@@ -145,6 +146,93 @@ the thing a Way is.
   **is** character creation, which [core-rules.md](core-rules.md) §12 defers until after the first
   playtest on purpose. A deck the rules describe and no routine deals is the honest state of that
   decision, and it is pinned too.
+
+---
+
+## Action deck – "Caster" (16 cards)  **[BUILT 2026-11-27]**
+
+The third chassis, and it closes an `[OPEN]` two days old. On 2026-11-26 a cast began costing a
+**card half** ([core-rules.md](core-rules.md) §4, *Casting costs a half*), which was right: there
+were 25 ✦ Cast steps in the game and not one of them was on a card, so a caster took two halves
+*and* a cast where everybody else took two halves. But a caster's deck was the Warrior's sixteen
+plus whatever their Way granted — **one** guaranteed Cast card off the trunk, the rest bought a
+node at a time. A fighter holds a Strike in nine of sixteen cards and misses about once in two
+hundred; a caster could draw a hand of five with no way to cast at all.
+
+| # | Card | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|---|
+| 1 | Open the Book | Cast | Move 1 | Sidestep | 3 |
+| 2 | The Sharp Word | Cast +1 — needs an *Arcane* item | Move 1 | – | 2 |
+| 3 | Step and Word | Move 2, then Cast | Move 1 | – | 1 |
+| 4 | Turn the Blow | **Block 2** | Move 1 | Use | 2 |
+| 5 | Back Away | Move 3 | Move 2 | Sidestep | 2 |
+| 6 | Hand and Word | Cast | Ready | – | 2 |
+| 7 | Wand Work | Use | Ready | Use | 1 |
+| 8 | The Second Breath | Heal yourself 2 — **Spent** | Use | – | 1 |
+| 9 | The Crooked Word | Target enemy at ◎3 is **Off-Balance (1)**, resist 🌀 Agility 5 | Ready | – | 1 |
+| 10 | The Long Word | Cast +2 — ⤵ **Strain 1** | Move 1 | – | 1 |
+
+**Built to the Warrior's budget, field by field, which is the method the Shade deck set.** Sixteen
+cards in ten designs, **nine attack halves**, eight reaction copies across four designs, four cards
+carrying Ready, one Spent, one heal, one condition, two Use halves, two defensive primaries, eight
+printed Move on primaries and **21** printed Move in all — the Warrior's own number rather than the
+Shade's 23, because a caster would rather stand still. Every row is computed off all three decks
+and compared in the validator.
+
+**Three fields differ and all three are the chassis.**
+
+| Field | Warrior | Caster | Why |
+|---|---|---|---|
+| Strike halves | 9 | **0** | the swap |
+| Cast halves | 0 | **9** | the swap, which is what a ✦ Cast half answers: the implement in hand, or a prepared spell |
+| Strain | 0 | **1** | asked for by name since the Warrior deck was written — *the first ones belong in a caster deck* |
+
+### What is shape rather than budget
+
+- **The hex reaches three squares** where *Taunt* and *Jeer* are adjacent, and it applies an
+  **opening** rather than taking a turn away. A caster's business is the thing across the room, and
+  what they buy with it is everybody else's next attack.
+- **Two designs need an *Arcane* item**, the way *Open Vein* needs a Light one. A caster who sold
+  the wand for armour loses the +1; a caster with nothing in hand still has the three-copy floor
+  card, because a prepared spell is cast with both hands empty.
+- **Its reactions are two keys, not three, and that is forced.** Parry needs a melee weapon and
+  Block needs a shield; this chassis holds a wand in one hand and keeps the other free to gesture,
+  so a two-handed staff buys its own Cast line at the price of every spell in the book. The eight
+  copies are **Sidestep** and **Use**. The copies and the designs are the Warrior's numbers; which
+  keys they are is not a number the rules name.
+
+> **It keeps no attack on a secondary, and that is the one place it departs from *hold the
+> exception in common*.** §1.2 calls an attack on a secondary a levelling reward and allows each
+> starter deck exactly one copy — *Weapon Swap* and *Off Hand* — and the Shade deck's note argues
+> that giving Shade none would have put an asymmetry inside the thing being measured.
+>
+> A Cast on a secondary is not the same object. Swinging twice in a turn is a tempo card; casting
+> twice in a turn spends **two prepared spells**, and the whole reason a cast now costs a half is
+> that a caster was acting more often than everybody else. Handing the chassis the common exception
+> would reopen the hole the ruling closed. The budget fields are unaffected — nine attack halves is
+> nine either way — so this is shape, and it is stated rather than smuggled.
+
+> **[OPEN] Unmeasured, and it would be worse than unmeasured to try.** The Shade deck arrived with
+> 3000 fights behind it and a −3.4 figure. This one has none, and the reason is specific:
+> `sim/careers_sim.py` carries a `MODELLED` set of eight verbs — strike, move, defend, block,
+> ready, use, heal, shake — and **cast is not one of them**. Anything outside it becomes
+> `('inert', verb)` and is scored at the AI's 0.2 floor.
+>
+> So running this deck through the simulator today would not return *no number*. It would return a
+> **number**, computed with all nine of the deck's attack halves doing nothing, and that number
+> would look like a comparable figure beside the Shade deck's −3.4. The simulator already knows
+> to be suspicious of this: it counts unmodelled steps and prints the proportion, *because a career
+> whose granted cards are half unmodelled has a number that means less.* Here it would be nine
+> sixteenths.
+>
+> Its **reactions** are measurable — Sidestep and Use are both in `MODELLED_REACTIONS` — so
+> the only thing in the way is the attack verb. The budget equality above is a **design** argument,
+> not a measurement. Teaching the simulator to cast is what this deck asks for next, and until
+> then the honest instrument is the table.
+
+> **And no routine deals it**, exactly as with the Shade deck: choosing a chassis is character
+> creation, which core-rules §12 defers until after the first playtest. The deck is content, this
+> table, and an art shelf.
 
 ---
 

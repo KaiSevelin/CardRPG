@@ -208,11 +208,17 @@ export const WARRIOR_DECK = [
  * > number the career table reports between the Ways at tier 2 (Strength 66.8, Shade 62.8), which
  * > means that gap was never about the careers: it is this deck, counted twice.
  *
- * **Two gaps are declared rather than quietly carried.** No piece of art is commissioned for these
- * ten designs, so the deck is deliberately **not on an art shelf** -- a shelved piece with no file
- * is a path Foundry resolves to nothing, and a brief is not the place for cards no session can be
- * dealt yet. And `setup.mjs` still deals the Warrior: choosing between the two chassis is character
- * creation, which core-rules 12 defers until after the first playtest on purpose. Both are pinned.
+ * **One gap is declared rather than quietly carried, and the other was closed by a reader.**
+ * `setup.mjs` still deals the Warrior: choosing between the chassis is character creation, which
+ * core-rules 12 defers until after the first playtest on purpose, and that did not change when a
+ * third deck arrived. That is pinned.
+ *
+ * The other said *no piece of art is commissioned for these ten designs, so the deck is
+ * deliberately not on an art shelf*, and it outlived its truth by eighteen days:
+ * **[FOUND BY A READER 2026-11-09]** the handbook rendered ten blank rows, `cards/shade-starter`
+ * went on the shelf, and the brief counts them. Kept as a dated note rather than deleted, because
+ * the reason it was written -- *a shelved piece with no file is a path Foundry resolves to
+ * nothing* -- is why the brief has a refused state at all.
  */
 export const SHADE_DECK = [
   {
@@ -302,6 +308,176 @@ export const SHADE_DECK = [
     name: "Off Hand", copies: 1,
     primary: [{ verb: "ready" }],
     secondary: [{ verb: "strike" }]
+  }
+];
+
+
+/**
+ * The third chassis: the deck a caster starts with.  **[BUILT 2026-11-27]**
+ *
+ * **It exists because a ruling two days old left a hole.** On 2026-11-26 a cast began costing a
+ * card half, which was right -- 25 ✦ Cast steps existed in the game and not one of them was on
+ * a card, so a caster took two halves and a cast where everybody else took two halves. The ruling
+ * shipped with an `[OPEN]` against it and this is that note: a caster's **one** guaranteed Cast
+ * card comes off their Way's trunk and the rest are bought a node at a time, so a hand of five
+ * could easily hold no way to cast at all. A fighter has nine Strike halves in sixteen cards and
+ * misses about once in two hundred.
+ *
+ * **Built to the Warrior's budget, field by field, which is the method the Shade deck set.** Two
+ * decks of different budget measure the budget; decks of the same budget measure the **shape**,
+ * which is the thing a chassis is. Every currency the rules have a name for is equal: sixteen
+ * cards in ten designs, nine attack halves, eight reaction copies across four designs, four cards
+ * carrying Ready, one Spent, one heal, one condition, two Use halves, two defensive primaries,
+ * eight printed Move on primaries and twenty-one printed Move in all -- the Warrior's own number
+ * rather than the Shade's twenty-three, because a caster would rather stand still.
+ *
+ * **Three fields differ and all three are the chassis**, which the validator names rather than
+ * excuses:
+ *
+ * - **`strikeHalves` 9 → 0** and **`castHalves` 0 → 9.** The whole swap. A caster's attack
+ *   half says ✦ Cast, and what answers it is either the implement in hand or a prepared spell
+ *   (core-rules 4, *Two kinds of casting*).
+ * - **`strain` 0 → 1.** starter-cards.md asked for this by name and has since the Warrior deck
+ *   was written: *no starter card carries Strain yet -- it is the cost for cards that lean on a
+ *   whole hand, and the first ones belong in a caster deck.* One design, one copy, and it buys
+ *   something no other starter card can have.
+ *
+ * **What is NOT in the budget and is still the shape**: the hex reaches three squares where the
+ * martial decks' conditions are adjacent, and two of the ten designs ask for an **arcane** item
+ * the way *Open Vein* asks for a Light one. A caster acts at distance and needs a thing in their
+ * hand to act with; neither is a currency, both are the deck.
+ *
+ * **Its reactions are two keys rather than three, and that is forced.** Parry needs a melee
+ * weapon and Block needs a shield (config.mjs), and this chassis holds a wand in one hand with
+ * the other free to gesture -- a prepared spell is gestured, so a two-handed staff buys its own
+ * Cast line at the price of every spell in the book. So the eight copies are **Sidestep** and
+ * **Use**: step out of reach, or drink the stopper. The copies and the designs are the Warrior's
+ * numbers; which keys they are is not a number the rules name.
+ *
+ * **And `setup.mjs` still deals the Warrior.** Choosing a chassis is character creation, which
+ * core-rules 12 defers until after the first playtest, and that decision did not change by there
+ * being three to choose from. The deck is content, a document table and an art shelf; no routine
+ * deals it. Pinned, as the Shade deck's version of this is.
+ */
+export const CASTER_DECK = [
+  {
+    /*
+     * *Strike* and *Knife Work*, one verb over. The three-copy card is the deck's floor -- what
+     * you do when the hand gives you nothing better -- so it carries no requirement at all: a
+     * ✦ Cast half with a prepared spell behind it works with both hands empty, which is the
+     * one thing a caster can always be sure of.
+     */
+    name: "Open the Book", copies: 3, reaction: "sidestep",
+    primary: [{ verb: "cast" }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    /*
+     * The dedicated +1, which way-cards 1.2 allows a starter deck exactly one of. *Heavy Swing*
+     * buys it with weight and *Open Vein* with placement; this one buys it by **requiring an
+     * arcane item**, so the caster who sold their wand for armour does not get it.
+     */
+    name: "The Sharp Word", copies: 2,
+    primary: [{ verb: "cast", mod: 1, requires: { tag: "arcane" } }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    /*
+     * *Lunge* and *Slip In*. Two squares and then the words, which for a caster is the card that
+     * answers being stood next to: leave, and still act.
+     */
+    name: "Step and Word", copies: 1,
+    primary: [{ verb: "move", param: 2 }, { verb: "cast" }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    /*
+     * The defensive primary. **Block 2 rather than Defend**, for the reason the Shade deck
+     * records: *Defend* makes a shield's value persist and this chassis has no shield, so a flat
+     * ward is the honest version of the same slot. Its secondary is **Move 1** where Shade's is
+     * Move 2 -- the two points this deck does not spend, which is what keeps the printed Move at
+     * the Warrior's twenty-one.
+     */
+    name: "Turn the Blow", copies: 2, reaction: "use",
+    primary: [{ verb: "block", param: 2 }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    /*
+     * *Advance* and *Quick Step*: the deck's legs, and the only place a caster's movement is
+     * generous. Three and two, same as both.
+     */
+    name: "Back Away", copies: 2, reaction: "sidestep",
+    primary: [{ verb: "move", param: 3 }],
+    secondary: [{ verb: "move", param: 2 }]
+  },
+  {
+    /*
+     * *Draw Steel* and *Draw the Knife*. Cast and have the other hand ready -- which for a caster
+     * is the card that gets the wand out, or puts it away so both hands are free for the book.
+     */
+    name: "Hand and Word", copies: 2,
+    primary: [{ verb: "cast" }],
+    /*
+     * **The Ready says what it is for, and the art audit is why.** [2026-11-27] A bare
+     * `cast` + `ready` pair composes the same picture as *Answer the Call*, which is the same two
+     * verbs one Way over -- the twin rule caught them at 0.6 overlap, which is exactly the job it
+     * was written for. A qualifier is not decoration here: what this card's Ready is FOR is the
+     * implement, and that is the difference between the two cards as well as between the two
+     * pictures.
+     */
+    secondary: [{ verb: "ready", text: "the wand out, or away so both hands are free" }]
+  },
+  {
+    /*
+     * *Quick Hands* and *Light Fingers*, unchanged in everything but the name: the Use card, and
+     * the one that carries Use as its own reaction.
+     */
+    name: "Wand Work", copies: 1, reaction: "use",
+    primary: [{ verb: "use" }],
+    secondary: [{ verb: "ready" }]
+  },
+  {
+    /*
+     * *Second Wind* and *Bind the Wound*, including the **Spent**: a heal worth having once is a
+     * decision, and the same heal coming round every time the discard recycles is just more
+     * Health. The secondary costs nothing, so spending it on a potion keeps the heal in the deck.
+     */
+    name: "The Second Breath", copies: 1,
+    primary: [{ verb: "heal", param: 2 }],
+    secondary: [{ verb: "use" }],
+    costs: { primary: { spent: true } }
+  },
+  {
+    /*
+     * The condition card. *Taunt* compels and *Jeer* dazes, both adjacent; this one takes an
+     * enemy's footing at **three squares**, which is the chassis rather than a better card: a
+     * caster's business is the thing across the room.
+     *
+     * **Off-Balance is an opening** (config.mjs), so what this buys is not a turn taken off the
+     * enemy but a turn made better for everybody else -- the support shape a caster has and a
+     * knife does not. Its secondary is Ready rather than Move, which is where this deck finds its
+     * fourth card carrying one.
+     */
+    name: "The Crooked Word", copies: 1,
+    primary: [{ condition: "offBalance", duration: 1, range: 3, resist: "agility", dc: 5 }],
+    secondary: [{ verb: "ready" }]
+  },
+  {
+    /*
+     * **The first Strain in a starter deck**, which starter-cards.md has asked for since the
+     * Warrior's sixteen were written: *it is the cost for cards that lean on a whole hand, and the
+     * first ones belong in a caster deck.*
+     *
+     * A card off your hand for two more points of Cast, and the price is the point: a hand of
+     * five is what a caster plans with, so this is the card you play when the one spell you were
+     * holding for this moment has arrived. It is also the only above-budget thing in the deck,
+     * and it is paid for in a currency no other chassis spends.
+     */
+    name: "The Long Word", copies: 1,
+    primary: [{ verb: "cast", mod: 2 }],
+    secondary: [{ verb: "move", param: 1 }],
+    costs: { primary: { strain: 1 } }
   }
 ];
 

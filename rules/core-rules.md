@@ -901,12 +901,24 @@ the greater names to the circle.
 > use one, and the GM can now start the challenge from the recipe itself rather than copying its
 > Progress and Pressure onto the board by hand.
 
-> **[OPEN] A caster's deck is not dense enough in ✦ Cast yet.** A fighter has a Strike in hand
-> almost always — 9 of the Warrior's 16 cards print one, so a hand of five misses about once in
-> two hundred. A caster gets one guaranteed Cast on the trunk and buys the rest a node at a time.
-> The thing that would fix it is a **starter caster action deck**, which the game has never had:
-> there is one starter deck and it is the Warrior's. Until then a caster should take ✦ Cast cards
-> early, and a GM running a caster from level 1 should hand them a few.
+> **[CLOSED 2026-11-27] A caster's deck was not dense enough in ✦ Cast, and now there is a deck
+> for it.** A fighter has a Strike in hand almost always — 9 of the Warrior's 16 cards print one,
+> so a hand of five misses about once in two hundred. A caster got one guaranteed Cast on the trunk
+> and bought the rest a node at a time, which is a hand of five with nothing to do with it.
+>
+> The fix is the **“Caster” starter deck** ([starter-cards.md](starter-cards.md)): sixteen
+> cards, nine of them ✦ Cast, built to the Warrior's budget field by field so that the only
+> things that differ are the chassis — Strike halves to Cast halves, and the game's first
+> **Strain** card.
+>
+> **One sentence in this note was wrong when it was written**: *there is one starter deck and it is
+> the Warrior's*. There were two. The **“Shade”** deck has existed since 2026-11-07,
+> measured over 3000 fights at −3.4 points of win rate, and this note was written without
+> checking. The caster deck is the third.
+>
+> **No routine deals it**, which is the decision the Shade deck already carries: choosing a chassis
+> is character creation, and §12 defers that until after the first playtest. A GM running a
+> caster from level 1 hands out this deck in place of the Warrior's.
 
 #### Two kinds of casting
 

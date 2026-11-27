@@ -1102,6 +1102,41 @@ typed them into the board by hand, which is exactly the shape of defect this pro
 in the content states a difficulty; the call takes the engine's default and you are meant to move
 it. If a number ever appears there that the recipe seems to have chosen, that is a bug.
 
+## 2g.12 A caster's own chassis  **[2026-11-27]**
+
+**Do.** Open the **Decks** compendium. Drag **Starter Caster — Action Deck** into the world, give
+a Way of Mind character a **Fire Wand** in one hand and nothing in the other, and swap their action
+deck for this one. Deal a hand and play a turn off **Open the Book**. Then prepare one formula and
+play **The Long Word**.
+
+**Expect.** Three decks in the compendium where there used to be one: Warrior, **Shade** and
+**Caster**. The caster's hand is ✦ Cast where a Warrior's is ⚔ Strike — nine halves of it in
+sixteen cards, the same nine the Warrior has. *Open the Book* casts off the wand with nothing
+prepared. *The Long Word* asks for **a card out of your hand** and then casts at +2; decline the
+Strain and the cast does not happen and the card is not spent.
+
+Then take the wand out of their hand and play **The Sharp Word**: its half is **blocked**, because
+it needs an *Arcane* item. *Open the Book* is not, because a prepared spell is cast with both hands
+empty.
+
+**Why.** On 2026-11-26 a cast began costing a card half, and a caster's deck was still the
+Warrior's sixteen plus one guaranteed Cast off their Way's trunk — a hand of five with nothing
+to do with it. This deck is the answer, built to the Warrior's budget field by field so the only
+differences are the chassis: Strike halves to Cast halves, and the game's first **Strain** card.
+
+**One thing to notice, and it is the open question.** Nothing measures this deck. The Shade deck
+arrived with 3000 simulated fights and a −3.4 figure behind it. `sim/careers_sim.py` carries
+a `MODELLED` set of eight verbs and **cast is not one of them**, so every attack half in this
+deck scores at the AI's inert floor — which means the simulator would hand back a *number*,
+not a silence, and it would look comparable to the Shade deck's. Play it and say whether it
+feels like sixteen cards of the same weight — that is the
+only instrument there is for now.
+
+**And the half that was missing for twenty days.** Until today the **Shade** deck could not be
+reached either: content, a document table and an art shelf, dealt by no routine and in no
+compendium. Both are in the Decks pack now. The starter routine still deals the Warrior, because
+choosing a chassis is character creation (core-rules §12).
+
 ---
 
 # 3. What the other person sees
