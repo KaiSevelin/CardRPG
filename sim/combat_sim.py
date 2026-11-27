@@ -59,6 +59,10 @@ def _fate_dist(mode):
 
 
 FATE_DIST = {m: _fate_dist(m) for m in (-1, 0, 1)}
+# The even distribution as a tuple. The spell engine sums over it several thousand times a turn --
+# once per candidate formula per aim point per lookahead option -- and `dict.items()` rebuilds a
+# view every time. Order is preserved, so every float sum taken over it is bit-for-bit the same.
+FATE_EVEN = tuple(FATE_DIST[0].items())
 
 
 class FateDeck:
@@ -178,6 +182,78 @@ WEAPONS = {
     'arquebus': dict(strike=5, rng=8,  heavy=True,  kg=4, reload=True, ignores=2),
     'musket':   dict(strike=6, rng=12, heavy=True,  kg=5, reload=True, ignores=2),
     'pistol':   dict(strike=3, rng=4,  heavy=False, kg=1, reload=True, ignores=2),
+    # **An empty hand.** `strike=None` is *no line*, which core-rules 4 makes a rule rather than a
+    # zero: *if an equipped item has no line for a verb, you can't use that verb with that item*.
+    # It exists because a caster holds a wand in one hand and keeps the other free to gesture, so
+    # the weapon is a thing they have not got -- and a Strike half has to be unplayable for them
+    # here as well, or the chassis gets measured with a sword it never drew.
+    'none':     dict(strike=None, rng=1, heavy=False, kg=0),
+}
+
+
+# ---------------------------------------------------------------- implements and spells
+#
+# **Cast is the one verb with two sources** (core-rules 4, *Two kinds of casting*): an implement's
+# Cast line, or a prepared spell. Same half, and not the same object -- a wand fires as often as
+# you draw a Cast half, and a prepared formula fires **once** and is then gone until a long rest
+# (core-rules 4, *Casting spends the preparation*).
+#
+# Both are held in ONE record shape, so nothing downstream has to ask which it is holding:
+#
+#   power            damage the formula deals; 0 for one that deals none
+#   rng              squares it reaches
+#   area             radius in squares; 0 is a single target
+#   heal/shake/block what it does instead of damage, in currencies this file already had
+#   condition        what it hangs on the target -- **inert here**, see below
+#   aimed            an area that spares your side; without it an area is a **Blast**
+#   ignores_armour   armour counts 0 against it
+#   ignores_block    round a shield rather than through it -- inert against a goblin, which
+#                    carries armour and has no Block, so it is recorded and never read
+#   health           its printed Health cost, paid every cast
+#   strength         slot cost, and **0 for an implement**, because an implement prepares nothing
+#
+# **A Blast catches the caster.** core-rules 11 is explicit -- *Blast: everyone in the area,
+# enemies, allies and you, if you're in it* -- and a Fire Wand is a Blast 1, so a cast at an
+# adjacent goblin burns the hero for the same figure it burns the goblin for. It is charged here,
+# through armour and not through Block, and it is what turns the wand from a free group answer
+# into a weapon that wants range. **The first measurement of the Caster deck was taken without it
+# and read +7.1**; it is the one rule in the spell engine whose absence flattered a chassis.
+#
+# **A condition cast on a goblin does nothing in this file, and it is counted rather than hidden.**
+# `apply_cond` writes the hero's own record and nothing here reads a condition on a goblin -- the
+# same gap the critical deck's riders have had since 2026-11-09. So a formula whose whole effect is
+# a condition estimates at zero, the AI leaves it in the slot, and `casts_held` says how often.
+# **23 of the 138 formulas in the two pools are that shape** -- against 12 this file can cast, 30
+# whose timing keeps them off a Cast menu entirely and 73 that are prose. So the condition pile is
+# nearly twice the castable one, which makes it the next piece of work the spell engine asks for
+# rather than a rounding error. (The first version of this comment said 30, which is the count of
+# formulas printing a `timing`: the right column, read off the wrong row.)
+IMPLEMENTS = {
+    # **The whole of it: content/gear.mjs holds exactly two items with a Cast line**, and the
+    # validator pins that count. A third here would be a weapon the game does not sell.
+    'fire_wand': dict(name='Fire Wand', power=2, rng=4, area=1, kg=0, hands=1),
+    # The Staff's whole Cast line is *Heal 3* -- so `power` is 0 and the 3 is the heal -- and it
+    # is two-handed, which means holding it IS the other hand. That is the trade way-cards 3.4 and
+    # the caster deck's note both turn on, and it is why the Wand is what the deck is measured on.
+    'staff':     dict(name='Staff of Healing', power=0, heal=3, rng=2, kg=2, hands=2),
+}
+
+# Formulas off content/way-mind.mjs and content/way-faith.mjs, quoted rather than invented: every
+# number below is the `effect` block of the spell of that name. `careers_sim.py` builds the same
+# records from `careers.json` instead, so this table is for writing a scenario by hand.
+SPELLS = {
+    'Open the Vein':      dict(name='Open the Vein', strength=1, power=3, rng=2,
+                               ignores_block=True, health=1),
+    'The Borrowed Hand':  dict(name='The Borrowed Hand', strength=2, power=4, rng=4,
+                               ignores_block=True),        # its price is Taint, which is not here
+    'Lay On':             dict(name='Lay On', strength=1, heal=2, rng=3),
+    'No Step Back':       dict(name='No Step Back', strength=2, block=2, area=2),
+    'Shake It Off':       dict(name='Shake It Off', strength=2, shake=3, rng=3),
+    'The Unbound Tongue': dict(name='The Unbound Tongue', strength=1, shake=1, rng=3),
+    # Condition-only, and here to BE the inert case: Grave Chill is a real spell of a real school
+    # and this file cannot play it. A scenario that prepares it measures a caster holding nothing.
+    'Grave Chill':        dict(name='Grave Chill', strength=2, condition='dazed', duration=1,
+                               area=2, aimed=True),
 }
 
 
@@ -275,6 +351,21 @@ BREATH_RECOVERY = 2
 # What Overloaded takes off your stamina (core-rules 4, 8). Two, which is what it used to take off
 # the deck -- the number is unchanged, the currency is not.
 OVERLOADED_STAMINA = 2
+
+# **What a point of the hero's own Health costs them**, hurt and whole. Two things spend it: a
+# formula with a printed Health price, and a Blast that catches the caster (core-rules 11).
+#
+# It is deliberately **dearer than healing is worth** -- `Game.score` values a point healed at 1.2
+# hurt and 0.3 whole -- and that is a judgement rather than a derivation. Under exact symmetry a
+# hero above half their Health prices their own blood at 0.3, which makes a Blast at their own feet
+# nearly free: the AI would aim one there whenever it caught one more goblin. That is the model's
+# logic rather than the rule's, so blood is priced above it.
+#
+# **This is the second of the two invented numbers in the spell engine**, after `cast_prep_cost`,
+# and it is one pair read by both sides rather than a figure typed twice. The first draft had
+# 1.2/2.0 in the candidate choice and a flat 1.5 in the aim-point choice, which is two prices for
+# one thing -- the defect this file has caught three times under other names.
+BLOOD_HURT, BLOOD_WHOLE = 2.0, 1.2
 
 
 @dataclass
@@ -374,8 +465,32 @@ class Config:
     # A second weapon slung on the back (core-rules 4): drawing from it is free, slinging costs a
     # Ready. '' is the old behaviour -- one weapon, and Ready does nothing.
     sling: str = ''
-    # What the warrior starts with in hand. 'sword' is every published number.
+    # What the warrior starts with in hand. 'sword' is every published number, and 'none' is an
+    # empty hand -- which is what a caster has, one of them holding a wand.
     weapon: str = 'sword'
+    # --- casting (core-rules 4) ---
+    # What is in the casting hand, out of IMPLEMENTS. '' is a character with no implement at all,
+    # whose Cast halves have only the prepared route and go dry when the slots do.
+    implement: str = ''
+    # The formulas PREPARED, in order, as records of the shape SPELLS holds. Preparation happens
+    # between fights (core-rules 4) so this is a loadout and never a decision inside the fight.
+    spells: tuple = ()
+    # **What a preparation is worth NOT spending**, per point of strength. The first of the spell
+    # engine's two invented numbers -- `BLOOD_HURT`/`BLOOD_WHOLE` is the other -- and it has to
+    # exist: a cast that burns a strength-3 formula to do what the wand would have done is a waste,
+    # nothing in the rules prices it, and an AI that cannot see it would empty every slot in round
+    # one. 0.8 is about a quarter of a Strike, so the AI spends a formula where it buys a kill or a
+    # heal it needs and keeps it otherwise.
+    cast_prep_cost: float = 0.8
+    # **Strain N** (core-rules 8): *printed on a half, and paid as part of playing it -- discard N
+    # other cards from your hand. If you can't pay it in full, you can't play the half.* Shaped
+    # like `spent_cards` and not the same thing: Spent takes the card you played out of the fight,
+    # Strain takes OTHERS out of this round. `{name: {'P': 1}}`.
+    #
+    # It exists because the caster deck's *The Long Word* is the game's first Strain card, and
+    # without this its +2 was free -- the second place the first measurement of that chassis
+    # flattered it, after the Blast that did not catch the caster.
+    strain_cards: dict = field(default_factory=dict)
     # Everything carried that is not armour, weapons or the shield: pack, rope, loot. The kit a
     # starter Warrior carries is already in the armour and weapon kilograms, so 0 is the baseline
     # and this is the dial that makes Plate's weight bite (core-rules 4).
@@ -526,6 +641,13 @@ class Sim:
         self.wpos, self.whp, self.block, self.potions = w['pos'], w['hp'], w['block'], w['potions']
         self.gobs = [[g['pos'], g['hp'], g] for g in game.gobs if g['hp'] > 0]
         self.dmg = self.killp = self.healed = 0.0
+        # Which preparations are spent, as the Sim's own copy. This is what makes two Cast halves
+        # in one turn cost **two** preparations instead of casting the same formula twice, and it
+        # is the only way the lookahead can ever see the second one as worth less than the first.
+        self.prepared = [p['spent'] for p in w['prepared']]
+        # Health a spell charged for itself. Healing is scored and harm taken is not, so without
+        # this a formula that costs blood would read as free.
+        self.paid = 0.0
 
     def alive(self):
         return [g for g in self.gobs if g[1] > 0]
@@ -554,6 +676,10 @@ class Sim:
                     self.wpos = nxt
             elif kind == 'strike':
                 prof = WEAPONS[self.weapon]
+                # No line for the verb, which is a rule and not a zero (core-rules 4): an empty
+                # hand cannot swing, and the half is spent finding that out.
+                if prof['strike'] is None:
+                    continue
                 # An unloaded crossbow is a stick: the Strike is spent and nothing happens.
                 if prof.get('reload') and not self.loaded:
                     continue
@@ -622,6 +748,8 @@ class Sim:
                     target[1] = 0 if pk >= .5 else target[1] - e
                     if prof.get('reload'):
                         self.loaded = False
+            elif kind == 'cast':
+                self.do_cast(op, real)
             elif kind == 'defend':
                 # *The Wall* is the one exception to highest-wins (core-rules 5): Blocks stack.
                 self.block = (self.block + cfg.shield_def) if cfg.wall else cfg.shield_def
@@ -667,10 +795,223 @@ class Sim:
                     self.loaded = not WEAPONS[self.weapon].get('reload') or self.loaded
             # taunt: no effect in this test (solo hero)
 
+    # ------------------------------------------------------------ casting
+    def cast_options(self):
+        """(slot index or None, record) for everything a Cast half can resolve this instant.
+
+        The index is the preparation it would spend and None is the implement, which spends
+        nothing. A formula is dropped from the list when its own Health cost would kill the
+        caster, because a price you cannot pay is not an option.
+        """
+        out = [(i, p['spell']) for i, p in enumerate(self.game.w['prepared'])
+               if not self.prepared[i] and p['spell'].get('health', 0) < self.whp]
+        if self.game.cfg.implement:
+            out.append((None, IMPLEMENTS[self.game.cfg.implement]))
+        return out
+
+    def own_blood(self):
+        """What a point of this hero's own Health costs them, as the lookahead projects it.
+
+        Off the Sim's own `whp` rather than the Game's, because a turn that heals first and casts
+        second is a turn that paid the cheaper price, and the lookahead has to see that.
+        """
+        return BLOOD_HURT if self.whp <= self.game.cfg.hp / 2 else BLOOD_WHOLE
+
+    def cast_soak(self, spell, g):
+        """Armour against this formula. `ignores_block` is not here: a goblin has no Block."""
+        if spell.get('ignores_armour'):
+            return 0
+        return max(0, foe(g[2]['weapon']).get('armor', 0))
+
+    def cast_targets(self, spell, rng, power=0):
+        """(who it lands on, whether it also lands on the caster).
+
+        A single target is the one most likely to die. An area is aimed at a square and hits
+        everything within `area` of it (core-rules 11) -- **including the caster, unless the item
+        prints Aimed rather than Blast.** So the aim point is a trade and not a maximum: three
+        goblins and yourself is often worse than two goblins and not.
+
+        The candidate aim points are the **goblins' own squares**, not every square in range. That
+        is a restriction on the hero -- a player may aim a Blast at empty ground to catch two and
+        spare themselves -- so this understates the wand, which is the safe direction.
+        """
+        alive = self.alive()
+        reach = [g for g in alive if cheb(self.wpos, g[0]) <= rng]
+        if not reach:
+            return [], False
+        area = spell.get('area', 0)
+        if not area:
+            def killp(g):
+                soak = self.cast_soak(spell, g)
+                return sum(p for c, p in FATE_EVEN
+                           if max(0, fate_apply(power, c) - soak) >= g[1])
+            return [max(reach, key=lambda g: (killp(g), -g[1]))], False
+        blast = not spell.get('aimed')
+        own = self.game.armour_now()
+        mine = sum(max(0, fate_apply(power, c) - own) * p for c, p in FATE_EVEN)
+
+        def worth(g):
+            caught = [o for o in alive if cheb(g[0], o[0]) <= area]
+            self_hit = blast and cheb(self.wpos, g[0]) <= area
+            # Expected HP off them against expected HP off us, at the same fate distribution.
+            them = sum(min(max(0, fate_apply(power, c) - self.cast_soak(spell, o)), o[1]) * p
+                       for o in caught for c, p in FATE_EVEN)
+            return them - self.own_blood() * (mine if self_hit else 0.0)
+
+        pick = max(reach, key=worth)
+        return ([o for o in alive if cheb(pick[0], o[0]) <= area],
+                blast and cheb(self.wpos, pick[0]) <= area)
+
+    def cast_estimate(self, spell, mod, floor):
+        """What casting this formula right now is worth, in the currency `Game.score` uses."""
+        cfg = self.game.cfg
+        rng = max(spell.get('rng', 1), floor)
+        v = 0.0
+        power = spell.get('power', 0)
+        if power:
+            # A printed modifier adds to the formula's own, and **nothing at all to a formula that
+            # deals no damage** (core-rules 4) -- which is why it is inside this branch.
+            power += mod
+            targets, self_hit = self.cast_targets(spell, rng, power)
+            for g in targets:
+                soak = self.cast_soak(spell, g)
+                for c, p in FATE_EVEN:
+                    d = max(0, fate_apply(power, c) - soak)
+                    v += p * (min(d, g[1]) + 4 * (d >= g[1]))
+            if self_hit:
+                # Priced where healing is priced, and at a premium when we are already hurt: the
+                # hero's own HP is the only resource in this file they cannot buy back.
+                own = self.game.armour_now()
+                mine = sum(max(0, fate_apply(power, c) - own) * p for c, p in FATE_EVEN)
+                v -= mine * self.own_blood()
+        if spell.get('heal'):
+            gain = min(spell['heal'], cfg.hp - self.whp)
+            v += gain * (1.2 if self.whp <= cfg.hp / 2 else 0.3)
+        if spell.get('block'):
+            v += 0.5 * spell['block'] * max(1, min(len(self.alive()), 3))
+        if spell.get('shake'):
+            v += self.game.cond_relief(spell['shake'])
+        # A formula's printed Health cost is the same blood as a Blast's, and priced the same.
+        v -= self.own_blood() * spell.get('health', 0)
+        v -= cfg.cast_prep_cost * spell.get('strength', 0)
+        return v
+
+    def do_cast(self, op, real):
+        """One Cast half: two possible sources, and the preparation is spent either way."""
+        mod = op[1] if len(op) > 1 else 0
+        # A printed range is a **floor and not a replacement** (core-rules 4): whichever reaches
+        # further wins, so a card that reaches 6 lengthens a touch spell and never shortens a bolt.
+        floor = op[2] if len(op) > 2 else 0
+        # An item the half **requires** to be played at all. Only the one tag reaches this file:
+        # a card that wants something **Arcane** in hand -- *The Sharp Word* does -- cannot be
+        # played without an implement, because both entries in IMPLEMENTS are tagged arcane in
+        # gear.mjs and nothing else here is. The half is spent finding that out, the same way an
+        # unloaded crossbow spends a Strike.
+        if len(op) > 3 and op[3] and not self.game.cfg.implement:
+            if real:
+                self.game.s['casts_unarmed'] += 1
+            return
+        opts = self.cast_options()
+        if not opts:
+            # A Cast half with nothing behind it. **This is the number the caster deck exists to
+            # make small**, and the number an implement-less caster's hand is mostly made of.
+            if real:
+                self.game.s['casts_dry'] += 1
+            return
+        scored = sorted(((self.cast_estimate(sp, mod, floor), slot, sp) for slot, sp in opts),
+                        key=lambda t: -t[0])
+        value, slot, spell = scored[0]
+        if value <= 0:
+            # Nothing any of them does can be seen from here. A preparation is worth more in the
+            # slot than spent on nothing, and firing an implement at nothing is not casting -- so
+            # the half is held either way and the counter is where a condition-only school shows.
+            if real:
+                self.game.s['casts_held'] += 1
+            return
+        rng = max(spell.get('rng', 1), floor)
+        if slot is not None:
+            self.prepared[slot] = True
+        health = spell.get('health', 0)
+        if health:
+            # Its own blood, and it can never be the thing that kills you.
+            self.whp = max(1, self.whp - health)
+            self.paid += health
+        if real:
+            self.game.s['casts'] += 1
+            self.game.s['casts_prepared' if slot is not None else 'casts_implement'] += 1
+            if spell.get('condition'):
+                self.game.s['casts_condition_lost'] += 1
+        if spell.get('heal'):
+            amount = spell['heal']
+            if real:
+                card = self.game.fate_w.draw(0)
+                amount = fate_apply(amount, card)
+                self.game.stat_fate(card)
+            gain = min(amount, self.game.cfg.hp - self.whp)
+            self.whp += gain
+            self.healed += gain
+            if real:
+                self.game.log(f"  Warrior casts {spell.get('name', 'a formula')} "
+                              f"+{gain} HP -> {self.whp}")
+        if spell.get('block'):
+            self.block += spell['block']
+        if spell.get('shake'):
+            if real:
+                self.game.shake(spell['shake'])
+            else:
+                self.healed += self.game.cond_relief(spell['shake'])
+        power = spell.get('power', 0)
+        if not power:
+            return
+        power += mod
+        targets, self_hit = self.cast_targets(spell, rng, power)
+        if not real:
+            for g in targets:
+                soak = self.cast_soak(spell, g)
+                e = pk = 0.0
+                for c, p in FATE_EVEN:
+                    d = max(0, fate_apply(power, c) - soak)
+                    e += p * min(d, g[1])
+                    pk += p * (d >= g[1])
+                self.dmg += e
+                self.killp += pk
+                g[1] = 0 if pk >= .5 else g[1] - e
+            if self_hit:
+                own = self.game.armour_now()
+                mine = sum(max(0, fate_apply(power, c) - own) * p for c, p in FATE_EVEN)
+                self.whp -= mine
+                self.paid += mine
+            return
+        # **One draw for the whole action**, which is what `resolveAttack` does with an area, and
+        # disadvantage if anything is adjacent -- for that rule an area IS a ranged attack, since
+        # `advantageFor` reads `ranged || area` (core-rules 11).
+        pen = (rng > 1 or spell.get('area')) and any(
+            cheb(self.wpos, g[0]) == 1 for g in self.alive())
+        card = self.game.fate_w.draw(-1 if pen else 0)
+        landed = fate_apply(power, card)
+        self.game.stat_fate(card)
+        for g in targets:
+            d = max(0, landed - self.cast_soak(spell, g))
+            self.game.log(f"  Warrior casts {spell.get('name', 'a formula')} at goblin "
+                          f"{g[2]['id']} (base {power}, fate {card}) -> {d} dmg")
+            g[1] -= d
+            self.dmg += min(d, max(0, g[1] + d))
+        if self_hit:
+            # *Blast: everyone in the area -- enemies, allies and you, if you're in it.* Armour
+            # comes off it; Block does not, because a Block is a reaction to somebody else's
+            # attack and this one is the hero's own.
+            mine = max(0, landed - self.game.armour_now())
+            self.whp = max(0, self.whp - mine)
+            self.paid += mine
+            self.game.s['blast_self'] += mine
+            self.game.log(f"  the blast catches the Warrior for {mine} -> {self.whp} HP")
+
     def commit(self):
         w = self.game.w
         w['pos'], w['hp'], w['block'], w['potions'] = self.wpos, self.whp, self.block, self.potions
         w['weapon'], w['loaded'] = self.weapon, self.loaded
+        for rec, spent in zip(w['prepared'], self.prepared):
+            rec['spent'] = spent
         for pos, hp, g in self.gobs:
             g['pos'] = pos
             if hp <= 0 < g['hp']:
@@ -705,7 +1046,11 @@ class Game:
         deck = [name for name, c in self.cards.items() for _ in range(c[3])]
         self.w = dict(pos=(1, 4), hp=cfg.hp, block=0, potions=cfg.potions, hand=[], draw=deck,
                       discard=[], spent=[], conds=[], exhausted=False, acted=False,
-                      weapon=cfg.weapon, loaded=True)
+                      weapon=cfg.weapon, loaded=True,
+                      # The slots as they stand at the bell. A long rest is what refills them
+                      # (core-rules 4), and a fight is shorter than a night, so nothing here ever
+                      # puts one back: what you prepared is what you have.
+                      prepared=[dict(spell=sp, spent=False) for sp in cfg.spells])
         n = len(cfg.goblins)
         ys = [round(1 + i * (GRID_H - 3) / max(1, n - 1)) for i in range(n)] if n > 1 else [4]
         self.gobs = [dict(id=i + 1, pos=(8, ys[i]), hp=foe(wpn).get('hp') or cfg.goblin_hp,
@@ -719,7 +1064,8 @@ class Game:
         self.armor_lost = 0
         self.blunt_lost = 0
         self.load = (ARMOUR[cfg.armor]['kg'] + WEAPONS[cfg.weapon]['kg'] + cfg.shield_kg
-                     + (WEAPONS[cfg.sling]['kg'] if cfg.sling else 0) + cfg.extra_kg)
+                     + (WEAPONS[cfg.sling]['kg'] if cfg.sling else 0) + cfg.extra_kg
+                     + (IMPLEMENTS[cfg.implement]['kg'] if cfg.implement else 0))
         self.burdened = self.load > cfg.carry_limit
         self.overloaded = self.load > cfg.carry_limit * 1.5
         # Heavy Armor blocks the Sidestep reaction (core-rules 10), which is the top two rungs'
@@ -960,18 +1306,33 @@ class Game:
         if card in ('MISS', 'CRIT'):
             self.s['fate_' + card.lower()] += 1
 
+    def armour_now(self):
+        """What the coat is worth this instant, after the feature and after Stove In.
+
+        One place, because there are two readers: a hit arriving, and a Blast of the hero's own
+        that catches them. A number computed twice is a number that disagrees with itself.
+        """
+        cfg = self.cfg
+        # *Nothing Gets Through*: while Overloaded, armour counts double. Overloaded is not free --
+        # the hero is Slowed and two cards are Spent for the fight -- so this reads both prices.
+        armor = cfg.armor * 2 if (cfg.armor_doubles_overloaded and self.overloaded) else cfg.armor
+        return max(0, armor - self.armor_lost)   # Stove In, and it does not come back
+
     # --- card valuation
     def board(self):
         """The board facts a card's worth depends on. Cached per turn by callers."""
         w, alive = self.w, self.alive()
         if not alive:
-            return dict(adj=0, gap=0, ranged=0, hurt=False, n=0)
+            return dict(adj=0, gap=0, ranged=0, hurt=False, n=0, clump=0)
         return dict(
             adj=sum(1 for g in alive if cheb(w['pos'], g['pos']) == 1),
             gap=min(cheb(w['pos'], g['pos']) for g in alive),
             ranged=sum(1 for g in alive if foe(g['weapon'])['ranged']),
             hurt=w['hp'] <= self.cfg.hp / 2,
             n=len(alive),
+            # How many stand within a square of one of them: what an area is worth, and the first
+            # board fact in this file that is about the enemy's formation rather than ours.
+            clump=max(sum(1 for o in alive if cheb(g['pos'], o['pos']) <= 1) for g in alive),
         )
 
     def gives_use(self, name):
@@ -987,16 +1348,20 @@ class Game:
         """
         ranged = sum(1 for wpn in self.cfg.goblins if wpn == 'bow')
         n = len(self.cfg.goblins)
-        boards = (dict(adj=0, gap=5, ranged=ranged, hurt=False, n=n),   # closing
-                  dict(adj=1, gap=3, ranged=ranged, hurt=False, n=n),   # engaged
-                  dict(adj=2, gap=1, ranged=ranged, hurt=True, n=n))    # pressed
+        boards = (dict(adj=0, gap=5, ranged=ranged, hurt=False, n=n, clump=min(n, 2)),
+                  dict(adj=1, gap=3, ranged=ranged, hurt=False, n=n, clump=min(n, 3)),
+                  dict(adj=2, gap=1, ranged=ranged, hurt=True, n=n, clump=min(n, 3)))
         return sum(self.card_value(name, b) for b in boards) / len(boards)
 
     def op_value(self, op, b):
         cfg, kind = self.cfg, op[0]
         if kind == 'strike':
+            if WEAPONS[self.w['weapon']]['strike'] is None:
+                return 0.0                              # no line for the verb (core-rules 4)
             dmg = cfg.strike_base + op[1] + (1 if cfg.strong else 0)
             return dmg if b['adj'] else dmg * 0.25      # can't swing at nothing
+        if kind == 'cast':
+            return self.cast_worth(op[1] if len(op) > 1 else 0, b)
         if kind == 'move':
             # Taken off here as well as where the step happens, or the hero would keep choosing
             # cards for squares it cannot walk -- with the same floor of 1, or the two disagree.
@@ -1039,6 +1404,45 @@ class Game:
             half = 1.5 if self.dazed() else 0
             return min(op[1], 1) * (bite + half) * 1.0
         return 0.2                                       # ready, taunt: inert in a solo test
+
+    def own_blood(self):
+        """The same price, off the real Health rather than a projection of it."""
+        return BLOOD_HURT if self.w['hp'] <= self.cfg.hp / 2 else BLOOD_WHOLE
+
+    def castable(self):
+        """Every formula a Cast half could resolve, prepared ones first (core-rules 4)."""
+        out = [p['spell'] for p in self.w['prepared'] if not p['spent']]
+        if self.cfg.implement:
+            out.append(IMPLEMENTS[self.cfg.implement])
+        return out
+
+    def cast_worth(self, mod, b):
+        """How much we want a Cast half in hand: the best thing it could resolve.
+
+        **A half with nothing behind it is worth nothing**, which is the whole of the caster
+        deck's question -- nine of them and two slots is a different deck from nine and a wand.
+        The board summary is all there is here, so an area is priced off `clump` rather than off
+        the squares; `Sim.cast_estimate` is the one that does it properly, and it is the one that
+        decides what actually gets cast.
+        """
+        best = 0.0
+        for spell in self.castable():
+            v = 0.0
+            power = spell.get('power', 0)
+            if power:
+                power += mod
+                hits = max(1, min(b['clump'], b['n'])) if spell.get('area') else 1
+                v += power * hits * (1.0 if b['gap'] <= spell.get('rng', 1) else 0.3)
+            if spell.get('heal'):
+                v += (2.0 if b['hurt'] else 0.3) * spell['heal']
+            if spell.get('block'):
+                v += 0.8 * spell['block'] * max(1, min(b['adj'] + b['ranged'], 3))
+            if spell.get('shake'):
+                v += self.cond_relief(spell['shake'])
+            v -= self.own_blood() * spell.get('health', 0)
+            v -= self.cfg.cast_prep_cost * spell.get('strength', 0)
+            best = max(best, v)
+        return best
 
     REACTION_WORTH = {'block': 1.2, 'parry': 0.9, 'use': 0.5}
 
@@ -1215,6 +1619,26 @@ class Game:
         return win
 
     # --- warrior
+    def strain_for(self, played):
+        """What this pair of halves strains, in cards (core-rules 8)."""
+        table = self.cfg.strain_cards or {}
+        return sum(table.get(self.w['hand'][i], {}).get(half, 0) for i, half in played)
+
+    def can_pay_strain(self, played):
+        """*If you can't pay it in full, you can't play the half* (core-rules 8).
+
+        Paid out of the cards that could have been played, never out of a Wound: a dead card is
+        discarded at the end of the turn anyway, so paying with one would be paying with something
+        already leaving. The rules do not settle which reading is right; this is the harsher one,
+        and it keeps Strain from being a way to shed an injury.
+        """
+        owed = self.strain_for(played)
+        if not owed:
+            return True
+        spare = sum(1 for i, c in enumerate(self.w['hand'])
+                    if c not in DEAD and i not in {j for j, _ in played})
+        return spare >= owed
+
     def options(self):
         w = self.w
         # A Wound takes up a slot and is not an option (core-rules 8).
@@ -1236,12 +1660,15 @@ class Game:
                     pa, sb = self.cards[a][0], self.cards[b][1]
                     opts.append(([(i, 'P'), (j, 'S')], pa + sb))
                     opts.append(([(i, 'P'), (j, 'S')], sb + pa))
-        return opts
+        return [o for o in opts if self.can_pay_strain(o[0])]
 
-    def score(self, sim, played_idx):
+    def score(self, sim, played_idx, played=()):
         cfg, w = self.cfg, self.w
         val = sim.dmg + 4 * sim.killp
         val += sim.healed * (1.2 if w['hp'] <= cfg.hp / 2 else 0.3)
+        # Blood a formula charged for itself, priced at exactly what healing is worth -- the same
+        # number in both directions, or a Blood Magic caster would heal for profit.
+        val -= sim.paid * (1.2 if w['hp'] <= cfg.hp / 2 else 0.3)
         val -= 2.5 * (w['potions'] - sim.potions)   # a potion is worth keeping
         alive = sim.alive()
         if alive:
@@ -1253,13 +1680,27 @@ class Game:
                 hits = max(1, min(reach, 3)) if cfg.persistent_block else 1
                 val += 0.5 * sim.block * hits
         melee_foes = any(not foe(g['weapon'])['ranged'] for g in self.alive())
+        kept = []
         for i, c in enumerate(w['hand']):
             if i in played_idx:
                 continue
             r = self.cards[c][2]
-            val += {'block': 1.0, 'parry': 0.8 if melee_foes else 0.2,
-                    'use': 0.4 if w['potions'] else 0.2}.get(r, 0.2)
+            # **Two statements and not one sum**, which matters: `val += a; val += b` and
+            # `val += a + b` differ in the last bits, the AI picks on `v > best_val`, and the
+            # published figures were measured under this order. Folding them flipped ties and
+            # moved the starter Warrior by 0.3 to 1.9 points before it was caught.
+            react = {'block': 1.0, 'parry': 0.8 if melee_foes else 0.2,
+                     'use': 0.4 if w['potions'] else 0.2}.get(r, 0.2)
+            val += react
             val += 0.15 * self.keep(c)
+            if c not in DEAD:
+                kept.append(react + 0.15 * self.keep(c))
+        # Strain takes the cheapest cards in the hand, so it costs what those were worth -- and
+        # the AI has to be charged it here or a Strain card is simply a better card.
+        owed = self.strain_for(played)
+        if owed:
+            for worth in sorted(kept)[:owed]:
+                val -= worth
         return val
 
     def catch_breath(self):
@@ -1340,9 +1781,20 @@ class Game:
         for played, ops in self.options():
             sim = Sim(self)
             sim.run(ops, real=False)
-            v = self.score(sim, {i for i, _ in played})
+            v = self.score(sim, {i for i, _ in played}, played)
             if v > best_val:
                 best, best_val = (played, ops), v
+        if best is None:
+            # **Nothing in hand can be played.** `options` is empty, which only Strain can make
+            # happen: *if you can't pay it in full, you can't play the half* (core-rules 8), and a
+            # hand down to one card that strains cannot pay it out of itself. The turn passes.
+            #
+            # Found by a crash, in the cowardly-off block of the chassis table where fights run
+            # long and hands run thin -- `played, ops = best` on a None. A deck with no Strain card
+            # can never reach it, which is why every figure published before today is unaffected.
+            self.s['no_legal_play'] += 1
+            self.log("  Warrior has no playable half (a Strain it cannot pay)")
+            return
         played, ops = best
         names = [(w['hand'][i], h) for i, h in played]
         self.log(f"  Warrior plays " + ', '.join(f"{n} ({'primary' if h == 'P' else 'secondary'})" for n, h in names))
@@ -1351,6 +1803,8 @@ class Game:
         sim = Sim(self)
         sim.run(ops, real=True)
         sim.commit()
+        # What the halves strain, read BEFORE the hand is disturbed: `strain_for` indexes it.
+        owed = self.strain_for(played)
         spent_halves = cfg.spent_cards or {}
         for i, h in sorted(played, key=lambda t: -t[0]):
             name = w['hand'].pop(i)
@@ -1360,6 +1814,17 @@ class Game:
                 self.log(f"  {name} is Spent")
             else:
                 w['discard'].append(name)
+        # Strain: *discard N OTHER cards from your hand*, cheapest first, and nothing it takes
+        # was played -- so it costs no stamina, by the same rule that makes Overloaded's two free.
+        for _ in range(owed):
+            spare = [c for c in w['hand'] if c not in DEAD]
+            if not spare:
+                break
+            worst = min(spare, key=self.keep)
+            w['hand'].remove(worst)
+            w['discard'].append(worst)
+            self.s['strained'] += 1
+            self.log(f"  {worst} is strained away")
         self.spend_stamina(len(played))
         # "At the end of your turn, discard this card" -- so a Wound costs a hand slot for exactly
         # one turn and then goes back round, which is what makes it a tax on the deck's cycle
@@ -1374,8 +1839,7 @@ class Game:
         self._board = self.board()
         # *Nothing Gets Through*: while Overloaded, armour counts double. Overloaded is not free --
         # the hero is Slowed and two cards are Spent for the fight -- so this reads both prices.
-        armor = cfg.armor * 2 if (cfg.armor_doubles_overloaded and self.overloaded) else cfg.armor
-        armor = max(0, armor - self.armor_lost)   # Stove In, and it does not come back
+        armor = self.armour_now()
         # **The critical deck decides what the Critical did** (core-rules 5), so the doubling is no
         # longer certain. Modelled as its distribution: ten cards reshuffled on empty is close
         # enough to independent draws at one crit in twenty attacks.
@@ -1487,7 +1951,9 @@ class Game:
                 self.armor_lost = min(cfg.armor, self.armor_lost + 1)
             elif key == 'blunt':
                 # Turn the Edge: a point off what the hero strikes for, for the rest of the fight.
-                self.blunt_lost = min(WEAPONS[self.w['weapon']]['strike'], self.blunt_lost + 1)
+                # `or 0` is the empty hand: there is no edge on it to turn.
+                self.blunt_lost = min(WEAPONS[self.w['weapon']]['strike'] or 0,
+                                      self.blunt_lost + 1)
             else:
                 self.apply_cond(key, 1, by=src)
 
@@ -1608,6 +2074,11 @@ def run_scenario(cfg, fights, seed):
               'tick_damage', 'shaken', 'shaken_off', 'lifted', 'cancelled',
                   'react_block', 'react_parry', 'react_brace', 'react_use', 'react_sidestep',
                   'prevented_react', 'reloads', 'shots_fired', 'cards_spent',
+                  # Casting, in the four ways it can go: off a formula, off an implement, with
+                  # nothing left to cast at all, and held because nothing it does is visible here.
+                  'casts', 'casts_prepared', 'casts_implement', 'casts_dry', 'casts_held',
+                  'casts_condition_lost', 'blast_self', 'strained', 'casts_unarmed',
+                  'no_legal_play',
                   # The stamina rule's own two: what the budget actually bought, and the dump
                   # that is the wall. Both are 0 when the rule is off, which is how a run says so.
                   'cards_played', 'deck_dumped',

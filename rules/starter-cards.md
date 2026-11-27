@@ -212,23 +212,38 @@ and compared in the validator.
 > would reopen the hole the ruling closed. The budget fields are unaffected — nine attack halves is
 > nine either way — so this is shape, and it is stated rather than smuggled.
 
-> **[OPEN] Unmeasured, and it would be worse than unmeasured to try.** The Shade deck arrived with
-> 3000 fights behind it and a −3.4 figure. This one has none, and the reason is specific:
-> `sim/careers_sim.py` carries a `MODELLED` set of eight verbs — strike, move, defend, block,
-> ready, use, heal, shake — and **cast is not one of them**. Anything outside it becomes
-> `('inert', verb)` and is scored at the AI's 0.2 floor.
+> **[MEASURED 2026-11-27] +4.7 points of win rate against the Warrior's deck, and the mean hides
+> everything that matters.** The simulator can cast now
+> ([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md)): an implement's Cast line, a prepared
+> formula, the slot it is spent out of, areas, and the Blast that catches the caster. 3000 fights a
+> cell, seed 1, the careers ladder.
 >
-> So running this deck through the simulator today would not return *no number*. It would return a
-> **number**, computed with all nine of the deck's attack halves doing nothing, and that number
-> would look like a comparable figure beside the Shade deck's −3.4. The simulator already knows
-> to be suspicious of this: it counts unmodelled steps and prints the proportion, *because a career
-> whose granted cards are half unmodelled has a number that means less.* Here it would be nine
-> sixteenths.
+> | | 5 spears | 6 spears | 2 spear 2 bow | 2 brutes | 2 guard 2 spear | MEAN |
+> |---|---|---|---|---|---|---|
+> | Warrior deck, sword and shield | 61.8 | 35.6 | 28.5 | 58.2 | 36.2 | **44.0** |
+> | Shade deck, same gear | 60.9 | 35.3 | 25.2 | 55.9 | 31.6 | **41.8** |
+> | **Caster deck, a wand and a free hand** | **82.8** | **82.4** | **54.4** | 21.5 | 2.5 | **48.7** |
+> | against the Warrior's | +21.0 | +46.8 | +25.9 | **−36.7** | **−33.7** | +4.7 |
 >
-> Its **reactions** are measurable — Sidestep and Use are both in `MODELLED_REACTIONS` — so
-> the only thing in the way is the attack verb. The budget equality above is a **design** argument,
-> not a measurement. Teaching the simulator to cast is what this deck asks for next, and until
-> then the honest instrument is the table.
+> **It is the most uneven starter deck in the game by a long way.** Against numbers it is the best
+> of the three and not close — a Blast 1 reaches a clump of six where a sword reaches one, so six
+> spears go from a fight the Warrior loses almost two times in three to one the caster wins more
+> than four times in five. Against **two brutes** and against **armour** it is the worst of the three by thirty points,
+> because a Fire Wand casts for 2 and armour comes off every hit: against Brigandine that is nothing
+> at all, and the deck has **no** ⚔ Strike half to fall back on.
+>
+> **The deck is the wand.** Nine ✦ Cast halves with no implement and nothing prepared wins **0 of
+> 3000** fights against five spears. That is not a flaw in the deck — a Warrior deck with no weapon
+> wins 0 too — but it is the thing to know about it: a chassis is sixteen cards *and* what they
+> need in your hands, and a GM handing this deck out hands out a Fire Wand with it or hands out
+> nothing. The other Implement the game sells, the *Staff of Healing*, casts **Heal 3** and no
+> damage, and this deck holding that one also wins 0.
+>
+> **What is still not measured** is a prepared formula that matters. At level 1 a caster has two
+> slots and **no formulas**: *Scholar* and *Sworn* grant the slots and the first school is tier 1.
+> And of the 36 formulas the graph grants at any level, the engine can cast **three** — the rest
+> are conditions on an enemy, which nothing in the simulator reads, or prose. So every figure above
+> is a floor, and the next piece of work is a condition on a goblin.
 
 > **And no routine deals it**, exactly as with the Shade deck: choosing a chassis is character
 > creation, which core-rules §12 defers until after the first playtest. The deck is content, this

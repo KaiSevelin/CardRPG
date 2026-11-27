@@ -9,6 +9,7 @@
     "build": "npm run packs && npm run art-list && npm run art-prompts && npm run handbook && npm run book",
     "packs": "node test/build-packs.mjs",
     "art-prompts": "node test/art-prompts.mjs",
+    "careers": "node test/careers-export.mjs",
     "art-list": "node test/art-list.mjs",
     "handbook": "node test/handbook.mjs",
     "book": "node test/book.mjs",

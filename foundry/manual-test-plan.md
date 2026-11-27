@@ -1124,13 +1124,23 @@ Warrior's sixteen plus one guaranteed Cast off their Way's trunk — a hand of f
 to do with it. This deck is the answer, built to the Warrior's budget field by field so the only
 differences are the chassis: Strike halves to Cast halves, and the game's first **Strain** card.
 
-**One thing to notice, and it is the open question.** Nothing measures this deck. The Shade deck
-arrived with 3000 simulated fights and a −3.4 figure behind it. `sim/careers_sim.py` carries
-a `MODELLED` set of eight verbs and **cast is not one of them**, so every attack half in this
-deck scores at the AI's inert floor — which means the simulator would hand back a *number*,
-not a silence, and it would look comparable to the Shade deck's. Play it and say whether it
-feels like sixteen cards of the same weight — that is the
-only instrument there is for now.
+**What to notice, and it is now a number rather than an open question.**  **[MEASURED
+2026-11-27]** The simulator can cast, and the deck is **+4.7** points of win rate against the
+Warrior's over 3000 fights a cell — with a spread of eighty points inside that mean
+([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md)). It is **+46.8** against six goblin
+spears, because a Blast 1 reaches a clump where a sword reaches one man, and **−36.7** against
+two brutes and **−33.7** against armoured infantry, because the wand casts for 2, armour comes off
+every hit, and this deck prints no ⚔ Strike to fall back on.
+
+So the thing to watch at the table is **the fight it is bad at**. Put the caster against two
+Goblin Guards in Brigandine and see whether it reads as a bad matchup or as a dead character —
+the simulator says they cannot hurt them at all, and a player holding nine halves they cannot use
+is a different experience from a player who is merely behind.
+
+**And watch what happens when the blast lands on the caster.** core-rules §11: *Blast — everyone
+in the area, enemies, allies and you, if you're in it.* The simulator burns the caster about once a
+fight with their own wand. The engine does not auto-target, so at the table this is the player's
+own choice, and the question is whether the tray makes it a visible one.
 
 **And the half that was missing for twenty days.** Until today the **Shade** deck could not be
 reached either: content, a document table and an art shelf, dealt by no routine and in no

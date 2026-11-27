@@ -190,18 +190,24 @@ def combined(careers, rows):
         print(f"{c['title']:<16}{c['way']:<9}{c['level']:>3}{wins[c['title']]:>8.1f}{rf:>6}"
               f"{g['pts']:>10.1f}{rd:>6}   {v}")
 
-    for way in ('shade', 'strength'):
-        ws = [wins[c['title']] for c, _ in have if c['way'] == way]
-        ds = [g['pts'] for c, g in have if c['way'] == way]
-        print(f"  {way:<9} win {sum(ws)/len(ws):5.1f}   off-duty {sum(ds)/len(ds):5.1f}")
-    sw = [wins[c['title']] for c, _ in have if c['way'] == 'shade']
-    st = [wins[c['title']] for c, _ in have if c['way'] == 'strength']
-    dw = [g['pts'] for c, g in have if c['way'] == 'shade']
-    dt = [g['pts'] for c, g in have if c['way'] == 'strength']
-    print(f"{nl}  Strength leads the fight by {sum(st)/len(st) - sum(sw)/len(sw):+.1f} points of "
-          f"win rate")
-    print(f"  Shade leads the rest of the day by {sum(dw)/len(dw) - sum(dt)/len(dt):+.1f} points "
-          f"of success chance")
+    # **The Ways that are actually in the file**, not a pair typed in here. Two crossed when this
+    # was written and four cross since 2026-11-27, so a hardcoded pair would have left Mind and
+    # Faith out of a summary that claims to be one -- and a filtered run that contained neither of
+    # the two named divided by zero.
+    def mean(xs):
+        return sum(xs) / len(xs) if xs else None
+    byway = {}
+    for way in sorted({c['way'] for c, _ in have}):
+        w = mean([wins[c['title']] for c, _ in have if c['way'] == way])
+        d = mean([g['pts'] for c, g in have if c['way'] == way])
+        byway[way] = (w, d)
+        print(f"  {way:<9} win {w:5.1f}   off-duty {d:5.1f}")
+    # And the one comparison this file was written to make, when both halves of it are present.
+    if 'shade' in byway and 'strength' in byway:
+        print(f"{nl}  Strength leads the fight by "
+              f"{byway['strength'][0] - byway['shade'][0]:+.1f} points of win rate")
+        print(f"  Shade leads the rest of the day by "
+              f"{byway['shade'][1] - byway['strength'][1]:+.1f} points of success chance")
 
 
 if __name__ == '__main__':

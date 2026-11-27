@@ -919,6 +919,19 @@ the greater names to the circle.
 > **No routine deals it**, which is the decision the Shade deck already carries: choosing a chassis
 > is character creation, and §12 defers that until after the first playtest. A GM running a
 > caster from level 1 hands out this deck in place of the Warrior's.
+>
+> **[MEASURED 2026-11-27] And it is worth +4.7 points of win rate against the Warrior's deck, with
+> a spread of eighty.** The simulator can cast now, so the deck has a number
+> ([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md)): 3000 fights a cell, **+21.0**
+> against five spears, **+46.8** against six, **+25.9** against archers, and **−36.7** and
+> **−33.7** against two brutes and against armour. A Fire Wand casts for 2 and armour comes off
+> every hit, and this deck prints no ⚔ Strike to fall back on — so it is the best of the three
+> chassis against numbers and the worst of the three against anything wearing a coat.
+>
+> **A GM handing out this deck hands out an implement with it.** Nine ✦ Cast halves with no
+> implement and nothing prepared wins **0 of 3000** fights, which is the same thing a Warrior deck
+> with no weapon does. That is what *in place of the Warrior's* means in full: the deck and the
+> hands are one object.
 
 #### Two kinds of casting
 
@@ -3390,6 +3403,28 @@ Whether an area spares your friends is a property of the **item or card**, and i
 Blast is the default and the cheaper one: a Fire Wand doesn't care who it burns. Aimed belongs on precise or discriminating magic, and should cost more — a higher-tier item, a specialization, or a formula with a price attached.
 
 This is the main reason to care where your party is standing, so don't make Aimed common.
+
+> **[OPEN 2026-11-27] Blast is prose the engine does not resolve.** An area is **targeted by hand**
+> in play: `resolveAttack` takes the targets the player selected, and `area` is read for one thing
+> only — the disadvantage you get for a Ranged or Area attack with an enemy adjacent. Nothing
+> computes the footprint, so nothing puts an ally or the caster inside it. A player aiming a Fire
+> Wand simply does not target themselves, and the rule above — *allies and you, if you're in it*
+> — costs nothing at the table unless the GM enforces it by eye.
+>
+> This was found from the other side. `sim/combat_sim.py` had the same hole, and charging the
+> caster for their own Blast cost the Caster starter deck **1.3 points** of win rate on its own and
+> burns the caster about once a fight
+> ([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md)). That is small, and the same
+> analysis says why it is small and what that means: a caster who **refuses** to stand in their own
+> Blast loses **8 points**, because the extra goblin the footprint catches is worth more than the
+> point or two it costs them. **At a Blast 1 the self-damage is not a deterrent at all** — so the
+> difference between ✸ Blast and ✵ Aimed, which §11 above says should be the difference between a
+> cheap item and an expensive one, is worth almost nothing at the bottom of the ladder and a great
+> deal at the top of it.
+>
+> The fix is a footprint: an Area action computes the squares it covers and resolves against
+> **everything standing in them**, with the targeting picking the centre square rather than the
+> creatures. That is a real change to how targeting works and belongs in its own session.
 - **Blocking:** you can move through allies but not through enemies.
 
 ### Sidestep

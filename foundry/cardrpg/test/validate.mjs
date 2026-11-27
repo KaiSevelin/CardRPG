@@ -1500,6 +1500,200 @@ const limit = /Your \*\*limit\*\* is \*\*(\d+) kg\*\*/.exec(
 check("carry limit matches core-rules", /CARRY_LIMIT = (\d+)/.exec(simSource)?.[1], limit);
 
 /*
+ * **The spell engine's copy of the content**  **[BUILT 2026-11-27]**
+ *
+ * `sim/combat_sim.py` can cast now, which means two more hand-transcriptions of content live in
+ * Python: the implements' Cast lines and a handful of formulas. The weapons above are held to
+ * equipment.md for a reason the project has published twice -- *a measurement taken against a
+ * stale transcription is fiction that reads like evidence* -- and nothing about that reason is
+ * weaker for a wand.
+ */
+section("the spell engine's copy of the content");
+
+const castable = content.ITEMS.filter(i => i.verbs?.cast);
+const simImplements = [...simSource.matchAll(/^    '(\w+)':\s+dict\(name='([^']+)'/gm)]
+  .filter(m => /power=|heal=/.test(simSource.split("\n").find(l => l.includes(`'${m[1]}':`)) ?? ""))
+  .map(m => m[2]);
+check("the simulator's implements are the game's",
+  simImplements.sort().join(", "), castable.map(i => i.name).sort().join(", "));
+
+/*
+ * And each line's numbers. `power` is the Cast value **except** where the line's text is a heal,
+ * which is the Staff: its printed 3 is three points of healing and not three of damage, and a
+ * table that read it as damage would have measured a Staff as a better Wand.
+ */
+const implementDrift = [];
+for (const [key, name] of [["fire_wand", "Fire Wand"], ["staff", "Staff of Healing"]]) {
+  const item = castable.find(i => i.name === name);
+  const line = item?.verbs?.cast;
+  if (!line) { implementDrift.push(`${name}: no Cast line`); continue; }
+  const entry = simEntry("'" + key + "'");
+  if (!entry) { implementDrift.push(`${key}: not in IMPLEMENTS`); continue; }
+  const heals = Number(/Heal (\d+)/.exec(line.text ?? "")?.[1] ?? 0);
+  for (const [f, got, want] of [
+    ["power", simField(entry, "power", 0), heals ? 0 : line.value],
+    ["heal", simField(entry, "heal", 0), heals],
+    ["rng", simField(entry, "rng", 1), line.range ?? 1],
+    ["area", simField(entry, "area", 0), line.area ?? 0],
+    ["kg", simField(entry, "kg", 0), item.weight ?? 0],
+    ["hands", simField(entry, "hands", 1), item.hands ?? 1],
+  ]) if (String(got) !== String(want)) implementDrift.push(`${key}.${f} ${got} != ${want}`);
+}
+check("implements that drifted from gear.mjs",
+  implementDrift.length ? implementDrift.join("; ") : "none", "none");
+
+/*
+ * The formulas `combat_sim.py` keeps by hand, for writing a scenario. Seven of them, each a
+ * quotation of the spell of that name -- and a quotation is exactly the thing that goes stale.
+ *
+ * `simEntry` reads ONE line and a formula's record takes two, so this reads the whole `dict(...)`
+ * call instead. The first version did not, and the check caught itself: *Open the Vein*'s Health
+ * cost and *Grave Chill*'s Aimed area are on the continuation line, both were read as absent, and
+ * both were reported as drift that was not there.
+ */
+function simCall(key) {
+  const at = simSource.indexOf("    " + key + ":");
+  if (at < 0) return null;
+  const open = simSource.indexOf("dict(", at);
+  /* The first `),` and not the first at a line end: a record may carry a trailing comment, and
+   * reading to the newline swallowed the next three records with it. */
+  const end = simSource.indexOf("),", open);
+  return open < 0 || end < 0 ? null : simSource.slice(open + 5, end);
+}
+const spellPool = [...content.MIND_POOL, ...content.FAITH_POOL];
+const spellDrift = [];
+for (const name of ["Open the Vein", "The Borrowed Hand", "Lay On", "No Step Back",
+  "Shake It Off", "The Unbound Tongue", "Grave Chill"]) {
+  const spell = spellPool.find(s => s.name === name);
+  if (!spell) { spellDrift.push(`${name}: not in either pool`); continue; }
+  const entry = simCall("'" + name + "'");
+  if (!entry) { spellDrift.push(`${name}: not in SPELLS`); continue; }
+  const e = spell.effect ?? {};
+  const byVerb = (verb) => (e.verb === verb ? (e.param ?? 0) : 0);
+  /* `simField`'s `block=` matched `ignores_block=True` and read a flag as a Block value. `\b`
+   * settles it: `_` is a word character, so there is no boundary before `block` in that name. */
+  const field = (f, dflt) => {
+    const m = new RegExp("\\b" + f + "=(True|False|\\d+)").exec(entry);
+    return m ? (m[1] === "True" ? true : m[1] === "False" ? false : Number(m[1])) : dflt;
+  };
+  for (const [f, got, want] of [
+    ["strength", field("strength", 0), spell.strength ?? 0],
+    ["power", field("power", 0), e.verb === "cast" ? (e.mod ?? 0) : 0],
+    ["heal", field("heal", 0), byVerb("heal")],
+    ["shake", field("shake", 0), byVerb("shake")],
+    ["block", field("block", 0), byVerb("block")],
+    ["rng", field("rng", 1), e.range ?? 1],
+    ["area", field("area", 0), e.area ?? 0],
+    ["aimed", field("aimed", false), e.areaKind === "aimed"],
+    ["health", field("health", 0), spell.cost?.health ?? 0],
+  ]) if (String(got) !== String(want)) spellDrift.push(`${name}.${f} ${got} != ${want}`);
+}
+check("formulas that drifted from the pools",
+  spellDrift.length ? spellDrift.join("; ") : "none", "none");
+
+/*
+ * **And the four rules the engine has to hold**, each one a thing that was wrong in the first
+ * build of it and was caught by measuring rather than by reading:
+ *
+ *   - **A Blast catches the caster** (core-rules 11: *everyone in the area -- enemies, allies and
+ *     you, if you're in it*). Without it the Caster chassis read **+7.1** against the Warrior's.
+ *   - **Strain is paid in full or the half is not played** (core-rules 8). Without it the deck's
+ *     one above-budget card was free.
+ *   - **A Cast half with nothing behind it does nothing**, which is the whole question a deck of
+ *     nine of them asks -- so the engine counts the dry ones rather than quietly succeeding.
+ *   - **A prepared spell is spent by casting it** (core-rules 4), including twice in one turn,
+ *     which only a per-lookahead copy of the slots can get right.
+ */
+check("a Blast catches the caster",
+  /if you're in it\.\* Armour/.test(simSource)
+  && /self\.game\.s\['blast_self'\] \+= mine/.test(simSource) ? "yes" : "no", "yes");
+check("Strain is paid in full or not at all",
+  /def can_pay_strain/.test(simSource) && /spare >= owed/.test(simSource) ? "yes" : "no", "yes");
+check("a dry Cast half is counted",
+  /self\.game\.s\['casts_dry'\] \+= 1/.test(simSource) ? "yes" : "no", "yes");
+check("the lookahead spends the preparation",
+  /self\.prepared\[slot\] = True/.test(simSource) ? "yes" : "no", "yes");
+
+/*
+ * `sim/careers_sim.py` and the export that feeds it. The export used to hold back the two magical
+ * Ways **because** there was no spell engine, and that sentence was in the file as its reason -- so
+ * the thing to pin is that all four cross now, and that the three starter decks do too.
+ */
+const careersSimSource = fs.readFileSync(path.join(root, "../../sim/careers_sim.py"), "utf8");
+const exportSource = fs.readFileSync(path.join(root, "test/careers-export.mjs"), "utf8");
+check("the simulator models the Cast verb",
+  /MODELLED = \{[^}]*'cast'/.test(careersSimSource) ? "yes" : "no", "yes");
+check("every Way crosses",
+  /const WAYS = \[([^\]]+)\]/.exec(exportSource)?.[1].replace(/["\s]/g, ""),
+  "shade,strength,mind,faith");
+check("and each Way is handed a chassis",
+  /CHASSIS_FOR = \{([^}]+)\}/.exec(careersSimSource)?.[1]
+    .match(/'(\w+)'(?=: )/g)?.join(", ").replace(/'/g, ""), "strength, shade, mind, faith");
+
+/*
+ * **And what the export carries, pinned on the generator rather than on its output.**
+ *
+ * The first version of this read `sim/careers.json` and counted what was in it -- which would
+ * have failed on a clone, because that file is **gitignored**: it is generated for a simulator run
+ * and is not part of the install. A check that cannot run where the suite runs is not a check, so
+ * the three things that can independently go stale are pinned on the script that writes them.
+ */
+check("the export carries the formula definitions",
+  /spells: \[\.\.\.known\]\.sort\(\)\.map/.test(exportSource) ? "yes" : "no", "yes");
+check("and all three starter decks",
+  [...exportSource.matchAll(/^    (\w+): \(content\.(\w+) \?\? \[\]\)\.map\(shape\)/gm)]
+    .map(m => `${m[1]}=${m[2]}`).join(", "),
+  "Warrior=WARRIOR_DECK, Shade=SHADE_DECK, Caster=CASTER_DECK");
+/*
+ * And it is a command somebody can run, which it was not: `careers-export.mjs` had no npm script
+ * for the 23 days it existed, so "the export is stale" had no answer shorter than a path.
+ */
+const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
+check("the export is a script", pkg.scripts?.careers ?? "(none)", "node test/careers-export.mjs");
+
+/*
+ * **And every core-rules section these three files cite is a section that exists.**
+ *
+ * Written because of a slip in this day's own work. The Cast verb, both its sources, preparation
+ * and what a card half may add to a spell are all **section 4**, *Verbs and items* -- and fourteen
+ * new comments cited **section 9**, which is *NPC decks*. An older comment in the export cited
+ * **section 13**, which has never existed at all.
+ *
+ * A citation is the only thing holding a transcription to the document it came from, so a citation
+ * pointing at the wrong place is a stale number with extra steps. This checks the **range** and
+ * not the subject, which is all a machine can do here -- the wrong-section half was caught by
+ * reading, and the out-of-range half is the half that can be caught twice.
+ *
+ * It does its own read of core-rules.md. The suite reads that file twice already, under two names,
+ * and both are declared hundreds of lines BELOW this section -- and a pin has to sit below the
+ * const it uses or it throws on load, which this suite has learned twice. A third read is cheaper
+ * than moving a section away from the thing it is about.
+ */
+const coreSections = new Set([...fs.readFileSync(
+  path.join(root, "../../rules/core-rules.md"), "utf8").matchAll(/^## (\d+)\. /gm)]
+  .map(m => m[1]));
+check("sections core-rules actually has", [...coreSections].join(", "),
+  "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12");
+const offBook = new Set();
+for (const src of [simSource, careersSimSource, exportSource]) {
+  for (const m of src.matchAll(/core-rules \u00a7?(\d+)/g)) {
+    if (!coreSections.has(m[1])) offBook.add(m[1]);
+  }
+}
+check("core-rules sections cited that do not exist",
+  [...offBook].sort().join(", ") || "none", "none");
+/*
+ * And the citations are there at all: a file that cites nothing would pass the rule above. The
+ * count is NOT pinned, deliberately -- it moves whenever a comment is written, and a pin that
+ * fails on a comment teaches people to bump it without reading, which is worse than no pin. What
+ * has to hold is that each of the three still points at the document somewhere.
+ */
+check("the three files all cite core-rules",
+  [simSource, careersSimSource, exportSource]
+    .map(src => (src.match(/core-rules \u00a7?\d+/g) ?? []).length)
+    .every(n => n > 0) ? "yes" : "no", "yes");
+
+/*
  * `ignores N armor` used to be prose on the verb line and nothing else: resolve.mjs subtracted the
  * whole of a target's armour, so eight items promised something the engine never did. Prose is not
  * a rule, which is the answer to the open question of whether this should be a tag -- and the
@@ -22380,7 +22574,11 @@ readFiles.set("decksSource", decksSource);
  * module in this system whose entire job is a picture, so it is also the first whose checks are
  * all about WHERE something is -- and the one place a span could lie about that is the stylesheet
  * it shares with the HUD. */
-check("files this suite greps by name", readFiles.size, 85);
+/* 87 since 2026-11-27: `sim/careers_sim.py` and `test/careers-export.mjs`, the two halves of the
+ * crossing that carries content into the simulator. The export used to hold the two magical Ways
+ * back because there was no spell engine; there is one now, so what it carries is a rule of its
+ * own and a rule nothing checked is a rule that drifts. */
+check("files this suite greps by name", readFiles.size, 87);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -22528,9 +22726,14 @@ check("greps a second printer could answer",
  * is absent is the whole of its content, so the content is what is pinned.
  */
 /*
- * The twenty-seven, by name and by pattern, in the order the suite sorts them. Raw strings,
- * because these are patterns: written as escaped JS they are unreadable, and a list nobody
- * can read is a list nobody will check when it changes.
+ * The ledger, by name and by pattern, in the order the suite sorts them. Raw strings, because
+ * these are patterns: written as escaped JS they are unreadable, and a list nobody can read is a
+ * list nobody will check when it changes.
+ *
+ * **[FIXED 2026-11-27] This said "the twenty-seven" and there are 97.** A count in prose beside a
+ * list that grows with every negative check is a number that goes stale on the next commit, which
+ * is the exact failure this file exists to catch, in this file. So the count is a check now and
+ * the sentence does not carry one.
  */
 const absentGreps = [
   String.raw`a pile is never given one :: "pile",[^)\n]*backOf\(`,
@@ -22665,6 +22868,7 @@ const absentGreps = [
   String.raw`which a creature's schema has not got :: intent: new fields\.DocumentIdField\(\)[\s\S]{0,40}skill`,
   String.raw`while nothing applies one at grant time :: createItem[\s\S]{0,200}resolveCondition`,
 ].join(" | ");
+check("negatives in the ledger", absentGreps.split(" | ").length, 97);
 check("greps that correctly match nothing",
   greps.filter(g => g.hits === 0).map(g => `${g.check} :: ${g.pattern}`).sort().join(" | "),
   absentGreps);
