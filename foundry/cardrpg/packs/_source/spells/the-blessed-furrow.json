@@ -1,0 +1,24 @@
+{
+  "_id": "Ywrfw7YEeHBkLMG4",
+  "_key": "!items!Ywrfw7YEeHBkLMG4",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Blessed Furrow",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-blessed-furrow.webp",
+  "system": {
+    "strength": 0,
+    "nights": 1,
+    "source": "Brendan",
+    "description": "<p>A night in a field nobody can farm. By morning it will carry one crop, and everyone within a day's walk will know who stood in it.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "one barren field carries one crop"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

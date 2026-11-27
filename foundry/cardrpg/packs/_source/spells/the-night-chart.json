@@ -1,0 +1,24 @@
+{
+  "_id": "H1na2GDMFKlwEwth",
+  "_key": "!items!H1na2GDMFKlwEwth",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Night Chart",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-night-chart.webp",
+  "system": {
+    "strength": 0,
+    "nights": 2,
+    "source": "Divination",
+    "description": "<p>Two nights with the sky and a chart. Name one question about the days ahead and the GM answers it truthfully &mdash; as far as it is settled, which is never as far as you wanted.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "one question about the days ahead, answered as far as it is settled"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

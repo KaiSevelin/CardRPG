@@ -17,6 +17,9 @@ import { isSole } from "./monsters.mjs";
 /* What a spell costs, asked of the one routine that charges it: the sheet and the card in the tray
  * must not be able to quote different bills for the same cast. See `spellPrice`. */
 import { spellPrice, priceWords } from "./resolve.mjs";
+/* A recipe runs a challenge, and the two routines that put one on the board are the GM's. See
+ * `#onBeginRitual`: the recipe is the one document that knows a ritual's own numbers. */
+import { startChallenge, setCall } from "./checks.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2, ItemSheetV2 } = foundry.applications.sheets;
@@ -261,8 +264,12 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
          */
         const keep = [
           slate.system.source,
+          /* A ritual's price is time, and it is the only price in the game paid in it. Printed as
+           * the nights it takes rather than as the slot it does not take, because *no slot* says
+           * what a ritual is free of and nothing about what it costs. [CHANGED 2026-11-27] */
           slate.system.outsideBudget
-            ? "no slot \u2014 never prepared"
+            ? `no slot \u2014 ${slate.system.nightsOf} night`
+              + `${slate.system.nightsOf === 1 ? "" : "s"} of work`
             : `${slots} slot${slots === 1 ? "" : "s"} while prepared`,
           rule ? game.i18n.localize(rule.label) : ""
         ].filter(Boolean).join(" \u00b7 ");
@@ -696,7 +703,23 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
      * strength (data/items.mjs), and that getter is the one place that says which spells those
      * are.
      */
-    const cost = slate.system.outsideBudget ? 0 : (slate.system.strength ?? 0);
+    /*
+     * **A ritual is not prepared at all, which is a refusal rather than a free pass.**
+     * **[FIXED 2026-11-27]**
+     *
+     * `outsideBudget` zeroed the cost here, so Prepare always said yes for a ritual -- and a
+     * prepared ritual is a contradiction the engine then had to work around in two places: the
+     * tray greyed it because unprepared spells are not clickable, and `payToCast` refused it
+     * because unprepared spells cannot be cast. Both are fixed by the slate being honest about
+     * which it is. A ritual is read out of the book on the night; there is nothing to hold ready.
+     */
+    if (slate.system.outsideBudget) {
+      return ui.notifications.warn(`${slate.name} is a ritual: the work of `
+        + `${slate.system.nightsOf} night${slate.system.nightsOf === 1 ? "" : "s"}, read out of `
+        + "the book. It is never prepared and never costs a slot \u2014 cast it from the tray, "
+        + "out of a fight.");
+    }
+    const cost = slate.system.strength ?? 0;
     const free = this.document.system.spellSlots?.free ?? 0;
     if (want && cost > free) {
       return ui.notifications.warn(`${slate.name} takes ${cost} slot`
@@ -819,7 +842,10 @@ export class SlateSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     classes: ["cardrpg", "sheet", "slate"],
     position: { width: 520, height: 600 },
     form: { submitOnChange: true },
-    window: { resizable: true }
+    window: { resizable: true },
+    actions: {
+      beginRitual: SlateSheet.#onBeginRitual
+    }
   };
 
   static PARTS = {
@@ -843,6 +869,22 @@ export class SlateSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       isFeature: slate.type === "feature" || slate.type === "injury",
       isInjury: slate.type === "injury",
       isSpell: slate.type === "spell",
+      /*
+       * **A recipe, and the challenge it runs.**  **[WIRED 2026-11-27]**
+       *
+       * `ritualChallenge` has been able to answer this since the four rituals became items on
+       * 2026-11-08 and **nothing had ever called it**: the only mention of it outside its own
+       * body was the validator checking that it existed. So a party holding a Regrowth held a
+       * card with Progress 6 and Pressure 4 printed on it, and a GM read those off the text and
+       * typed them into the board by hand -- which is the one thing this project calls a defect
+       * by name, a field with a reader nothing reaches.
+       *
+       * The injury's side of this has been rendered since injuries were built: *lifted by a
+       * Regrowth, a downtime challenge*. This is the same sentence from the end that can act.
+       */
+      isRecipe: slate.type === "item" && !!slate.system.isRecipe,
+      ritual: slate.system.ritualChallenge ?? null,
+      isGM: !!game.user?.isGM,
       injuryCategories: CARDRPG.injuryCategories,
       approaches: CARDRPG.approaches,
       elements: CARDRPG.elements,
@@ -859,6 +901,53 @@ export class SlateSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       recharges: CARDRPG.recharges,
       tags: CARDRPG.itemTags
     });
+  }
+
+  /**
+   * **Put the ritual on the board, with the recipe's own numbers.**  **[WIRED 2026-11-27]**
+   *
+   * A ritual is a challenge rather than a check (core-rules 8, skill-rules 3 and 6), and the
+   * numbers are the recipe's: `ritualChallenge` reads them out of `injuryCategories` or
+   * `lesserRituals`, so there is still exactly one place that says what a Regrowth costs.
+   *
+   * **It sets the call as well as the tracks**, because those are two flags and a challenge with
+   * no call is a board nobody can answer. The approach is the recipe's -- a Quieting is Presence
+   * because what mends a nerve is a person -- and **the DC is deliberately not passed**: no
+   * ritual in the content states one, so this leaves `setCall` to apply the engine's own default
+   * rather than inventing a number here and making this the fifth place a ritual's difficulty is
+   * described. The GM moves it, which is what the chat line says out loud.
+   *
+   * GM-only, and it says so rather than failing quietly: both routines write a scene flag, which
+   * is the GM's to set, so a player clicking this would otherwise get nothing and no reason.
+   */
+  static async #onBeginRitual() {
+    const ritual = this.document.system.ritualChallenge;
+    if (!ritual) return;
+    if (!game.user.isGM) {
+      return ui.notifications.info(game.i18n.localize("CARDRPG.Check.GMCalls"));
+    }
+    /* Whoever is holding the book is who the board is waiting on. An unowned recipe -- one in a
+     * compendium or on the GM's shelf -- names nobody, which `startChallenge` already allows. */
+    const who = this.document.parent?.id ? [this.document.parent.id] : [];
+    const started = await startChallenge({
+      progressMax: ritual.progress, pressureMax: ritual.pressure, ritual: true, who,
+      note: `${ritual.name} \u2014 ${this.document.name}`
+    });
+    if (!started) return ui.notifications.warn("A challenge needs an active scene.");
+    await setCall({ approaches: [ritual.approach], who });
+    const approach = game.i18n.localize(CARDRPG.approaches[ritual.approach]?.label
+      ?? ritual.approach);
+    await ChatMessage.create({
+      content: `<div class="cardrpg"><p><strong>${foundry.utils.escapeHTML(ritual.name)}</strong>`
+        + ` \u2014 ${approach}, Progress ${ritual.progress} against Pressure ${ritual.pressure}.`
+        + `${ritual.needsName ? " You must name who laid it." : ""}`
+        + `<br><span class="cr-note">A twist comes off the ritual deck. The DC is the GM's.`
+        + "</span></p></div>"
+    });
+    /* The board is open now, so the trays that draw it need telling -- the same render the table
+     * board does after it sets a call. */
+    const { CardRPGTray } = await import("./tray.mjs");
+    for (const tray of CardRPGTray.openTrays) tray.render();
   }
 }
 

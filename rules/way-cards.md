@@ -1417,13 +1417,30 @@ each one has — far more than its element, which is why two schools can both th
 | **Negotiation with elf-kin** — Household | ✗ → an obligation per formula |
 | **Someone else's turn, and a prophecy** — Divination | ✗ → now *The Long Look* |
 
-**Six formulas a school at least, with every strength from 1 to 5 present in each** — eighty-five
-in all. Two tests, and all twelve schools pass both:
+**Six formulas a school at least, with every strength from 1 to 5 present in each** — a hundred
+in all. Two tests, and twelve of the thirteen schools pass both:
 
 - **A first Way of Mind node grants 2 slots** (§1.4), so a two-slot caster must be able to prepare
   something from *this* school on their first day. That is what the **1** and the **2** are for.
 - **A branch has to be worth walking to the end**, which is what the **5** is for: the school's
   thesis, and the argument for choosing it at all.
+
+> **The thirteenth is Household Magic, and the ladder does not apply to it.**
+> **[RULED 2026-11-27]**
+>
+> A strength is a **slot cost**, and both tests above are about a budget: can a two-slot caster
+> spend something here on day one, and is there one thing here worth a whole budget. Household
+> Magic teaches nothing but **rituals**, and a ritual costs no slot at any point &mdash; so its
+> seven print **ritual** in the Str column where every other row prints a digit, and the column
+> they would have filled is a column about a price they do not pay.
+>
+> What a ritual costs is **nights**, and the first word of each of those Effect cells is the
+> number of them. That is the ladder this school has: one night for the six small workings, three
+> for *The Door Home*, which is the thesis and is not a night's work by any reading.
+>
+> Nine other schools and gods now carry one ritual each, which is why this is a rule about a
+> **column** rather than about a school: a school's ladder is built from the formulas that spend
+> slots, and the rituals beside them are priced in the other currency.
 
 Elemental, Poison, Glamour and Ward run longer because earlier passes needed them; the thin ones were
 filled rather than making the fat ones fatter.
@@ -1518,6 +1535,7 @@ Magic buys time with blood, and nothing else can buy time at all.
 | **Ask the Dead** | 1 | Out of combat: a corpse answers **three questions** truthfully, as far as it knew. |
 | **The Risen Rank** | 4 | **Every** corpse within 3 rises and fights for you for one round, then falls. |
 | **The Grave's Bargain** | 5 | A **dead ally** stands up at 1 Health until the fight ends, then is dead again. You gain **one bound Taint for every round they stood**. |
+| **The Quiet Ground** | ritual | **One night.** One burial ground: nothing in it rises, walks or answers anybody. It holds until the ground is opened. |
 
 **Every formula here costs a bound Taint (mind) card, permanently** — a hole in the deck you play from
 that no cure lifts (core-rules §8). So a necromancer's list is short because they *cannot afford* a
@@ -1576,6 +1594,7 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 | **The Crowded Room** | 4 | Until your next turn, every enemy attacks a **random** figure within its reach — friend or foe, chosen by a fate draw. |
 | **The Face of a Friend** | 3 | One enemy treats you as an ally — it will not attack you, and will take a hit for you — until you attack it. |
 | **The Long Masquerade** | 5 | Out of combat: you and your whole party appear to be **other people** for a day. Only magic sees through it. |
+| **A Face Kept** | ritual | **Two nights.** Something of theirs, and one borrowed face, held until you take it off &mdash; no slot, nothing to keep up. The elf-kin count it dear. |
 
 > **[FIXED] Two of these were charging the wrong school's price.** *Wrong Face* and *The Evil Eye*
 > both read *"the GM writes down a secret"*, which is **Tattoo Magic's** price. Glamour pays an
@@ -1671,6 +1690,7 @@ nothing to prepare once you have given the hand. The other six are formulas.
 | **The Nine Names** | 1 | Out of combat: a minor god names **who in this place it is angry with**, and will not say why. |
 | **The Gathered Pact** | 4 | **Every** god you are pacted with grants its written favour, this turn. |
 | **The Great Bargain** | 5 | **It does not come. It fills you.** **Imbued (3)** on yourself: **+3 ✦ Cast** for three rounds, and afterwards the god takes something the GM chooses. |
+| **The Standing Offer** | ritual | **One night.** One of the Nine attends the party while they stay in the place. The GM says what it notices, and what it wants for noticing. |
 
 > **The pact *is* the spell, and that is how this school avoids being one card twelve times.** *The
 > Bargain* leaves everything to the GM, which is wonderful once and arbitrary twice — so every other
@@ -1704,13 +1724,13 @@ nothing to prepare once you have given the hand. The other six are formulas.
 
 | Formula | Str | Effect |
 |---|---|---|
-| ✦ **Hearth and Home** | ritual | A camp nobody unfriendly can find, for one night. |
-| **The Clean Pot** | 1 | Food never spoils and water is always safe. A day's rations for the party, every day. |
-| **The Mended Seam** | 1 | Repair one item overnight — including **corroded armour** (core-rules §8). |
-| **The Unlatched Door** | 2 | Any door or lock that was ever opened by someone who lived there opens for you. |
-| **The House That Was** | 4 | Overnight, a ruin becomes a house: warm, defensible, and the party rests as though in a town. |
-| **The Long Table** | 3 | One meal, taken together: the party sheds **every Wound** and all rest tokens return. Once a day, and the elf-kin keep the tally. |
-| **The Door Home** | 5 | A door you have opened before becomes a door to **any other** door you have opened before. Once a day, and the elves count it. |
+| ✦ **Hearth and Home** | ritual | **One night.** A camp nobody unfriendly can find, for one night. |
+| **The Clean Pot** | ritual | **One night.** Food never spoils and water is always safe. A day's rations for the party, every day. |
+| **The Mended Seam** | ritual | **One night.** Repair one item overnight — including **corroded armour** (core-rules §8). |
+| **The Unlatched Door** | ritual | **One night.** Any door or lock that was ever opened by someone who lived there opens for you. |
+| **The House That Was** | ritual | **One night.** A ruin becomes a house: warm, defensible, and the party rests as though in a town. |
+| **The Long Table** | ritual | **One night.** One meal, taken together: the party sheds **every Wound** and all rest tokens return. Once a day, and the elf-kin keep the tally. |
+| **The Door Home** | ritual | **Three nights.** A door you have opened before becomes a door to **any other** door you have opened before. Once a day, and the elves count it. |
 
 > **The one school with no combat value at all**, and it is worth having anyway: it answers starvation,
 > pursuit, and the one kind of damage nothing else repairs. **The Mended Seam is the repair side of
@@ -1730,6 +1750,7 @@ nothing to prepare once you have given the hand. The other six are formulas.
 | **The Standing Ward** | 4 | 🔥 **Spent**: until your next turn **no ✦ Cast resolves at all**, anywhere on the field — including yours. |
 | **The Mirror** | 3 | ⚡ Reaction — 🔥 **Spent**: a ✦ Cast aimed at you resolves against **its own caster** instead. |
 | **The Broken Word** | 5 | 🔥 **Spent**: one spell or miracle is **unlearned by its caster** for the rest of the day. They still have the slot; they no longer have the words. |
+| **The Threshold** | ritual | **One night.** One door, gate or camp edge: nothing hostile crosses it unfelt, and the warder wakes. It stops nobody. |
 
 > **Ward decides whether magic happens**, in both directions: it silences and it unsilences, it
 > prevents a Cast and it removes what landed. And it is the school simulation vindicated — a dispel on
@@ -1760,6 +1781,7 @@ nothing to prepare once you have given the hand. The other six are formulas.
 > fate deck, and that stands. The ban is on **a divination of yours**, not on a thing you carry — and
 > the Gambler is a different node with a different price.
 | **The Whole Thread** | 5 | Before the fight, the GM shows you the enemy's **intent cards for the whole fight, in order**. The GM writes **three** prophecies. |
+| **The Night Chart** | ritual | **Two nights.** Name one question about the days ahead. The GM answers it truthfully, as far as it is settled. |
 
 > **The prophecy is the price, and it is the only one that is paid later.** *The Long Look* buys a
 > true answer now and hands the GM something to spend on you whenever they like. Every other school's
@@ -1782,6 +1804,7 @@ to anyone literate. What the ritual buys is **a debt**. These seven are the ways
 | ✦ **The True Name** | 3 | **Compelled (3)** on one creature at range 4, **ignoring cover**. The debt **doubles**. |
 | **The Open Door** | 4 | A 2-square area within 2 becomes **difficult ground** dealing **2 a turn**, for 3 rounds. Nothing comes through, because nothing has been asked to. |
 | **The Reckoning** | 5 | ⚔ 6 at ◎6, past **armour and Block**. Then the GM settles the ledger — out of you, or out of whoever is standing nearest, and the GM chooses which. |
+| **The Long Calling** | ritual | **Three nights.** One of the greater names attends, does not touch you, and will bargain. What it asks is the GM's, and it is never small. |
 
 > **Why Control and not Preparation.** Preparation paid in *a pact* is Spiritualism, and the two
 > would have collided on both halves of the cell at once. The demonologist's hold on a fight is a
@@ -1884,6 +1907,7 @@ Vax does not spend slots on *The Amber District* so much as agree to take the wh
 | **The Narrow Path** | 1 | While your action deck is **10 cards or fewer**, your miracles cost **1 slot less** (minimum 1). |
 | **The Clean Field** | 4 | Until your next turn, **no enemy may play a secondary**. |
 | **The Body Made Clean** | 5 | Every ally is healed to full and every condition on them is **Lifted and Shaken off entirely**. Your action deck is **6 cards** for the rest of the day. |
+| **The Washing of the Dead** | ritual | **One night.** One body laid properly: what was taken from them goes back into the ground, and nothing of them walks or answers. |
 
 **The Narrow Path is the obedience turned into a reward**, which is the shape an ascetic faith should
 have: go further than you were told and the god pays you back.
@@ -1970,6 +1994,7 @@ that works once grants miracles that work once, so the price and the fiction are
 | **Alone on the Road** | 1 | While **no ally is within 2 squares**, heal **2** at the start of your turn. |
 | **The Driven Out** | 4 | Every enemy within 3 is **Compelled (1)** to attack you — and you gain **Block 3** for each one that is. |
 | **The Land Beneath** | 5 | The ground opens. Every enemy within 2 is **gone from the fight** until the start of your third turn. You are **Prone**, and alone, when they come back. |
+| **The Outcast's Road** | ritual | **Two nights.** You and those with you cannot be tracked, named or asked after until you stop walking. |
 
 **Vulpet's obedience is the harshest in the Way and her miracles are built to repay it**: *Nobody's
 Friend* does to an enemy exactly what the god does to you, and *Alone on the Road* is the only healing
@@ -1987,6 +2012,7 @@ a priest of hers can ever receive — her own, and only when standing apart.
 | **The Slow Mercy** | 2 | Name an ally. At the start of your **third** turn after this, they are healed to full. |
 | **The Orchard** | 4 | At the start of your **second** turn after, every ally heals **4** and sheds one condition. |
 | **What Grows Out of Us** | 5 | At the start of your **fourth** turn after, every ally — **including the dead** — stands at full Health. |
+| **The Blessed Furrow** | ritual | **One night.** One barren field carries one crop, and everyone within a day's walk knows who stood in it. |
 
 **The Slow Mercy is the largest heal in the game and it is three turns away**, which is the whole of
 Brendan: nothing he gives is fast, and what he gives is worth waiting for. A fight that ends in two
@@ -2004,6 +2030,7 @@ rounds wastes it entirely, and that is the risk the priest takes when they cast 
 | **The Close Work** | 2 | ⚡ Reaction, adjacent: an adjacent enemy's Strike hits **the nearest other enemy** instead. |
 | **The Grey Hour** | 4 | ⚡ Reaction, adjacent: an adjacent enemy's **whole turn** does not happen. |
 | **The Silent Knife** | 5 | Adjacent only. One enemy is **dead**. No save, no fate draw, no roll of any kind. |
+| **The Unnamed Grave** | ritual | **One night.** One burial nobody can find, name or ask after. No trace, no name, nothing to be asked. |
 
 **Range is the coin and it is paid in risk, not resources** — a priest of The Grey has to be standing
 next to the thing they are stopping. It is the one obedience that costs nothing on the sheet and

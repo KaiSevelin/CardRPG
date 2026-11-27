@@ -2362,6 +2362,7 @@ many spell slots preparing one costs.
 
 | Spell | Strength | What it does |
 |---|---|---|
+| **The Standing Offer** | 0 | A night's offering at a place that has somebody in it. One of the Nine attends the party until they leave the place behind: the GM says what it notices, and what it will want for noticing. |
 | **The Small Pact** | 1 | Name the god you are pacted with, and it does the thing written on the pact. The same thing, every time, which is what makes this a spell and not a wish. |
 | **The Nine Names** | 1 | Out of combat. A minor god names who in this place it is angry with, and will not say why. |
 | **Hold to the Bargain** | 2 | It was going to fail. Something intervened, once, because it owes you. |
@@ -2374,6 +2375,7 @@ many spell slots preparing one costs.
 
 | Spell | Strength | What it does |
 |---|---|---|
+| **The Quiet Ground** | 0 | A night's work over the ground, and what is buried in it stays buried: nothing rises, nothing walks, and nothing that was laid here answers anybody. It holds until the ground is opened. |
 | **The Long Preparation** | 1 | You read about them the night before. It is not insight; it is homework, and it only works on the thing you did it for. |
 | **Ask the Dead** | 1 | It answers three questions truthfully, as far as it knew, which is usually less than you hoped and occasionally much more. |
 | **Grave Chill** | 2 | The cold that comes off a body, aimed. Two squares of it, and everything in them is slow to understand what happened. |
@@ -2385,6 +2387,7 @@ many spell slots preparing one costs.
 
 | Spell | Strength | What it does |
 |---|---|---|
+| **The Long Calling** | 0 | Three nights of chalk, salt and the right name said correctly. One of the greater names attends, does not touch you, and will bargain. What it asks for is the GM's and it is never small. |
 | **The Lesser Name** | 1 | One of its smaller names, said out loud. The thing that hears it does what you said for a round, and the debt grows by as much as a small name is worth. |
 | **Terms** | 1 | Out of combat: one question to whatever you are indebted to, about what it wants. It answers honestly, because honesty costs it nothing. |
 | **The Borrowed Hand** | 2 | Something reaches through for exactly as long as a blow takes. Four damage at four squares, round a shield rather than through it, and the hand is not yours, which is the entire legal defence and has never once worked. |
@@ -2424,6 +2427,7 @@ many spell slots preparing one costs.
 
 | Spell | Strength | What it does |
 |---|---|---|
+| **A Face Kept** | 0 | Two nights' work and something of theirs. The face is yours until you take it off, no slot, no concentration, nothing to keep up. The elf-kin keep the tally, and a face held this long is an expensive line in it. |
 | **Ink Spray** | 1 | Two squares of ink in the air. Nobody in it is invisible, and nobody in it is going to be. |
 | **A Clear Head** | 1 | You say the thing they needed to hear, and they come back to themselves in time to do something about it. |
 | **Wrong Face** | 2 | Your face is briefly somebody they were not expecting. Two rounds of trying to work out what they are looking at. |
@@ -2481,18 +2485,19 @@ preparing cost: it is the ladder, and a spell slot spent for good.
 
 | Spell | Strength | What it does |
 |---|---|---|
-| **The Clean Pot** | 1 | Food never spoils and water is always safe. A day's rations for the party, every day, for ever, which quietly deletes a whole column of the equipment list. |
-| **The Mended Seam** | 1 | One item, overnight, including corroded armour, which until now was the only damage in the game nothing undid. |
-| **Hearth and Home** | 1 | Out of combat: a camp nobody unfriendly can find, for one night. A ritual, so anyone literate could do it, but somebody has to know the words. |
-| **The Unlatched Door** | 2 | Any door or lock that was ever opened by somebody who lived there opens for you. Most doors were, which is the joke and also the spell. |
-| **The Long Table** | 3 | One meal, taken together, and nobody is carrying anything from before it. Once a day, and the elf-kin keep the tally, which is this school's price doing exactly what a price should. |
-| **The House That Was** | 4 | Overnight a ruin is a house again: warm, defensible, and worth sleeping in. The party rests as though they had reached somewhere. |
-| **The Door Home** | 5 | A door you have opened before becomes a door to any other door you have opened before. It is the school's thesis: a householder is never far from anywhere they have been. |
+| **The Clean Pot** | 0 | Food never spoils and water is always safe. A day's rations for the party, every day, for ever, which quietly deletes a whole column of the equipment list. |
+| **The Mended Seam** | 0 | One item, overnight, including corroded armour, which until now was the only damage in the game nothing undid. |
+| **The Unlatched Door** | 0 | Any door or lock that was ever opened by somebody who lived there opens for you. Most doors were, which is the joke and also the spell. |
+| **The House That Was** | 0 | Overnight a ruin is a house again: warm, defensible, and worth sleeping in. The party rests as though they had reached somewhere. |
+| **The Long Table** | 0 | One meal, taken together, and nobody is carrying anything from before it. Once a day, and the elf-kin keep the tally, which is this school's price doing exactly what a price should. |
+| **The Door Home** | 0 | A door you have opened before becomes a door to any other door you have opened before. It is the school's thesis: a householder is never far from anywhere they have been. |
+| **Hearth and Home** | 0 | Out of combat: a camp nobody unfriendly can find, for one night. A ritual, so anyone literate could do it, but somebody has to know the words. |
 
 ### Ward Magic
 
 | Spell | Strength | What it does |
 |---|---|---|
+| **The Threshold** | 0 | A night marking a door, a gate or the edge of a camp. Nothing hostile crosses the line unfelt, and whoever laid it wakes when something does, which is the whole of what it does. It does not stop anybody. |
 | **The Unbound Tongue** | 1 | The cheapest formula in the school and the one that beats the school: a warder with this prepared cannot be silenced out of the fight. |
 | **Turn Aside** | 2 | You do not stop the blow; you make their shield worth twice what it was for exactly as long as it takes. |
 | **The Shut Mouth** | 2 | A caster who cannot speak is a man in a robe. Lore resists it, because the ones who understand the word are the ones who can get out from under it. |
@@ -2506,6 +2511,7 @@ preparing cost: it is the ladder, and a spell slot spent for good.
 
 | Spell | Strength | What it does |
 |---|---|---|
+| **The Night Chart** | 0 | Two nights with the sky and a chart. Name one question about the days ahead and the GM answers it truthfully, as far as it is settled, which is never as far as you wanted. |
 | **Where It Will Land** | 1 | Somebody else's deck, one card down. The cheapest certainty in the game, and never your own: the seer is blind to themselves. |
 | **The Mark of Things to Come** | 2 | Marked at any range, and you know what its luck is about to do. The condition lands by itself; the reading is the half that does not. |
 | **The Reading** | 2 | Three cards down somebody else's luck. Never your own, a diviner who could stack their own deck would be a damage school wearing a robe. |
@@ -2517,6 +2523,7 @@ preparing cost: it is the ladder, and a spell slot spent for good.
 
 | Spell | Strength | What it does |
 |---|---|---|
+| **The Washing of the Dead** | 0 | A night's vigil, and the body washed and named. What was taken from them goes back into the ground with them, and nothing of them walks or answers. |
 | **Name the Guilty** | 1 | No save. Being named is not something you resist. |
 | **Steady the Hand** | 1 | Ends Compelled on an ally, and accuses whoever did it. Answer and accuse, which is what a targeted counter has to do to be worth a slot. |
 | **The Narrow Path** | 1 | Less to carry, less to remember, and the words come easier. A thin deck is the clean body, written as arithmetic. |
@@ -2571,6 +2578,7 @@ preparing cost: it is the ladder, and a spell slot spent for good.
 
 | Spell | Strength | What it does |
 |---|---|---|
+| **The Outcast's Road** | 0 | Two nights off the road, sleeping cold and leaving nothing. You and those with you cannot be tracked, named or asked after until you stop walking. |
 | **Alone on the Road** | 1 | While no ally is within 2 squares, heal 2 at the start of your turn. The only healing a priest of hers can ever receive. |
 | **Nobody's Friend** | 2 | One of them is alone now: nobody will heal it, step in front of it or take a hit for it. Vulpet's priests understand this condition from the inside. |
 | **The Outcast's Due** | 3 | Every enemy next to you turns on you, because the outcast is who the crowd turns on. That is not a side effect; it is the prayer. |
@@ -2581,6 +2589,7 @@ preparing cost: it is the ladder, and a spell slot spent for good.
 
 | Spell | Strength | What it does |
 |---|---|---|
+| **The Blessed Furrow** | 0 | A night in a field nobody can farm. By morning it will carry one crop, and everyone within a day's walk will know who stood in it. |
 | **Full Belly** | 1 | Out of combat: the party's next rest returns one extra rest token. |
 | **The Slow Mercy** | 2 | Name them now. At the start of your third turn they are whole, which is either too late or exactly right. |
 | **Out of Barren Ground** | 3 | Plant it. At the start of your second turn after, every ally within 2 heals 4. Nothing he gives arrives when you ask for it. |
@@ -2591,6 +2600,7 @@ preparing cost: it is the ladder, and a spell slot spent for good.
 
 | Spell | Strength | What it does |
 |---|---|---|
+| **The Unnamed Grave** | 0 | A night, a shovel, and no words said over it. There is no grave to find: no trace, no name, and nothing that can be asked about it. |
 | **Grey Judgement** | 2 | A Judged adjacent enemy acts last in the round, whatever its initiative. |
 | **The Close Work** | 2 | You move his arm. The man behind him takes it, and neither of them understands what happened. |
 | **The Silent Hour** | 2 | Reaction, adjacent only: an enemy's action does not happen. Close enough to touch, which is where the knife is. |

@@ -10,7 +10,8 @@
   "type": "spell",
   "img": "systems/cardrpg/art/spells/mind/the-unlatched-door.webp",
   "system": {
-    "strength": 2,
+    "strength": 0,
+    "nights": 1,
     "source": "Household Magic",
     "description": "<p>Any door or lock that was ever opened by somebody who lived there opens for you. Most doors were, which is the joke and also the spell.</p>",
     "effect": {

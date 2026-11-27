@@ -1,0 +1,24 @@
+{
+  "_id": "meroowatGnWEkwBd",
+  "_key": "!items!meroowatGnWEkwBd",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Quiet Ground",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-quiet-ground.webp",
+  "system": {
+    "strength": 0,
+    "nights": 1,
+    "source": "Necromancy",
+    "description": "<p>A night's work over the ground, and what is buried in it stays buried: nothing rises, nothing walks, and nothing that was laid here answers anybody. It holds until the ground is opened.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "one burial ground: nothing in it rises or answers"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

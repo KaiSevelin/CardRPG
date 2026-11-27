@@ -1,0 +1,24 @@
+{
+  "_id": "jfT0Jv9RUqktzKqU",
+  "_key": "!items!jfT0Jv9RUqktzKqU",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Standing Offer",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-standing-offer.webp",
+  "system": {
+    "strength": 0,
+    "nights": 1,
+    "source": "Spiritualism",
+    "description": "<p>A night's offering at a place that has somebody in it. One of the Nine attends the party until they leave the place behind: the GM says what it notices, and what it will want for noticing.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "one of the Nine attends the party while they stay"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

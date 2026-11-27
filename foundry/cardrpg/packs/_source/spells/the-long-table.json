@@ -10,7 +10,8 @@
   "type": "spell",
   "img": "systems/cardrpg/art/spells/mind/the-long-table.webp",
   "system": {
-    "strength": 3,
+    "strength": 0,
+    "nights": 1,
     "source": "Household Magic",
     "description": "<p>One meal, taken together, and nobody is carrying anything from before it. Once a day, and the elf-kin keep the tally &mdash; which is this school's price doing exactly what a price should.</p>",
     "effect": {

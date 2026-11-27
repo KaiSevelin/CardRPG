@@ -162,6 +162,36 @@
     </section>
   {{/if}}
 
+  {{#if isRecipe}}
+    {{!-- The other end of the injury's sentence below: that one names the ritual, this one runs
+          it. The numbers are the recipe's own and the button is the first thing ever to read
+          them -- see `#onBeginRitual`. --}}
+    <section class="cr-block">
+      <h3>The ritual this runs</h3>
+      {{#if ritual}}
+        <p class="cr-note"><strong>{{ritual.name}}</strong> &mdash; lifts
+          <strong>{{ritual.lifts}}</strong>. A downtime challenge:
+          <strong>Progress {{ritual.progress}}</strong> against
+          <strong>Pressure {{ritual.pressure}}</strong>, answered with
+          <strong>{{localize (lookup (lookup config.approaches ritual.approach) "label")}}</strong>.
+          {{#if ritual.needsName}}You must <strong>name who laid it</strong>.{{/if}}
+          {{#unless ritual.permanent}}One of the lesser rituals: it mends rather than
+          lifts.{{/unless}}</p>
+        {{#if isGM}}
+          <button type="button" data-action="beginRitual">Begin the ritual</button>
+          <p class="cr-note">Puts the tracks on the board and sets the call. A twist comes off the
+            <strong>ritual</strong> deck, whose failures are about the thing being lifted. The DC
+            stays yours.</p>
+        {{else}}
+          <p class="cr-note">The GM puts a challenge on the board.</p>
+        {{/if}}
+      {{else}}
+        <p class="cr-note">This recipe names no ritual the game knows. Set
+          <code>system.ritual</code> to an injury category or a lesser ritual.</p>
+      {{/if}}
+    </section>
+  {{/if}}
+
   {{#if isInjury}}
     {{!-- A category does exactly one job: it names the ritual that lifts it (core-rules 8). --}}
     <section class="cr-block">

@@ -232,6 +232,19 @@ export const MIND_POOL = [
     }
   },
   {
+    /*
+     * The school where *the pact IS the spell* (config.mjs), so its ritual is a pact made the
+     * slow way: a night at a place instead of a bargain struck in a fight. What attends and what
+     * it wants is the GM's, which is the same division of labour *The Small Pact* already has.
+     */
+    name: "The Standing Offer", strength: 0, nights: 1, pool: "mind", source: "Spiritualism",
+    needs: [],
+    description: "<p>A night's offering at a place that has somebody in it. One of the Nine "
+      + "attends the party until they leave the place behind: the GM says what it notices, and "
+      + "what it will want for noticing.</p>",
+    effect: { timing: "ritual", text: "one of the Nine attends the party while they stay" }
+  },
+  {
     name: "The Gathered Pact", strength: 4, pool: "mind", source: "Spiritualism",
     needs: [],
     description: "<p>Every pact at once, called in on the same turn. Each god does exactly what it "
@@ -291,6 +304,21 @@ export const MIND_POOL = [
     description: "<p>It answers three questions truthfully, as far as it knew &mdash; which is "
       + "usually less than you hoped and occasionally much more.</p>",
     effect: { timing: "outOfCombat", text: "a corpse answers three questions, as truthfully as it knew" }
+  },
+  {
+    /*
+     * **The answer to this school's own worst idea.** Necromancy can raise a rank of corpses and
+     * stand a dead ally up; a village that has heard of the school wants the other thing, and
+     * until now a necromancer had nothing to offer them. A ritual rather than a formula because
+     * what settles a ground is a night in it, and because this is the one piece of Necromancy a
+     * party can be paid for.
+     */
+    name: "The Quiet Ground", strength: 0, nights: 1, pool: "mind", source: "Necromancy",
+    needs: [],
+    description: "<p>A night's work over the ground, and what is buried in it stays buried: "
+      + "nothing rises, nothing walks, and nothing that was laid here answers anybody. It holds "
+      + "until the ground is opened.</p>",
+    effect: { timing: "ritual", text: "one burial ground: nothing in it rises or answers" }
   },
   {
     name: "The Risen Rank", strength: 4, pool: "mind", source: "Necromancy",
@@ -426,6 +454,25 @@ export const MIND_POOL = [
       verb: "cast", range: 6, mod: 6, ignoresArmour: true, ignoresBlock: true,
       text: "and the GM then collects the whole ledger"
     }
+  },
+
+  {
+    /*
+     * **The calling, which the levelling graph has pointed at for weeks.** `mind.vigil`'s own note
+     * says *the calling is ritual work*, and Demonology's six are all things done in a fight or in
+     * an afternoon: there was no slate anywhere for the thing the school is named for. Three
+     * nights, because a greater name is not a thing you shout at a fight.
+     *
+     * It does not resolve and it is not supposed to: what comes, what it will take and whether it
+     * keeps its word are the GM's, the way *Terms* already is. The engine's share is the three
+     * nights and the refusal to let any of it happen in a round.
+     */
+    name: "The Long Calling", strength: 0, nights: 3, pool: "mind", source: "Demonology",
+    needs: ["a price the GM collects afterwards, which nothing in the engine can hold"],
+    description: "<p>Three nights of chalk, salt and the right name said correctly. One of the "
+      + "greater names attends, does not touch you, and will bargain. What it asks for is the "
+      + "GM's and it is never small.</p>",
+    effect: { timing: "ritual", text: "one greater name attends and will bargain" }
   },
 
   /*
@@ -652,6 +699,19 @@ export const MIND_POOL = [
       verb: "shake", param: 1, condition: "dazed", range: 3,
       text: "and they may play a secondary this turn even if they already have"
     }
+  },
+  {
+    /*
+     * *The Long Masquerade* is this school's out-of-combat 5 and lasts a day. Two nights buys the
+     * same lie with no slot behind it and no end but your own -- which is exactly the trade a
+     * ritual is, and exactly the kind of debt the elf-kin are glad to write down.
+     */
+    name: "A Face Kept", strength: 0, nights: 2, pool: "mind", source: "Glamour",
+    needs: [],
+    description: "<p>Two nights' work and something of theirs. The face is yours until you take "
+      + "it off &mdash; no slot, no concentration, nothing to keep up. The elf-kin keep the "
+      + "tally, and a face held this long is an expensive line in it.</p>",
+    effect: { timing: "ritual", text: "one borrowed face, held until you take it off" }
   },
   {
     name: "The Crowded Room", strength: 4, pool: "mind", source: "Glamour",
@@ -1036,15 +1096,25 @@ export const MIND_POOL = [
   /*
    * --- Household Magic, six formulas, and not one of them is cast in a fight ---
    *
-   * All six are rituals, so all six carry the gap *Hearth and Home* named: `strength` is required
-   * and runs 1 to 5 (data/items.mjs), and a ritual costs no slots at all. Six formulas written as
-   * numbers that are standing in for nothing.
+   * **[FIXED 2026-11-27] The gap all six carried is closed, and what closed it was a currency.**
    *
-   * This is the school a party notices most and the engine notices least, which is the clearest
-   * case in the twelve of the difference between a rule and a sentence.
+   * It read: *`strength` is required and runs 1 to 5, and a ritual costs no slots at all -- six
+   * formulas written as numbers that are standing in for nothing.* True, and the floor was the
+   * reason: the schema would not take a 0, so six slates that spend nothing out of the budget had
+   * to write a number that was spent out of nothing.
+   *
+   * So the floor is 0 and the number that means something is **`nights`**. A ritual's price is
+   * time -- it is the only price in the game paid in it -- and that is not a consolation for
+   * having no slot cost, it is the thing a ritual always cost in the world document and nowhere
+   * could say. The six are a night each except *The Door Home*, which is three, because a door
+   * that opens onto every door you have ever opened is not a night's work.
+   *
+   * This was also the school the engine noticed least, and that part has changed twice over: a
+   * ritual can no longer be prepared, cast in a fight, or reached from a card half, and each of
+   * those is now a refusal in words rather than a sentence in a comment.
    */
   {
-    name: "The Clean Pot", strength: 1, pool: "mind", source: "Household Magic",
+    name: "The Clean Pot", strength: 0, nights: 1, pool: "mind", source: "Household Magic",
     needs: [],
     description: "<p>Food never spoils and water is always safe. A day's rations for the party, "
       + "every day, for ever &mdash; which quietly deletes a whole column of the equipment "
@@ -1057,8 +1127,13 @@ export const MIND_POOL = [
      * This is the inverse, and it is the one Household formula whose effect the engine would have
      * to compute rather than narrate.
      */
-    name: "The Mended Seam", strength: 1, pool: "mind", source: "Household Magic",
-    needs: ["repairing an item, which Corrode has no inverse for"],
+    name: "The Mended Seam", strength: 0, nights: 1, pool: "mind", source: "Household Magic",
+    /* **[CLOSED 2026-11-27]** It read *repairing an item, which Corrode has no inverse for*, and
+     * the formula built that itself: `verb: "repair"` below, `case "repair"` in the tray since
+     * 2026-11-16. The note under the effect had said so for eleven days while the gap stayed in
+     * the ledger -- a piece of content waiting on a thing it is the implementation of. The audit
+     * could not catch it because no closer in the map asked this question; one does now. */
+    needs: [],
     description: "<p>One item, overnight, including corroded armour &mdash; which until now was "
       + "the only damage in the game nothing undid.</p>",
     /* **And it plays the verb now rather than describing it.** `effect` is a `stepField`, so the
@@ -1070,34 +1145,42 @@ export const MIND_POOL = [
       text: "repair one item overnight, including corroded armour" }
   },
   {
-    name: "The Unlatched Door", strength: 2, pool: "mind", source: "Household Magic",
+    name: "The Unlatched Door", strength: 0, nights: 1, pool: "mind", source: "Household Magic",
     needs: [],
     description: "<p>Any door or lock that was ever opened by somebody who lived there opens for "
       + "you. Most doors were, which is the joke and also the spell.</p>",
     effect: { timing: "ritual", text: "a door ever opened by one who lived there opens for you" }
   },
   {
-    name: "The House That Was", strength: 4, pool: "mind", source: "Household Magic",
+    name: "The House That Was", strength: 0, nights: 1, pool: "mind", source: "Household Magic",
     needs: ["a rest that counts as a night in a town"],
     description: "<p>Overnight a ruin is a house again: warm, defensible, and worth sleeping in. "
       + "The party rests as though they had reached somewhere.</p>",
     effect: { timing: "ritual", text: "overnight a ruin becomes a house, and the party rests as in a town" }
   },
   {
-    name: "The Long Table", strength: 3, pool: "mind", source: "Household Magic",
+    name: "The Long Table", strength: 0, nights: 1, pool: "mind", source: "Household Magic",
     needs: ["every Wound shed and every rest token returned"],
     description: "<p>One meal, taken together, and nobody is carrying anything from before it. "
       + "Once a day, and the elf-kin keep the tally &mdash; which is this school's price doing "
       + "exactly what a price should.</p>",
     effect: {
       timing: "ritual",
-      /* *Once a day* is in the text because it is the GM's to keep: a ritual is never prepared and
-       * never cast, so nothing in the engine could enforce it from a field. */
+      /*
+       * *Once a day* used to be in the text with a note saying it was the GM's to keep, *because a
+       * ritual is never prepared and never cast, so nothing in the engine could enforce it from a
+       * field*. **[CHANGED 2026-11-27]** Half of that was wrong before it was written and the
+       * other half is wrong now: a ritual is never *prepared*, but it is certainly cast -- out of
+       * the book, which is the one road it has -- and a cast drains the slate until a long rest.
+       * A long rest is a night's sleep (core-rules 8), so *once a day* is exactly what the engine
+       * was already enforcing, and had been since the day a cast began spending what it was cast
+       * from. The text keeps the sentence because a player should be able to read the rule.
+       */
       text: "once a day: the party sheds every Wound and all rest tokens return"
     }
   },
   {
-    name: "The Door Home", strength: 5, pool: "mind", source: "Household Magic",
+    name: "The Door Home", strength: 0, nights: 3, pool: "mind", source: "Household Magic",
     needs: [],
     description: "<p>A door you have opened before becomes a door to any other door you have "
       + "opened before. It is the school's thesis: a householder is never far from anywhere "
@@ -1156,6 +1239,19 @@ export const MIND_POOL = [
     description: "<p>The cheapest formula in the school and the one that beats the school: a "
       + "warder with this prepared cannot be silenced out of the fight.</p>",
     effect: { verb: "shake", param: 1, condition: "silenced", range: 3 }
+  },
+  {
+    /*
+     * A ward on a **place** rather than on a moment, which is the one thing this school's seven
+     * could not do: every other Ward formula answers an event, and an event needs somebody awake.
+     * This is what a warder is for on the nights nobody is.
+     */
+    name: "The Threshold", strength: 0, nights: 1, pool: "mind", source: "Ward Magic",
+    needs: [],
+    description: "<p>A night marking a door, a gate or the edge of a camp. Nothing hostile "
+      + "crosses the line unfelt, and whoever laid it wakes when something does &mdash; which is "
+      + "the whole of what it does. It does not stop anybody.</p>",
+    effect: { timing: "ritual", text: "one threshold: nothing hostile crosses it unfelt, and the warder wakes" }
   },
   {
     name: "The Standing Ward", strength: 4, pool: "mind", source: "Ward Magic",
@@ -1229,6 +1325,20 @@ export const MIND_POOL = [
     effect: {
       timing: "outOfCombat", text: "one true answer about the next scene, and the GM writes a prophecy"
     }
+  },
+  {
+    /*
+     * Divination's price is *someone else's turn, and a prophecy* -- a thing read rather than
+     * done -- and two nights of reading is the shape that price was always describing. The answer
+     * is the GM's, as it is for every formula in this school: what the engine can hold is when it
+     * may be asked and how long the asking takes.
+     */
+    name: "The Night Chart", strength: 0, nights: 2, pool: "mind", source: "Divination",
+    needs: [],
+    description: "<p>Two nights with the sky and a chart. Name one question about the days ahead "
+      + "and the GM answers it truthfully &mdash; as far as it is settled, which is never as far "
+      + "as you wanted.</p>",
+    effect: { timing: "ritual", text: "one question about the days ahead, answered as far as it is settled" }
   },
   {
     name: "The Open Book", strength: 4, pool: "mind", source: "Divination",
@@ -1432,11 +1542,13 @@ export const MIND_SIGNATURES = [
   },
   {
     /*
-     * A ritual has NO slot cost, and `strength` is required and runs 1-5 (data/items.mjs) -- so
-     * the one out-of-combat Signature is the one piece of content the slate cannot store honestly.
-     * It is written as a 1 and the gap says what the 1 is standing in for.
+     * **[FIXED 2026-11-27]** This read: *a ritual has NO slot cost, and `strength` is required
+     * and runs 1-5, so the one out-of-combat Signature is the one piece of content the slate
+     * cannot store honestly -- it is written as a 1 and the gap says what the 1 is standing in
+     * for.* The slate can store it honestly now: 0 slots, one night, and the document prints the
+     * word **ritual** where the other twenty-four Signatures print a digit.
      */
-    name: "Hearth and Home", kind: "spell", node: "mind.household", strength: 1,
+    name: "Hearth and Home", kind: "spell", node: "mind.household", strength: 0, nights: 1,
     source: "Household Magic",
     needs: [],
     description: "<p>Out of combat: a camp nobody unfriendly can find, for one night. A ritual, so "

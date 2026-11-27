@@ -10,7 +10,8 @@
   "type": "spell",
   "img": "systems/cardrpg/art/spells/mind/the-mended-seam.webp",
   "system": {
-    "strength": 1,
+    "strength": 0,
+    "nights": 1,
     "source": "Household Magic",
     "description": "<p>One item, overnight, including corroded armour &mdash; which until now was the only damage in the game nothing undid.</p>",
     "effect": {

@@ -715,9 +715,76 @@ decide which one you spend: *Boil — strength 3, 2 Health*. And its one line of
 rule it is asking you to spend: *A prepared spell is spent until a long rest, whether or not it
 lands.*
 
-**What the menu leaves out it leaves out for the standing reason**: a menu is a face. A ritual in
-the middle of a fight, a spell that only does anything while you are Burning when you are not, and
-one you have already cast today are all absent rather than present-and-refused.
+**What the menu leaves out it leaves out for the standing reason**: a menu is a face. A spell that
+only does anything while you are Burning when you are not, and one you have already cast today,
+are absent rather than present-and-refused. **A ritual is absent always** — see §3.14.
+
+### 3.14 A ritual on the spells pile  **[BUILT 2026-11-27]**
+
+A ritual is the one spell that is cast **out of the book** and nowhere else (core-rules §4, *A
+ritual is the work of a night*). Three things follow for the HUD, and the first two are reversals
+of what the pile used to do.
+
+| | A prepared spell | A ritual |
+|---|---|---|
+| Clickable in the pile | only while prepared | **while it sits in the book**, out of a fight |
+| What the face prints where the slots go | `Necromancy · 2 slots` | `Necromancy · 1 night of work` |
+| On the ✦ Cast menu | yes | **never**, in a fight or out of one |
+| The tip | *Cast it. The preparation is spent either way.* | *The work of 1 night, read out of the book. A ritual is never prepared and never fits in a turn.* |
+
+**Clickable in the book is the fix, not a special case.** `!prepared` greyed every ritual in the
+game: there was no state in which one could be clicked, so the seven of them were decoration on a
+pile. A ritual is never prepared, so *prepared* cannot be the gate for one.
+
+**In a fight it is refused by its timing, not by the book's sentence.** §3.13's refusal tells you
+to stage a ✦ Cast half, and for a ritual that is advice you cannot take — no card in the game
+will ever carry one. So a ritual falls past that sentence to the timing's own:
+
+> *Ritual: not while the fight is on.*
+
+**Casting one posts two lines**, deliberately: how long, then what happened.
+
+> **The Long Calling** — a ritual: **3 nights** of work.
+>
+> *Marwin*: one greater name attends and will bargain
+
+The first is the only thing the engine can do about time — nothing here tracks a date, so a night
+passes because the GM says it does, and they cannot say it if nothing mentions it. The second is
+the step resolving exactly as any other does.
+
+**And the rest reports the nights it worked off.** A long rest is a night's sleep, so it is what a
+ritual's nights are spent on:
+
+> *Marwin* takes a long rest and heals **5**, sheds a **Wound**, works a night on *The Long
+> Calling (2 nights to go)*.
+
+### 3.15 Beginning a ritual from its recipe  **[WIRED 2026-11-27]**
+
+A ritual that lifts an injury is a **challenge** and not a spell (core-rules §8), and its numbers
+live on the **recipe** — an item a party finds, buys or is handed. The recipe's own sheet now says
+what it runs and can put it on the board:
+
+> **The ritual this runs**
+>
+> **Regrowth** — lifts **maiming**. A downtime challenge: **Progress 6** against **Pressure 4**,
+> answered with **Lore**.
+>
+> \[ Begin the ritual \]
+>
+> *Puts the tracks on the board and sets the call. A twist comes off the **ritual** deck, whose
+> failures are about the thing being lifted. The DC stays yours.*
+
+- **GM only.** Both halves of starting one write a scene flag, which is the GM's to set. A player
+  sees the description and the sentence *The GM puts a challenge on the board* instead of a button.
+- **It passes `ritual: true`**, which is what routes the twists to the ritual deck rather than the
+  scene deck. That is the whole of what makes a ritual's failure different: a ritual twist is
+  about the thing being lifted.
+- **It does not invent a DC.** No ritual in the content states one, so the call is set with the
+  recipe's **approach** and nothing else, and `setCall` applies the engine's own default. The
+  sentence under the button says the DC is the GM's, because it is.
+- **The tracks come off `ritualChallenge`**, which has been able to answer this since the four
+  rituals became items on 2026-11-08 and had never once been called. A GM read Progress 6 off the
+  recipe's text and typed it into the board by hand.
 
 ## 4. The two numbers that carry the tension
 

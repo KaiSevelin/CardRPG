@@ -493,14 +493,31 @@ if (mindFrom < 0 || mindTo < 0) {
   const thin = [...schools].filter(([, f]) => f.length < 4).map(([n, f]) => `${n} (${f.length})`);
   check("schools with fewer than four formulas", thin.length ? thin.join(", ") : "none", "none");
 
+  /*
+   * **And the one school this test does not apply to, named rather than filtered out.**
+   * **[2026-11-27]**
+   *
+   * Both of these ask about a **slot budget**: whether a two-slot caster can spend something here
+   * on their first day, and whether the school has one thing worth a whole budget. Household
+   * Magic teaches nothing but rituals and a ritual costs no slot ever, so its rows print the word
+   * `ritual` in the Str column and it cannot pass either -- correctly.
+   *
+   * Named, because the alternative is a filter that skips any school whose rows are unnumbered,
+   * and that filter would have skipped a school whose Str cells had gone missing just as quietly.
+   * A second ritual school is a real decision and it should land here as a failure first.
+   */
   const unplayable = [...schools]
     .filter(([, f]) => !f.includes("1") || !f.includes("2"))
     .map(([n]) => n);
-  check("schools a two-slot caster cannot use",
-    unplayable.length ? unplayable.join(", ") : "none", "none");
+  check("schools a two-slot caster cannot use", unplayable.join(", "), "Household Magic");
+  /* And the reason, off the same rows: not one of them names a slot cost at all. A school missing
+   * its 1 and its 2 and printing digits for the rest is a different fault and still fails. */
+  check("and the one that cannot is the one that spends no slots",
+    [...schools].filter(([, f]) => f.every(str => str === "ritual")).map(([n]) => n).join(", "),
+    "Household Magic");
 
   formulaCount = [...schools.values()].reduce((n, f) => n + f.length, 0);
-  check("formulas written in total", formulaCount, 94);
+  check("formulas written in total", formulaCount, 100);
 
   /*
    * Every school carries a formula at every strength from 1 to 5. The low end is what a two-slot
@@ -511,7 +528,8 @@ if (mindFrom < 0 || mindTo < 0) {
     .map(([n, f]) => [n, ["1", "2", "3", "4", "5"].filter(b => !f.includes(b))])
     .filter(([, missing]) => missing.length)
     .map(([n, missing]) => `${n} (no ${missing.join(", ")})`);
-  check("schools missing a strength band", gaps.length ? gaps.join("; ") : "none", "none");
+  check("schools missing a strength band", gaps.join("; "),
+    "Household Magic (no 1, 2, 3, 4, 5)");
 }
 
 /*
@@ -591,7 +609,7 @@ if (faithFrom < 0 || faithTo < 0) {
   const free = [...gods].filter(([, g]) => !g.obedience).map(([n]) => n);
   check("gods that state no Obedience", free.length ? free.join(", ") : "none", "none");
   check("miracles written in total",
-    [...gods.values()].reduce((n, g) => n + g.miracles, 0), 61);
+    [...gods.values()].reduce((n, g) => n + g.miracles, 0), 65);
 
   /*
    * Every god reaches 4 and 5 except The First, whose Obedience caps its spell slots at 3 and so
@@ -1636,6 +1654,9 @@ check("cover exists on both actor models",
 const traySource = fs.readFileSync(path.join(root, "module/tray.mjs"), "utf8");
 /* Where a card is, and how it reads in one line: the deck layer's room for both. */
 const stacksSource = fs.readFileSync(path.join(root, "module/decks/stacks.mjs"), "utf8");
+/* And what a rest puts right, which is the one routine in the system that knows a night has gone
+ * by -- so it is where a ritual's nights are counted down. [2026-11-27] */
+const playSource = fs.readFileSync(path.join(root, "module/decks/play.mjs"), "utf8");
 check("the nock asks before the Strike resolves",
   traySource.includes("await this.#nock(item)") ? "yes" : "no", "yes");
 
@@ -4365,7 +4386,7 @@ const unbuiltSpells = nodes.filter(n => n.grants?.spell)
   .map(n => `${n.id}: ${n.grants.spell}`);
 check("formulas granted but never built",
   unbuiltSpells.length ? unbuiltSpells.join(", ") : "none", "none");
-check("formulas a node can hand over", graph.SPELLS.size, 147);
+check("formulas a node can hand over", graph.SPELLS.size, 157);
 /*
  * And the nine that a node hands over as features instead. `teachingKind` is asked rather than
  * `kind` read, because `kind` on content carries two vocabularies: the slate type on a Signature,
@@ -5493,9 +5514,15 @@ check("the Cast event is raised where a spell is cast",
  * `false`, and that is the ward's own rule rather than a slip: *Unmake* stops the spell from
  * resolving and not from being cast, so the caller is told the cast happened -- the Health and the
  * slot are gone, and the step below this line is the only thing skipped. */
+/* Read in order out of the one body rather than as a span, because the span was the two lines
+ * touching and they stopped touching the moment a ritual started announcing its nights
+ * [2026-11-27]. What this is about is the ORDER -- the ward answers, and only then does the step
+ * resolve -- and `inOrder` says that and nothing about what may sit between. */
 check("and a warded Cast does not resolve",
-  /answerCast\(this\.actor, slate\.name\)\) return true;\n\n    await this\.#resolveStep\(/
-    .test(traySource) ? "yes" : "no", "yes");
+  inOrder(bodyOf(traySource, "async #castSlate(slate,"), [
+    "if (await answerCast(this.actor, slate.name)) return true;",
+    "await this.#resolveStep("
+  ]), "in order");
 /*
  * The price is paid before the ward fires: *Unmake* stops a Cast RESOLVING, not being attempted, so
  * the Health and the slot are gone either way. A counterspell that also refunded the cast would
@@ -5923,11 +5950,11 @@ check("Strength's pool", pools.strength.length, 19);
  * two schools earlier passes had reached. The other ten schools were written in the world document
  * and nothing in the game had them.
  */
-check("Mind's pool", pools.mind.length, 78);
+check("Mind's pool", pools.mind.length, 84);
 check("the schools Mind's pool draws on",
   [...new Set(pools.mind.map(f => f.source))].sort().join(", "), "Asceticism, Blood Magic, Demonology, Divination, Elemental Magic, Glamour, Household Magic, Necromancy, Poison, Shadow Magic, Spiritualism, Tattoo Magic, Ward Magic");
 /* And Faith's, which had no check at all while it had sixteen entries. */
-check("Faith's pool", pools.faith.length, 50);
+check("Faith's pool", pools.faith.length, 54);
 check("the gods Faith's pool draws on", new Set(pools.faith.map(f => f.source)).size, 12);
 
 /*
@@ -5979,7 +6006,12 @@ const spellTables = (() => {
       /* "Teaching" is the header of the two schools whose lists are not all formulas: Tattoo
        * Magic teaches seven features and Asceticism's ladder ends in two. */
       if (!name || ["Formula", "Miracle", "Teaching"].includes(name) || /^-+$/.test(name)) continue;
-      rows.push({ group, kind, name, strength: cells[1], signature: cells[0].includes("✦") });
+      /* The Effect cell too, because a ritual's price is printed in it rather than in the Str
+       * column: *One night.* is the first thing a ritual row says. [2026-11-27] */
+      rows.push({
+        group, kind, name, strength: cells[1], text: cells[2],
+        signature: cells[0].includes("✦")
+      });
     }
   }
   return rows;
@@ -5987,7 +6019,7 @@ const spellTables = (() => {
 
 /* A parser that matched nothing would say every list below was complete. */
 /* 145 with a number, plus the one ritual, which is the row the exception below is about. */
-check("rows read out of way-cards 3.4 and 3.5", spellTables.length, 155);
+check("rows read out of way-cards 3.4 and 3.5", spellTables.length, 165);
 check("and the schools and gods they fall under",
   new Set(spellTables.map(r => r.group)).size, 25);
 check("twelve of them are schools",
@@ -5998,14 +6030,45 @@ check("and twelve are gods",
 check("rows marked as a Signature", spellTables.filter(r => r.signature).length, 25);
 
 /*
- * The one row whose strength is not a number, and it is a known exception rather than a parse
- * failure: a ritual costs no slots at all, `strength` is required and runs 1 to 5
- * (data/items.mjs), and *Hearth and Home* is written as a 1 with a gap that says what the 1 is
- * standing in for. Naming it here is what keeps the parser honest about the rest.
+ * **The rows whose strength is not a number, which are the rituals and nothing else.**
+ *
+ * There was one of these and it was carried as a named exception: *Hearth and Home* printed the
+ * word `ritual` where the other twenty-four Signatures print a digit, because a ritual costs no
+ * slots and `strength` would not take a 0. **[CHANGED 2026-11-27]** The floor is 0 now, ten more
+ * schools and gods teach a ritual, and seventeen rows print the word -- so naming them one by one
+ * would be a list that has to be edited every time a god learns a rite.
+ *
+ * Counted and then **cross-checked against the content**, which is the better check and was
+ * always available: the document's unnumbered rows must be exactly the slates the engine treats
+ * as rituals. A row that lost its Str cell reads as unnumbered here and is not a ritual there.
  */
 const unnumbered = spellTables.filter(r => !/^\d$/.test(r.strength));
-check("rows with no numeric strength", unnumbered.map(r => `${r.name}: ${r.strength}`).join(", "),
-  "Hearth and Home: ritual");
+check("rows with no numeric strength", unnumbered.length, 17);
+check("and the one word they print", [...new Set(unnumbered.map(r => r.strength))].join(", "),
+  "ritual");
+const ritualSlates = new Set([...graph.SPELLS.values()]
+  .filter(sp => (sp.effect?.timing ?? "") === "ritual").map(sp => sp.name));
+check("rows the document calls a ritual and the game does not",
+  unnumbered.filter(r => !ritualSlates.has(r.name)).map(r => r.name).join(", ") || "none", "none");
+check("and rituals the document prints a slot cost for",
+  spellTables.filter(r => ritualSlates.has(r.name) && /^\d$/.test(r.strength))
+    .map(r => r.name).join(", ") || "none", "none");
+/*
+ * **And the nights, which are the price the Str column stopped printing.**
+ *
+ * Each ritual row's Effect begins with the number of nights in words, and it has to be the number
+ * the slate carries: a document that says *one night* about a three-night working is worse than
+ * one that says nothing, because a player reads the document and the GM moves the calendar off
+ * it. This is the one place the two can be compared.
+ */
+const NIGHT_WORDS = { 1: "One night", 2: "Two nights", 3: "Three nights" };
+const wrongNights = unnumbered.map(r => {
+  const built = [...graph.SPELLS.values()].find(sp => sp.name === r.name);
+  const want = NIGHT_WORDS[built?.nights ?? 0] ?? "?";
+  return (r.text ?? "").startsWith(`**${want}.**`) ? "" : `${r.name} (wants ${want})`;
+}).filter(Boolean);
+check("ritual rows whose nights disagree with the slate",
+  wrongNights.join(", ") || "none", "none");
 
 /*
  * **Every teaching, which is what 3.4 and 3.5 are tables of.**
@@ -6019,10 +6082,10 @@ check("rows with no numeric strength", unnumbered.map(r => `${r.name}: ${r.stren
 const everySpell = new Map([...content.MIND_POOL, ...content.FAITH_POOL, ...content.FORMULAS,
   ...content.SHADOW_FORMULAS, ...signatureExports.filter(s => s.kind !== "card" && s.source)]
   .map(s => [s.name, s]));
-check("teachings built in all", everySpell.size, 157);
+check("teachings built in all", everySpell.size, 167);
 /* And the split, so neither half can quietly become the whole. */
 check("of which formulas and miracles",
-  [...everySpell.values()].filter(t => graph.teachingKind(t) === "spell").length, 147);
+  [...everySpell.values()].filter(t => graph.teachingKind(t) === "spell").length, 157);
 check("and features a school teaches",
   [...everySpell.values()].filter(t => graph.teachingKind(t) === "feature")
     .map(t => t.name).sort().join(", "),
@@ -6075,7 +6138,33 @@ const schools = new Set(spellTables.filter(r => r.kind === "formula").map(r => r
 const gaped = [...ladders.entries()].filter(([src]) => schools.has(src))
   .filter(([, band]) => [1, 2, 3, 4, 5].some(n => !band.has(n)))
   .map(([src, band]) => `${src} (${[1, 2, 3, 4, 5].filter(n => !band.has(n)).join(" ")})`);
-check("schools missing a rung of the 1-to-5 ladder", gaped.join(", ") || "none", "none");
+check("schools missing a rung of the 1-to-5 ladder", gaped.join(", ") || "none",
+  "Household Magic (1 2 3 4 5)");
+/*
+ * **And the rung a ritual fills is none of them**, which is the half of this that had to be built
+ * rather than renamed.  **[2026-11-27]**
+ *
+ * `strength` is 0 on all seventeen rituals, so none of them can credit a school with a rung -- and
+ * that is the guard worth having: a ritual written at a 2 by habit would otherwise have filled
+ * Divination's 2 with a slate that spends nothing, and the ladder would have passed while a
+ * two-slot diviner had nothing to prepare on their first day.
+ */
+check("rituals crediting a school with a rung it cannot spend",
+  [...everySpell.values()].filter(s => (s.effect?.timing ?? "") === "ritual" && s.strength)
+    .map(s => `${s.name} (${s.strength})`).join(", ") || "none", "none");
+/* And the nights are the other way round: every ritual states one, and nothing else may. */
+check("rituals with no nights to their name",
+  [...everySpell.values()].filter(s => (s.effect?.timing ?? "") === "ritual" && !s.nights)
+    .map(s => s.name).join(", ") || "none", "none");
+check("and spells that are not rituals claiming nights",
+  [...everySpell.values()].filter(s => (s.effect?.timing ?? "") !== "ritual" && s.nights)
+    .map(s => s.name).join(", ") || "none", "none");
+/* The spread, because a field whose every writer says 1 is a boolean with a number's clothes on.
+ * Three is *The Door Home* and *The Long Calling*, and both earn it in the document. */
+check("the nights a ritual may take",
+  [...new Set([...everySpell.values()]
+    .filter(s => (s.effect?.timing ?? "") === "ritual").map(s => s.nights))].sort().join(", "),
+  "1, 2, 3");
 /* And a god's two bands, with the one god whose obedience takes them away named rather than
  * excluded -- a second capped god would otherwise look exactly like this one. */
 const noThesis = [...ladders.entries()].filter(([src]) => !schools.has(src))
@@ -6085,8 +6174,9 @@ check("gods missing their 4 or their 5", noThesis.join(", "), "The First (4 5)")
 /* A two-slot caster's first day, which is the 1-and-2 half of the promise, over both Ways. */
 const noFirstDay = [...ladders.entries()]
   .filter(([, band]) => !band.has(1) && !band.has(2)).map(([src]) => src);
+/* Household Magic again, and for the one reason: its list is priced in nights. */
 check("schools and gods a two-slot caster cannot cast from at all",
-  noFirstDay.length ? noFirstDay.join(", ") : "none", "none");
+  noFirstDay.join(", "), "Household Magic");
 check("and The First is capped at 3 by its own Obedience",
   nodes.find(n => n.creed === "first")?.grants?.caps?.spellSlots, 3);
 
@@ -6155,7 +6245,7 @@ check("and the school node that hands over a feature by name",
   "Graven Strength");
 check("and no two of them hand over the same one", new Set(spellGrants).size, spellGrants.length);
 const onNoNode = [...everySpell.keys()].filter(name => !spellGrants.includes(name));
-check("spells no node in the graph hands over", onNoNode.length, 92);
+check("spells no node in the graph hands over", onNoNode.length, 102);
 /* The First is the one source a character can be handed entire, because its ladder stops at 3. */
 const complete = [...ladders.keys()].filter(src =>
   [...everySpell.values()].filter(s => s.source === src)
@@ -6272,8 +6362,23 @@ check("and none can be prepared only by leaving the Way",
  */
 const margins = casterTitles.map(t =>
   slotsAt(t.id) - Math.max(...graph.SPELLS_BY_SOURCE.get(t.title).map(s => s.strength)));
+/*
+ * **The 5 at the top is the Householder, and it is the right answer.**  **[2026-11-27]**
+ *
+ * The range was 0 to 1 while every list had a thesis that cost slots. Household Magic's costs
+ * none, so a Householder arrives at their title with the whole budget spare -- which is not a
+ * flood, it is a caster whose own school asks nothing of the budget and who therefore spends it
+ * on somebody else's formulas. A Mind caster may study any school, and this is the one that
+ * leaves them the room to.
+ *
+ * Pinned as a range rather than split in two so that a SECOND list going slack still fails here.
+ */
 check("slots to spare over the list's thesis, at the title",
-  `${Math.min(...margins)} to ${Math.max(...margins)}`, "0 to 1");
+  `${Math.min(...margins)} to ${Math.max(...margins)}`, "0 to 5");
+check("and the list that leaves a whole budget spare",
+  casterTitles.filter(t => slotsAt(t.id)
+    === Math.max(...margins) + Math.max(...graph.SPELLS_BY_SOURCE.get(t.title)
+      .map(s => s.strength))).map(t => t.title).join(", "), "Household Magic");
 check("what a caster holds when the list arrives",
   [...new Set(casterTitles.map(t => slotsAt(t.id)))].sort().join(", "), "3, 5, 6");
 /* The two that are not five, and each is a decision somebody made rather than a slip. */
@@ -6995,7 +7100,7 @@ const strengthAt = band => {
     .map(n => graph.levelFor(n.id));
   return ls.length ? avg(ls) : null;
 };
-check("mean level a 1, 2 or 3 is granted at", strengthAt([1, 2, 3]).toFixed(2), "6.12");
+check("mean level a 1, 2 or 3 is granted at", strengthAt([1, 2, 3]).toFixed(2), "6.08");
 check("and a 4 or a 5", strengthAt([4, 5]).toFixed(2), "8.20");
 check("so the top of a litany lands deeper than its bottom",
   strengthAt([4, 5]) > strengthAt([1, 2, 3]), true);
@@ -7107,10 +7212,13 @@ const listsOf = way => listsBySource
   .filter(([src]) => nodes.find(n => n.title === src)?.id.startsWith(way));
 check("mean list size, mind against faith",
   ["mind", "faith"].map(w => avg(listsOf(w).map(([, l]) => l.length)).toFixed(1)).join(" / "),
-  "7.3 / 5.2");
+  "7.8 / 5.5");
 check("and mean list weight in slots",
   ["mind", "faith"].map(w => avg(listsOf(w)
-    .map(([, l]) => l.reduce((a, s) => a + s.strength, 0))).toFixed(1)).join(" / "), "18.5 / 14.2");
+    .map(([, l]) => l.reduce((a, s) => a + s.strength, 0))).toFixed(1)).join(" / "), "17.2 / 14.2");
+/* **The slot weight fell while the lists grew**, which is the ten rituals arriving: a ritual is
+ * strength 0, so a list that gained one got longer and no heavier. The two numbers moving in
+ * opposite directions is the whole of what a ritual costs said arithmetically. [2026-11-27] */
 
 /*
  * And the one difference between specializations that is nobody's design: **how much of each list
@@ -7256,7 +7364,7 @@ check("and all of them are one of the two declared cases",
   }), true);
 /* Which is a different number from before, and it is the one the last pass pinned at ninety-five. */
 check("spells reachable only through a choice",
-  [...graph.SPELLS.keys()].filter(n => !namedByNodes.includes(n)).length, 82);
+  [...graph.SPELLS.keys()].filter(n => !namedByNodes.includes(n)).length, 92);
 
 /*
  * **Every piece of gear a node promises exists, and arrives.**  [BUILT 2026-11-14]
@@ -7449,7 +7557,7 @@ const workingCards = audited.filter(c => !c.needs.length).length;
  * field nothing read. Three pieces left this count because the count was wrong, which is the one
  * reason it is allowed to fall.
  */
-check("content the engine does everything for", workingCards, 106);
+check("content the engine does everything for", workingCards, 116);
 check("content with a named gap", audited.filter(c => c.needs.length).length, 122);
 
 /*
@@ -7468,7 +7576,7 @@ for (const card of audited) {
 /* 105 to 106: four gaps' worth of strings came off (three closed by the state reader, and *a
  * floor under an ally's Health* merged into the floor under anybody's) and two arrived -- the
  * upkeep, and a heal that repeats every turn. [2026-11-22] */
-check("distinct gaps across all content", gapCounts.size, 106);
+check("distinct gaps across all content", gapCounts.size, 105);
 /*
  * Two different questions, and the list is what lets them be asked apart.
  *
@@ -7594,9 +7702,27 @@ const GAP_CLOSERS = [
   ["a second secondary for every ally in an area",
     c => stepsOfContent(c).some(s => s.targets === "alliesInRange"),
     /ALLY_REACH/],
+  /* The reader moved into the timing table [2026-11-27]: `outsideBudget` asks
+   * `neverPrepared` rather than spelling the word, so a second timing that is never held ready
+   * would not have to find that getter to work. The closer follows the reader. */
   ["a ritual, which costs no slots at all",
     c => stepsOfContent(c).some(s => s.timing === "ritual"),
-    /timing === "ritual"/],
+    /neverPrepared/],
+  /*
+   * **The gap this map could not catch, which is why it is in it.**  **[ADDED 2026-11-27]**
+   *
+   * *The Mended Seam* was written for *repairing an item, which Corrode has no inverse for* and
+   * then **built it**: `verb: "repair"` on the formula, `case "repair"` in the tray since
+   * 2026-11-16, and a note under the effect saying so. The gap stayed in the ledger for eleven
+   * days regardless -- a piece of content waiting on the thing it is the implementation of --
+   * because no closer here asked this question, and a gap nothing asks about is a gap that cannot
+   * be found to be closed.
+   *
+   * So the entry is the lesson rather than the fix: the fix was one line of content.
+   */
+  ["repairing an item, which Corrode has no inverse for",
+    c => stepsOfContent(c).some(s => s.verb === "repair"),
+    /case "repair"/],
   /*
    * **The gap seven cards named, and what closed it is not a spell.**
    *
@@ -7718,7 +7844,7 @@ check("and which find none", GAP_CLOSERS
 
 /* And how many each one finds, so a closer narrowing to one card is visible rather than silent. */
 check("content each closer recognises",
-  GAP_CLOSERS.map(([gap, isBuilt]) => `${audited.filter(c => isBuilt(c)).length}`).join(" "), "8 2 1 3 5 2 2 1 4 3 3 7 6 2 4 7 5");
+  GAP_CLOSERS.map(([gap, isBuilt]) => `${audited.filter(c => isBuilt(c)).length}`).join(" "), "8 2 1 3 5 2 2 1 4 3 3 7 6 2 4 17 1 5");
 /*
  * And the map does not rot either: a gap nobody names and nobody has built is a line in this list
  * describing nothing. Two are allowed to be unnamed, because closing them is what emptied them --
@@ -7738,6 +7864,10 @@ const CLOSED_OUTRIGHT = ["placing a trap on a square", "a reaction that stops an
   "reading the top of a fate deck", "a cost that scales with the allies it covers",
   "an effect that resolves on a later turn", "a second secondary for every ally in an area",
   "a ritual, which costs no slots at all",
+  /* **[2026-11-27] And the one that was closed by the content that named it.** *The Mended Seam*
+   * printed `verb: "repair"` and kept the gap in its `needs` for eleven days; the closer below it
+   * exists so the next one is caught rather than believed. */
+  "repairing an item, which Corrode has no inverse for",
   "a permanent formula that is never prepared and carries a bonus"];
 const idleClosers = GAP_CLOSERS
   .filter(([gap]) => !audited.some(c => (c.needs ?? []).includes(gap)))
@@ -8305,7 +8435,7 @@ const artable = (await import("../module/art.mjs")).SHELVES.flatMap(s => s.list 
  * art, because a node wears the art of what it hands over; that is true of what the GRAPH
  * draws and false of what the PANE does, which shows a picture beside three paragraphs of
  * prose about a person. */
-check("pieces of content that take art", artable.length, 797);
+check("pieces of content that take art", artable.length, 807);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -8861,7 +8991,7 @@ const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.m
 /* Every piece the game can hand Foundry a path for, which is all of them: kept as the denominator
  * the three states below have to add up to, and no longer printed as progress. */
 check("pieces the game has a path for", artable.filter(e => artInLive(e)).length
-  + backs.filter(([k]) => backOfLive(k)).length, 808);
+  + backs.filter(([k]) => backOfLive(k)).length, 818);
 /*
  * **And every path the game hands Foundry names a file that is there.**
  *
@@ -8880,7 +9010,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 808);
+check("art paths the game would hand Foundry", artable.length + backs.length, 818);
 /*
  * **The brief's progress line used to be the total, and nobody noticed for months.**
  *
@@ -9201,7 +9331,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 797);
+check("briefs the check actually read", briefs.length, 807);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -11866,7 +11996,7 @@ check("and each one says what is not in the frame",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 797);
+check("file paths in the brief", rows.length, 807);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -11968,11 +12098,28 @@ const timingRules = Object.entries(CARDRPG.timings);
 check("timings the engine has no rule for",
   timingRules.filter(([, r]) => !r.notInFight && !r.notOnYourTurn).map(([k]) => k).join(", ")
   || "none", "none");
-/* And the flags are these two and no more, because two is all the engine can honestly know: is a
- * fight running, and whose turn is it. A third would be a claim about the table. */
+/*
+ * And the flags are these and no more. Two are about the clock and are all the engine can honestly
+ * know of it -- is a fight running, and whose turn is it -- and a third of that kind would be a
+ * claim about the table.
+ *
+ * **Two more arrived on 2026-11-27, and they are about a ritual rather than about the clock.**
+ * `notOnCard` and `neverPrepared` are here because **a ritual is a timing**: *the work of a night*
+ * is the whole of what one is, and no card half, no slot and no preparation all follow from it.
+ * Put them on the slate and they would have been three fields that can disagree with each other
+ * and with this table; put them here and the seven rituals in the content say them by saying
+ * `timing: "ritual"` -- which they already did.
+ */
 check("the flags a timing may carry",
   [...new Set(timingRules.flatMap(([, r]) => Object.keys(r)))].sort().join(", "),
-  "label, notInFight, notOnYourTurn");
+  "label, neverPrepared, notInFight, notOnCard, notOnYourTurn");
+/* And both of the new ones belong to the ritual alone, which is the claim that makes them a
+ * timing's business rather than a slate's. A second timing wanting either is a real decision and
+ * should land here as a failure first. */
+check("and which timings never fit in a card half",
+  timingRules.filter(([, r]) => r.notOnCard).map(([k]) => k).join(", "), "ritual");
+check("and which are never held ready",
+  timingRules.filter(([, r]) => r.neverPrepared).map(([k]) => k).join(", "), "ritual");
 check("and which timings refuse a cast in a fight",
   timingRules.filter(([, r]) => r.notInFight).map(([k]) => k).join(", "),
   "ritual, outOfCombat, beforeFight");
@@ -12013,6 +12160,38 @@ check("and the refusal asks it rather than deciding again",
     ? "yes" : "no", "yes");
 check("and the menu asks the same one",
   /&& !timingBars\(this\.actor, slate\)/.test(traySource) ? "yes" : "no", "yes");
+/*
+ * **And the menu's own rule, which is not the timing's.**  **[BUILT 2026-11-27]**
+ *
+ * `timingBars` answers *not now*, and for a ritual the answer out of a fight is *now is fine* --
+ * which it is, for the book. It is not fine for a **card half**: a half is a turn, and the work
+ * of a night does not fit in one whether or not anybody is counting rounds.
+ *
+ * Both guards are in `#castable` and neither is the other's spare. Two accidental guards did hold
+ * before this -- `prepared` (a ritual is never prepared) and `timingBars` (not during a fight) --
+ * and that is exactly how a rule gets lost: play a card out of combat, or make a ritual
+ * preparable for some later reason, and the menu offers one.
+ */
+check("the card-half menu leaves a ritual out whatever the clock says",
+  inOrder(bodyOf(traySource, "#castable() {"), [
+    'slate.type === "spell" && slate.system.prepared && !slate.system.drained',
+    'CARDRPG.timings[slate.system.effect?.timing ?? ""]?.notOnCard',
+    "!timingBars(this.actor, slate)"
+  ]), "in order");
+/*
+ * **And the book's in-fight refusal does not promise a road it has closed.**
+ *
+ * `#bookShut` tells a player to stage a \u2726 Cast half, which for a ritual is advice they
+ * cannot take -- so a ritual falls through it to `refusesTiming`, which says the thing that is
+ * actually in the way. A refusal that names an impossible road is worse than a wrong refusal,
+ * because the player will go and look for the card.
+ */
+check("and a ritual in a fight is refused by the timing, not by the book",
+  inOrder(bodyOf(traySource, "#bookShut(slate) {"), [
+    'if (slate.system.effect?.timing === "reaction") return "";',
+    'if (CARDRPG.timings[slate.system.effect?.timing ?? ""]?.notOnCard) return "";',
+    "is cast off a \\u2726 Cast half"
+  ]), "in order");
 /*
  * **Before the price, which is why the call sits where it does.** `#onPlaySlate` pays for the cast
  * two lines later, and the comment above that payment already says a refusal inside the resolver
@@ -12073,7 +12252,7 @@ for (const entry of everyEntry) {
     for (const st of arr ?? []) everyStep.push({ card: entry.name, st });
   }
 }
-check("steps the timing audit read", everyStep.length, 401);
+check("steps the timing audit read", everyStep.length, 411);
 
 /*
  * **Every key a combo clause uses is a key the clause's schema declares.**
@@ -12708,7 +12887,7 @@ const proseLeft = everyStep.filter(s => s.st.text);
  */
 /* 116 to 115: *The Mark of Things to Come* carried `and Read 1` beside a `readDeck` that nothing
  * read, and the amount is a field now. [2026-11-22] */
-check("steps still carrying prose", proseLeft.length, 115);
+check("steps still carrying prose", proseLeft.length, 125);
 /* And the schema document says the same numbers, read off the same sweep rather than typed into
  * prose a second time: a document that counts the content is a document that goes stale. */
 check("the schema document records what the sweep found",
@@ -12789,7 +12968,7 @@ const planned = packs.planDocuments();
 
 check("compendium packs", planned.length, 8);
 check("and what each one holds",
-  planned.map(p => `${p.name}:${p.docs.length}`).join(" "), "creatures:112 characters:1 items:187 features:23 spells:124 injuries:14 signatures:31 decks:15");
+  planned.map(p => `${p.name}:${p.docs.length}`).join(" "), "creatures:112 characters:1 items:187 features:23 spells:134 injuries:14 signatures:31 decks:15");
 /* Faults the generator records rather than throws: a filename collision silently drops a document,
  * so the build reports it and this refuses to pass with one outstanding. */
 check("faults the generator reported", planned[0].faults.join("; ") || "none", "none");
@@ -12833,7 +13012,7 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
  */
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
-check("documents the stamp sweep read", everyPackDoc.length, 507);
+check("documents the stamp sweep read", everyPackDoc.length, 517);
 check("and children beneath them", everyPackChild.length, 412);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
@@ -12916,7 +13095,7 @@ check("pack sources that disagree with the content",
   stale.length ? `${stale.length}: ${stale.slice(0, 4).join(", ")}` : "none", "none");
 /* A comparison that read no files would report "none" for a repository with no packs at all. */
 check("documents the comparison actually read",
-  planned.reduce((n, p) => n + p.docs.length, 0), 507);
+  planned.reduce((n, p) => n + p.docs.length, 0), 517);
 
 /*
  * **An id is a promise.** A world that imports a creature keeps the pack's id, and so does every
@@ -12949,7 +13128,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 919);
+check("ids the rule actually read", everyId.size, 929);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -15806,14 +15985,97 @@ const npcHealth = slates => grants.sumGrants(slates, grants.NPC_GRANTS).health;
  * read exactly like one that worked.
  */
 check("a spell knows when it is outside the budget",
-  /get outsideBudget\(\) \{\s*\n\s*return this\.effect\?\.timing === "ritual";/
+  /get outsideBudget\(\) \{\s*\n\s*return !!CARDRPG\.timings\[[^\]]+\]\?\.neverPrepared;/
     .test(itemSource) ? "yes" : "no", "yes");
+/*
+ * It asks the vocabulary rather than naming the one word, which the regex above is the whole of:
+ * this read `timing === "ritual"` and was therefore the third place in the game that knew what a
+ * ritual is, beside `notInFight` in config and the prose in the content.  **[2026-11-27]**
+ */
+/*
+ * **The nights, which are what a ritual spends instead.**  **[BUILT 2026-11-27]**
+ *
+ * Read through a getter rather than off the field, so a stray `nights: 3` on a spell that is not
+ * a ritual is simply not read -- the engine cannot print *3 nights* on a thing you cast in a
+ * fight. The content is held to the same rule from the other side, up in the ladder audit.
+ */
+check("and how long the work takes",
+  /get nightsOf\(\) \{\s*\n\s*return this\.outsideBudget \? \(this\.nights \?\? 0\) : 0;/
+    .test(itemSource) ? "yes" : "no", "yes");
+/* And a long rest is the only thing that counts one down, because a long rest is a night's sleep
+ * (core-rules 8) and nothing else in the system knows that a night has gone by. */
+check("a night of a longer working passes on a long rest",
+  /const togo = \(slate\.system\.nightsLeft \?\? 0\) - 1;/.test(playSource) ? "yes" : "no",
+  "yes");
+check("and the working is not put back until the last of them",
+  inOrder(playSource, [
+    "const togo = (slate.system.nightsLeft ?? 0) - 1;",
+    "if (togo > 0) {",
+    "await slate.update({ \"system.nightsLeft\": togo });",
+    "continue;",
+    "\"system.drained\": false"
+  ]), "in order");
+/* Not the short rest, which is about an hour (core-rules 8): a five-night working advanced by a
+ * nap is the whole rule undone, and `back` is what keeps this branch out of one. */
+check("and a short rest advances nothing",
+  /const back = slate\.type === "spell"\s*\n\s*\? long/.test(playSource) ? "yes" : "no", "yes");
+/*
+ * **And Prepare refuses a ritual rather than quietly allowing it.**  **[BUILT 2026-11-27]**
+ *
+ * `outsideBudget` zeroed the slot cost here, so the button always said yes -- and a *prepared
+ * ritual* is a state the rest of the engine then had to be wrong about twice: the tray greyed it
+ * (unprepared spells are not clickable, and it was) and `payToCast` refused it (unprepared spells
+ * cannot be cast, and it could not). The contradiction was invisible because both wrongs pointed
+ * the same way.
+ */
+check("preparing a ritual is refused",
+  inOrder(bodyOf(sheetSource, "static async #onTogglePrepared(event, target) {"), [
+    "if (slate.system.outsideBudget) {",
+    "is a ritual: the work of",
+    "const cost = slate.system.strength ?? 0;"
+  ]), "in order");
+/* And the refusal is read BEFORE the budget is, or a strength-0 slate would be free by arithmetic
+ * rather than by rule -- which is the same thing happening for the wrong reason. */
+check("and refused before the budget is consulted",
+  bodyOf(sheetSource, "static async #onTogglePrepared(event, target) {")
+    .indexOf("if (slate.system.outsideBudget) {")
+  < bodyOf(sheetSource, "static async #onTogglePrepared(event, target) {")
+    .indexOf("const free = this.document.system.spellSlots?.free ?? 0;")
+    ? "before" : "after", "before");
+/*
+ * **And the recipe's button, which is the one caller `ritualChallenge` never had.**
+ * **[WIRED 2026-11-27]**
+ *
+ * The getter has been able to answer since the four rituals became items on 2026-11-08, and the
+ * only thing that had ever mentioned it was the check that it exists -- so a GM read Progress 6
+ * and Pressure 4 off a recipe's text and typed them into the board. A field with a reader nothing
+ * reaches is the defect this file is mostly about.
+ */
+check("the recipe sheet puts its own ritual on the board",
+  inOrder(bodyOf(sheetSource, "static async #onBeginRitual() {"), [
+    "const ritual = this.document.system.ritualChallenge;",
+    "if (!ritual) return;",
+    "progressMax: ritual.progress, pressureMax: ritual.pressure, ritual: true",
+    "await setCall({ approaches: [ritual.approach], who });"
+  ]), "in order");
+/* And the twists come off the ritual deck, which is the whole reason `ritual: true` is passed:
+ * a ritual's failures are about the thing being lifted (checks.mjs). */
+check("and it is started as a ritual rather than as any challenge",
+  /ritual: true, who,/.test(sheetSource) ? "yes" : "no", "yes");
+/* The DC is deliberately NOT passed: no ritual in the content states one, so `setCall` applies
+ * the engine's own default and the GM moves it. A number invented here would have been a fifth
+ * place a ritual's difficulty is described. */
+check("and it invents no difficulty of its own",
+  /setCall\(\{ approaches: \[ritual\.approach\], who \}\)/.test(sheetSource) ? "yes" : "no",
+  "yes");
+check("and the button is on the template",
+  /data-action="beginRitual"/.test(templateText) ? "yes" : "no", "yes");
 check("and costs no slot when it is",
   /return this\.outsideBudget \|\| !this\.prepared \? 0 : this\.strength;/.test(itemSource)
     ? "yes" : "no", "yes");
 const outsideBudget = [...graph.SPELLS.values()]
   .filter(s => (s.effect?.timing ?? "") === "ritual");
-check("spells outside the budget", outsideBudget.length, 7);
+check("spells outside the budget", outsideBudget.length, 17);
 check("and the one kind they are",
   [...new Set(outsideBudget.map(s => s.effect.timing))].sort().join(", "), "ritual");
 /*
@@ -15835,7 +16097,7 @@ check("the rule finds a timing the vocabulary does not have",
 check("and passes one it does", unknownTiming({ timing: "ritual" }) ? "found" : "no", "no");
 /* And over the steps that declare one, counted -- so the sweep cannot be pointed at nothing. */
 const timedSteps = everyStep.filter(s => s.st.timing);
-check("steps that say when they are played", timedSteps.length, 23);
+check("steps that say when they are played", timedSteps.length, 33);
 /* The sweep itself, named, so the planted list and the game go through the SAME expression: a
  * predicate tested on a planted value still leaves the sweep applying it switchable. */
 const strayIn = steps => steps.filter(s => unknownTiming(s.st))
@@ -19297,7 +19559,14 @@ check("the schema carries a cast cost",
   /cost: new fields\.SchemaField\(\{[\s\S]{0,200}health: new fields\.NumberField/.test(itemsSource)
     ? "yes" : "no", "yes");
 check("an unprepared spell cannot be cast",
-  /if \(!slate\?\.system\?\.prepared\)/.test(resolveSource) ? "yes" : "no", "yes");
+  /if \(!slate\?\.system\?\.prepared && !slate\?\.system\?\.outsideBudget\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/* **Except the one kind that is never prepared at all.**  [2026-11-27] A ritual is read out of
+ * the book, and this line refused all seven of them until the day the exemption was written --
+ * invisibly, because `outsideBudget` made preparing one free, so the contradiction resolved
+ * itself in the player's favour and nothing ever reported it. */
+check("and a ritual is exempt, because a ritual is never in a head",
+  /!slate\?\.system\?\.outsideBudget/.test(resolveSource) ? "yes" : "no", "yes");
 /* The floor is 1, not 0: 0 Health is Unconscious, so a self-killing cost is refused, not survived. */
 check("the cost may not take you below 1 Health",
   /if \(price\.health && health - price\.health < 1\)/.test(resolveSource) ? "yes" : "no", "yes");
@@ -19341,8 +19610,19 @@ check("and the Wild goes into the fate deck",
  */
 const payCastBody = bodyOf(resolveSource, "export async function payToCast(actor, slate) {");
 check("a cast consumes the preparation",
-  /const consume = \(\) => slate\.update\(\{ "system\.drained": true \}\);/.test(payCastBody)
-    ? "yes" : "no", "yes");
+  /"system\.drained": true \}\);/.test(payCastBody) ? "yes" : "no", "yes");
+/*
+ * **And a ritual books its nights in the same breath.**  **[2026-11-27]** The pin above used to be
+ * the whole line, which stopped matching the day a ritual started carrying a count out of here --
+ * so it asks for the fact instead: the drain is written. The branch is the new half, and it is in
+ * `payToCast` rather than in the tray because this is the door every cast comes through.
+ */
+check("and a ritual drains for as many nights as it takes",
+  inOrder(payCastBody, [
+    "const nights = slate.system.nightsOf;",
+    "nights > 1",
+    "\"system.nightsLeft\": nights"
+  ]), "in order");
 /*
  * **After every refusal.** A cast refused for an unaffordable Health, a full pair of hands, an
  * unprepared spell or a declined Strain charges nothing, so it must consume nothing -- and every
@@ -20955,14 +21235,20 @@ check("the tray offers a spells deck",
  * so the check is on the SHAPE: one `passive`, fed by every reason there is. A fourth reason will
  * arrive and should not break this; a fourth greyed field beside `passive` still will.
  */
-const greyClause = /passive: !prepared(?: \|\| !?!?[A-Za-z]+)+,/.exec(traySource)?.[0] ?? "none";
+const greyClause =
+  /passive: \(!prepared && !ritual\)(?: \|\| !?!?[A-Za-z]+)+,/.exec(traySource)?.[0] ?? "none";
 check("and only a prepared spell is clickable",
   greyClause.includes("!prepared") ? "yes" : "no", "yes");
+/* **Unless it is a ritual, which is cast out of the book and has nowhere else to be cast from.**
+ * [2026-11-27] `!prepared` greyed every ritual in the game, so there was no state in which one
+ * could be clicked: seven slates on a pile with no road to the resolver. */
+check("and a ritual is clickable in the book",
+  greyClause.includes("(!prepared && !ritual)") ? "yes" : "no", "yes");
 /* **[2026-11-24] A fourth term, for a spell already cast**, which is the state the ruling added:
  * casting consumes the preparation, so *prepared* is no longer the same thing as *castable*. The
  * shape is what is pinned -- one `passive`, fed by every reason there is. */
 check("and every reason it is not reaches the same state",
-  greyClause, "passive: !prepared || spent || !!notNow || !!notYet,");
+  greyClause, "passive: (!prepared && !ritual) || spent || !!notNow || !!notYet,");
 /* And each reason reaches the tip too, so the card never greys without saying why. */
 check("and the tip says which reason it was",
   /notNow \|\| notYet\s*\n?\s*\|\| `Cast it\./.test(traySource) ? "yes" : "no", "yes");
@@ -22010,7 +22296,7 @@ readFiles.set("decksSource", decksSource);
  * module in this system whose entire job is a picture, so it is also the first whose checks are
  * all about WHERE something is -- and the one place a span could lie about that is the stylesheet
  * it shares with the HUD. */
-check("files this suite greps by name", readFiles.size, 84);
+check("files this suite greps by name", readFiles.size, 85);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {

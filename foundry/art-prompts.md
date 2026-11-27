@@ -1,6 +1,6 @@
 # Art prompts
 
-**808 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**818 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 797 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 807 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -5610,7 +5610,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Lev
 File: `signatures/mind/hearth-and-home.webp`
 
 ```text
-SUBJECT. "Hearth and Home" — strength 1 · a camp nobody unfriendly can find, for one night
+SUBJECT. "Hearth and Home" — a camp nobody unfriendly can find, for one night
 
 Out of combat: a camp nobody unfriendly can find, for one night. A ritual, so anyone literate could do it — but somebody has to know the words.
 
@@ -6289,7 +6289,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 
 ## Formulas — Way of Mind pool
 
-**78 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/spells/mind/`.
+**84 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/spells/mind/`.
 
 Blood magic and spiritualism: the working, not the worker.
 
@@ -6388,6 +6388,18 @@ SUBJECT. "A Clear Head" — strength 1 · Shake 1 range 3 Dazed and they may pla
 You say the thing they needed to hear, and they come back to themselves in time to do something about it.
 
 Draw footing lost, landing 3 squares from the one who threw it; sight swimming.
+```
+
+### A Face Kept
+
+File: `spells/mind/a-face-kept.webp`
+
+```text
+SUBJECT. "A Face Kept" — one borrowed face, held until you take it off
+
+Two nights' work and something of theirs. The face is yours until you take it off — no slot, no concentration, nothing to keep up. The elf-kin keep the tally, and a face held this long is an expensive line in it.
+
+Draw that line literally: the one moment it describes, and nothing else in frame.
 ```
 
 ### Ask the Dead
@@ -6741,7 +6753,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-clean-pot.webp`
 
 ```text
-SUBJECT. "The Clean Pot" — strength 1 · a day's rations for the party, every day
+SUBJECT. "The Clean Pot" — a day's rations for the party, every day
 
 Food never spoils and water is always safe. A day's rations for the party, every day, for ever — which quietly deletes a whole column of the equipment list.
 
@@ -6765,7 +6777,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-door-home.webp`
 
 ```text
-SUBJECT. "The Door Home" — strength 5 · once a day: a door you have opened leads to any other you have opened
+SUBJECT. "The Door Home" — once a day: a door you have opened leads to any other you have opened
 
 A door you have opened before becomes a door to any other door you have opened before. It is the school's thesis: a householder is never far from anywhere they have been.
 
@@ -6873,7 +6885,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-house-that-was.webp`
 
 ```text
-SUBJECT. "The House That Was" — strength 4 · overnight a ruin becomes a house, and the party rests as in a town
+SUBJECT. "The House That Was" — overnight a ruin becomes a house, and the party rests as in a town
 
 Overnight a ruin is a house again: warm, defensible, and worth sleeping in. The party rests as though they had reached somewhere.
 
@@ -6926,6 +6938,18 @@ SUBJECT. "The Lesser Name" — strength 1 · range 3 Compelled (1)
 One of its smaller names, said out loud. The thing that hears it does what you said for a round, and the debt grows by as much as a small name is worth.
 
 Draw pulled toward something against the will.
+```
+
+### The Long Calling
+
+File: `spells/mind/the-long-calling.webp`
+
+```text
+SUBJECT. "The Long Calling" — one greater name attends and will bargain
+
+Three nights of chalk, salt and the right name said correctly. One of the greater names attends, does not touch you, and will bargain. What it asks for is the GM's and it is never small.
+
+Draw that line literally: the one moment it describes, and nothing else in frame.
 ```
 
 ### The Long Dose
@@ -6993,7 +7017,7 @@ Draw the ground covered, thrown with the whole body, nothing held back.
 File: `spells/mind/the-long-table.webp`
 
 ```text
-SUBJECT. "The Long Table" — strength 3 · once a day: the party sheds every Wound and all rest tokens return
+SUBJECT. "The Long Table" — once a day: the party sheds every Wound and all rest tokens return
 
 One meal, taken together, and nobody is carrying anything from before it. Once a day, and the elf-kin keep the tally — which is this school's price doing exactly what a price should.
 
@@ -7017,7 +7041,7 @@ Draw singled out of a crowd.
 File: `spells/mind/the-mended-seam.webp`
 
 ```text
-SUBJECT. "The Mended Seam" — strength 1 · Repair 1 repair one item overnight, including corroded armour
+SUBJECT. "The Mended Seam" — Repair 1 repair one item overnight, including corroded armour
 
 One item, overnight, including corroded armour — which until now was the only damage in the game nothing undid.
 
@@ -7032,6 +7056,18 @@ File: `spells/mind/the-mirror.webp`
 SUBJECT. "The Mirror" — strength 3 · Spent: a Cast aimed at you resolves against its own caster
 
 Not stopped. Returned, in full, to the man who sent it — which is worse for him than for you and is the whole reason to prepare this instead of Unmake.
+
+Draw that line literally: the one moment it describes, and nothing else in frame.
+```
+
+### The Night Chart
+
+File: `spells/mind/the-night-chart.webp`
+
+```text
+SUBJECT. "The Night Chart" — one question about the days ahead, answered as far as it is settled
+
+Two nights with the sky and a chart. Name one question about the days ahead and the GM answers it truthfully — as far as it is settled, which is never as far as you wanted.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
 ```
@@ -7082,6 +7118,18 @@ SUBJECT. "The Quick Dose" — strength 3 · Cast Poisoned 2 (2) · costs 3 skill
 Adjacent, because it has to go in them. Two rounds, two damage a round, and armour is no part of the conversation.
 
 Draw a shape held in the air between the hands, half-finished and still forming; colour draining out.
+```
+
+### The Quiet Ground
+
+File: `spells/mind/the-quiet-ground.webp`
+
+```text
+SUBJECT. "The Quiet Ground" — one burial ground: nothing in it rises or answers
+
+A night's work over the ground, and what is buried in it stays buried: nothing rises, nothing walks, and nothing that was laid here answers anybody. It holds until the ground is opened.
+
+Draw that line literally: the one moment it describes, and nothing else in frame.
 ```
 
 ### The Reckoning
@@ -7202,6 +7250,18 @@ Deep water where there was a floor. Everything in it is Wet, which is the openin
 Draw soaked through.
 ```
 
+### The Standing Offer
+
+File: `spells/mind/the-standing-offer.webp`
+
+```text
+SUBJECT. "The Standing Offer" — one of the Nine attends the party while they stay
+
+A night's offering at a place that has somebody in it. One of the Nine attends the party until they leave the place behind: the GM says what it notices, and what it will want for noticing.
+
+Draw that line literally: the one moment it describes, and nothing else in frame.
+```
+
 ### The Standing Ward
 
 File: `spells/mind/the-standing-ward.webp`
@@ -7210,6 +7270,18 @@ File: `spells/mind/the-standing-ward.webp`
 SUBJECT. "The Standing Ward" — strength 4 · Spent: until your next turn no Cast resolves at all, anywhere -- yours too
 
 Spent: for one round there is no magic on the field. Yours included, which is what makes this a ward and not an attack.
+
+Draw that line literally: the one moment it describes, and nothing else in frame.
+```
+
+### The Threshold
+
+File: `spells/mind/the-threshold.webp`
+
+```text
+SUBJECT. "The Threshold" — one threshold: nothing hostile crosses it unfelt, and the warder wakes
+
+A night marking a door, a gate or the edge of a camp. Nothing hostile crosses the line unfelt, and whoever laid it wakes when something does — which is the whole of what it does. It does not stop anybody.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
 ```
@@ -7231,7 +7303,7 @@ Draw footing lost, landing 3 squares from the one who threw it; a mouth stopped.
 File: `spells/mind/the-unlatched-door.webp`
 
 ```text
-SUBJECT. "The Unlatched Door" — strength 2 · a door ever opened by one who lived there opens for you
+SUBJECT. "The Unlatched Door" — a door ever opened by one who lived there opens for you
 
 Any door or lock that was ever opened by somebody who lived there opens for you. Most doors were, which is the joke and also the spell.
 
@@ -7312,7 +7384,7 @@ Draw a shape held in the air between the hands, half-finished and still forming;
 
 ## Miracles — Way of Faith pool
 
-**50 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/spells/faith/`.
+**54 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/spells/faith/`.
 
 A lesser miracle. Quiet, domestic in scale, and the light comes from outside the frame.
 
@@ -7627,6 +7699,18 @@ Your armour is theirs, your Block is theirs, and everything aimed at them arrive
 Draw that line literally: the one moment it describes, and nothing else in frame.
 ```
 
+### The Blessed Furrow
+
+File: `spells/faith/the-blessed-furrow.webp`
+
+```text
+SUBJECT. "The Blessed Furrow" — one barren field carries one crop
+
+A night in a field nobody can farm. By morning it will carry one crop, and everyone within a day's walk will know who stood in it.
+
+Draw that line literally: the one moment it describes, and nothing else in frame.
+```
+
 ### The Body Made Clean
 
 File: `spells/faith/the-body-made-clean.webp`
@@ -7781,6 +7865,18 @@ Two turns from now the whole party heals four and sheds something. Planting is t
 Draw breath coming back -- a chest filling again, a hand steady that was not steady. No wound, no blood and no bandage in the frame.
 ```
 
+### The Outcast's Road
+
+File: `spells/faith/the-outcasts-road.webp`
+
+```text
+SUBJECT. "The Outcast's Road" — the party cannot be tracked or asked after while they keep walking
+
+Two nights off the road, sleeping cold and leaving nothing. You and those with you cannot be tracked, named or asked after until you stop walking.
+
+Draw that line literally: the one moment it describes, and nothing else in frame.
+```
+
 ### The Planted Word
 
 File: `spells/faith/the-planted-word.webp`
@@ -7913,6 +8009,18 @@ The sea is not fair. They draw again and must keep the second card, and a Miss j
 Draw a shadow that chose someone.
 ```
 
+### The Unnamed Grave
+
+File: `spells/faith/the-unnamed-grave.webp`
+
+```text
+SUBJECT. "The Unnamed Grave" — one burial nobody can find, name or ask after
+
+A night, a shovel, and no words said over it. There is no grave to find: no trace, no name, and nothing that can be asked about it.
+
+Draw that line literally: the one moment it describes, and nothing else in frame.
+```
+
 ### The War Drum
 
 File: `spells/faith/the-war-drum.webp`
@@ -7921,6 +8029,18 @@ File: `spells/faith/the-war-drum.webp`
 SUBJECT. "The War Drum" — strength 4 · area 2 every ally within 2 takes their whole turn again, now · costs 3 Strain
 
 Strain 3, and everybody near you goes again. The same mechanism Blood Magic's thesis wants, bought with pain instead of blood.
+
+Draw that line literally: the one moment it describes, and nothing else in frame.
+```
+
+### The Washing of the Dead
+
+File: `spells/faith/the-washing-of-the-dead.webp`
+
+```text
+SUBJECT. "The Washing of the Dead" — one body laid properly: nothing of them walks or answers
+
+A night's vigil, and the body washed and named. What was taken from them goes back into the ground with them, and nothing of them walks or answers.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
 ```

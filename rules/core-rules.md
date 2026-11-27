@@ -794,6 +794,9 @@ book is where your spells live and where you read them, and in a fight it is not
 | What it costs | the card, the half, and the preparation | the preparation |
 | What bounds how many | your hand and the two-halves turn | your slots |
 
+**A ritual is neither column.** It is never prepared and never fits in a half, so it has a rule of
+its own: see *A ritual is the work of a night*, below.
+
 **The preparation is still spent either way.** Everything in *Casting spends the preparation* above
 holds unchanged: the spell stays in its slot, used up, and a long rest is what puts it back. The
 half is a price on top of that and not a replacement for it — a cast in a fight costs a card, a
@@ -840,6 +843,63 @@ never different.**
 > magician's action deck was the starter Warrior's sixteen and the common pool's six — every one of
 > them a fighter's card. The trunk said so out loud: a scholar's guaranteed card was **Measure**, a
 > Strike +1. See [way-cards.md](way-cards.md) §3.1, §3.4 and §3.5.
+
+#### A ritual is the work of a night  **[RULED 2026-11-27]**
+
+**A ritual is not cast in a fight, and it is not cast off a card half either.** It is read out of
+your book, out of combat, and what it costs is **nights**.
+
+Seventeen spells are rituals and every one of them prints the word **ritual** where the rest print
+a strength. That is not a missing number: a strength is a **slot cost**, and a ritual never
+occupies a slot, because a ritual is never *prepared*. There is nothing to hold ready. You open the
+book on the night and do the work.
+
+| | **A prepared spell** | **A ritual** |
+|---|---|---|
+| What it costs to keep | its **strength** in slots, while prepared | nothing &mdash; never prepared |
+| What it costs to cast | its price, and **in a fight a ✦ Cast half** | **nights**, and its price |
+| In a fight | yes, off a ✦ Cast half | **never** |
+| Off a card half | yes | **never**, in a fight or out of one |
+| Where it is cast from | your hand, in a fight; your book, out of one | your book, always |
+| What puts it back | a long rest | **as many long rests as it took nights** |
+
+- **Never in a fight**, because a ritual is overnight work and a round is six seconds. The refusal
+  says so in those words.
+- **Never off a card half, even out of a fight.** A half is a *turn*, whether or not anybody is
+  counting rounds, and a night does not fit in a turn. A ✦ Cast half offers you a menu of what you
+  may cast (*Casting costs a half*, above) and a ritual is never on it.
+- **Never prepared.** Preparing is *putting a spell in your head for the day*, and a ritual is not
+  in your head: it is on the page. The Prepare button refuses one and says why.
+- **Nights are the price, and a long rest is a night.** A long rest is *a night's sleep* (§8), so a
+  rest is what a ritual's nights are spent on: a one-night working is back by morning, and *The
+  Door Home* is three nights and is gone for three of them. The rest says how many are left.
+
+**Nights run from one to three.** One for most of them: a pot that keeps, a door that opens, a
+grave that stays quiet. Two for the ones that take a real sitting &mdash; a chart of the coming
+days, a face worn until you take it off. Three for the two that are somebody's week: *The Door
+Home*, which joins every door you have ever opened, and *The Long Calling*, which brings one of
+the greater names to the circle.
+
+> **Rituals are no longer one school's business.** Household Magic has seven of them and is still
+> the ritual school &mdash; it teaches nothing else, which is why it is the one school with no
+> strength ladder at all ([way-cards.md](way-cards.md) §3.4). But nine other schools and gods now
+> teach exactly one each: Necromancy quiets a burial ground, Divination reads two nights of sky,
+> Spiritualism keeps one of the Nine beside the party, Ward Magic lays a line across a threshold,
+> Glamour keeps a face, Demonology calls a greater name, and Brendan, the Eternal God, Vulpet and
+> the Grey each have one rite. One apiece on purpose: a ritual is what a caster does on the days
+> nobody is fighting, and a list of them is a different game.
+
+> **Why the number moved.** `strength` was required and ran 1 to 5, so seven slates that spend
+> nothing out of the slot budget had to print a number that was spent out of nothing &mdash; and
+> two pieces of content said so in their own margins for weeks (*six formulas written as numbers
+> that are standing in for nothing*). The floor is 0 now, and the number that means something is
+> the nights. A ritual's price was always time; there was simply nowhere to write it down.
+
+> **A ritual that lifts an injury is a different thing with the same name**, and §8 has it: a
+> **Regrowth**, a **Quieting**, an **Unbinding**, a **Cleansing** and the three lesser ones are
+> **challenges** run off a **recipe**, not spells at all. A recipe is an item, anyone literate can
+> use one, and the GM can now start the challenge from the recipe itself rather than copying its
+> Progress and Pressure onto the board by hand.
 
 > **[OPEN] A caster's deck is not dense enough in ✦ Cast yet.** A fighter has a Strike in hand
 > almost always — 9 of the Warrior's 16 cards print one, so a hand of five misses about once in

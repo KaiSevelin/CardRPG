@@ -1,0 +1,24 @@
+{
+  "_id": "5DzABTFVxG339ZKi",
+  "_key": "!items!5DzABTFVxG339ZKi",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "A Face Kept",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/a-face-kept.webp",
+  "system": {
+    "strength": 0,
+    "nights": 2,
+    "source": "Glamour",
+    "description": "<p>Two nights' work and something of theirs. The face is yours until you take it off &mdash; no slot, no concentration, nothing to keep up. The elf-kin keep the tally, and a face held this long is an expensive line in it.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "one borrowed face, held until you take it off"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

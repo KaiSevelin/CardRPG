@@ -10,7 +10,8 @@
   "type": "spell",
   "img": "systems/cardrpg/art/signatures/mind/hearth-and-home.webp",
   "system": {
-    "strength": 1,
+    "strength": 0,
+    "nights": 1,
     "source": "Household Magic",
     "description": "<p>Out of combat: a camp nobody unfriendly can find, for one night. A ritual, so anyone literate could do it &mdash; but somebody has to know the words.</p>",
     "effect": {

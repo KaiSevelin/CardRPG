@@ -10,7 +10,8 @@
   "type": "spell",
   "img": "systems/cardrpg/art/spells/mind/the-clean-pot.webp",
   "system": {
-    "strength": 1,
+    "strength": 0,
+    "nights": 1,
     "source": "Household Magic",
     "description": "<p>Food never spoils and water is always safe. A day's rations for the party, every day, for ever &mdash; which quietly deletes a whole column of the equipment list.</p>",
     "effect": {

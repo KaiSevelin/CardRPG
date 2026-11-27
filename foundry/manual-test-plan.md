@@ -1036,6 +1036,72 @@ node at a time, so hands with nothing castable in them will happen. That is the 
 caster deck** would close, and there is no such deck yet — the game has one starter deck and it is
 the Warrior's. Note how often it bit.
 
+## 2g.10 A ritual is the work of a night  **[2026-11-27]**
+
+**Do.** Give a Way of Mind character **The Clean Pot** (one night) and **The Door Home** (three
+nights) — both Household Magic, both rituals. Out of a fight, open the tray's **spells** pile.
+Then, in order:
+
+1. Click **The Clean Pot** without preparing anything.
+2. Open the character sheet and press **Prepare** on *The Door Home*.
+3. Start a fight, take your turn, and click **The Door Home** in the pile.
+4. Stage a ✦ Cast half — *The Prepared Word* or *Say the Words* — and look at the menu.
+5. End the fight. Cast **The Door Home** out of combat, then take a **long rest**, and another,
+   and another.
+
+**Expect, in the same order.**
+
+1. **It casts**, with nothing prepared, and posts two lines: *a ritual: 1 night of work*, then the
+   rations. The face reads `Household Magic · 1 night of work` where a spell reads its slots.
+2. **Prepare is refused**: *The Door Home is a ritual: the work of 3 nights, read out of the book.
+   It is never prepared and never costs a slot — cast it from the tray, out of a fight.*
+3. **Refused by the timing**: *Ritual: not while the fight is on.* Not the book's usual in-fight
+   sentence — that one tells you to stage a ✦ Cast half, and no card in the game carries a
+   ritual.
+4. **Neither ritual is on the menu.** Only prepared, castable spells are, plus the implement in
+   hand. This holds out of a fight too: try the same half in a corridor.
+5. The cast says **3 nights of work**. The first long rest says *works a night on The Door Home (2
+   nights to go)*, the second *(1 night to go)*, and the third says *has The Door Home ready
+   again*. A **short rest** in between says nothing about it: an hour is not a night.
+
+**Why.** A ritual had no road at all. `!prepared` greyed every one of them in the tray, so the
+seven in the game were decoration on a pile; `payToCast` refused an unprepared spell, so even a
+reachable one would have been turned away; and Prepare quietly said yes, because a ritual's slot
+cost is zero — which left a *prepared ritual*, a state the rest of the engine then had to be
+wrong about twice in the player's favour. The `strength` on each of them was a number the content
+itself called *standing in for nothing*, and the nights it stands for now are the one price in the
+game paid in time.
+
+**One thing to notice.** Step 4 is the part that is a rule rather than a side effect. A card half
+is a **turn**, and a night does not fit in one whether or not a fight is running — so the menu
+leaves a ritual out in both states, and not because the clock happened to catch it.
+
+## 2g.11 A recipe starts its own ritual  **[2026-11-27]**
+
+**Do.** As GM, put **Recipe: Regrowth** in a character's pack and open the recipe's own sheet.
+Then press **Begin the ritual** and look at the board and the chat. Have the character answer the
+call once and **fail** it.
+
+**Expect.** The sheet names what the recipe runs before you press anything: *Regrowth — lifts
+maiming. A downtime challenge: Progress 6 against Pressure 4, answered with Lore.* Pressing the
+button puts the tracks on the board at **Progress 6 against Pressure 4**, both empty, sets the
+call to **Lore**, and posts the same sentence with *A twist comes off the ritual deck. The DC is
+the GM's.* The failure draws from the **ritual twist** deck — whose cards are about the injury
+being lifted — and not from the scene deck.
+
+Open the sheet as a **player** who owns the recipe: the description is there and the button is
+not, replaced by *The GM puts a challenge on the board.*
+
+**Why.** `ritualChallenge` could answer all of this from the day the four rituals became items
+(2026-11-08) and **nothing had ever called it**: the only mention of it anywhere outside its own
+body was a check that it existed. A GM read Progress 6 and Pressure 4 off the recipe's text and
+typed them into the board by hand, which is exactly the shape of defect this project keeps finding
+— a field with a reader nothing reaches.
+
+**What to watch for.** The DC. The recipe sets the **approach** and nothing else, because no ritual
+in the content states a difficulty; the call takes the engine's default and you are meant to move
+it. If a number ever appears there that the recipe seems to have chosen, that is a bug.
+
 ---
 
 # 3. What the other person sees

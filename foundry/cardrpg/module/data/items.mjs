@@ -90,13 +90,68 @@ class SlateData extends foundry.abstract.TypeDataModel {
  *
  * Unprepared spells are not thrown away -- they sit in the spell book, which is this slate with
  * `prepared: false`. Only prepared spells can be cast.
+ *
+ * **A ritual is the exception, and it is 0 now rather than a number nobody chose.**
+ * **[FIXED 2026-11-27]**
+ *
+ * `strength` was `min: 1`, so a slate that spends no slots at all still had to write one -- and
+ * seven did, from a 1 on *The Clean Pot* to a 5 on *The Door Home*. Two pieces of content carried
+ * the gap in prose (*six formulas written as numbers that are standing in for nothing*), the
+ * document printed *Hearth and Home*'s strength as the word **ritual** rather than a digit, and
+ * the validator had to name that row as a known exception to keep its own parser honest. Four
+ * places describing one hole.
+ *
+ * So the floor is 0, a ritual writes 0, and what a ritual spends is **`nights`**. The ladder a
+ * school is held to -- a formula at every strength 1 to 5 -- is a ladder of slot costs, so it is
+ * asked of the spells that cost slots; Household Magic teaches nothing but rituals and therefore
+ * has a ladder of nights instead, which is pinned as its own check rather than as an exemption.
  */
 export class SpellSlateData extends SlateData {
   static defineSchema() {
     return {
       strength: new fields.NumberField({
-        required: true, integer: true, min: 1, max: 5, initial: 1
+        required: true, integer: true, min: 0, max: 5, initial: 1
       }),
+
+      /**
+       * **How many nights the work takes.** 0 for anything that is not a ritual.
+       *
+       * The one price in the game paid in **time**, and time is the only currency a ritual has:
+       * it costs no slot, it is never prepared, it is never a card half, and it cannot be cast in
+       * a fight. Strip those away and *a night* is what is left -- which is what the word ritual
+       * meant in the world document before any of it was built.
+       *
+       * **Why a number and not a boolean.** A boolean is `timing === "ritual"` written twice.
+       * What the table needs to know is how much of the calendar the work eats, because that is
+       * the decision the party makes: *The Quiet Ground* is a night and *The Door Home* is five,
+       * and five nights is a week of somebody else's plans. The GM moves the calendar; the engine
+       * says how far.
+       *
+       * Read by the spell book (what it costs to keep), by the cast line it posts to chat, and by
+       * `nightsOf`, which is the one place that answers *how long* so a reader cannot get a
+       * different answer by asking the field directly on a spell that has no business having one.
+       */
+      nights: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+
+      /**
+       * **Nights of this working still to go**, and the only runtime state on this slate besides
+       * `prepared` and `drained`.
+       *
+       * `nights` is what the content wrote; this is what is left of it. A ritual drains when it is
+       * cast, like every spell, and a **long rest is a night's sleep** (core-rules 8) -- so the
+       * rest that puts a formula back in your head gets a ritual one night further through its
+       * work, and *The Door Home* is gone for three of them.
+       *
+       * **This is what makes `nights` a rule rather than a label.** Printed in three places and
+       * counted in none, the field would have been the exact defect the gap it closed was about:
+       * a number standing in for nothing, one file over. `decks/play.mjs` is the one counter, and
+       * it is the routine that already knew what a long rest means.
+       *
+       * Not `drainedFor`, which looks like the same thing and is not: that counts the owner's
+       * **turns** and is decremented by `combat.mjs` at the top of each one. A ritual measured in
+       * turns would come back in the middle of the fight it cannot be cast in.
+       */
+      nightsLeft: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
       /**
        * A formula is studied and a miracle is granted, which is the whole difference between Way of
        * Mind and Way of Faith: a formula is paid for once, in your own substance, and a miracle is
@@ -245,9 +300,28 @@ export class SpellSlateData extends SlateData {
    * It used to name **permanent** too, for the Graven line. A permanent is not a spell any more: a
    * thing that needs no preparing is a feature, and the exemption went with the content. Leaving
    * the word here would have been an arm nothing could reach.
+   *
+   * **It asks the timing table rather than spelling the word.**  **[CHANGED 2026-11-27]** This
+   * read `timing === "ritual"` and so was a third statement of what a ritual is, beside
+   * `notInFight` in config and the prose in the content. `neverPrepared` is the fact this getter
+   * actually wants, and a second timing that is never held ready would have had to find this line
+   * to work rather than simply saying so.
    */
   get outsideBudget() {
-    return this.effect?.timing === "ritual";
+    return !!CARDRPG.timings[this.effect?.timing ?? ""]?.neverPrepared;
+  }
+
+  /**
+   * **How many nights of work it takes**, and 0 for anything that is not a ritual.
+   *
+   * The guard is the point: `nights` is a field on every spell and only a ritual has any business
+   * writing one, so a non-ritual that carried a 3 -- a typo, a copied block, a school that fancied
+   * the sound of it -- would otherwise print *3 nights* on a thing you cast in a fight. Asked
+   * through here, a stray number is simply not read. The validator fails it as well, which is the
+   * other half: this makes the engine safe, that one makes the content honest.
+   */
+  get nightsOf() {
+    return this.outsideBudget ? (this.nights ?? 0) : 0;
   }
 
   /**

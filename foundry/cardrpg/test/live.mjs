@@ -410,6 +410,38 @@ async function settle(page) {
   await page.evaluate(async () => {
     const { hero } = LIVE;
     /*
+     * **Let go of every target first, and this is the fix for the throw that has been open since
+     * 2026-11-26.**  **[FIXED 2026-11-27]**
+     *
+     * `game.user.targets` is **not** cleared by `releaseAll`, which lets go of control, and it is
+     * not cleared by deleting the token either: the target survives its token. Every probe that
+     * needs a fight places a token, targets it and deletes it afterwards, so the suite carried a
+     * target pointing at a token that no longer exists -- from whichever probe did it last, for
+     * the rest of the run.
+     *
+     * What that costs is a **synthetic actor**. An unlinked token's actor is addressed through
+     * the scene, so an update to one is an operation with a `parentUuid` of
+     * `Scene.x.Token.y.Actor.z`, and Foundry resolves that before it writes:
+     *
+     *     Error: undefined id [...] does not exist in the EmbeddedCollection collection
+     *         at EmbeddedCollection.get ... at Scene.getEmbeddedDocument ... at fromUuid
+     *         at async #configureOperation ... at async #configureUpdate
+     *
+     * So the next probe to cast at `game.user.targets` hands the resolver a dead actor, the write
+     * throws, and the throw lands inside whatever was in flight -- a cast paying its price -- and
+     * takes that handler with it. From outside it is indistinguishable from an engine that
+     * declined: no cast, no card retired, no half booked, nothing said. That is precisely the
+     * failure recorded as `[OPEN]` on the Cast-half probe, and the id differed every run because
+     * it is the id of whichever token the previous probe had deleted.
+     *
+     * It is cleared here rather than in each probe's teardown because a probe that forgets is
+     * indistinguishable from one that does not, four hundred lines downstream.
+     */
+    for (const token of [...(game.user.targets ?? [])]) {
+      token.setTarget(false, { user: game.user, releaseOthers: false, groupSelection: true });
+    }
+    game.user.targets?.clear?.();
+    /*
      * **Wait for whatever is still moving cards to stop.**  [2026-11-22]
      *
      * `deleteCombat` runs `afterCombat`, which walks every pile putting the hand back, and
@@ -458,6 +490,29 @@ async function settle(page) {
      * started per probe because it is part of *a known state*, which is what this function is.
      */
     const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+    /*
+     * **And close any tray left holding a token that has been deleted.**
+     * **[FIXED 2026-11-27]**
+     *
+     * A fight opens a tray per combatant, and a combatant on an **unlinked** token is a
+     * *synthetic* actor -- one addressed through the scene, so every write to it is an operation
+     * with a `parentUuid` of `Scene.x.Token.y.Actor.z`. Delete the token and the tray stays in
+     * `openTrays` holding that actor, which nothing can resolve any more:
+     *
+     *     Error: undefined id [...] does not exist in the EmbeddedCollection collection
+     *         at EmbeddedCollection.get ... at Scene.getEmbeddedDocument ... at fromUuid
+     *         at async #configureOperation ... at async #configureUpdate
+     *
+     * The throw then lands in whatever is in flight when that tray next renders or writes, which
+     * from outside looks exactly like an engine that declined. The id differs every run because
+     * it is whichever token a previous probe deleted.
+     */
+    for (const tray of [...CardRPGTray.openTrays]) {
+      const actor = tray.actor;
+      const gone = actor?.isToken
+        && !(actor.token?.parent?.tokens?.get(actor.token.id));
+      if (gone || !actor) await tray.close();
+    }
     for (const tray of CardRPGTray.openTrays) {
       if (tray.actor?.type === "npc") continue;
       tray.side = "action";
@@ -3895,25 +3950,37 @@ async function probes(page) {
    * casts, and Dazed on a secondary refuses. A probe that only checked the last would pass against
    * an engine that had quietly stopped casting altogether.
    *
-   * **[OPEN 2026-11-26] Green alone, and it fails in the full suite -- read the rows, not the
-   * count.** By the time the run reaches here the world contains a **dangling Token UUID**, and
-   * Foundry resolves one through a strict `EmbeddedCollection.get`:
+   * **[CLOSED 2026-11-27] It was a stale TARGET, and `settle` lets go of them now.**
+   *
+   * This probe was green alone and failed in the full suite, and the note here used to read *by
+   * the time the run reaches here the world contains a dangling Token UUID*. That was the right
+   * error and the wrong holder. The stack, once it was printed rather than guessed at, named the
+   * frame that mattered:
    *
    *     Error: undefined id [...] does not exist in the EmbeddedCollection collection
    *         at EmbeddedCollection.get ... at Scene.getEmbeddedDocument ... at fromUuid
+   *         at async #configureOperation ... at async #configureUpdate
    *
-   * Nothing in this system calls `fromUuid`, so it is Foundry resolving a reference some earlier
-   * probe left behind: every fight here places a token and deletes it afterwards. The throw lands
-   * inside whatever is in flight -- a cast paying its price -- and takes the rest of that handler
-   * with it, so from outside it is **exactly** what an engine that declined looks like: no cast, no
-   * card retired, no half booked.
+   * `#configureUpdate` is Foundry resolving the **parent of a document it is about to write**.
+   * `game.user.targets` survives both `releaseAll` -- which lets go of *control* -- and the
+   * deletion of the token itself, so the suite carried a target pointing at a token some earlier
+   * probe had deleted. An unlinked token's actor is addressed through the scene, so writing to one
+   * is an operation with a `parentUuid` of `Scene.x.Token.y.Actor.z`; the next cast aimed at that
+   * target handed the resolver a dead actor, and the throw landed inside the handler paying for
+   * the cast. From outside: no cast, no card retired, no half booked, nothing said. The id
+   * differed every run because it was whichever token the previous probe had deleted.
    *
-   * The id is different on every run, so it is minted during the run rather than carried in by the
-   * world copy. Chat speakers were the obvious holder and clearing them did not fix it, so there is
-   * at least one more. It is left recorded rather than papered over, because the rows that say so
-   * are the ones that found it: *and nothing threw* prints the stack, and *and nothing refused it*
-   * prints what the screen said. Both exist because the first four days of this probe's life were
-   * spent guessing at a silence.
+   * Chat speakers were the first guess and clearing them changed nothing, which is recorded here
+   * because it is the useful part: **the same message comes from at least three causes** -- a
+   * stale target, a tray left open on a deleted token's actor (both now handled in `settle`), and
+   * a `Card` handle deleted after a rest has moved it (see the ritual probe below). The message
+   * names an id and not a kind, so it cannot be told apart by reading it, only by catching it and
+   * printing the stack.
+   *
+   * The rows that found it are still here and are why it was findable: *and nothing threw* prints
+   * the stack, and *and nothing refused it* reads what the screen said rather than trusting a
+   * wrapper. Both exist because the first days of this probe's life were spent guessing at a
+   * silence.
    */
   await probe("a prepared spell is cast off a Cast half", async () => {
     await settle(page);
@@ -4157,6 +4224,19 @@ async function probes(page) {
         [{ tokenId: placed.id, sceneId: canvas.scene.id, actorId: hero.id }]);
       await combat.startCombat();
       /*
+       * **And the hero targets their own token, because a caster aiming at themselves does.**
+       * **[FIXED 2026-11-27]**
+       *
+       * This probe used to run with whatever target an earlier probe had left lying in
+       * `game.user.targets` -- which `settle` now clears, for the reason written there -- and the
+       * turn it plays reached a target check with nothing in it. The spell is a self-heal and
+       * needs no target of its own; the \u2726 Cast half's other road does, and that is the one
+       * being measured. A probe that depends on the previous probe's leftovers is a probe that
+       * passes for a reason nobody wrote down.
+       */
+      const mark = canvas.tokens?.get(placed.id);
+      mark?.setTarget(true, { user: game.user, releaseOthers: true });
+      /*
        * **And activated, which nothing in this file had ever done.**  **[FOUND 2026-11-26]**
        *
        * `startCombat` sets `round` and `started`; `active` is a separate flag, and `game.combat` is
@@ -4339,8 +4419,24 @@ async function probes(page) {
       tray.staged = [];
       tray.openPiles.delete("spells");
       await dazedSpell.delete();
+      /*
+       * **Deleted from wherever they are now, not skipped if they have moved.**
+       * **[FIXED 2026-11-27]**
+       *
+       * This read `if (hand.cards.get(id))` and deleted only what was still in the hand -- a
+       * guard against the strict-get throw that `Card#delete` raises on a stale handle, and a
+       * guard that **leaks**: a turn played in this probe retires its cards to the discard, so
+       * five cards carrying a bare \u2726 Cast were left in this hero's deck for every probe
+       * downstream to draw. Of all the ways to make a suite flaky, adding cards to the deck it
+       * measures is among the better ones.
+       *
+       * So the card is found by id across the stacks and deleted there. Same cost, no leak, and
+       * no stale handle: `game.cards` is asked where the document is rather than told.
+       */
       for (const id of [card.id, filler.id, second.id, filler2.id, gateCard.id]) {
-        if (hand.cards.get(id)) await hand.deleteEmbeddedDocuments("Card", [id]);
+        const live = game.cards.contents
+          .flatMap(stack => stack.cards.contents).find(c => c.id === id);
+        if (live) await live.delete();
       }
       await combat.delete();
       await placed.delete();
@@ -4412,6 +4508,581 @@ async function probes(page) {
       ["and says so in words", /Nothing prepared, and nothing in hand that casts/
         .test(out.emptyTip), true],
       ["and preparing one gives the half back", out.armedBlocked, false]
+    ];
+  });
+
+  /*
+   * **[BUILT 2026-11-27] A ritual is the work of a night, and it had no road at all.**
+   *
+   * Three guards pointed the same way and the result was a kind of spell that could not be cast:
+   * `!prepared` greyed every ritual in the tray, so the seven in the game were decoration on a
+   * pile; `payToCast` refused an unprepared spell, so a reachable one would have been turned away
+   * at the door; and **Prepare quietly said yes**, because `outsideBudget` zeroed the slot cost --
+   * which left *a prepared ritual*, a state three documents say does not exist. Two wrongs
+   * pointing the same way look exactly like a rule.
+   *
+   * Driven live because every one of those is a question about state the engine holds at the
+   * moment of the click: is there a fight, is this slate prepared, what has been drained, how many
+   * nights are left. The arithmetic of `nights` is pinned offline; what cannot be pinned offline
+   * is that a click reaches the resolver at all.
+   *
+   * **The rows are each about a different one of them**, and the last three are the price: a
+   * three-night working is gone for three long rests, and a short rest is not a night.
+   */
+  await probe("a ritual is cast out of the book, and costs nights", async () => {
+    await settle(page);
+    const out = await page.evaluate(async () => { try {
+      const { hero } = LIVE;
+      const { SPELLS, slateFieldsOf } = await import("/systems/cardrpg/module/graph.mjs");
+      const { slateData } = await import("/systems/cardrpg/module/setup.mjs");
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+
+      for (const t of CardRPGTray.openTrays) await t.close();
+      for (const c of [...game.combats]) await c.delete();
+      for (const id of (hero.effects ?? []).map(e => e.id)) {
+        await hero.deleteEmbeddedDocuments("ActiveEffect", [id]).catch(() => null);
+      }
+      /*
+       * **Other prepared spells are set aside, and the premise is asserted below.** A spell an
+       * earlier probe left prepared occupies the budget, and a budget that cannot take the slate
+       * under test makes a refusal that looks like this rule and is not.
+       */
+      const parked = hero.items.filter(i => i.type === "spell" && i.system.prepared);
+      for (const sp of parked) await sp.update({ "system.prepared": false });
+      /*
+       * **And a hand free, because every spell in the game needs one.**  [FOUND 2026-11-27]
+       *
+       * `payToCast` refuses a cast with both hands full -- *a prepared spell is gestured* -- and
+       * the hero of this world arrives holding whatever the suite last equipped. The first run of
+       * this probe spent eight retries clicking a card that was being turned away for its hands,
+       * and the row that was supposed to notice looked for one particular sentence and therefore
+       * read *nothing refused it*. The rows below say what was said instead of asking whether one
+       * phrase was in it.
+       *
+       * A ritual needing a free hand is the rule and not an oversight: a night of chalk, salt and
+       * a book is not done one-handed. So the probe frees the hand rather than the engine.
+       */
+      const held = hero.items.filter(i => i.type === "item" && i.system.equipped
+        && i.system.equippedSlot === "hands");
+      for (const it of held) await it.update({ "system.equipped": false });
+
+      /* Notifications off the SCREEN as well as through a wrapper: a wrapper on `ui.notifications`
+       * is lost the moment anything rebinds the object, and "nothing refused it" would then pass
+       * exactly when it mattered. The lesson the Cast-half probe records above. */
+      const said = [];
+      const warn = ui.notifications.warn.bind(ui.notifications);
+      const info = ui.notifications.info.bind(ui.notifications);
+      ui.notifications.warn = (m, o) => { said.push(String(m)); return warn(m, o); };
+      ui.notifications.info = (m, o) => { said.push(String(m)); return info(m, o); };
+      const onScreen = () => [...document.querySelectorAll("#notifications .notification")]
+        .map(el => el.textContent.trim());
+      /*
+       * **Cleared twice, with a wait between.**  **[FIXED 2026-11-27]**
+       *
+       * Foundry **queues** notifications and renders them on a later tick, so a refusal raised by
+       * the step before this one can arrive on screen *after* the clear and be read as this one's.
+       * It cost a row that said *nothing was said about it at all* and quoted the Prepare
+       * refusal from two steps earlier -- about one run in three, which is the worst frequency
+       * there is.
+       */
+      const clearSaid = async () => {
+        for (let i = 0; i < 2; i++) {
+          said.length = 0;
+          for (const el of document.querySelectorAll("#notifications .notification")) el.remove();
+          await new Promise(done => setTimeout(done, 350));
+        }
+        said.length = 0;
+      };
+      const heard = () => [...said, ...onScreen()].join(" || ");
+      const pause = ms => new Promise(done => setTimeout(done, ms));
+      globalThis.__ritualPhase = "start";
+      const phase = where => { globalThis.__ritualPhase = where; };
+
+      const make = async name => {
+        const def = SPELLS.get(name);
+        if (!def) return null;
+        const [slate] = await hero.createEmbeddedDocuments("Item",
+          [slateData({ ...slateFieldsOf(def), kind: "formula" }, "spell")]);
+        return slate;
+      };
+      const pot = await make("The Clean Pot");      // one night
+      const door = await make("The Door Home");     // three nights
+      if (!pot || !door) {
+        return { missing: `${pot ? "" : "The Clean Pot "}${door ? "" : "The Door Home"}` };
+      }
+
+      phase("1 slate fields");
+      /* 1. What the slate says about itself before anything is clicked. */
+      const arrives = [pot.system.prepared, door.system.prepared].join(",");
+      const slots = pot.system.slotCost + door.system.slotCost;
+      const nights = [pot.system.nightsOf, door.system.nightsOf].join(",");
+
+      phase("2 face");
+      /* 2. The face, out of a fight: priced in nights, and clickable while it sits in the book. */
+      const tray = game.cardrpg.openTray(hero);
+      tray.side = "action";
+      tray.openPiles = new Set(["spells"]);
+      await tray.render();
+      await pause(400);
+      /*
+       * **By id off the tray's own element, not by name off the document.** A spread card's name
+       * is one node inside it and the slate id is on the clickable seat, so matching the printed
+       * name meant knowing which node the name is in -- the first draft read `.cr-card__name` and
+       * found nothing, which reports as *the rule is broken* rather than as *the probe looked in
+       * the wrong place*. The id is what the handler uses, so it is what the probe uses.
+       */
+      const faceOf = slate => {
+        const seat = tray.element?.querySelector(`[data-slate-id="${slate.id}"]`);
+        const card = seat?.closest(".cr-card") ?? seat;
+        if (!card) return { text: "not shown", tip: "", passive: null };
+        return {
+          text: card.textContent.replace(/\s+/g, " ").trim(),
+          tip: card.getAttribute("data-tooltip")
+            ?? card.querySelector("[data-tooltip]")?.getAttribute("data-tooltip") ?? "",
+          passive: card.classList.contains("cr-card--passive")
+        };
+      };
+      /* And the click, through the seat the handler is bound to, retried because creating an Item
+       * re-renders the tray and an element found 200ms ago is detached by the time it is used. */
+      const clickSlate = async (slate, landed = () => true) => {
+        for (let i = 0; i < 8; i++) {
+          for (const el of document.querySelectorAll(".dialog .header-button.close, "
+            + "dialog .header-control[data-action=close]")) el.click();
+          await tray.render();
+          await pause(220);
+          const el = tray.element
+            ?.querySelector(`[data-action="playSlate"][data-slate-id="${slate.id}"]`);
+          if (!el?.isConnected) continue;
+          el.click();
+          for (let j = 0; j < 14 && !landed(); j++) await pause(100);
+          if (landed()) return true;
+        }
+        return false;
+      };
+      const book = faceOf(pot);
+
+      /*
+       * 3. **Prepare, through the handler the sheet actually registers.** Not a copy of the rule:
+       * `options.actions.togglePrepared` is the function the button is wired to, called with the
+       * sheet as its `this` and the dataset a click would carry.
+       */
+      phase("3 prepare");
+      await clearSaid();
+      const prepare = hero.sheet?.options?.actions?.togglePrepared;
+      let prepareRefused = "no handler";
+      if (typeof prepare === "function") {
+        await prepare.call(hero.sheet, new Event("click"), { dataset: { slateId: door.id } });
+        await pause(250);
+        prepareRefused = heard();
+      }
+      const stillBook = door.system.prepared;
+
+      phase("4 cast");
+      /* 4. The click that casts it, out of a fight, unprepared. */
+      await clearSaid();
+      const chatBefore = game.messages.size;
+      await tray.render();
+      await pause(250);
+      const clicked = await clickSlate(pot, () => !!pot.system.drained);
+      const castDrained = pot.system.drained;
+      const castSaid = heard();
+      const lines = game.messages.contents.slice(chatBefore)
+        .map(m => m.content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()).join(" || ");
+
+      phase("5 fight");
+      /* 5. In a fight, the refusal has to be the timing's and not the book's. */
+      const made = [];
+      const place = async (actor, x) => {
+        const [doc] = await canvas.scene.createEmbeddedDocuments("Token",
+          [(await actor.getTokenDocument({ x, y: 1500 })).toObject()]);
+        made.push(doc);
+        return doc;
+      };
+      const npc = game.actors.find(a => a.type === "npc");
+      const ph = await place(hero, 900);
+      const pn = await place(npc, 1100);
+      const combat = await Combat.create({ scene: canvas.scene.id });
+      await combat.createEmbeddedDocuments("Combatant", [
+        { tokenId: ph.id, sceneId: canvas.scene.id, actorId: hero.id, initiative: 20 },
+        { tokenId: pn.id, sceneId: canvas.scene.id, actorId: npc.id, initiative: 10 }
+      ]);
+      await combat.startCombat();
+      await combat.activate();
+      await pause(700);
+
+      await clearSaid();
+      await tray.render();
+      await pause(250);
+      const fightFace = faceOf(door);
+      /*
+       * **The click cannot be the test here, because there is nothing to click.** In a fight the
+       * card is `passive` and the template only writes `data-action="playSlate"` on a card that
+       * is not -- which is the HUD doing its job one step before the refusal. So the refusal
+       * itself is asked of the routine that makes it, with a real fight running and the hero's
+       * own turn in progress: that is live state, and a stub told the same thing would agree
+       * with whatever it was told.
+       *
+       * `#bookShut`'s ritual branch is behind this: a second road in -- a macro, `playSlate`
+       * called directly -- would reach it, and it must not answer *stage a \u2726 Cast half*,
+       * which is advice no card in the game can satisfy. Hence the second row.
+       */
+      const barred = LIVE.refusesTiming(hero, door, { what: `casting ${door.name}` });
+      const inFight = heard();
+      const fightDrained = door.system.drained;
+
+      /*
+       * 6. **And no card half can reach one.** The gate card carries a bare \u2726 Cast and the
+       * hero has nothing prepared and nothing in hand that casts -- only two rituals. If a ritual
+       * counted, this half would be playable.
+       */
+      const hand = LIVE.deckOf(hero, "actionHand");
+      phase("6 gate");
+      const [gate] = await hand.createEmbeddedDocuments("Card", [{
+        name: "Probe Ritual Gate", type: "action",
+        system: { primary: [{ verb: "cast" }], secondary: [{ verb: "move", param: 1 }] }
+      }]);
+      /*
+       * **And it says whether it found the card**, which is not pedantry.  **[FIXED 2026-11-27]**
+       *
+       * `blocked: !!seat?.classList...` reads **false** for a card that is not on the screen at
+       * all, and *false* is the passing answer for one of the rows below -- so a measurement of a
+       * card that had been swept out of the hand read as *the half is playable*. It cost two runs
+       * and a diagnostic row to see, because the number it produced was a plausible one.
+       */
+      const gateFace = async (name = "Probe Ritual Gate") => {
+        tray.staged = [];
+        tray.playedAt = null;
+        tray.spentHalves = { primary: false, secondary: false };
+        await tray.render();
+        await pause(400);
+        const el = [...document.querySelectorAll(".cr-hud__hand .cr-card")].find(c =>
+          c.querySelector(".cr-card__name")?.textContent.trim() === name);
+        const seat = el?.querySelector(".cr-half--primary");
+        const tip = seat?.querySelector(":scope > span[data-tooltip]:not([class])")
+          ?? seat?.querySelector(":scope > .cr-half__play[data-tooltip]");
+        return {
+          found: !!seat,
+          blocked: !!seat?.classList.contains("cr-half--blocked"),
+          tip: tip?.getAttribute("data-tooltip") ?? ""
+        };
+      };
+      const ritualsOnly = await gateFace();
+
+      /* And the other side of the gate, so this is a rule rather than a removal: one ordinary
+       * spell prepared and the same half is playable. */
+      const bolt = await make("Grave Chill");
+      if (bolt) await bolt.update({ "system.prepared": true });
+      phase("7 teardown");
+      const withSpell = await gateFace();
+
+      await combat.delete();
+      for (const doc of made.reverse()) await doc.delete();
+      canvas.tokens?.releaseAll?.();
+      await pause(300);
+
+      /*
+       * **And the row that can tell this rule from its neighbours: a ritual written prepared,
+       * out of a fight.**  **[BUILT 2026-11-27]**
+       *
+       * `#castable` holds **three** guards that each keep a ritual off the menu, and only one of
+       * them is the rule: `prepared` (a ritual never is), `timingBars` (not while a fight is on),
+       * and `notOnCard` (a night is not a turn). Measured in its honest state, or measured during
+       * a fight, the first two do all the work -- so removing the third changed nothing a probe
+       * could see, which two break tests proved in turn. A row that passes either way is a row
+       * about nothing.
+       *
+       * So: no fight, `prepared` written straight onto the slate, and nothing else prepared. That
+       * is not a state the sheet can produce -- it refuses, and there is a row above for that --
+       * but it is one a macro, a module or an older world can, and it is the case the flag exists
+       * for. Without it this half becomes playable and offers a night's work as a turn's action.
+       */
+      /* A second card, because **ending a fight sweeps the hand back into the deck**: the one
+       * made above is not in the hand any more, and measuring it there read *not blocked* for a
+       * card that was not on the screen. */
+      const [gate2] = await hand.createEmbeddedDocuments("Card", [{
+        name: "Probe Ritual Gate Two", type: "action",
+        system: { primary: [{ verb: "cast" }], secondary: [{ verb: "move", param: 1 }] }
+      }]);
+      if (bolt) await bolt.update({ "system.prepared": false });
+      await door.update({ "system.prepared": true });
+      const preparedRitual = await gateFace("Probe Ritual Gate Two");
+      await door.update({ "system.prepared": false });
+      /*
+       * **The gate card is deleted from wherever it now is, not from where it was made.**
+       * **[FOUND 2026-11-27]**
+       *
+       * A card created in the hand does not stay in the hand: ending a fight sweeps the hand back
+       * into the deck, and a rest returns Spent cards and shuffles the discard in. `Card#delete`
+       * resolves its own id through a **strict** `EmbeddedCollection.get` on the stack it believes
+       * it belongs to, so a stale handle throws:
+       *
+       *     Error: undefined id [...] does not exist in the EmbeddedCollection collection
+       *         at EmbeddedCollection.get ... at #preDeleteDocumentArray
+       *         at async ClientDatabaseBackend._deleteDocuments
+       *
+       * It threw out of the teardown and took the probe's return with it -- which from outside is
+       * a probe that found nothing, with the id of a document nobody recognises as the only clue.
+       * **That error has been read once already as a dangling *Token* UUID** (the open note on the
+       * Cast-half probe above): same message, same strict get, entirely different cause. The
+       * message names an id and not a kind, so it cannot be told apart by reading it -- only by
+       * catching it and printing the stack, which is what the `nothing threw` row is for.
+       *
+       * So the card is looked up by id across the stacks before it is deleted. Two moves happen
+       * between its creation and here and neither is this probe's business to predict.
+       */
+      for (const id of [gate.id, gate2?.id].filter(Boolean)) {
+        const wherever = game.cards.contents
+          .flatMap(stack => stack.cards.contents).find(c => c.id === id);
+        if (wherever) await wherever.delete();
+      }
+
+      /*
+       * **No sweep of the chat log here, and that is the finding.**  **[FOUND 2026-11-27]**
+       *
+       * One was written first, on the reading that the throw this probe kept dying on was a
+       * **dangling token speaker**: every fight places a token, posts chat that names it, and
+       * deletes the token, so the log holds UUIDs nothing can resolve. That reading is recorded
+       * as an open note on the Cast-half probe above, and it was wrong here -- the throw was a
+       * **Card deleted after a rest had moved it**, which raises the same strict-get error from
+       * `#preDeleteDocumentArray` instead of from `fromUuid`.
+       *
+       * The sweep is not kept "just in case": with nothing to sweep it is a guard nothing proves,
+       * and this suite has a rule about checks that cannot fail. If a dangling speaker ever does
+       * throw, the `nothing threw` row below prints the stack and says so.
+       */
+      await pause(300);
+
+      /*
+       * 7. **The nights, counted on long rests.** A long rest is a night's sleep (core-rules 8),
+       * so it is the one thing in the system that knows a night has gone by. The short rest in
+       * the middle is the control: an hour is not a night.
+       */
+      phase("8 nights");
+      await door.update({ "system.drained": false, "system.nightsLeft": null });
+      await clearSaid();
+      const cast3 = await clickSlate(door, () => !!door.system.drained);
+      const booked = door.system.nightsLeft;
+      await LIVE.rest(hero, { long: false });
+      const afterShort = `${door.system.drained}/${door.system.nightsLeft}`;
+      await LIVE.rest(hero, { long: true });
+      const afterOne = `${door.system.drained}/${door.system.nightsLeft}`;
+      await LIVE.rest(hero, { long: true });
+      const afterTwo = `${door.system.drained}/${door.system.nightsLeft}`;
+      await LIVE.rest(hero, { long: true });
+      const afterThree = `${door.system.drained}/${door.system.nightsLeft}`;
+
+      phase("9 restore");
+      /* Put the world back. */
+      ui.notifications.warn = warn;
+      ui.notifications.info = info;
+      tray.openPiles.clear();
+      const mine = [pot.id, door.id, bolt?.id].filter(Boolean);
+      await hero.deleteEmbeddedDocuments("Item", mine);
+      for (const sp of parked) await sp.update({ "system.prepared": true });
+      for (const it of held) await it.update({ "system.equipped": true });
+      await tray.render();
+
+      return {
+        missing: "", arrives, slots, nights, clicked, cast3,
+        otherPrepared: hero.items.filter(i => i.type === "spell" && i.system.prepared).length,
+        bookText: book.text, bookTip: book.tip, bookPassive: book.passive,
+        prepareRefused, stillBook,
+        castDrained, castSaid, lines,
+        inFight, barred, fightPassive: fightFace.passive, fightTip: fightFace.tip, fightDrained,
+        ritualsBlocked: ritualsOnly.blocked, ritualsTip: ritualsOnly.tip,
+        preparedRitualBlocked: preparedRitual.blocked, preparedRitualTip: preparedRitual.tip,
+        gatesFound: `${ritualsOnly.found}/${withSpell.found}/${preparedRitual.found}`,
+        spellBlocked: withSpell.blocked,
+        booked, afterShort, afterOne, afterTwo, afterThree
+      };
+    } catch (err) {
+      return { blew: `${globalThis.__ritualPhase}: ${String(err?.stack ?? err).slice(0, 1200)}` };
+    } });
+
+    if (out.blew) return [["nothing threw", out.blew, "none"]];
+    if (out.missing) return [["the two rituals exist to cast", out.missing, "both"]];
+
+    return [
+      /* The premise. A budget that could not take a spell would refuse like this rule and not be
+       * it, so the slots are asserted rather than assumed. */
+      ["the two rituals arrive unprepared", out.arrives, "false,false"],
+      /* **And nothing else is prepared**, which is the premise that matters: a ritual needs no
+       * slot, so a free budget is not the question -- another spell holding the road is. The
+       * hero in this world has no slots at all, which is exactly why a ritual is the one kind of
+       * magic they can do. */
+      ["and no other spell is prepared", out.otherPrepared, 0],
+      /* **Strength was a number standing in for nothing**, and nights is what it stands for now. */
+      ["neither costs a slot", out.slots, 0],
+      ["and each carries its nights", out.nights, "1,3"],
+      /* **The face: priced in nights, and clickable in the book.** `!prepared` greyed every
+       * ritual in the game, so there was no state in which one could be clicked at all. */
+      ["the face prints nights where a spell prints slots",
+        /1 night of work/.test(out.bookText), true],
+      ["and it is clickable while it sits in the book", out.bookPassive, false],
+      ["and the tip says what a ritual is", /never prepared/.test(out.bookTip), true],
+      /* **Prepare said yes to a ritual for as long as rituals existed**, because the slot cost was
+       * zero -- so the refusal is the rule and the unchanged field is the proof. */
+      ["preparing a ritual is refused in words", /is a ritual/.test(out.prepareRefused), true],
+      ["and it stays in the book", out.stillBook, false],
+      /* **The cast itself, unprepared, out of a fight**: the road that did not exist. */
+      ["a ritual clicked in the book casts", out.castDrained, true],
+      /* **What was said, not whether one sentence was in it.** The first draft asked whether the
+       * *in your book* refusal had fired, which is one of five refusals in front of a cast -- so
+       * a cast turned away for its hands read as *nothing refused it*. A probe that names the
+       * refusal it expects can only ever find that one. */
+      ["and nothing was said about it at all", out.castSaid, ""],
+      ["and it says how many nights it took", /a ritual: 1 night/.test(out.lines), true],
+      ["and the step itself resolved", /day's rations/.test(out.lines), true],
+      /* **In a fight it is the timing that refuses**, not the sentence that names a card half --
+       * which for a ritual is advice no card in the game can satisfy. */
+      ["in a fight a ritual is not cast", out.fightDrained, false],
+      ["the fight refuses it", out.barred, true],
+      /* The refusal and the card say the same thing in two registers: the tooltip is *Ritual: not
+       * while the fight is on* and the refusal is *The Door Home is Ritual: casting it cannot
+       * happen while the fight is on*. Both are asserted, because a player meets one or the
+       * other depending on which road they came in by. */
+      ["by its timing, naming it", /is Ritual \(overnight, out of combat\):/.test(out.inFight),
+        true],
+      ["and saying what is in the way", /cannot happen while the fight\s+is on/.test(out.inFight),
+        true],
+      ["and not by the sentence that names a \u2726 Cast half",
+        /stage one from your hand/.test(out.inFight), false],
+      /* And the card is greyed before any of that, which is the refusal a player actually meets:
+       * there is no seat to click, and the tooltip is where the reason is. */
+      ["and the card is not clickable at all", out.fightPassive, true],
+      ["and says why on its face", /not while the fight is on/.test(out.fightTip), true],
+      /* **And no half reaches one, which is the rule rather than the clock.** Two rituals in the
+       * book, nothing prepared, nothing in hand that casts: if a ritual counted, this would play. */
+      /* All three gate measurements found a card to measure. A half that is not on the screen
+       * reads as *not blocked*, which is the passing answer for one of these rows. */
+      ["every gate measurement found its card", out.gatesFound, "true/true/true"],
+      ["a \u2726 Cast half with only rituals to cast is blocked", out.ritualsBlocked, true],
+      ["and says there is nothing to cast",
+        /Nothing prepared, and nothing in hand that casts/.test(out.ritualsTip), true],
+      /* **Even a ritual written prepared is not on the menu**, which is the rule rather than the
+       * accident: `prepared` would have kept it off by itself, and this is the row that notices
+       * when `notOnCard` goes. */
+      ["and a ritual written prepared is still not castable", out.preparedRitualBlocked, true],
+      ["and the half still says there is nothing to cast",
+        /Nothing prepared, and nothing in hand that casts/.test(out.preparedRitualTip), true],
+      ["and one ordinary spell prepared gives the half back", out.spellBlocked, false],
+      /* **The price, paid in nights.** A three-night working is gone for three of them, and the
+       * short rest is the control: an hour is not a night. */
+      ["a three-night working books its nights", out.booked, 3],
+      ["a short rest advances none of them", out.afterShort, "true/3"],
+      ["the first long rest works one off", out.afterOne, "true/2"],
+      ["the second another", out.afterTwo, "true/1"],
+      ["and the third puts it back", out.afterThree, "false/null"]
+    ];
+  });
+
+  /*
+   * **[WIRED 2026-11-27] A recipe starts its own ritual, which nothing had ever asked it to.**
+   *
+   * A ritual that lifts an injury is a **challenge** and not a spell (core-rules 8): Progress
+   * against Pressure, an approach, and twists off a deck of its own. The numbers live on the
+   * recipe, and `ritualChallenge` has been able to read them out since the four rituals became
+   * items on 2026-11-08 -- while **nothing anywhere called it**. The only mention of it outside
+   * its own body was an offline check that it existed. So a GM read *Progress 6, Pressure 4* off
+   * the recipe's printed text and typed it into the board by hand.
+   *
+   * Driven live because what is under test is two **scene flags** and the deck a draw comes out
+   * of: a challenge is state on the scene, the call is state on the scene, and which pile a twist
+   * leaves is decided by reading the first of them. None of that exists outside a running world.
+   */
+  await probe("a recipe puts its own ritual on the board", async () => {
+    await settle(page);
+    const out = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      const { RITUALS } = await import("/systems/cardrpg/module/content.mjs");
+      const { slateData } = await import("/systems/cardrpg/module/setup.mjs");
+      const checks = await import("/systems/cardrpg/module/checks.mjs");
+
+      for (const c of [...game.combats]) await c.delete();
+      await checks.endChallenge();
+      await checks.clearCall();
+
+      const def = RITUALS.find(r => r.name === "Recipe: Regrowth");
+      if (!def) return { missing: "Recipe: Regrowth" };
+      const [recipe] = await hero.createEmbeddedDocuments("Item",
+        [slateData({ ...def }, "item")]);
+
+      /* 1. What the recipe knows before anything is pressed. One source for a Regrowth's cost. */
+      const reads = recipe.system.ritualChallenge;
+      const known = reads
+        ? `${reads.name}/${reads.lifts}/${reads.approach}/${reads.progress}/${reads.pressure}`
+          + `/${reads.permanent}`
+        : "nothing";
+
+      /*
+       * 2. **The button, through the handler the sheet registers.** `options.actions.beginRitual`
+       * is the function the template's `data-action` is wired to, called with the sheet as its
+       * `this` -- the same road a click takes, without depending on which tab is open.
+       */
+      const sheet = recipe.sheet;
+      const begin = sheet?.options?.actions?.beginRitual;
+      if (typeof begin !== "function") {
+        await hero.deleteEmbeddedDocuments("Item", [recipe.id]);
+        return { missing: "the beginRitual action" };
+      }
+      await begin.call(sheet, new Event("click"), { dataset: {} });
+      await new Promise(done => setTimeout(done, 400));
+
+      const live = checks.readChallenge();
+      const board = live
+        ? `${live.progressMax}/${live.pressureMax}/${live.ritual}/${live.who.length}`
+        : "no challenge";
+      const call = checks.readCall();
+      const asked = call ? `${call.approaches.join("+")}` : "no call";
+      const dc = call?.dc ?? null;
+
+      /*
+       * 3. **And which deck a twist leaves.** This is the whole reason `ritual: true` is passed:
+       * a ritual's failures are about the thing being lifted, so they come off a deck of their
+       * own. Asked through `twistCounts`, which reads the live challenge to decide.
+       */
+      const counts = checks.twistCounts();
+      const deck = `${counts?.kind ?? "?"}/${counts?.label ?? "?"}`;
+      const drawn = await checks.drawTwist();
+      const fromRitual = Array.isArray(drawn) && drawn.length > 0
+        && (drawn[0]?.name ?? "").length > 0;
+      const stillRitual = checks.twistCounts()?.kind ?? "?";
+
+      /* Put the world back. */
+      await checks.endChallenge();
+      await checks.clearCall();
+      await hero.deleteEmbeddedDocuments("Item", [recipe.id]);
+
+      return {
+        missing: "", known, board, asked, dc, deck, fromRitual, stillRitual,
+        twist: Array.isArray(drawn) ? (drawn[0]?.name ?? "nameless") : `${drawn}`,
+        /* Asked of the vocabulary rather than written down here, so the row compares the call
+         * against the engine's own default and not against a number this probe believes. */
+        dcDefault: LIVE.CARDRPG.difficulties.normal
+      };
+    });
+
+    if (out.missing) return [["the recipe and its button exist", out.missing, "both"]];
+
+    return [
+      /* One place says what a Regrowth costs, and it is `injuryCategories`. The recipe reads it. */
+      ["the recipe reads its own challenge out of the one table", out.known,
+        "Regrowth/maiming/lore/6/4/true"],
+      /* **The numbers reach the board**, which is the half that had no caller: a GM typed these. */
+      ["pressing it puts those numbers on the board", out.board, "6/4/true/1"],
+      ["and sets the call to the recipe's approach", out.asked, "lore"],
+      /* **And invents no difficulty.** No ritual in the content states a DC, so the call takes the
+       * engine's own default and the GM moves it -- a number chosen here would have been a fifth
+       * place a ritual's difficulty is described. */
+      ["and leaves the difficulty at the engine's default", out.dc, out.dcDefault],
+      /* **The deck is the point of `ritual: true`.** A ritual twist is about the injury being
+       * lifted rather than about the scene, and the pile is chosen by reading the challenge. */
+      ["a twist comes off the ritual pile", out.deck, "ritual/Ritual twist"],
+      /* And a real card came off it, named: the pile being chosen correctly and the pile having
+       * anything in it are two different claims, and an empty deck would have passed the first. */
+      ["and one really does", out.fromRitual, true],
+      ["and it is a ritual twist by name", out.twist.length > 0 && out.twist !== "nameless", true],
+      ["and the pile is still the ritual one afterwards", out.stillRitual, "ritual"]
     ];
   });
 

@@ -510,6 +510,20 @@ export const FAITH_POOL = [
     }
   },
   {
+    /*
+     * The clean body, after it has stopped being a body. The Eternal God's four are all about
+     * keeping one whole; this is the rite for when that has failed, and it is deliberately the
+     * same answer Necromancy's *The Quiet Ground* gives from the other end of the argument --
+     * two Ways afraid of the same thing and agreeing about the remedy.
+     */
+    name: "The Washing of the Dead", strength: 0, nights: 1, pool: "faith",
+    source: "The Eternal God",
+    needs: [],
+    description: "<p>A night's vigil, and the body washed and named. What was taken from them "
+      + "goes back into the ground with them, and nothing of them walks or answers.</p>",
+    effect: { timing: "ritual", text: "one body laid properly: nothing of them walks or answers" }
+  },
+  {
     name: "The Clean Field", strength: 4, pool: "faith", source: "The Eternal God",
     needs: ["an enemy that loses a half"],
     description: "<p>For one round nobody on the other side does anything but their main business. "
@@ -699,6 +713,18 @@ export const FAITH_POOL = [
     }
   },
   {
+    /*
+     * Vulpet's axis is Preparation and his people are the ones nobody will look for. Two nights
+     * of walking badly is the price, and it is the god's whole doctrine: you are not hidden, you
+     * are simply not worth the asking after.
+     */
+    name: "The Outcast's Road", strength: 0, nights: 2, pool: "faith", source: "Vulpet",
+    needs: [],
+    description: "<p>Two nights off the road, sleeping cold and leaving nothing. You and those "
+      + "with you cannot be tracked, named or asked after until you stop walking.</p>",
+    effect: { timing: "ritual", text: "the party cannot be tracked or asked after while they keep walking" }
+  },
+  {
     name: "The Driven Out", strength: 4, pool: "faith", source: "Vulpet",
     needs: ["a condition applied to an area", "Block that counts how many it caught"],
     description: "<p>Everything within three squares wants you and nothing else, and you are "
@@ -748,6 +774,18 @@ export const FAITH_POOL = [
     }
   },
   {
+    /*
+     * Brendan is *growth out of barren ground*, and every miracle of his so far does it to a
+     * person in a fight. This does it to the ground, which is the god the villages actually pray
+     * to -- and a priest who can do it is a priest who gets fed.
+     */
+    name: "The Blessed Furrow", strength: 0, nights: 1, pool: "faith", source: "Brendan",
+    needs: [],
+    description: "<p>A night in a field nobody can farm. By morning it will carry one crop, and "
+      + "everyone within a day's walk will know who stood in it.</p>",
+    effect: { timing: "ritual", text: "one barren field carries one crop" }
+  },
+  {
     name: "The Orchard", strength: 4, pool: "faith", source: "Brendan",
     needs: [],
     description: "<p>Two turns from now the whole party heals four and sheds something. Planting "
@@ -782,6 +820,18 @@ export const FAITH_POOL = [
     description: "<p>You move his arm. The man behind him takes it, and neither of them "
       + "understands what happened.</p>",
     effect: { timing: "reaction", text: "adjacent: an enemy's Strike hits the nearest other enemy instead" }
+  },
+  {
+    /*
+     * The Grey is the silent approach, and this is its other half: the approach nobody ever knew
+     * happened. A night, and there is nothing to find -- which is a service a party pays for far
+     * more often than they admit.
+     */
+    name: "The Unnamed Grave", strength: 0, nights: 1, pool: "faith", source: "The Grey",
+    needs: [],
+    description: "<p>A night, a shovel, and no words said over it. There is no grave to find: no "
+      + "trace, no name, and nothing that can be asked about it.</p>",
+    effect: { timing: "ritual", text: "one burial nobody can find, name or ask after" }
   },
   {
     name: "The Grey Hour", strength: 4, pool: "faith", source: "The Grey",

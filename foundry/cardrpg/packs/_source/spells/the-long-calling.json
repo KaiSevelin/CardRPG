@@ -1,0 +1,24 @@
+{
+  "_id": "fgvdKUGJUG4Win3K",
+  "_key": "!items!fgvdKUGJUG4Win3K",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Long Calling",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-long-calling.webp",
+  "system": {
+    "strength": 0,
+    "nights": 3,
+    "source": "Demonology",
+    "description": "<p>Three nights of chalk, salt and the right name said correctly. One of the greater names attends, does not touch you, and will bargain. What it asks for is the GM's and it is never small.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "one greater name attends and will bargain"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

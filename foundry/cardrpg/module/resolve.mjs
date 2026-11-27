@@ -551,7 +551,21 @@ export async function askStrain(actor, owed,
  * @returns {boolean} whether it was cast, so the caller knows not to resolve the effect
  */
 export async function payToCast(actor, slate) {
-  if (!slate?.system?.prepared) {
+  /*
+   * **A ritual is read out of the book, so the book is not a refusal for one.**
+   * **[FIXED 2026-11-27]**
+   *
+   * `prepared` is *in your head and ready to say*, and the whole of what a ritual is not: it is
+   * overnight work off a page, and `neverPrepared` is the timing table saying so. Three documents
+   * already said *a ritual is never prepared and never cast* -- the content, the levelling audit
+   * and this file's own neighbour -- while this line refused every one of them, and the only
+   * reason nothing noticed is that `outsideBudget` made preparing a ritual **free**, so the
+   * sentence was false in a way that still let a player through.
+   *
+   * It is the exemption and not the whole gate: `drained` below still holds, because a night's
+   * work done is done.
+   */
+  if (!slate?.system?.prepared && !slate?.system?.outsideBudget) {
     ui.notifications.warn(`${slate?.name ?? "That spell"} is in your book, not in your head.`);
     return false;
   }
@@ -616,7 +630,22 @@ export async function payToCast(actor, slate) {
    * gives: *Unmake* stops a spell from resolving, not from being cast, so the price is gone
    * either way.
    */
-  const consume = () => slate.update({ "system.drained": true });
+  /*
+   * **And a ritual books its nights on the way out.**  **[BUILT 2026-11-27]**
+   *
+   * Every spell drains when it is cast and a long rest puts it back. A ritual drains the same way
+   * and comes back `nights` rests later instead of one, which is the whole of what its price in
+   * time buys: the three nights *The Long Calling* takes are three nights the party spends, and
+   * the engine is the thing that remembers.
+   *
+   * Written here rather than in the tray because this is the door every cast comes through --
+   * `nightsOf` is 0 for anything that is not a ritual, so the field is simply not set on the 140
+   * spells it has no business being on.
+   */
+  const nights = slate.system.nightsOf;
+  const consume = () => slate.update(nights > 1
+    ? { "system.drained": true, "system.nightsLeft": nights }
+    : { "system.drained": true });
 
   const price = spellPrice(actor, slate);
   /* The early return is about the chat line -- a spell that charges nothing says nothing -- so

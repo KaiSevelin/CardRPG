@@ -1,0 +1,24 @@
+{
+  "_id": "1EVIhTwCypd69ZIO",
+  "_key": "!items!1EVIhTwCypd69ZIO",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Unnamed Grave",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-unnamed-grave.webp",
+  "system": {
+    "strength": 0,
+    "nights": 1,
+    "source": "The Grey",
+    "description": "<p>A night, a shovel, and no words said over it. There is no grave to find: no trace, no name, and nothing that can be asked about it.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "one burial nobody can find, name or ask after"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

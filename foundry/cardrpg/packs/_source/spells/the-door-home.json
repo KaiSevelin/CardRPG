@@ -10,7 +10,8 @@
   "type": "spell",
   "img": "systems/cardrpg/art/spells/mind/the-door-home.webp",
   "system": {
-    "strength": 5,
+    "strength": 0,
+    "nights": 3,
     "source": "Household Magic",
     "description": "<p>A door you have opened before becomes a door to any other door you have opened before. It is the school's thesis: a householder is never far from anywhere they have been.</p>",
     "effect": {

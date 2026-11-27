@@ -1,0 +1,24 @@
+{
+  "_id": "DvuSbpjd0jT5NUK1",
+  "_key": "!items!DvuSbpjd0jT5NUK1",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Washing of the Dead",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-washing-of-the-dead.webp",
+  "system": {
+    "strength": 0,
+    "nights": 1,
+    "source": "The Eternal God",
+    "description": "<p>A night's vigil, and the body washed and named. What was taken from them goes back into the ground with them, and nothing of them walks or answers.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "one body laid properly: nothing of them walks or answers"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

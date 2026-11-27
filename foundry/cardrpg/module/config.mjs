@@ -1185,15 +1185,28 @@ CARDRPG.whileStates = {
  * slots, which is a fact about the BUDGET and not about the moment. Nothing stopped one being cast
  * in the middle of a fight.
  *
- * **Two flags, because two things are all the engine can honestly know**: whether a fight is
- * running, and whose turn it is. Everything else a timing implies -- that *Ask the Dead* needs a
- * corpse, that *The Long Masquerade* lasts a day -- is the table's, and is prose on the card.
+ * **Four flags.** Two are about the clock and are all the engine can honestly know of it:
+ * whether a fight is running, and whose turn it is. Two more are about a ritual, and they are
+ * here rather than on the slate because **a ritual is a timing** -- *the work of a night* -- and
+ * everything else about one follows from that. Everything a timing implies beyond these -- that
+ * *Ask the Dead* needs a corpse, that *The Long Masquerade* lasts a day -- is the table's, and is
+ * prose on the card.
  *
  * - **`notInFight`** -- refused while a fight is on. The three that mean *not now*: a ritual is
  *   overnight work, *out of combat* says so, and *before the fight* has to be cast before this one
  *   started, which is the same condition read the other way round.
  * - **`notOnYourTurn`** -- refused on your own turn. A Reaction answers somebody else, and the HUD
  *   does not otherwise care whose turn it is, so this is the one place that can be said.
+ * - **`notOnCard`** -- can never be reached from a **card half**.  **[RULED 2026-11-27]** A half
+ *   is a sixth of a six-second round even when no fight is running, and a night is not a thing a
+ *   turn can contain. `notInFight` was the whole of the old rule and it left the out-of-fight
+ *   door open: with casting moved onto a ✦ Cast half, a ritual was one click from being a
+ *   move in a turn. This is the flag that shuts it, and it shuts it in both states rather than
+ *   in the one the engine happens to be measuring.
+ * - **`neverPrepared`** -- never held ready, and so never costs a slot.  **[RULED 2026-11-27]**
+ *   `outsideBudget` reads this, which is why the word *ritual* no longer appears in that getter:
+ *   the slot exemption and the overnight work were two statements of one fact kept in two files,
+ *   and the content had been carrying a gap about the second since Household Magic was built.
  *
  * It is a refusal and not a warning, unlike the two board measurements (core-rules 12). The
  * difference is that a distance has a ledge and a rope behind it and the engine cannot see them,
@@ -1201,7 +1214,10 @@ CARDRPG.whileStates = {
  */
 CARDRPG.timings = {
   reaction: { label: "CARDRPG.Timing.Reaction", notOnYourTurn: true },
-  ritual: { label: "CARDRPG.Timing.Ritual", notInFight: true },
+  ritual: {
+    label: "CARDRPG.Timing.Ritual",
+    notInFight: true, notOnCard: true, neverPrepared: true
+  },
   outOfCombat: { label: "CARDRPG.Timing.OutOfCombat", notInFight: true },
   beforeFight: { label: "CARDRPG.Timing.BeforeFight", notInFight: true }
 };

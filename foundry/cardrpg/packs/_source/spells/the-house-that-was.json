@@ -10,7 +10,8 @@
   "type": "spell",
   "img": "systems/cardrpg/art/spells/mind/the-house-that-was.webp",
   "system": {
-    "strength": 4,
+    "strength": 0,
+    "nights": 1,
     "source": "Household Magic",
     "description": "<p>Overnight a ruin is a house again: warm, defensible, and worth sleeping in. The party rests as though they had reached somewhere.</p>",
     "effect": {

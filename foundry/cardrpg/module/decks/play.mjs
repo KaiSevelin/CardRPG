@@ -715,6 +715,9 @@ export async function rest(actor, { long = false } = {}) {
    * made the new rule apply to none of them. A feature still obeys what it prints.
    */
   const woken = [];
+  /* A ritual that is still being worked on, named separately: *came back* and *one night nearer*
+   * are two different pieces of news and the line below reports them as two. */
+  const working = [];
   for (const slate of actor.items ?? []) {
     if (!slate.system?.drained) continue;
     const boundary = slate.system.active?.boundary ?? "";
@@ -722,7 +725,26 @@ export async function rest(actor, { long = false } = {}) {
       ? long
       : boundary === "shortRest" || (boundary === "longRest" && long);
     if (!back) continue;
-    await slate.update({ "system.drained": false, "system.drainedFor": null });
+    /*
+     * **A night of a longer working passes, and that is all.**  **[BUILT 2026-11-27]**
+     *
+     * A long rest is *a night's sleep* (core-rules 8), which makes this routine the one place in
+     * the system that knows a night has gone by -- so it is the one place a ritual's `nights` can
+     * be counted. A three-night working is drained through three of these, and what the rest
+     * gives back on the first two is one night off the tally.
+     *
+     * The short rest is excluded by `back` above, and correctly: an hour is not a night, and a
+     * ritual that advanced on a nap would be a five-night working done in an afternoon.
+     */
+    const togo = (slate.system.nightsLeft ?? 0) - 1;
+    if (togo > 0) {
+      await slate.update({ "system.nightsLeft": togo });
+      working.push(`${slate.name} (${togo} night${togo === 1 ? "" : "s"} to go)`);
+      continue;
+    }
+    await slate.update({
+      "system.drained": false, "system.drainedFor": null, "system.nightsLeft": null
+    });
     woken.push(slate.name);
   }
   /*
@@ -745,6 +767,12 @@ export async function rest(actor, { long = false } = {}) {
     + `${relearned === 1 ? "" : "s"} back into the skill deck`);
   if (wound) did.push("sheds a <strong>Wound</strong>");
   if (woken.length) did.push(`has <em>${woken.join("</em>, <em>")}</em> ready again`);
+  /* A night of a longer working, which is the one thing a rest gives that is not a thing coming
+   * back. Reported for the same reason everything else here is: a party that cannot see the tally
+   * move cannot tell a three-night ritual from a broken one. */
+  if (working.length) {
+    did.push(`works a night on <em>${working.join("</em>, <em>")}</em>`);
+  }
 
   const left = actor.system.rest?.tokens ?? 0;
   const tokens = long

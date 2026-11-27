@@ -55,7 +55,15 @@ schema too, so a face can render without a second convention.
 
 #### `text` was carrying the game  **[MEASURED 2026-11-02]**
 
-**Of 401 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
+> **One field on the slate rather than on the step, and the reason is worth stating.**
+> **[2026-11-27]** A ritual costs **`nights`**, which is a fact about the *spell* and not about
+> the step that resolves it: a step is a thing that happens, and three nights of work is not. So
+> `nights` lives on the spell slate beside `strength`, `strength` is 0 on all seventeen rituals,
+> and the step carries only `timing: "ritual"` &mdash; from which no slot, no preparation and no
+> card half all follow, because they are the timing's flags. A `nights` on a step would have been
+> a fourth place to say *this is a ritual*.
+
+**Of 411 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
 when played. `case ""` in the tray broke out of a switch that
 is the end of the method: no effect, no prompt, not a line in chat. The branch below it already
 announced any verb the engine did not recognise, so the arrangement was exactly backwards `-` **a
@@ -98,7 +106,7 @@ prevent.
 
 | Field | Notes |
 |---|---|
-| `timing` | **When** the step may be played: `reaction`, `ritual`, `outOfCombat`, `beforeFight`. 31 steps carried this as a prefix on their prose, and `permanent` was retired from the list (see below). **[WIRED 2026-11-21]** each value now carries its own rule and the engine refuses a cast at the wrong moment |
+| `timing` | **When** the step may be played: `reaction`, `ritual`, `outOfCombat`, `beforeFight`. 31 steps carried this as a prefix on their prose, and `permanent` was retired from the list (see below). **[WIRED 2026-11-21]** each value now carries its own rule and the engine refuses a cast at the wrong moment. **[EXTENDED 2026-11-27]** a timing may now carry four flags rather than two: `notInFight` and `notOnYourTurn` are about the clock, and `notOnCard` and `neverPrepared` are what make **a ritual a timing** &mdash; no card half, no slot, no preparation, all said once |
 | `delay` | Turns to wait before it happens. `2` is *at the start of your second turn after this*, which three steps said in prose `-` and a delayed effect the engine cannot see is one the table forgets, because the card is in the discard by the time it matters **[WIRED 2026-11-21]** read by nothing until then: a step carrying one resolved on the spot, so a Signature that heals two turns later healed now. It is booked against the caster's own turns and comes due at nought |
 | `ground` | **What the step leaves on the map**: a `shape` (line, area, adjacent, whole map, one square), an `effects` list (cover, difficult ground, shadowed, impassable, a trap) and `damage` a turn. The condition a zone applies is the step's own. **Nothing places it** |
 | `targets` | **Who the step is for**: `self`, `oneEnemy`, `enemiesInRange`, `oneAlly`, `alliesInRange`, `adjacentAllies`, `everyAlly`, `selfAndAllies`, `everyone`. Blank means one enemy, which is what every card has always meant by saying nothing |
@@ -192,7 +200,10 @@ varied half stays prose.**
 > condition. Seven of the nine carry prose, because what Demonology spends is a debt that
 > compounds and no `cost` field holds an obligation with an opinion.
 
-**115 steps still carry prose, 30 of them prose alone** `-` the same first number as before, which
+**125 steps still carry prose, 30 of them prose alone** `-` ten more than before, and every one of
+the ten is a **ritual**: the ten schools and gods that gained one on 2026-11-27 each gained a step
+whose whole content is a timing and a sentence, because what a ritual does is the GM's and what the
+engine holds is *the work of a night*. The first number was flat for a fortnight before that, which
 is not a failure to make progress, and a second number that went **up** by five. That is honest
 rather than a regression: `timing: "permanent"` was the only field on five of the Graven steps, and
 it was a slot budget wearing a timing's clothes rather than a rule about when anything happens. Nine

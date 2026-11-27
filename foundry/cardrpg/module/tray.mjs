@@ -1547,6 +1547,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
      * counterspell has always written.
      */
     const spent = !!slate.system.drained;
+    /* What a ritual costs instead of slots, and asked through the getter so a stray number on a
+     * spell that is not one is not read (data/items.mjs). */
+    const ritual = !!slate.system.outsideBudget;
+    const nights = slate.system.nightsOf;
     /*
      * **The timing, printed and enforced in the same breath.**  [BUILT 2026-11-21]
      *
@@ -1595,18 +1599,28 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       /* The book is not clickable: you change what is prepared between fights, never during one.
        * Nor is a spell whose moment this is not, nor one whose state you are not in -- nor one
        * already cast, which is the new one. */
-      passive: !prepared || spent || !!notNow || !!notYet,
-      note: `${slate.system.source || "—"} \u00b7 ${slate.system.strength} slot`
-        + `${slate.system.strength === 1 ? "" : "s"}`
+      /*
+       * **A ritual is clickable while it sits in the book, because that is where it is cast
+       * from.**  **[FIXED 2026-11-27]** `!prepared` greyed every ritual in the game: there was no
+       * state in which one could be clicked, so the seven of them were decoration on a pile.
+       */
+      passive: (!prepared && !ritual) || spent || !!notNow || !!notYet,
+      note: `${slate.system.source || "—"} \u00b7 ${ritual
+        ? `${nights} night${nights === 1 ? "" : "s"} of work`
+        : `${slate.system.strength} slot${slate.system.strength === 1 ? "" : "s"}`}`
         + (costs ? ` \u00b7 costs ${costs}` : "")
         + (spent ? " \u00b7 cast \u2014 back on a long rest" : "")
         + (when ? ` \u00b7 ${when}` : "")
         /* The gate is printed whether or not it holds, and marked when it does: a card that says
          * nothing while the state is true is a card the player has to remember the rule for. */
         + (whileWords ? ` \u00b7 ${whileWords}${held === true ? " \u2014 now" : ""}` : ""),
-      tip: !prepared
-        ? "In your book. What is prepared changes between fights, not during one."
-        : spent
+      tip: ritual
+        ? notNow || notYet
+          || `The work of ${nights} night${nights === 1 ? "" : "s"}, read out of the book. `
+            + "A ritual is never prepared and never fits in a turn."
+        : !prepared
+          ? "In your book. What is prepared changes between fights, not during one."
+          : spent
           ? "Cast. The preparation is spent; a long rest puts it back in your head."
           : notNow || notYet
             || `Cast it.${costs ? ` It costs ${costs}.` : ""} The preparation is spent either way.`
@@ -3731,6 +3745,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   #bookShut(slate) {
     if (!game.combat?.started) return "";
     if (slate.system.effect?.timing === "reaction") return "";
+    /*
+     * **And a ritual falls through to the refusal that is true.**  **[FIXED 2026-11-27]**
+     *
+     * This sentence tells a player to stage a \u2726 Cast half, and for a ritual that is advice
+     * they cannot take: `notOnCard` means no half in the game will ever carry one. Answering it
+     * here would have been the engine naming a road it had just closed -- so the click goes on to
+     * `refusesTiming`, which says the thing that is actually in the way: *a ritual is the work of
+     * a night, and a fight is on*.
+     */
+    if (CARDRPG.timings[slate.system.effect?.timing ?? ""]?.notOnCard) return "";
     return `In a fight, ${slate.name} is cast off a \u2726 Cast half: stage one from your hand. `
       + "The book is the road out of a fight, and for reactions.";
   }
@@ -3752,6 +3776,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   #castable() {
     return this.actor.items.filter(slate =>
       slate.type === "spell" && slate.system.prepared && !slate.system.drained
+      /*
+       * **A ritual is never on this list, in a fight or out of one.**  **[RULED 2026-11-27]**
+       *
+       * `timingBars` below would catch one during a fight and `prepared` would catch one at any
+       * time, and neither is the reason: a card half is a **turn**, and the work of a night does
+       * not fit in a turn whether or not anybody is counting rounds. Two accidental guards that
+       * both happen to hold is how a rule gets lost -- make a ritual preparable for some later
+       * reason, or play a card out of combat, and the menu would have offered one.
+       */
+      && !CARDRPG.timings[slate.system.effect?.timing ?? ""]?.notOnCard
       && !timingBars(this.actor, slate)
       && stateHolds(this.actor, slate.system.effect?.whileState ?? "") !== false);
   }
@@ -3872,6 +3906,29 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
      * A counterspell that also refunded the cast would be strictly better than not being cast at.
      */
     if (await answerCast(this.actor, slate.name)) return true;
+
+    /*
+     * **A ritual says how much of the calendar it just ate.**  **[BUILT 2026-11-27]**
+     *
+     * The one price in the game paid in time, and the only reader that can act on it is the
+     * table: nothing in this system tracks a date, so a night passes because the GM says it does
+     * -- and they cannot say it if the engine never mentions it. `nights` existed as a field
+     * nobody printed for about an hour, which is the shape of defect this project keeps finding
+     * from the other side.
+     *
+     * **Two lines on purpose.** This one is *how long*, and the step's own line below is *what
+     * happened*: a five-night working and a day's rations are two different pieces of news, and
+     * folding them into one sentence would have meant the resolver knowing about rituals.
+     */
+    const nights = slate.system.nightsOf;
+    if (nights) {
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+        content: `<div class="cardrpg"><p><strong>${foundry.utils.escapeHTML(slate.name)}</strong>`
+          + ` \u2014 a ritual: <strong>${nights} night${nights === 1 ? "" : "s"}</strong>`
+          + " of work.</p></div>"
+      });
+    }
 
     await this.#resolveStep(
       step ? castWith(slate.system.effect, step) : slate.system.effect, half, targets, slate);

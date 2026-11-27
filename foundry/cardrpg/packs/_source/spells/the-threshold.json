@@ -1,0 +1,24 @@
+{
+  "_id": "ECnq656fJp7vaLB9",
+  "_key": "!items!ECnq656fJp7vaLB9",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Threshold",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-threshold.webp",
+  "system": {
+    "strength": 0,
+    "nights": 1,
+    "source": "Ward Magic",
+    "description": "<p>A night marking a door, a gate or the edge of a camp. Nothing hostile crosses the line unfelt, and whoever laid it wakes when something does &mdash; which is the whole of what it does. It does not stop anybody.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "one threshold: nothing hostile crosses it unfelt, and the warder wakes"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

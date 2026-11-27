@@ -1,0 +1,24 @@
+{
+  "_id": "J0cjHhjJx9jdpI6N",
+  "_key": "!items!J0cjHhjJx9jdpI6N",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Outcast's Road",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-outcasts-road.webp",
+  "system": {
+    "strength": 0,
+    "nights": 2,
+    "source": "Vulpet",
+    "description": "<p>Two nights off the road, sleeping cold and leaving nothing. You and those with you cannot be tracked, named or asked after until you stop walking.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "the party cannot be tracked or asked after while they keep walking"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}
