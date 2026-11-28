@@ -504,7 +504,7 @@ the tray: the price and the effect are two separate steps.
 
 | Condition | Enforced | How |
 |---|---|---|
-| **Dazed** | **yes** | the tray allows a primary only, and says so |
+| **Dazed** | **yes** | the tray allows a primary only, and says so. **On a creature it is the second step of its intent** ([core-rules.md](core-rules.md) §9) &mdash; every NPC step was resolved as a *primary* until 2026-11-28, so three of Dazed's four appliers were player cards and all three did nothing to a monster |
 | **Stunned** | **yes** | `reactionsFor` returns nothing at all while `noReactions` is true, so there is no reaction to offer — this row said "advisory, reactions have no legality gate" long after that gate was written |
 | **Graven** | advisory | the bonus it carries is read by `collectBonuses`, grouped under `graven` so two tattoos on the same verb cap each other |
 | **Imbued** | advisory | the same reader, grouped under `imbued`: the bonus rides on the condition instance, because what a god lends is the bargain's business and not the word's |

@@ -3034,6 +3034,34 @@ NPCs don't have hands. Each NPC **type** has a small deck of 5–8 cards, and ea
 - **Elite / boss** NPCs may keep 1–2 cards face-up as reactions, shown to the players.
 - NPCs still use items for their Strike and Cast values, so the same goblin deck works for a spear goblin and a bow goblin.
 
+#### What a condition does to a creature  **[RULED 2026-11-28]**
+
+**The same thing it does to you**, read against the turn the creature actually has. Armour counts 0
+under Exposed, a burn bites for its intensity, a blocked icon blocks the step that shows it, and the
+duration ticks at the end of its creator's turn like everybody else's (section 7).
+
+**One of them has to be translated, and it is the one players apply most.** *Dazed* says *you can't
+play a secondary*, and a creature holds no hand of halves: it has one intent card, and an intent is
+a sequence.
+
+> **A Dazed creature plays the first step of its intent and nothing after it.**
+
+**No card in the pool is longer than two steps**, so that is the same sentence as the player's and
+not a rule for a different shape -- the first step is the primary, the second is the secondary.
+*Poisoned* carries a Dazed and costs the same step.
+
+**What it is worth depends on the intent, and the intent is face down when you daze it** (section
+3). Across the 112 creatures the roster builds, **49% of all intent cards are two-step** -- median
+50% per deck, from 2 of 7 for the Horde's Queen to 9 of 13 for a Scrip Watcher, and no deck in the
+game is without one. So Dazing a creature costs it half a turn about half the time. Against a
+character Dazed costs a half every turn it is up, and a creature's whole turn is about a character's
+half: no hand, no Ready, no reactions. **Half as often against a thing with half as much turn is
+the symmetry, not a discount.**
+
+**A turn the GM plays off the card instead is one step**, so Dazed does not refuse it -- a Dazed
+character keeps their primary too. Playing two of those is left to the GM, the same way an intent
+that does not fit the moment already is.
+
 #### What Elite is worth  **[RULED 2026-11-24]**
 
 Ticking **Elite or boss** makes that creature tougher, by a fixed amount measured against what it

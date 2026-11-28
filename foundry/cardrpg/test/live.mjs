@@ -2521,6 +2521,113 @@ async function probes(page) {
   });
 
   /*
+   * **A Dazed creature loses the second step of its intent.**  [BUILT 2026-11-28]
+   *
+   * **Nothing in this suite had ever played an intent card**, which is how the defect under it
+   * lived: `grep -n '"intent"' test/live.mjs` found one line, and that line counts the stacks a
+   * creature is wired with. The monster tray has been the GM's whole interface to every creature
+   * in a fight since 2026-11-14 and no probe had opened it.
+   *
+   * What it is pointed at: `NpcData#noSecondary` is commented *a monster loses its secondary to
+   * Dazed too*, `refusesAction` reads it, and the refusal needs `half === "secondary"` -- which
+   * all three NPC call sites hard-coded to `"primary"`. The getter was asked every round with the
+   * one argument that can never make it true, so **Dazed did nothing to a creature**, and three of
+   * its four appliers are player cards. Halted worked throughout, off the same getter pair and the
+   * same routine, because a turn-wide ban does not care which half it is asked about.
+   *
+   * It checks the rule where the GM meets it -- the row greys out and the tooltip says why -- and
+   * where the engine holds it, because a greyed button is not a rule (conditions.md 8).
+   *
+   * **It restores the intent stack to the action deck rather than to where it found it.** Nothing
+   * else in the suite reads that stack, and an empty intent with a full deck is exactly the state
+   * a round draws from, so this is the state before rather than a dirty one.
+   */
+  await probe("a Dazed creature loses the second step of its intent", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      /* **Named, because *the first NPC* is not a creature** -- the lesson *a monster attacks
+       * from its HUD* records four hundred lines down, after one row in three failed there on a
+       * Smash Beetle the collection happened to hand back. This probe runs before that world is
+       * built and would have been right by luck. */
+      const npc = game.actors.getName("Goblin") ?? game.actors.find(a => a.type === "npc");
+      if (!npc) return [["the world has a creature to daze", false, true]];
+
+      const deck = LIVE.deckOf(npc, "action");
+      const intent = LIVE.deckOf(npc, "intent");
+      if (!deck || !intent) return [["and it has an action deck and an intent", false, true]];
+
+      const wasConditions = foundry.utils.duplicate(npc.system.conditions ?? []);
+      /* What this creature had said before, so the two cards below can be taken back: applying a
+       * condition posts one spoken by whoever applied it, and a creature left talking is state. */
+      const saidBefore = [...game.messages]
+        .filter(m => m.speaker?.actor === npc.id).map(m => m.id);
+      for (const tray of [...CardRPGTray.openTrays]) await tray.close();
+      /* Clear it first, so what the rows show is the card this probe chose. */
+      if (intent.cards.size) await LIVE.move(intent, deck, intent.cards.map(c => c.id));
+
+      /* A two-step card by name rather than a draw: 14 of the 43 intents have two steps, so a
+       * random one is a coin flip and a probe that passes half the time is worse than none. */
+      const two = LIVE.available(deck).find(c => (c.system.sequence ?? []).length === 2);
+      if (!two) return [["its deck holds a two-step intent", false, true]];
+      const which = two.name;
+      await LIVE.move(deck, intent, [two.id]);
+
+      const rows = async () => {
+        const tray = game.cardrpg.openTray(npc);
+        await tray.render();
+        await new Promise(r => setTimeout(r, 400));
+        return [...(tray.element?.querySelectorAll(".cr-card--intent .cr-half") ?? [])]
+          .map(el => ({
+            playable: !!el.querySelector("button.cr-half__play"),
+            /* **Every tooltip in the row, not the first one.** The first is the icon marker's,
+             * which answered `sword-wound` -- so this read the picture's name and called it the
+             * reason the step was refused. A row has three things that can carry one. */
+            tips: [...el.querySelectorAll("[data-tooltip]")]
+              .map(e => e.dataset.tooltip).join(" | ")
+          }));
+      };
+
+      const whole = await rows();
+
+      await LIVE.resolveCondition(npc, {
+        step: { condition: "dazed", duration: 2 }, target: npc
+      });
+      const dazedFlag = !!npc.system.noSecondary;
+      const hurt = await rows();
+      /* The engine's own answer, which is the half a greyed button cannot give. */
+      const refusedSecond = LIVE.refusesAction(npc, { half: "secondary", what: "a strike" });
+      const keepsFirst = LIVE.refusesAction(npc, { half: "primary", what: "a strike" });
+
+      await npc.update({ "system.conditions": wasConditions });
+      const after = await rows();
+
+      for (const tray of [...CardRPGTray.openTrays]) await tray.close();
+      if (intent.cards.size) await LIVE.move(intent, deck, intent.cards.map(c => c.id));
+      /* **And the creature stops talking.** Two chat cards go up here -- the Dazed landing and
+       * the restore -- and *a monster attacks from its HUD* waits for this creature to speak. It
+       * reads a baseline now, so this is belt as well as braces, and it is the rule the equipped
+       * slots taught: a probe leaves the world the way it found it. */
+      const mine = [...game.messages]
+        .filter(m => m.speaker?.actor === npc.id && !saidBefore.includes(m.id)).map(m => m.id);
+      if (mine.length) await ChatMessage.deleteDocuments(mine);
+
+      return [
+        [`the intent on the table has two steps (${which})`, whole.length, 2],
+        ["and a creature that is whole can play both", whole.filter(r => r.playable).length, 2],
+        ["Dazed reaches the creature's own getter", dazedFlag, true],
+        ["it keeps the first step", hurt[0]?.playable, true],
+        ["and loses the second", hurt[1]?.playable, false],
+        ["which says why rather than just greying",
+          /Dazed/.test(hurt[1]?.tips ?? "") ? "named" : hurt[1]?.tips || "nothing", "named"],
+        ["the engine refuses a secondary too", refusedSecond, true],
+        ["and refuses no primary", keepsFirst, false],
+        ["and the step comes back when it does", after.filter(r => r.playable).length, 2]
+      ];
+    });
+  });
+
+  /*
    * **A transformation quarantines a card that is in the player's hand.**  [BUILT 2026-11-28]
    *
    * **The transformation had no live coverage whatsoever** -- `grep -n "ransform" test/live.mjs`
@@ -2561,7 +2668,28 @@ async function probes(page) {
        * three copies of a Strike, so a hand very often holds two of the chosen name. The first
        * version of this probe expected one and read two, which is the filter working. */
       const held = hand.cards.filter(c => c.name === name).length;
-      const shadows = deck.cards.filter(c => c.name === name && c.drawn).length;
+      /*
+       * **And the copies still in the deck, which a quarantine takes as well.**
+       * **[FIXED 2026-11-28]**
+       *
+       * This probe asserted that the shelf ends up holding exactly the copies that were in hand,
+       * and that is not what `quarantineCards` does: it visits the hand **and** the deck, so every
+       * copy of the name goes out of play. It passed first time round because the name that came
+       * up had no undrawn copies left in the deck, and failed the next run on a name that had one
+       * -- a probe that depends on which card a shuffle dealt. The engine was right both times.
+       */
+      const undrawn = deck.cards.filter(c => c.name === name && !c.drawn).length;
+      /*
+       * **The shadows of the cards in hand, by id and captured now.** The claim this probe exists
+       * for is about *these* cards: a held card leaves its original in the deck flagged `drawn`,
+       * and the original must not be flagged, counted or moved. Asking afterwards which cards in
+       * the deck carry the flag cannot answer it -- a copy legitimately taken out of the deck also
+       * leaves a drawn original behind, and that one is **supposed** to carry the flag, which is
+       * the second thing this probe got wrong.
+       */
+      const heldShadows = deck.cards
+        .filter(c => c.name === name && c.drawn).map(c => c.id);
+      const shadows = heldShadows.length;
 
       let threw = "none";
       try {
@@ -2572,8 +2700,8 @@ async function probes(page) {
 
       const onShelf = shelf.cards.filter(c => c.name === name).length;
       const leftInHand = hand.cards.filter(c => c.name === name).length;
-      const flaggedShadow = deck.cards
-        .filter(c => c.name === name && c.getFlag("cardrpg", FORM)).length;
+      const flaggedShadow = heldShadows
+        .filter(id => deck.cards.get(id)?.getFlag("cardrpg", FORM)).length;
       const wore = !!hero.getFlag("cardrpg", FORM);
 
       await resolve.endTransformation(hero);
@@ -2585,9 +2713,9 @@ async function probes(page) {
         ["the held card is shadowed in its home deck", shadows >= 1, true],
         ["transforming does not throw", threw, "none"],
         ["and the form goes on", wore, true],
-        ["every held copy is on the quarantine shelf", onShelf, held],
+        ["every copy of it is on the quarantine shelf", onShelf, held + undrawn],
         ["and is out of the hand", leftInHand, 0],
-        ["the shadow in the deck is not flagged", flaggedShadow, 0],
+        ["and the shadow of the one in hand is left alone", flaggedShadow, 0],
         ["ending it puts every one of them back in the hand", back, held],
         ["and leaves the shelf empty", shelfAfter, 0],
         ["and takes the form off", stillWorn, false]
@@ -5691,6 +5819,22 @@ async function probes(page) {
       placed.object?.setTarget(true, { releaseOthers: true });
       await LIVE.hero.update({ "system.health.value": LIVE.hero.system.health.max });
       game.cardrpg.openTray(beast);
+      /*
+       * **How much this creature had already said.**  [FIXED 2026-11-28]
+       *
+       * The signal below was *has the beast ever spoken*, which is true of a creature that spoke
+       * in an earlier probe about something else -- and then the loop never clicks, `said` is the
+       * stale card, and all three rows fail. That is not hypothetical: the Dazed probe applies a
+       * condition to a creature, `resolveCondition` posts the card **spoken by whoever applied
+       * it**, and so the goblin had already talked by the time this ran. Two full runs failed here
+       * on a probe four hundred lines away.
+       *
+       * A baseline makes the signal *this probe's* message rather than any message. It is the
+       * same correction the creature-name comment above makes: a probe that depends on the state
+       * of the world has to say which state.
+       */
+      globalThis.LIVE.beastSaid = [...game.messages]
+        .filter(m => m.speaker?.actor === beast.id).length;
       return { health: LIVE.hero.system.health.value, targets: game.user.targets.size };
     });
     await page.waitForSelector(".cr-npc__strike", { timeout: 20000 });
@@ -5704,16 +5848,18 @@ async function probes(page) {
      * which is worse than failing every time: it reads as a flaky feature rather than a flaky
      * probe.
      *
-     * So the click is the thing retried and the monster SPEAKING is the signal. A Miss is a real
-     * outcome -- no damage, but a chat card all the same -- so health is the wrong thing to wait
-     * on and the message is the right one.
+     * So the click is the thing retried and the monster SPEAKING **once more than it already
+     * had** is the signal. A Miss is a real outcome -- no damage, but a chat card all the same --
+     * so health is the wrong thing to wait on and the message is the right one.
      */
     const spoke = () => page.evaluate(() =>
-      [...game.messages].some(m => m.speaker?.actor === LIVE.beast.id));
+      [...game.messages].filter(m => m.speaker?.actor === LIVE.beast.id).length
+        > LIVE.beastSaid);
     for (let i = 0; i < 4 && !(await spoke()); i++) {
       await page.click(".cr-npc__strike", { force: true }).catch(() => {});
       await page.waitForFunction(() =>
-        [...game.messages].some(m => m.speaker?.actor === LIVE.beast.id),
+        [...game.messages].filter(m => m.speaker?.actor === LIVE.beast.id).length
+          > LIVE.beastSaid,
       null, { timeout: 5000 }).catch(() => {});
     }
     const rows = await page.evaluate(async () => {

@@ -981,24 +981,64 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * combat, and *a specialist's tactic* is supposed to be played rather than rolled for. One click
    * per weapon is the floor this was missing.
    */
+  /**
+   * **Which half of its turn a creature's step is.**  **[FIXED 2026-11-28]**
+   *
+   * The first step of an intent is the primary and anything after it is the secondary. That is not
+   * an analogy: **no intent in the pool is longer than two steps** -- 24 of the 43 are one step and
+   * 14 are two, and the other five do their work in prose -- so a creature's turn already has the
+   * shape a character's card has, and this names it rather than inventing a parallel rule.
+   *
+   * **Dazed did nothing to a creature until this existed, and the engine said in so many words
+   * that it did.** `NpcData#noSecondary` is commented *a monster loses its secondary to Dazed too*,
+   * `refusesAction` reads it -- and it only refuses when it is handed `half === "secondary"`, which
+   * all three NPC call sites hard-coded to `"primary"`. So the getter was asked, every round, with
+   * the one argument that could never make it true.
+   *
+   * This project's commonest defect is a getter nothing asks, and the suite added a pin for exactly
+   * that: *somebody outside the model has to ask*. This is the link past it -- somebody asks, and
+   * cannot be answered yes. **Halted worked all along**, because `noTurn` is refused whatever the
+   * half is, which is what made the gap invisible: the condition beside it in the same table, read
+   * by the same routine, enforced.
+   *
+   * **What it costs the creature is what the intent happens to be**, and that is the rule rather
+   * than a shortcoming of it: measured across the 112 creatures the roster builds, **49.0% of all
+   * intent cards are two-step** -- median 50.0% per deck, 28.6% at the Queen's end and 69.2% at the
+   * Scrip Watcher's, and no deck in the game is without one. So Dazing a creature costs it a step
+   * about half the time and you do not know which when you daze it, the intent being face down
+   * (core-rules 3). Against a character Dazed costs a half every turn it is up, and a creature's
+   * whole turn is about a character's half -- it holds no hand, pays no Ready and takes no
+   * reactions -- so half as often against a thing with half as much turn is the symmetry, not a
+   * discount.
+   */
+  static #npcHalf(index) {
+    return index === 0 ? "primary" : "secondary";
+  }
+
   #npcTray() {
     const intent = deckOf(this.actor, "intent");
     const card = intent?.cards.contents[0] ?? null;
     const blocked = this.actor.system.blockedIcons ?? new Set();
+    /* Read once for the card rather than per step: it is the creature that is Dazed. */
+    const dazed = !!this.actor.system.noSecondary;
 
     const row = (step, index) => {
       const face = this.#stepFace(step);
+      /* The same question the handlers ask, so the greyed row and the refusal cannot disagree. */
+      const lost = dazed && CardRPGTray.#npcHalf(index) === "secondary";
       return {
         index,
         text: face.text,
         cut: face.cut,
         icon: face.icons[0] ?? null,
-        blocked: face.icons.some(i => blocked.has(i)) || !!face.unmet || !!face.gate,
-        tip: face.gate
-          ? face.gate
-          : face.unmet
-            ? `Needs ${face.unmet}, and nothing it is holding is.`
-            : face.notes.join(" ")
+        blocked: lost || face.icons.some(i => blocked.has(i)) || !!face.unmet || !!face.gate,
+        tip: lost
+          ? "Dazed: it loses the second half of its turn, so this step does not happen."
+          : face.gate
+            ? face.gate
+            : face.unmet
+              ? `Needs ${face.unmet}, and nothing it is holding is.`
+              : face.notes.join(" ")
       };
     };
 
@@ -1047,10 +1087,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * target, and that is Foundry's own targeting, exactly as it is for a character.
    */
   static async #onPlayStep(event, target) {
-    const step = this.#npcStep(Number(target.dataset.index));
+    const index = Number(target.dataset.index);
+    const step = this.#npcStep(index);
     if (!step) return;
     await revealIntent(this.actor);
-    await this.#resolveStep(step, "primary", CardRPGTray.#targets());
+    await this.#resolveStep(step, CardRPGTray.#npcHalf(index), CardRPGTray.#targets());
     this.render();
   }
 
@@ -1060,13 +1101,22 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!card) return;
     await revealIntent(this.actor);
     const targets = CardRPGTray.#targets();
-    for (const step of card.system.sequence ?? []) {
-      await this.#resolveStep(step, "primary", targets);
+    const steps = card.system.sequence ?? [];
+    for (const [index, step] of steps.entries()) {
+      await this.#resolveStep(step, CardRPGTray.#npcHalf(index), targets);
     }
     this.render();
   }
 
-  /** One weapon, straight out of the gear, for a turn the card does not describe. */
+  /**
+   * One weapon, straight out of the gear, for a turn the card does not describe.
+   *
+   * **Primary, and it stays primary.** This is the GM overruling the intent, and what they are
+   * playing is one step rather than the second of two -- a Dazed creature still has a primary,
+   * exactly as a Dazed character does. The thing this path does not do is count: click it twice
+   * and the second is not refused, because nothing here tracks what a creature has already spent
+   * this turn. That is the same limit the off-card path has always had and it is the GM's to hold.
+   */
   static async #onNpcStrike(event, target) {
     const item = this.actor.items.get(target.dataset.slateId);
     if (!item) return;

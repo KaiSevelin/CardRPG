@@ -17690,7 +17690,11 @@ check("a skill card is playable",
  *
  * The three checks below are the three sentences core-rules 9 makes about a monster's turn, each
  * in the place the HUD would have to break it: it has no hand to stage from, it has no stamina to
- * buy back, and its turn is a sequence rather than two halves.
+ * buy back, and its turn is a sequence rather than a hand of halves.
+ *
+ * **A sequence of at most two, which turned out to matter** -- see the Dazed block below. Nothing
+ * stages and nothing is chosen between, and the first step is still the primary and the second the
+ * secondary.
  */
 check("the tray has a monster mode",
   /npc: npc \? this\.#npcTray\(\) : null,/.test(traySource) ? "yes" : "no", "yes");
@@ -17707,6 +17711,64 @@ check("its weapons are rows of their own",
  * acted and not about how much of its card the GM chose to play. */
 check("and playing its card flips it to the table",
   (traySource.match(/await revealIntent\(this\.actor\);/g) ?? []).length, 2);
+
+/*
+ * **Dazed costs a creature a step, and for as long as it had been written it cost it nothing.**
+ * **[FIXED 2026-11-28]**
+ *
+ * `NpcData#noSecondary` is commented *a monster loses its secondary to Dazed too* and reads the
+ * right flag; `refusesAction` reads the getter; and the refusal needs `half === "secondary"`,
+ * which **all three NPC call sites hard-coded to `"primary"`**. Every link held and the chain did
+ * nothing, because the argument that could make the last link true was never passed.
+ *
+ * **This is the link past the one the suite added.** The block above pins *somebody outside the
+ * model has to ask* -- the lesson from `noTurn` and `noSecondary` existing with no reader at all.
+ * Something did ask. It asked with the one value that is always no. So the check that holds it is
+ * not another grep for a reader: it is that the half a creature's step is handed is **derived from
+ * which step it is**, because a literal cannot be wrong only half the time.
+ *
+ * `noTurn` worked throughout, which is what hid it: the condition beside Dazed in the same table,
+ * read by the same routine, from the same getter pair, enforced -- because a turn-wide ban does
+ * not care which half it is asked about.
+ */
+check("which half a creature's step is comes from which step it is",
+  /static #npcHalf\(index\) \{[^}]*index === 0 \? "primary" : "secondary";/
+    .test(traySource) ? "yes" : "no", "yes");
+/* Both routes in and the display, so a greyed row and a refusal cannot disagree about one rule.
+ * Three readers of one question, which is the shape the rest of this file asks for. */
+check("and all three readers ask it",
+  (traySource.match(/CardRPGTray\.#npcHalf\(index\)/g) ?? []).length, 3);
+check("so a Dazed creature's lost step is greyed as well as refused",
+  /const lost = dazed && CardRPGTray\.#npcHalf\(index\) === "secondary";/.test(traySource)
+    ? "yes" : "no", "yes");
+/*
+ * **The claim the rule rests on**, and the reason it is a rule and not an analogy: no intent in
+ * the pool is longer than two steps, so a creature's card already has a character's card's shape.
+ * A three-step intent would make *the secondary* mean two different steps and this pin is where
+ * that would be noticed -- the honest answer then is a rule about sequences, not a third half.
+ */
+check("no intent is longer than two steps",
+  Math.max(...content.INTENTS.map(i => (i.sequence ?? []).length)), 2);
+/* And the one-step majority, which is what makes Dazing a creature a gamble rather than a tax:
+ * the intent is face down when you daze it (core-rules 3). */
+check("and most of them are one",
+  content.INTENTS.filter(i => (i.sequence ?? []).length === 1).length
+    > content.INTENTS.filter(i => (i.sequence ?? []).length === 2).length ? "yes" : "no", "yes");
+/*
+ * **And the rule is written where a player would look for it**, which is the half of this that
+ * the code cannot hold. core-rules 9 is where a creature's turn is described, so it is where the
+ * translation belongs -- a rule that lives only in a getter is a rule the table cannot play.
+ */
+check("core-rules 9 says what Dazed costs a creature",
+  /\*\*A Dazed creature plays the first step of its intent and nothing after it\.\*\*/
+    .test(coreRules) ? "yes" : "no", "yes");
+check("and why that is the same rule rather than a second one",
+  /\*\*No card in the pool is longer than two steps\*\*/.test(coreRules) ? "yes" : "no", "yes");
+/* The reference says it too, in the row that lists what is enforced -- and names the direction
+ * that was broken, because three of Dazed's four appliers are player cards. */
+check("and the reference's enforcement row names the creature case",
+  /\*\*On a creature it is the second step of its intent\*\*/.test(conditionsDoc)
+    ? "yes" : "no", "yes");
 
 /*
  * **Who the window opens on**, which is hud-spec 7's visibility table and not a new rule: a player
