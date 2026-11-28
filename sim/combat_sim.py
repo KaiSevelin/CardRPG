@@ -182,12 +182,19 @@ WEAPONS = {
     'arquebus': dict(strike=5, rng=8,  heavy=True,  kg=4, reload=True, ignores=2),
     'musket':   dict(strike=6, rng=12, heavy=True,  kg=5, reload=True, ignores=2),
     'pistol':   dict(strike=3, rng=4,  heavy=False, kg=1, reload=True, ignores=2),
-    # **An empty hand.** `strike=None` is *no line*, which core-rules 4 makes a rule rather than a
-    # zero: *if an equipped item has no line for a verb, you can't use that verb with that item*.
-    # It exists because a caster holds a wand in one hand and keeps the other free to gesture, so
-    # the weapon is a thing they have not got -- and a Strike half has to be unplayable for them
-    # here as well, or the chassis gets measured with a sword it never drew.
-    'none':     dict(strike=None, rng=1, heavy=False, kg=0),
+    # **An empty hand is BARE HANDS, which is a weapon.**  **[FIXED 2026-11-28]**
+    #
+    # This entry was `strike=None` -- *no line for the verb* -- on the reading that core-rules 4
+    # says *if an equipped item has no line for a verb, you can't use that verb with that item*.
+    # That sentence is about an item you are holding, and an empty hand is not one. The engine has
+    # said so since 2026-11-22: `resolveAttack` walks the equipped list, finds nothing and hands
+    # over `BARE_HANDS` -- **Strike 1, Light, Melee** -- and the tray's own item picker falls back
+    # to it for any Strike that does not require a tag the fist has not got (`tray.mjs`).
+    #
+    # So the first measurement of a character with empty hands was of somebody who could not act,
+    # where the game gives them a punch. **Light on purpose**, and that is the whole balance of it:
+    # Strong is +1 on a *heavy* Strike, so the fist gets nothing from it.
+    'none':     dict(strike=1, rng=1, heavy=False, kg=0),
 }
 
 
@@ -555,7 +562,14 @@ class Config:
     # are the same number. Stamina separates them -- the collection decides what you can do, the
     # stat decides how long you can keep doing it.
     #
-    # 0 keeps the old rule, which is how every figure published before this is reproduced.
+    # **[CHANGED 2026-11-28] 14 is the default now, which is the rule.** It was 0 -- the old
+    # reading, where the deck IS the stamina -- for the sixteen days after the rule changed, so
+    # every figure this file published in that time was measured under a rule the game had already
+    # replaced. Fourteen is `CARDRPG.stamina` in config.mjs and the number core-rules 8 measured:
+    # *stamina 14 reproduces the four published encounters within 3.7 points, because a hero under
+    # the old rule plays about 17 cards in a hard fight.*
+    #
+    # 0 still reproduces the old reading, which is what every `draft 0.1 ...` scenario is for.
     # With it on:
     #   - **a card you play costs 1**, as a primary, a secondary or a reaction, and whether it is
     #     discarded or Spent. Nothing you did not play costs any: a Wound discarded at the end of
@@ -572,7 +586,7 @@ class Config:
     # 2026-11-01's variant capped cards DRAWN and brought only min(stamina, collection), so that
     # document's section 2 table is not reproducible from this code. Deliberate: one dial for one
     # concept beats two stamina rules living in one simulator.
-    stamina: int = 0
+    stamina: int = 14
     # Which reading of the wall. True: at 0 you play nothing and react with nothing until a
     # breath. False: only the draw pile is gone, so the hand in front of you still plays out and
     # a big hand is worth a second helping of stamina. See scratchpad note of 2026-11-12.
@@ -689,10 +703,6 @@ class Sim:
                     self.wpos = nxt
             elif kind == 'strike':
                 prof = WEAPONS[self.weapon]
-                # No line for the verb, which is a rule and not a zero (core-rules 4): an empty
-                # hand cannot swing, and the half is spent finding that out.
-                if prof['strike'] is None:
-                    continue
                 # An unloaded crossbow is a stick: the Strike is spent and nothing happens.
                 if prof.get('reload') and not self.loaded:
                     continue
@@ -1372,8 +1382,6 @@ class Game:
     def op_value(self, op, b):
         cfg, kind = self.cfg, op[0]
         if kind == 'strike':
-            if WEAPONS[self.w['weapon']]['strike'] is None:
-                return 0.0                              # no line for the verb (core-rules 4)
             dmg = cfg.strike_base + op[1] + (1 if cfg.strong else 0)
             return dmg if b['adj'] else dmg * 0.25      # can't swing at nothing
         if kind == 'cast':
@@ -1967,8 +1975,7 @@ class Game:
                 self.armor_lost = min(cfg.armor, self.armor_lost + 1)
             elif key == 'blunt':
                 # Turn the Edge: a point off what the hero strikes for, for the rest of the fight.
-                # `or 0` is the empty hand: there is no edge on it to turn.
-                self.blunt_lost = min(WEAPONS[self.w['weapon']]['strike'] or 0,
+                self.blunt_lost = min(WEAPONS[self.w['weapon']]['strike'],
                                       self.blunt_lost + 1)
             else:
                 self.apply_cond(key, 1, by=src)

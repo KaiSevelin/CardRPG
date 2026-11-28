@@ -212,24 +212,25 @@ and compared in the validator.
 > would reopen the hole the ruling closed. The budget fields are unaffected — nine attack halves is
 > nine either way — so this is shape, and it is stated rather than smuggled.
 
-> **[MEASURED 2026-11-27] +1.4 points of win rate against the Warrior's deck, and the mean hides
-> everything that matters.** The simulator can cast now
-> ([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md)): an implement's Cast line, a prepared
-> formula, the slot it is spent out of, areas, and the Blast that catches the caster. 3000 fights a
-> cell, seed 1, the careers ladder.
+> **[MEASURED 2026-11-28] +2.0 points of win rate against the Warrior's deck, and the mean hides
+> everything that matters.** The simulator can cast
+> ([../sim/analysis-2026-11-28.md](../sim/analysis-2026-11-28.md)): an implement's Cast line, a
+> prepared formula, the slot it is spent out of, areas, and the Blast that catches the caster. 3000
+> fights a cell, seed 1, the careers ladder, under the **stamina** rule of core-rules §8.
 >
 > | | 5 spears | 6 spears | 2 spear 2 bow | 2 brutes | 2 guard 2 spear | MEAN |
 > |---|---|---|---|---|---|---|
-> | Warrior deck, sword and shield | 61.8 | 35.6 | 28.5 | 58.2 | 36.2 | **44.0** |
-> | Shade deck, same gear | 60.9 | 35.3 | 25.2 | 55.9 | 31.6 | **41.8** |
-> | **Caster deck, a wand and a free hand** | **78.4** | **78.1** | **49.0** | 20.0 | 1.9 | **45.5** |
-> | against the Warrior's | +16.6 | +42.5 | +20.5 | **−38.2** | **−34.3** | +1.4 |
+> | Warrior deck, sword and shield | 65.9 | 36.8 | 27.1 | 61.4 | 35.6 | **45.3** |
+> | Shade deck, same gear | 63.5 | 38.1 | 23.4 | 59.6 | 32.1 | **43.3** |
+> | **Caster deck, a wand and a free hand** | **79.2** | **80.0** | **52.1** | 22.6 | 3.0 | **47.4** |
+> | against the Warrior's | +13.3 | +43.2 | +25.0 | **−38.8** | **−32.6** | +2.0 |
 >
-> **Measured twice, and the second time is the one above.** The first run read **+4.7**, before
-> *a Blast you set off ignores your armour* was a rule (core-rules §11). The deck's own wand is a
-> ✸ Blast 1, the caster is inside it whenever they cast at anything adjacent, and charging that
-> through no armour costs this chassis **3.3 points** — which is most of what separated it from
-> the Warrior's deck.
+> **Measured three times, and the figure above is the only one taken under the current rules.** The
+> first run read **+7.1**, before *a Blast you set off ignores your armour* was a rule
+> (core-rules §11) — the deck's own wand is a ✸ Blast 1 and the caster is inside it whenever they
+> cast at anything adjacent, and charging that through no armour costs this chassis **2.8 points**.
+> The second read **+1.4** but with the simulator still playing *the deck is your stamina*, which
+> core-rules §8 replaced on 2026-11-12.
 >
 > **It is the most uneven starter deck in the game by a long way.** Against numbers it is the best
 > of the three and not close — a Blast 1 reaches a clump of six where a sword reaches one, so six

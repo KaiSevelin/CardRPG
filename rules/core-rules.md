@@ -920,11 +920,11 @@ the greater names to the circle.
 > is character creation, and §12 defers that until after the first playtest. A GM running a
 > caster from level 1 hands out this deck in place of the Warrior's.
 >
-> **[MEASURED 2026-11-27] And it is worth +1.4 points of win rate against the Warrior's deck, with
-> a spread of eighty.** The simulator can cast now, so the deck has a number
-> ([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md)): 3000 fights a cell, **+16.6**
-> against five spears, **+42.5** against six, **+20.5** against archers, and **−38.2** and
-> **−34.3** against two brutes and against armour. A Fire Wand casts for 2 and armour comes off
+> **[MEASURED 2026-11-28] And it is worth +2.0 points of win rate against the Warrior's deck, with
+> a spread of seventy.** The simulator can cast, so the deck has a number
+> ([../sim/analysis-2026-11-28.md](../sim/analysis-2026-11-28.md)): 3000 fights a cell under the
+> stamina rule, **+13.3** against five spears, **+43.2** against six, **+25.0** against archers, and
+> **−38.8** and **−32.6** against two brutes and against armour. A Fire Wand casts for 2 and armour comes off
 > every hit, and this deck prints no ⚔ Strike to fall back on — so it is the best of the three
 > chassis against numbers and the worst of the three against anything wearing a coat.
 >
@@ -3432,18 +3432,18 @@ through yours.
 > armour comes off every hit, and a caster in **Plate** has four points of it — so the
 > best-armoured caster in the game stood in their own fire for **nothing at all**, and a caster in
 > Leather paid one point. `sim/combat_sim.py` measured what that was worth: a caster who refuses to
-> catch themselves loses **8 points of win rate**, because the extra enemy the footprint covers is
-> worth more than the point or two it costs them
-> ([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md) §5).
+> catch themselves loses **12.8 points of win rate**, because the extra enemy the footprint covers
+> is worth more than the point or two it costs them
+> ([../sim/analysis-2026-11-28.md](../sim/analysis-2026-11-28.md) §5).
 >
 > So the deterrent had to scale with the spell rather than with the coat. It is deliberately
 > **narrow**: nothing an area does to an enemy changes, so this does not become a free armour bypass
 > competing with the eight items that buy *ignores N armor* and pay for it.
 >
-> **And it is worth 3.3 points of the Caster starter deck**, measured at 3000 fights a cell: that
-> chassis read **+4.7** against the Warrior's deck with the coat on and **+1.4** with it off, which
-> is most of what separated the two. A rule that cost nothing would not have been worth writing;
-> this one costs about what the deck's own wand is worth being careless with.
+> **And it is worth 2.8 points of the Caster starter deck**, measured at 3000 fights a cell: that
+> chassis reads **+4.8** against the Warrior's deck with the coat applying and **+2.0** with it
+> ignored. A rule that cost nothing would not have been worth writing; this one costs about what
+> the deck's own wand is worth being careless with.
 
 Blast is the default and the cheaper one: a Fire Wand doesn't care who it burns. Aimed belongs on precise or discriminating magic, and should cost more — a higher-tier item, a specialization, or a formula with a price attached.
 

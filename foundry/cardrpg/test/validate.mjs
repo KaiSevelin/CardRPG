@@ -1500,6 +1500,47 @@ const limit = /Your \*\*limit\*\* is \*\*(\d+) kg\*\*/.exec(
 check("carry limit matches core-rules", /CARRY_LIMIT = (\d+)/.exec(simSource)?.[1], limit);
 
 /*
+ * **And the two numbers the simulator had quietly diverged from.**  **[FIXED 2026-11-28]**
+ *
+ * **Stamina.** core-rules 8 split the deck from the stat on 2026-11-12 -- *the deck decides what
+ * you can do, the stat decides how long you can keep doing it* -- and measured **14** as the
+ * number that reproduces the published encounters. `combat_sim.py` kept `stamina = 0`, which is
+ * the pre-ruling reading where the deck IS the stamina, so for sixteen days every figure it
+ * published was measured under a rule the game had replaced. It is 14 now, and this holds it to
+ * the config rather than to a number typed twice.
+ *
+ * **Bare hands.** `resolve.mjs` has handed a Strike with nothing equipped over to `BARE_HANDS` --
+ * Strike 1, Light, Melee -- since 2026-11-22, and the tray's item picker falls back to it. The
+ * simulator's empty hand was `strike=None`, *no line for the verb*, so a character with nothing
+ * in their hands could not act at all where the game gives them a punch. Three numbers, read off
+ * the engine's own frozen profile.
+ *
+ * Both read from source rather than from `CARDRPG` and `BARE_HANDS` themselves, because this
+ * section sits hundreds of lines above where either is declared and a pin above its const throws
+ * on load.
+ */
+const configMjs = fs.readFileSync(path.join(root, "module/config.mjs"), "utf8");
+const resolveMjs = fs.readFileSync(path.join(root, "module/resolve.mjs"), "utf8");
+check("the simulator's stamina is the engine's",
+  /^    stamina: int = (\d+)$/m.exec(simSource)?.[1],
+  /^  stamina: (\d+),$/m.exec(configMjs)?.[1]);
+const bareHands = /export const BARE_HANDS = Object\.freeze\(\{[\s\S]*?\n\}\);/
+  .exec(resolveMjs)?.[0] ?? "";
+const simBare = /^    'none':\s+dict\(([^)]*)\)/m.exec(simSource)?.[1] ?? "";
+check("and its bare hands strike for what the engine's do",
+  /strike=(\d+)/.exec(simBare)?.[1],
+  /strike: Object\.freeze\(\{ value: (\d+)/.exec(bareHands)?.[1]);
+check("and reach as far",
+  /rng=(\d+)/.exec(simBare)?.[1], /value: \d+, range: (\d+)/.exec(bareHands)?.[1]);
+/* Light, not heavy, and that is the balance of it: Strong is +1 on a heavy Strike, so the fist
+ * gets nothing from it. The engine says Light by tag; the simulator says it by `heavy=False`. */
+check("and are Light, so Strong does nothing for them",
+  /heavy=(True|False)/.exec(simBare)?.[1], "False");
+check("which the engine says by tag",
+  /tags: new Set\(\["light", "melee"\]\)/.test(bareHands) ? "light, melee" : "something else",
+  "light, melee");
+
+/*
  * **Overloaded charges one currency, and it is the one the engine charges.**  **[FIXED 2026-11-28]**
  *
  * The 2026-11-12 ruling says **2 stamina** and explains why it is no longer cards -- *it always
@@ -22843,7 +22884,10 @@ readFiles.set("decksSource", decksSource);
 /* 89 since 2026-11-28: `module/data/actors.mjs`, read to hold what Overloaded actually
  * charges. The ruling said stamina, three prose spots said cards, and the engine was the thing
  * that settled it — so the engine is what the check reads. */
-check("files this suite greps by name", readFiles.size, 89);
+/* 91 since 2026-11-28: `module/config.mjs` and `module/resolve.mjs` read up here, where the
+ * simulator is held to the engine. Both are read further down as well; the names differ because
+ * this section sits above where those consts are declared, and a pin above its const throws. */
+check("files this suite greps by name", readFiles.size, 91);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {

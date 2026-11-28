@@ -162,7 +162,7 @@ you arrived, took the Signature, and the school had nothing else in it.
 >
 > Spend one — which every one of them can do at the next level, because the menu sits directly
 > behind their title — and it is **20 of 30**; Way of Faith goes from **1 of 16** to **10**
-> ([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md) §4). The ten still empty are a
+> ([../sim/analysis-2026-11-28.md](../sim/analysis-2026-11-28.md) §6). The ten still empty are a
 > craft (*Engineer* has no spells at all), a school that teaches only features (*Tattoo Magic*,
 > §4a's own example of why a menu is teachings rather than formulas), and eight whose lists are
 > prose, allies or deck-reading — Vax's miracles are *adjacent allies* in their entirety and
@@ -174,11 +174,11 @@ you arrived, took the Signature, and the school had nothing else in it.
 > lives on a menu. `careers.json` carries each career's reachable menus now, and the simulator
 > reports the route and the one extra level as separate tables.
 >
-> **And then the win rate did not move, which is the more interesting half.** Across all 54 careers
-> the extra level is worth **+0.18 points** on the mean, and nineteen of the twenty careers it
-> hands a formula to gain a **strength-1 or strength-2 utility spell** that the AI casts about
-> every other fight. One of the twenty moves at all: **Demonology**, whose menu offers *The
-> Reckoning* at **strength 5**, gains **+9.5** and becomes the best magical career in the table.
+> **And then the win rate did not move, which is the more interesting half.** The extra level is
+> worth **+0.21 points** on the mean, and most of the careers it hands a formula to gain a
+> **strength-1 or strength-2 utility spell** that the AI casts about every other fight. Two move at
+> all: **Demonology**, whose menu offers *The Reckoning* at **strength 5**, gains **+7.7** and
+> becomes the best magical career in the table, and **The Purple** gains **+3.6**.
 >
 > So a menu is worth what is **big** on it rather than what is castable on it, and the thing a
 > level buys at the bottom of a school's ladder is the thing §3.4 of
