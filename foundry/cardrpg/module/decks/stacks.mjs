@@ -155,10 +155,29 @@ export async function move(from, to, ids) {
    * call was being assembled, and that is worth knowing even though it is survivable -- so the
    * ones that are gone are named and the rest still move.
    */
-  const present = ids.filter(id => from.cards.has(id));
+  /*
+   * **And "there" is `available`, not `cards.has`.**  **[FIXED 2026-11-28]**
+   *
+   * The filter below used to ask whether the id was in `from.cards`, which is the wrong question
+   * by this file's own definition: *a card sitting in its home deck flagged `drawn` is not in the
+   * deck in any meaningful sense -- it is out on loan*, which is the sentence `available` was
+   * written for and which `topOf` and `moveRandom` both already use.
+   *
+   * Foundry's rule is exactly that one. `Cards#pass` throws **You may not pass Card X which has
+   * already been drawn** when `(this.type === "deck") && card.isHome && card.drawn`, and it throws
+   * for the whole call -- so one card out on loan lost every other card in the same move.
+   *
+   * **Measured rather than reasoned about**: this threw in three of six full live runs on
+   * 2026-11-27 and 2026-11-28, always in *a rest brings back everything a rest brings back*, and
+   * each time it took the rest of that probe's rows with it. It is the sibling of the fix recorded
+   * above -- that one caught the id that was not in the stack at all, and this is the id that is
+   * in it and is not really there.
+   */
+  const here = new Set(available(from).map(c => c.id));
+  const present = ids.filter(id => here.has(id));
   if (present.length !== ids.length) {
-    const gone = ids.filter(id => !from.cards.has(id));
-    console.warn(`cardrpg | ${gone.length} card(s) had already left ${from.name}: `
+    const gone = ids.filter(id => !here.has(id));
+    console.warn(`cardrpg | ${gone.length} card(s) were not in ${from.name} to move: `
       + `${gone.join(", ")}. The rest were moved.`);
   }
   if (!present.length) return [];

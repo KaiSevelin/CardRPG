@@ -2486,12 +2486,31 @@ const moveBody = decksSource.slice(decksSource.indexOf("export async function mo
  * one run in three.
  */
 check("a card that has already gone does not lose the others",
-  /const present = ids\.filter\(id => from\.cards\.has\(id\)\);/.test(decksSource)
+  /const present = ids\.filter\(id => here\.has\(id\)\);/.test(decksSource) ? "yes" : "no", "yes");
+/*
+ * **And "there" is `available`, not `cards.has`.**  **[FIXED 2026-11-28]**
+ *
+ * The filter asked whether the id was in `from.cards`, which is the wrong question by this file's
+ * own definition -- *a card sitting in its home deck flagged `drawn` is not in the deck in any
+ * meaningful sense* -- and it is Foundry's question too: `Cards#pass` throws **You may not pass
+ * Card X which has already been drawn** on `(this.type === "deck") && card.isHome && card.drawn`,
+ * for the whole call. So one card out on loan lost every other card in the same move.
+ *
+ * It threw in **three of six full live runs** across 2026-11-27 and 11-28, every time in *a rest
+ * brings back everything a rest brings back*, and took that probe's remaining rows with it each
+ * time. `topOf` and `moveRandom` had used `available` since they were written; this was the one
+ * mover that did not.
+ */
+check("and what counts as being there is what a stack can deal",
+  /const here = new Set\(available\(from\)\.map\(c => c\.id\)\);/.test(decksSource)
     ? "yes" : "no", "yes");
+/* The same predicate the other two movers use, so there is one answer to *is it there*. */
+check("which is the predicate the other movers use",
+  (decksSource.match(/available\(\w+\)/g) ?? []).length >= 3 ? "shared" : "not shared", "shared");
 /* Named rather than swallowed: a stale id means something moved a card while this call was being
  * assembled, which is survivable and still worth knowing. */
 check("and the ones that had gone are named",
-  /had already left \$\{from\.name\}/.test(decksSource) ? "yes" : "no", "yes");
+  /were not in \$\{from\.name\} to move/.test(decksSource) ? "yes" : "no", "yes");
 check("moving a card clears it",
   /flags\.cardrpg\.-=\$\{RESERVED\}/.test(moveBody) ? "yes" : "no", "yes");
 /*
