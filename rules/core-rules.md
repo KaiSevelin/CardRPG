@@ -920,11 +920,11 @@ the greater names to the circle.
 > is character creation, and §12 defers that until after the first playtest. A GM running a
 > caster from level 1 hands out this deck in place of the Warrior's.
 >
-> **[MEASURED 2026-11-27] And it is worth +4.7 points of win rate against the Warrior's deck, with
+> **[MEASURED 2026-11-27] And it is worth +1.4 points of win rate against the Warrior's deck, with
 > a spread of eighty.** The simulator can cast now, so the deck has a number
-> ([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md)): 3000 fights a cell, **+21.0**
-> against five spears, **+46.8** against six, **+25.9** against archers, and **−36.7** and
-> **−33.7** against two brutes and against armour. A Fire Wand casts for 2 and armour comes off
+> ([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md)): 3000 fights a cell, **+16.6**
+> against five spears, **+42.5** against six, **+20.5** against archers, and **−38.2** and
+> **−34.3** against two brutes and against armour. A Fire Wand casts for 2 and armour comes off
 > every hit, and this deck prints no ⚔ Strike to fall back on — so it is the best of the three
 > chassis against numbers and the worst of the three against anything wearing a coat.
 >
@@ -1073,6 +1073,27 @@ helpless — just easy to catch.
   fight away. That difficulty-scaling is the point — hauling loot through a quiet dungeon is nearly free,
   hauling it into a real fight is a coin flip. See
   [../sim/analysis-2026-10-27.md](../sim/analysis-2026-10-27.md).
+
+> **[OPEN 2026-11-28] Two tables and one bullet still charge the old currency.** This ruling says
+> Overloaded costs **2 stamina** and the bullet above it says why: *it always said stamina and used
+> to charge it in cards, because the deck was the stamina; now that they are two things, the
+> sentence charges the one it names.* Three places were not changed with it:
+>
+> | Where | What it still says |
+> |---|---|
+> | §4's carry table | *Burdened, **and 2 random cards are Spent*** |
+> | §8's condition summary | *Burdened, and 2 random cards are Spent* |
+> | **this ruling's own *Where they come from* bullet** | which draw pile the cards are taken from |
+>
+> So a reader meets the card version twice before reaching the stamina version, and the ruling
+> contains an explanation of a mechanism it replaced. `combat_sim.py` carries both readings behind
+> a dial and its comment is explicit that the stamina one is the rule.
+>
+> **Which to keep is a decision and not a typo**, which is why this is open rather than fixed: the
+> measured costs are not the same — two cards Spent is worth about nothing (**−0.1 / −0.2 / +0.8 /
+> −0.5**) and two stamina off fourteen is worth **−2.0 to −10.2** — so the choice is the price of
+> being Overloaded, not the wording of it. Found while writing a title's play note, which had
+> repeated the stale version in good faith.
 
 ### Weights
 
@@ -3400,31 +3421,55 @@ Whether an area spares your friends is a property of the **item or card**, and i
 | ✸ X | **Blast** | Everyone in the area — enemies, allies and you, if you're in it. |
 | ✵ X | **Aimed** | Only your enemies. |
 
+**Your own Blast ignores your armour.**  **[RULED 2026-11-27]** You set it off and you are standing
+*inside* it rather than facing it, so there is no front to put a coat between. An ally caught in it
+keeps their armour; so does an enemy. This is the one place an area goes through a coat, and it goes
+through yours.
+
+> **Why, and it is a measurement rather than a flourish.** The half of the Blast rule that is
+> supposed to deter you was switched off exactly where it was needed. A Fire Wand casts for **2**,
+> armour comes off every hit, and a caster in **Plate** has four points of it — so the
+> best-armoured caster in the game stood in their own fire for **nothing at all**, and a caster in
+> Leather paid one point. `sim/combat_sim.py` measured what that was worth: a caster who refuses to
+> catch themselves loses **8 points of win rate**, because the extra enemy the footprint covers is
+> worth more than the point or two it costs them
+> ([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md) §5).
+>
+> So the deterrent had to scale with the spell rather than with the coat. It is deliberately
+> **narrow**: nothing an area does to an enemy changes, so this does not become a free armour bypass
+> competing with the eight items that buy *ignores N armor* and pay for it.
+>
+> **And it is worth 3.3 points of the Caster starter deck**, measured at 3000 fights a cell: that
+> chassis read **+4.7** against the Warrior's deck with the coat on and **+1.4** with it off, which
+> is most of what separated the two. A rule that cost nothing would not have been worth writing;
+> this one costs about what the deck's own wand is worth being careless with.
+
 Blast is the default and the cheaper one: a Fire Wand doesn't care who it burns. Aimed belongs on precise or discriminating magic, and should cost more — a higher-tier item, a specialization, or a formula with a price attached.
 
 This is the main reason to care where your party is standing, so don't make Aimed common.
 
-> **[OPEN 2026-11-27] Blast is prose the engine does not resolve.** An area is **targeted by hand**
-> in play: `resolveAttack` takes the targets the player selected, and `area` is read for one thing
-> only — the disadvantage you get for a Ranged or Area attack with an enemy adjacent. Nothing
-> computes the footprint, so nothing puts an ally or the caster inside it. A player aiming a Fire
-> Wand simply does not target themselves, and the rule above — *allies and you, if you're in it*
-> — costs nothing at the table unless the GM enforces it by eye.
+> **[BUILT 2026-11-27] Blast was prose the engine did not resolve, and now it resolves.** An area
+> was **targeted by hand**: `resolveAttack` took the targets the player selected, and `area` was
+> read for one thing only — the disadvantage a Ranged or Area attack takes with an enemy adjacent.
+> Nothing computed a footprint, so nothing ever put an ally or the caster inside one. A player
+> aiming a Fire Wand simply did not target themselves, and *allies and you, if you're in it* cost
+> nothing unless a GM enforced it by eye.
 >
-> This was found from the other side. `sim/combat_sim.py` had the same hole, and charging the
-> caster for their own Blast cost the Caster starter deck **1.3 points** of win rate on its own and
-> burns the caster about once a fight
-> ([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md)). That is small, and the same
-> analysis says why it is small and what that means: a caster who **refuses** to stand in their own
-> Blast loses **8 points**, because the extra goblin the footprint catches is worth more than the
-> point or two it costs them. **At a Blast 1 the self-damage is not a deterrent at all** — so the
-> difference between ✸ Blast and ✵ Aimed, which §11 above says should be the difference between a
-> cheap item and an expensive one, is worth almost nothing at the bottom of the ladder and a great
-> deal at the top of it.
+> **An Area now resolves against everything standing in its footprint.** The player still picks a
+> creature and the area is measured from the square that creature is in — the smallest change that
+> makes the rule real. One fate draw for the whole action, as §6 already required, and a Blast
+> catches allies and the caster where an Aimed area passes over them.
 >
-> The fix is a footprint: an Area action computes the squares it covers and resolves against
-> **everything standing in them**, with the targeting picking the centre square rather than the
-> creatures. That is a real change to how targeting works and belongs in its own session.
+> **[OPEN] Aiming at an empty square** is the half that is still missing, and it is a targeting
+> question rather than a resolution one: a player who wants to catch two and spare themselves
+> should be able to put the centre on open ground. Until then the aim point is a creature, which
+> restricts the caster rather than flattering them.
+>
+> **[OPEN] And what a Blast costs in a PARTY is still unmeasured.** Everything above is one hero
+> against goblins, where the only body in the footprint is your own. The cost the icon table is
+> really about is your friends, and no simulator here has a party in it — so *Aimed is underpriced*
+> is **not** established by any number this project holds. What is established is the narrower
+> thing the rule above fixes.
 - **Blocking:** you can move through allies but not through enemies.
 
 ### Sidestep

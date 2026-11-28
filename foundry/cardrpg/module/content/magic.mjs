@@ -250,7 +250,22 @@ export const FORMULAS = [
     description: "<p>Carries no combo clause at all, and is still the proof that an opening is not "
       + "always worth having: water and fire cancel, so a Wet target takes the Cast and sheds the "
       + "Burning. The interaction is on Burning, where the rules put it.</p>",
-    effect: { verb: "cast", range: 4, condition: "burning", duration: 1 }
+    /*
+     * **[FIXED 2026-11-27] `intensity: 1` was missing, so Scorch burned for nothing.**
+     *
+     * Burning is a `valued` condition: `intensity` is how fiercely it burns and `duration` is how
+     * long. This step carried the duration and not the value, so the engine applied **Burning (0)**
+     * and the formula dealt **no damage at all** -- an Elemental Magic attack spell that did
+     * nothing but set a timer.
+     *
+     * Three documents disagreed with it and none of them was read: way-cards 3.4 prints *Burning
+     * (1)*, the handbook's formula table prints *Burning 1 (1)*, and conditions.md 6 lists Scorch
+     * under Burning at **1**. The validator had a check for the opposite mistake -- an intensity on
+     * a condition that has no value -- whose own comment says it exists to stop *a THIRD arriving
+     * quietly*, and the mirror of it did not exist. It does now, and it sweeps `FORMULAS` too,
+     * which the first version did not look at at all.
+     */
+    effect: { verb: "cast", range: 4, condition: "burning", intensity: 1, duration: 1 }
   }
 ];
 

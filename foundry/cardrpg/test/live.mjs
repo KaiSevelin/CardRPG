@@ -1838,6 +1838,21 @@ async function probes(page) {
          * outcome-aware: it agrees on `nowhere` as readily as on `secondary`, so a feature in the
          * wrong half is still reported as the wrong half rather than waited for until it moves.
          */
+        /*
+         * **[TRIED AND REVERTED 2026-11-28] A stronger settle made it worse, measured.**
+         *
+         * This loop agrees as soon as its own answer repeats and its answer is a single word, so
+         * two consecutive `nowhere`s look settled while the panel is still arriving -- which is
+         * what failed on 2026-11-27. The obvious next narrowing is to settle on a fingerprint of
+         * every title and line in both stacks instead: not outcome-aware, and unable to be stable
+         * before the panels are.
+         *
+         * **It took the suite from 741 of 741 to 736**, and the new failures were in these very
+         * probes plus two about equipment elsewhere -- a longer wait lets more of the tray's own
+         * async work land between the staging and the read, which is a different window rather
+         * than a smaller one. So the flake stays recorded rather than half-fixed, and the next
+         * attempt should start by asking what else is still running at this point.
+         */
         let last = read();
         for (let i = 0; i < 20; i++) {
           await new Promise(r => setTimeout(r, 150));
@@ -1908,6 +1923,13 @@ async function probes(page) {
        * render that lands late replaces panels that already satisfied every wait, and this read
        * took a Strike number off the staging before it -- `NaN`, because the panel it read had no
        * Strike line at all.
+       */
+      /*
+       * **[TRIED AND REVERTED 2026-11-28]** This sampler watches card TITLES while the number read
+       * off the settled screen is a card **line**, so a panel can be title-stable with its lines
+       * still arriving -- which is the `6 against NaN` this probe reported on 2026-11-27. Adding
+       * the lines to the fingerprint is the obvious fix and it measured **worse**: see the note on
+       * the same change in the probe above.
        */
       const sample = () => [...document.querySelectorAll(".cr-stack[data-half]")]
         .map(h => `${h.dataset.half}:${[...h.querySelectorAll(".cr-card__title")]
@@ -2494,6 +2516,161 @@ async function probes(page) {
       return [
         ["it is there before the attack", held, true],
         ["and gone after it", readEdge(hero), null]
+      ];
+    });
+  });
+
+  /*
+   * **A Blast fills its footprint, and it burns the caster.**  [BUILT 2026-11-27]
+   *
+   * core-rules 11 says an Area *hits the target square and all squares within X of it*, and the
+   * icon table says a Blast catches *everyone in the area -- enemies, allies and you, if you're in
+   * it* where an Aimed area catches *only your enemies*. **None of it happened.** An area was
+   * targeted by hand, `area` was read for the disadvantage and nothing else, and no code anywhere
+   * computed a footprint -- so a player simply did not target themselves or their party and the
+   * sentence cost nothing.
+   *
+   * It was found from the other side: `sim/combat_sim.py` had the same hole, and the Caster starter
+   * deck read **+7.1** against the Warrior's until the simulator charged a caster for their own
+   * Blast (../../../sim/analysis-2026-11-27.md).
+   *
+   * **And the armour half, which is a ruling rather than a footprint.** Charged through armour the
+   * deterrent was switched off where it mattered: a caster in Plate took `max(0, 2 - 4)` from
+   * their own wand, which is nothing. So a Blast you set off is not reduced by your armour. Armour
+   * **5** against a wand that casts **2** would stop every point of it if it applied, which is
+   * what makes a single point of Health lost here decisive rather than suggestive.
+   *
+   * Membership rather than a full list, because the board is shared with every probe above it and
+   * a stray token in the footprint would fail a probe about the rule for a reason about the scene.
+   */
+  await probe("a Blast fills its footprint and burns the caster", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const resolve = await import("/systems/cardrpg/module/resolve.mjs");
+      const { hero } = LIVE;
+      const scene = canvas.scene;
+      const grid = canvas.grid.size;
+      const npc = game.actors.find(a => a.type === "npc");
+
+      /*
+       * **Two different bodies, and both of them NEW.**
+       *
+       * A footprint is a set of actors, so two tokens of one actor would read as one creature and
+       * the probe would pass on half of what it is asking. And `areaTargets` measures from
+       * `getActiveTokens()[0]`, which is whichever token Foundry lists first -- so an actor that
+       * already has one somewhere else on this shared board would have been the centre instead of
+       * the token this probe placed. **The first version of this probe used the world's own goblin
+       * and measured a footprint around a token two probes away.**
+       */
+      const twins = [];
+      for (const name of ["Probe Blast One", "Probe Blast Two"]) {
+        twins.push(await npc.clone({ name }, { save: true }));
+      }
+
+      /*
+       * And the caster is placed where the caster already is, rather than somewhere tidy: the hero
+       * has a token on this board and it is the one the engine will measure from.
+       */
+      const made = [];
+      let heroTok = hero.getActiveTokens()[0]?.document ?? null;
+      if (!heroTok) {
+        /*
+         * **`actorLink: true`, said out loud.** An unlinked token carries its own synthetic actor,
+         * so `token.actor` would not be the hero this probe holds -- the footprint would come back
+         * correct and every identity test in it would read false, and the Health the cast took
+         * would come off a copy. Which is exactly what the first version of this probe did, and
+         * what sent `myself` into the resolver.
+         */
+        const doc = (await hero.getTokenDocument({ x: 1200, y: 1500 })).toObject();
+        doc.actorLink = true;
+        [heroTok] = await scene.createEmbeddedDocuments("Token", [doc]);
+        made.push(heroTok);
+      }
+      const me = heroTok.actor;
+      const place = async (actor, col) => {
+        const doc = (await actor.getTokenDocument(
+          { x: heroTok.x + col * grid, y: heroTok.y })).toObject();
+        const [t] = await scene.createEmbeddedDocuments("Token", [doc]);
+        made.push(t);
+        return t;
+      };
+      /* In a row from the caster: one of them adjacent, the other a square beyond it. */
+      const near = await place(twins[0], 1);
+      const far = await place(twins[1], 2);
+
+      const onNear = resolve.areaTargets(near.actor, 1, { actor: me }) ?? [];
+      const onFar = resolve.areaTargets(far.actor, 1, { actor: me }) ?? [];
+      const aimed = resolve.areaTargets(near.actor, 1, { aimed: true, actor: me }) ?? [];
+      const both = list => list.includes(near.actor) && list.includes(far.actor);
+
+      /*
+       * **Armour is DERIVED**, summed from every worn slot in `prepareDerivedData` -- so
+       * `update({"system.armor": 5})` wrote a field nothing reads and the first version of this
+       * probe measured the hero's real Leather instead. It is a coat, so the probe puts on a coat.
+       */
+      const before = me.system.health.value;
+      /*
+       * **Every equipped item, recorded before anything is put on.**
+       *
+       * **[FIXED 2026-11-27]** The first version unequipped the body slot and re-equipped it, and
+       * left the rest alone -- but a wand goes in **hands**, the slot has a capacity, and Foundry
+       * bumps whatever was there to make room. So this probe handed the rest of the run a hero
+       * with an empty weapon hand: a later probe reported a bare-handed Strike as **NaN** and a
+       * Cast refused with *nothing equipped can cast*. The tray is one object for the whole run
+       * and so is the hero, which this file already says twice about other state.
+       *
+       * So the whole equipped set is recorded and restored, not the one slot being written.
+       */
+      const equipped = me.items.filter(i => i.type === "item" && i.system.equipped)
+        .map(i => i.id);
+      /* The body slot holds one thing (config.mjs), and the hero is already wearing Leather. */
+      const worn = me.items.filter(i => i.type === "item" && i.system.equipped
+        && i.system.equippedSlot === "body").map(i => i.id);
+      for (const id of worn) await me.items.get(id)?.update({ "system.equipped": false });
+      /*
+       * **`slot`, not `equippedSlot`.** The latter is a GETTER -- `equippedTo || slot` -- so a
+       * document created with it drops the key on the floor and the item lands in `pack`, which is
+       * not worn and contributes no armour. The first version of this probe did exactly that and
+       * then asserted the hero was wearing 5 while the sheet said 1.
+       */
+      const plate = (await me.createEmbeddedDocuments("Item", [{
+        name: "Probe Blast Plate", type: "item",
+        system: { equipped: true, slot: "body", armor: 5, tags: ["armor"] }
+      }]))[0];
+      const wearing = me.system.armor;
+      const wand = (await me.createEmbeddedDocuments("Item", [{
+        name: "Probe Blast Wand", type: "item",
+        system: {
+          equipped: true, slot: "hands", hands: 1, tags: ["arcane"],
+          verbs: { cast: { value: 2, range: 4, area: 1, areaKind: "blast" } }
+        }
+      }]))[0];
+      /* Twelve, because one Miss in twenty is a Blast that arrives nowhere. */
+      for (let i = 0; i < 12; i++) {
+        await resolve.resolveAttack(me, { verb: "cast", item: wand, targets: [near.actor] });
+      }
+      const burned = before - me.system.health.value;
+
+      await wand.delete();
+      await plate.delete();
+      /* Back exactly as it was found, and that is the whole set rather than the slot written. */
+      for (const id of equipped) await me.items.get(id)?.update({ "system.equipped": true });
+      await me.update({ "system.health.value": before });
+      for (const t of made) await t.delete();
+      for (const t of twins) await t.delete();
+
+      return [
+        ["a Blast centred next to the caster catches them", onNear.includes(me), true],
+        ["and both bodies in it", both(onNear), true],
+        ["one centred a square further over does not", onFar.includes(me), false],
+        ["and still catches both bodies", both(onFar), true],
+        ["an Aimed area of the same size spares your own side", aimed.includes(me), false],
+        ["and catches the same two enemies", both(aimed), true],
+        /* The precondition said out loud, because without it the last row proves nothing: a
+         * wand that casts 2 gets a point through Leather anyway. Five points of coat would stop
+         * every one of them if armour applied at all. */
+        ["the coat the probe put on is worn", wearing >= 5, true],
+        ["and your own Blast goes through it", burned > 0, true]
       ];
     });
   });

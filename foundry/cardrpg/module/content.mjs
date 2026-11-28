@@ -14,6 +14,7 @@
 export * from "./content/cards.mjs";
 export * from "./content/card-blurbs.mjs";
 export * from "./content/title-blurbs.mjs";
+export * from "./content/title-play.mjs";
 export * from "./content/way-shade.mjs";
 export * from "./content/way-strength.mjs";
 export * from "./content/way-mind.mjs";

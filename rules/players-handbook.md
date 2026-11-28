@@ -1792,6 +1792,14 @@ character who has walked through four of these has four titles and one standing 
 Faith is the exception you already know about: an **Obedience** is not a Tactic, and you carry every
 one you have sworn (*The four Ways*).
 
+**Each Way's table is followed by what every one of its Signatures does, and what the build is
+for.** The table is the map and that list is the reading: a Signature is a name until somebody
+tells you what it does, and of the fifty-four, twenty-four are cards, twenty-three are spells and
+seven are features, so there was no one chapter to send you to. What the Signature does is read
+off the card itself, so it cannot disagree with the card. What the build is **for** is somebody's
+opinion, and it is written as one: the shape of the build, what it is good at, and then what it
+pays, which is always the **Spends** column of the row above.
+
 <!-- generated: titles -->
 
 ### The axes
@@ -1860,6 +1868,56 @@ Walking into a Way is not yet a specialization, so these four carry no Signature
 | **Street Fighter** | Control | a weapon's value | Get a Grip | **The Alley.** While both your hands are empty, an enemy adjacent to you may not Move away except by forced movement. |
 | **Bodyguard** | Reactions | ground | Interpose | **Never Leave Them.** When an ally moves, you may Move 1 as a reaction to follow -- and figures never block that move. |
 
+#### What each Signature does, and what the build is for
+
+**Infantry** -- ***Shoulder to Shoulder*** (card): Strike, then Block 1 in an area of 1 · Move 1
+
+**A wall with a friend in it.** One half swings and covers every ally at your elbow at the same time, and *The Line* means neither of you can be shoved apart -- so the strength is a second body that cannot be separated from you. It spends **an ally**, which is the whole of its weakness: alone, the Signature is a Strike with a wasted rider.
+
+**Executioner** -- ***Cleave to the Bone*** (feature): For you, the Wound threshold is 4, not 5.
+
+**A finisher, and a mover.** Wounds land a point of damage sooner for you than for anybody else, and *No Second Thought* turns every kill into a free step toward the next body, so a line of hurt enemies collapses in one turn. It spends **halves**, and it does nothing at all to a fresh target in armour.
+
+**Gladiator** -- ***Play to the Crowd*** (card): → compelled (1) · Move 1. When you are hit: gain Block 2, and the attacker is Compelled (1) -- no save, because you have already been hit once.
+
+**A lightning rod that bites.** The Signature wants you hit: being struck buys you Block 2 and Compels the one who struck you with no save, and *The Crowd Wants Blood* lets your reactions answer every blow rather than only the dangerous ones. It spends **Health**, which is exactly what standing in front of people costs.
+
+**Guardian** -- ***The Wall*** (feature): Your Blocks stack. You are the one exception to highest-wins.
+
+**A door, in one square.** *The Wall* makes you the only character whose Blocks add instead of overriding each other, so two defensive halves are worth their sum, and *The Door* stops an adjacent enemy sliding past you. It spends **a slot kept free** and prints no damage of its own: the title holds a corridor and leaves the killing to the deck you brought into it.
+
+**Ironclad** -- ***Nothing Gets Through*** (feature): While you are Overloaded, your armor counts double.
+
+**The one build that wants to be over the limit.** *Nothing Gets Through* counts your armour twice while you are Overloaded and *Immovable* ignores forced movement and difficult ground, so the state every other character avoids is your best one. It spends **weight**: Overloaded is Burdened, which is Slowed, and it charges you for the load every round it is on your back.
+
+**Artillerist** -- ***Ranging Shot*** (card): Strike in an area of 1 (needs a Ranged item) · Ready. Blast instead of Aimed, if you did not Move this turn.
+
+**A gun emplacement.** Both halves of the build pay you for not moving -- the Signature becomes a Blast and *Ranging* ignores cover -- which makes it the only ranged attack in the game that reaches a target behind a wall. It spends **ground**: the turn you have to reposition, you are a worse archer than an archer.
+
+**Tactician** -- ***On My Call*** (card): Ready · Move 1. On an ally's turn: they may play a card in their hand halves swapped, its secondary as a primary.
+
+**Plays other people's turns.** *On My Call* lets an ally play a card with its halves swapped, which turns a secondary into a primary and is the cheapest tempo anybody can buy, and *The Call* hands advantage to whoever reaches the square you named. It spends **halves**, and every point of it lands on somebody else: solo it is nothing.
+
+**Knight** -- ***The Lance*** (card): Move 3, then Strike · Move 1. Advantage if you moved at least 2. Needs the mount.
+
+**One charge, unanswerable.** Three squares and a Strike on the same half, advantage for the run-up, and *The Charge* means no reaction may answer the blow at the end of it. It spends **gear you can lose**: the lance and the horse are both items, the Signature needs the mount, and a straight line is not always available.
+
+**Berserker** -- ***Red Mist*** (card): Strike · Move 1 · Spent on the primary. Then draw back up to your hand size at once.
+
+**A deck that burns itself for cards.** *Red Mist* Spends the card and refills your hand to full at once, so you trade deck size for tempo in the middle of a fight, and *Forward Only* makes you immune to Dazed and Compelled while two enemies are on you. It spends **Spent**, and you may never move away from the nearest enemy.
+
+**Musketeer** -- ***Loaded Before the Bell*** (feature): You begin every combat already loaded, and the first shot of a fight is +2.
+
+**The first shot of the fight.** You begin loaded and that shot is +2, and *The Firing Step* removes the disadvantage every other shooter takes with an enemy in their face. It spends **range**, with the harshest clause of the twelve: you may not Strike an adjacent enemy **at all**, so anything that closes has to be walked away from.
+
+**Street Fighter** -- ***Get a Grip*** (card): → grappled (2) · Move 1. No save at all if both your hands are empty.
+
+**Bare hands on purpose.** With both hands empty the Signature Grapples with **no save** and *The Alley* forbids the enemy to walk away, which together hold one target still for as long as you want it held. It spends **a weapon's value**, and that is the whole of it: the engine walks the equipped list, finds nothing and hands over bare hands at **Strike 1**, so a Street Fighter playing to their own Tactic punches for one where a Longsword would have been three.
+
+**Bodyguard** -- ***Interpose*** (card): Defend · Move 1 · ⚡ Bodyguard. Take a hit meant for an adjacent ally.
+
+**One other person's survival.** *Interpose* takes a hit meant for an adjacent ally and *Never Leave Them* moves you with them for free and through figures, so the pair never comes apart. It spends **ground**: your position is decided by whoever you are guarding, and that is the whole cost of the build.
+
 ### Way of Shade: 12 titles
 
 **Thieves** specialize in thefts, stealth and speed.
@@ -1900,6 +1958,56 @@ Walking into a Way is not yet a specialization, so these four carry no Signature
 | **Bard** | Reactions | someone else's turn | Heckle | **The Running Commentary.** An enemy within 3 of you that would draw fate with advantage draws normally instead. |
 | **Gambler** | Deck shape | the fate deck | Double or Nothing | **The Long Odds.** While two or more enemies are adjacent to you, you draw fate with advantage. |
 | **Half-mage** | Preparation | spell slots | One Trick | **One Hand Free.** You may Cast with a weapon in your other hand. Casting never needs a hand free. |
+
+#### What each Signature does, and what the build is for
+
+**Thief** -- ***The Opening*** (feature): Advantage against anyone carrying an opening -- whoever set it.
+
+**Cashes other people's setups.** *The Opening* gives you advantage against anything carrying an opening **whoever set it**, which makes every condition your party lands into your own bonus, and *Never Where You Looked* stops an enemy that missed you trying again that round. It spends **a slot kept free**, and it needs somebody to make the opening.
+
+**Scout** -- ***Point Man*** (card): Foresee · Move 1. While you are the furthest forward of your party, Foresee one extra type.
+
+**Information bought with exposure.** Foresee reads what the enemy intends, one extra type while you are furthest forward, and *Furthest Forward* gives you cover from every figure on the field while you are the one out in front. It spends **being alone**: the moment an ally gets ahead of you, both halves of the build switch off.
+
+**Duellist** -- ***Named*** (card): Strike · → marked (1) · ⚡ Parry. Name one enemy. Against it, your Parry also Strikes for 1.
+
+**One enemy at a time, and favoured twice.** *Named* makes your Parry hit back against the enemy you named, and *One at a Time* gives you advantage and them disadvantage while exactly one of them is adjacent. It spends **halves**, and a second enemy stepping in turns the Tactic off: this is a build that loses to numbers rather than to strength.
+
+**Assassin** -- ***One Opening*** (card): Strike · Move 1 · Spent on the primary. Against a target that is unaware or carrying an opening, the damage is doubled.
+
+**One blow, and then it is gone.** Doubled damage against a target that is unaware or carrying an opening is the largest burst in the game, and *From Behind* gives you advantage against anything your allies are already holding. It spends **Spent**: the card leaves your hand for the rest of the fight, so the whole build is one turn.
+
+**Cutpurse** -- ***Lift*** (card): Strike · Move 1. On a hit, take one card from the target's own deck. It is yours now, and it is in your deck for good.
+
+**Takes things, and keeps them.** *Lift* moves a card out of the target's deck into yours for good, and *Light Fingers* takes an item off an enemy's belt once a fight, so a Cutpurse ends a fight richer than they started. It spends **deck size**: a growing deck cycles slower, and a slower cycle is fewer good cards per fight.
+
+**Burglar** -- ***The Kit*** (feature): You may never put it down. Every Hard physical obstacle becomes Normal.
+
+**Doors and walls rather than fights.** *The Kit* turns every Hard physical obstacle into a Normal one and *Through the Window* takes difficult ground and blocking figures out of your way, so no building keeps you out and no terrain slows you. It spends **weight** -- the kit may never be put down -- and none of it is damage.
+
+**Archer** -- ***Loose and Step*** (card): Strike (needs a Ranged item), then Move 1 · Move 1
+
+**Shoot, then step.** The Signature fires and moves on the same half, and *Overwatch* gives you a free Strike each round against anybody walking into the ground you watch, which is the only attack in the game that costs no card. It spends **range**: a bow is two hands, and anything adjacent spoils every shot you take.
+
+**Trapmaker** -- ***Set*** (card): Ready → slowed (2) · Ready. Place a trap on an adjacent square.
+
+**Spend the first turn to own the floor.** *Set* puts a trap on an adjacent square that Slows for two rounds and deals your Strike value, and *The Ground You Chose* makes every square you have stood in difficult for the enemy. It spends **a turn spent early**, which is a turn in which you did nothing to anybody.
+
+**Acrobat** -- ***Over and Past*** (card): Move 3 · Move 1 · ⚡ Sidestep. You may move through enemy squares.
+
+**Never where the blow lands.** *Over and Past* moves three squares and through enemy ones, and *Never Cornered* steps you one square as a reaction after an attack is declared but before damage, so the hit arrives where you were. It spends **weight**: this is all Move, which means no armour worth the name.
+
+**Bard** -- ***Heckle*** (card): → heckled (1) · Move 1 · ⚡ Heckle. An enemy arriving next to you draws fate with disadvantage until your next turn.
+
+**Takes the enemy's luck away.** The Signature makes an arriving enemy draw with disadvantage and *The Running Commentary* strips advantage from everything within three squares, so nobody near you ever draws well. It spends **someone else's turn**, and the build deals no damage at all: it changes what other people's dice do.
+
+**Gambler** -- ***Double or Nothing*** (card): Strike · Move 1. Draw two fate cards -- both apply, added together. Variance, not advantage.
+
+**Variance, chosen deliberately.** *Double or Nothing* draws two fate cards and adds **both**, which is a wider spread rather than a better one, and *The Long Odds* gives you advantage precisely while two or more enemies are on you. It spends **the fate deck**: the card that can double a blow can halve it, and it will.
+
+**Half-mage** -- ***One Trick*** (feature): You may prepare from any one school you have ever seen cast.
+
+**A sword that casts.** *One Trick* lets you prepare from any one school you have watched somebody use, and *One Hand Free* removes the empty-hand requirement, so you keep a weapon and a spell list at the same time. It spends **spell slots**, bought out of a Shade's budget rather than a Scholar's, so there are very few of them.
 
 ### Way of Mind: 14 titles
 
@@ -1948,6 +2056,64 @@ Walking into a Way is not yet a specialization, so these four carry no Signature
 | **Tattoo Magic** | Deck shape | a secret | Graven Strength | **Nothing to Prepare.** You may Cast with both hands full, and Silenced does not stop you -- your spells are on your skin, not in your mouth. |
 | **Divination** | Support | someone else's turn | The Reading | **Already Seen.** You are never surprised, and at the start of any round you may swap your place in the initiative order with a willing ally's. |
 
+#### What each Signature does, and what the build is for
+
+**Engineer** -- ***Shim and Wedge*** (card): Use at range 1 · Ready · ⚡ Block. Use an item on an adjacent ally instead of on yourself. The item is yours and is spent as normal.
+
+**Keeps the party's gear alive.** *Shim and Wedge* uses one of your own consumables on an adjacent ally, and *Nothing Is Scrap* repairs Corrode and Blunt on you and the ally beside you after every fight with no check and no kit -- the two things that permanently eat equipment. It spends **weight**, and it is the one Mind title with no magic in it.
+
+**Blood Magic** -- ***Blood Price*** (spell): strength 2 · Cast +4 (ignores armour) at range 3 · costs 2 Health. Four damage at three squares, and nothing between you and it matters. The two Health are not a drawback; they are the school.
+
+**Damage that armour does not stop.** *Blood Price* is four points at three squares **ignoring armour**, which is the answer to the one problem every other caster has, and *Your Own Blood Is Nearest* lets you target yourself at any range without penalty. It spends **your own Health**, the only resource in the game you cannot buy more of.
+
+**Elemental Magic** -- ***Wall of the Sphere*** (spell): strength 2 · in an area of 3 at range 3 · of your element. Three squares of whichever sphere is yours. Stand behind it and the ground in front of you is no longer anybody's.
+
+**Terrain, made on the spot.** *Wall of the Sphere* lays three squares of cover and difficult ground where there was none, and *The Sphere Holds* makes you the one caster whose own Blast spares them -- which, since 2026-11-27, is a real exemption from a real cost. It spends **reagents**, and the wall lasts one round.
+
+**Spiritualism** -- ***The Bargain*** (spell): strength 3 · a minor god acts once, and the GM decides how. A minor god acts, once, from wherever it is. The GM decides how, and that is not a hole in the spell, it is the spell.
+
+**Asks for help with the thing no card covers.** *The Bargain* has a minor god act once and the GM decides how, which is the point rather than a hole, and *Something Is Always Listening* tells you what every square within six is before anyone steps on it. It spends **a pact**, and what arrives is the GM's answer and not your plan.
+
+**Necromancy** -- ***Call the Unquiet*** (spell): strength 3 · Conjure at range 2 · a corpse rises and fights for you. It does not know it died. It will stop when the fight does.
+
+**A second body, out of a dead one.** *Call the Unquiet* raises a corpse that fights until the fight ends, and *The Dead Are Furniture* makes every body on the floor cover for you and difficult ground for them, so the battlefield improves as it fills. It spends **a bound Taint**, and bound means no cure lifts it.
+
+**Asceticism** -- ***Nothing Left to Take*** (spell): strength 1 · you cannot be reduced below 1 Health. There is nothing in your hand and nothing left to lose, and the second follows from the first.
+
+**Nothing, held on purpose.** *Nothing Left to Take* means an empty hand cannot be reduced below 1 Health, and *The Still Point* makes a turn in which you did not move one where you cannot be moved and attacks against you have disadvantage. It spends **an empty hand**: no cards is no actions, so the build is strongest when it can do least.
+
+**Demonology** -- ***The True Name*** (spell): strength 3 · at range 4 → compelled (3). The name it carried before it was ever on the Third Side. For three rounds the creature you name does what you tell it, and then it remembers that you know. The debt doubles.
+
+**Takes an enemy off the board and points it the other way.** *The True Name* Compels for three rounds at range four through cover, and *The Terms Are Binding* means the creature cannot shake it off by its own action -- the longest and surest control anywhere in the game. It spends **a compounding debt**, which doubles every time you use it.
+
+**Poison** -- ***Wither*** (spell): strength 2 · Cast → poisoned (2) · costs 2 skill cards. Dazed while it lasts, and one damage a turn that armour does not stop.
+
+**Slow, and certain.** *Wither* is one damage a turn that armour does not stop plus the loss of their secondary, and *The Patient Hand* gives you disadvantage-proofing against anything you have already conditioned this fight. It spends **skill cards**, so every dose makes the rest of the day's checks harder.
+
+**Shadow Magic** -- ***Step Through*** (spell): strength 2 · teleport to any shadowed square you can see. You are in the shadow, and then you are in another one. Every reach into the dark leaves something of the dark in you: a Wild card joins your fate deck, and it does not leave until you have slept.
+
+**Arrives, and cannot be shot.** *Step Through* crosses to any shadowed square you can see, and *At Home in the Dark* makes you untargetable from more than two squares while you stand in shadow. It spends **a permanent Wild**, which is one per formula, and a Wild is not a Miss: the action resolves at its plain value and the table draws Wild Magic instead.
+
+**Ward Magic** -- ***Unmake*** (card): ⚡ Unmake -- You have felt this spell before, and that is the only reason you can stop it.
+
+**The answer to other casters.** *Unmake* is the only card in the game that stops a Cast from resolving, and *The Standing Guard* gives you an extra reaction each round that may only answer one -- so you hold two answers where everybody else holds none. It spends **Spent**, and against an enemy that does not cast it is worth nothing at all.
+
+**Household Magic** -- ***Hearth and Home*** (spell): strength 0 · a camp nobody unfriendly can find, for one night. Out of combat: a camp nobody unfriendly can find, for one night. A ritual, so anyone literate could do it, but somebody has to know the words.
+
+**The day between the fights.** *Hearth and Home* is a camp nobody unfriendly can find, and *The House Helps* means indoors you ignore difficult ground and know where every door is before you see it. It spends **a place you know**, and it is the only title in the book whose Signature and Tactic are both useless in a fight.
+
+**Glamour** -- ***Not Here*** (spell): strength 2 · → invisible (1) · until you attack or are attacked. You are standing exactly where you are standing. Nobody can be told so.
+
+**Not being there.** *Not Here* is Invisible on demand, and *Never Quite There* gives every ranged attack beyond three squares disadvantage against you whether you are hidden or not. It spends **an elven debt**, and the Signature ends the instant you attack or are attacked: it buys a turn of safety, not a turn of work.
+
+**Tattoo Magic** -- ***Graven Strength*** (spell): strength 1 · → graven. It is on your arm. It does not need remembering, and it never comes off.
+
+**Magic you never prepare.** *Graven Strength* is +2 to Strike with heavy items, permanently and without a slot being renewed, and *Nothing to Prepare* lets you Cast with both hands full and through Silenced. It spends **a secret**, and the slot is gone for good: nothing on your skin can be changed once it is there.
+
+**Divination** -- ***The Reading*** (spell): strength 2. Three cards down somebody else's luck. Never your own, a diviner who could stack their own deck would be a damage school wearing a robe.
+
+**Knows what is coming.** *The Reading* looks three cards down somebody else's deck and *Already Seen* means you are never surprised and may trade places in the initiative order with a willing ally. It spends **someone else's turn**, and never your own deck -- a diviner who could stack their own luck would be a damage school in a robe.
+
 ### Way of Faith: 16 titles
 
 **The Eternal God's** servants see themselves as the true religion, and enforce that more than other religions do.
@@ -1989,6 +2155,72 @@ Walking into a Way is not yet a specialization, so these four carry no Signature
 | **Anchorite** | Deck shape | skill cards | The Long Silence | **The Empty Cell.** You cannot be Burdened or Overloaded, and no card may be taken or lifted from any deck of yours. |
 | **Flagellant** | Tempo | a permanent Wild | The Scourge | **Past Caring.** While your Health is half or less you cannot be Compelled or Heckled, and leaving a square adjacent to an enemy never sets off a reaction. |
 
+#### What each Signature does, and what the build is for
+
+**The Eternal God** -- ***The Clean Hand*** (spell): strength 2 · at range 3 · an ally's next check or attack cannot fail. An ally's next check or attack cannot fail. One cheaper on a brother or sister in faith, which is the third tenet made arithmetic.
+
+**Certainty, handed to somebody else.** *The Clean Hand* makes an ally's next check or attack unable to fail, and *No Shelter for the Guilty* denies every enemy cover from figures against you. It spends **deck size**, and the gift is never yours: this is a title that decides which of your party's rolls is the important one.
+
+**The Eternal Spirit** -- ***Breath of the Spirit*** (card): ⚡ Mend -- Help reaches an ally on the turn they were hit rather than on yours, which is most of what makes it worth a prepared slot.
+
+**Healing with no range on it.** The Mend reaction answers a blow as it lands, and *Where the Air Goes* lets you reach any ally you can see through cover and past range for anything that heals or helps. It spends **weight** and it spends reactions, so your own turn does very little: the build happens on other people's.
+
+**Vax** -- ***The Club and the Line*** (spell): strength 2 · Cast in an area of 1 · with the weapon in hand · costs 2 Health. Strike every adjacent enemy. No free hand needed, because the club is the holy symbol, which is the gift on the node, not on the card.
+
+**A shield wall that hits.** *The Club and the Line* Blasts every adjacent enemy with the weapon already in your hand -- no free hand needed, because the club is the holy symbol -- and *The Line of Vax* makes a group of three immovable and immune to cover. It spends **Health**, and it wants friends beside it: alone, half the title is off.
+
+**The First** -- ***The Long Night*** (spell): strength 3 · Cast +3 at range 1 · you gain the Health you take. Drain 3 Health from an adjacent living target and gain it. The only renewable pool in the game, and the node says what it costs to have one.
+
+**Lives off other people.** *The Long Night* drains three Health from an adjacent living target and gives it to you, which is the only renewable Health in the game, and *What Is Left* lets you keep acting at 0 until the round ends. It spends **spell slots**, and it only works with something alive within reach.
+
+**Sessyfyn** -- ***The Tide Knows*** (spell): strength 2 · at range 3 · an ally draws fate twice on their next action and keeps both. An ally draws fate twice on their next action and keeps both. The sea is not fair.
+
+**Other people's luck, and other people's feet.** *The Tide Knows* has an ally draw fate twice and keep both, and *The Tide Comes In* moves a willing ally one square at the start of every round for free. It spends **the fate deck**: the sea is not fair, and what you hand out comes off your own draws.
+
+**Valtor** -- ***The Drum*** (spell): strength 1 · your next Strike this turn is +3. It starts somewhere behind you and it is already in your arms.
+
+**Forward, and nothing else.** *The Drum* is +3 on your next Strike this turn, the largest single bonus in the book, and *The Drum Does Not Stop* makes a Strike after a step toward the enemy unanswerable by any reaction. It spends **Strain**, and the Tactic forbids you to **Defend at all**: there is no version of this build that holds ground.
+
+**Fagar** -- ***The Borrowed Face*** (spell): strength 3 · at range 3 · Spent: one enemy spends this round attacking its own ally. Spent: one enemy spends this round attacking its own ally. It works once, which is the god.
+
+**One turn, stolen.** *The Borrowed Face* spends the card to make an enemy use its whole round attacking its own ally, and *Nobody Remembers Your Face* gives the first enemy to attack you each fight disadvantage. It spends **Spent**: it works once, which is the god rather than a limitation of the spell.
+
+**Vulpet** -- ***The Outcast's Due*** (spell): strength 3 · Cast in an area of 1 → compelled (2). Every enemy next to you turns on you, because the outcast is who the crowd turns on. That is not a side effect; it is the prayer.
+
+**The taunt that actually works.** *The Outcast's Due* Compels every adjacent enemy onto you for two rounds, and *Alone and Unafraid* makes you un-Compellable and hard to hit precisely while no ally is within two squares. It spends **an ally** -- the build is strongest with nobody near you, and everything on the field is hitting you.
+
+**Brendan** -- ***Out of Barren Ground*** (spell): strength 3 · Heal 4 at range 2. Plant it. At the start of your second turn after, every ally within 2 heals 4. Nothing he gives arrives when you ask for it.
+
+**Patience, paid in advance.** *Out of Barren Ground* is planted now and heals every ally within two for four at the start of your second turn after, which is the largest party heal anywhere, and *Roots* turns a square you have held for a round into high ground. It spends **a turn spent early**: nothing he gives arrives when you ask for it.
+
+**The Grey** -- ***The Silent Hour*** (spell): strength 2 · at range 1 → dazed (1). Reaction, adjacent only: an enemy's action does not happen. Close enough to touch, which is where the knife is.
+
+**A knife at arm's length.** *The Silent Hour* is a reaction that stops an adjacent enemy's action from happening at all, and *Close Enough to Touch* makes stepping next to an enemy free, out of difficult ground, and safe from reactions. It spends **range**: every part of the title happens at one square, which is where the danger is.
+
+**The Purple** -- ***The First Taste*** (spell): strength 2 · Tainting 2 at range 1 · costs 1 Taint. Tainting 2 on one adjacent enemy, and 1 Taint for you. You are the first to taste it, always.
+
+**Rot, and you taste it first.** *The First Taste* puts Tainting 2 into one adjacent enemy's own deck, and *The Cup Passes* means an enemy will not willingly end its movement beside you and pays a half if it does. It spends **Taint**: one into you every time, and at three you are Afflicted and down three Health.
+
+**The Yellow** -- ***The Rumour*** (spell): strength 2 · one enemy type acts as though a named lie were true, for as long as you spend a secondary each round on it. Name a lie before the fight. One enemy type acts as if it were true, for as long as you keep spending a secondary on it.
+
+**A lie, maintained.** *The Rumour* names something untrue before the fight and one enemy type acts as though it were, and *Nobody Knows Where You Are* has enemies treat you as standing where you were at the start of the round. It spends **halves**: the lie lasts exactly as long as you keep paying a secondary into it, every round.
+
+**Inquisitor** -- ***The Writ*** (card): at range 6 → judged (2) · Move 1. No save, at range 6. Being named is not something you resist, and the whole field may act on it.
+
+**Marks a target for the whole field.** *The Writ* is Judged (2) at range six with **no save** -- being named is not something you resist -- and *Nobody Lies Twice* stops an enemy carrying an opening you made from reacting to you. It spends **a secret**, and Judged does nothing by itself: it is worth what your party does with it.
+
+**Shieldsworn** -- ***The Order's Shield*** (card): Defend, then Block 2 at range 1 · Block 1 at range 1 · ⚡ Block. The Block goes to an adjacent ally and never to you. The order does not defend itself.
+
+**Somebody else's armour.** *The Order's Shield* Defends and hands Block 2 to an adjacent ally and **never to you**, and *Nobody Falls Beside You* makes that ally immovable and removes cover between the pair. It spends **ground**, and the order does not defend itself: every point of this title lands on the person next to you.
+
+**Anchorite** -- ***The Long Silence*** (card): Ready 2 · Shake 1. Only if you did not move this round. Stillness is the whole of the order's method.
+
+**Stillness as a resource.** *The Long Silence* gets two items Ready and sheds a condition on the same card, but only if you did not move, and *The Empty Cell* makes you immune to Burdened, Overloaded and anything that takes a card from your decks. It spends **skill cards**, and the Signature is worth nothing on a turn you had to walk.
+
+**Flagellant** -- ***The Scourge*** (card): Strike +2 · Move 2 · Strain 1 on the primary. Strain 1, paid before the blow lands. The drums, the dance and the whip make the same argument: pay first, strike harder.
+
+**Pays first, strikes harder.** *The Scourge* costs a card out of your hand before the blow lands and gives +2 and a Move 2, and *Past Caring* makes you immune to Compelled and Heckled and free to disengage once you are at half Health or less. It spends **a permanent Wild**, which is not a Miss: the action it lands on resolves at its plain value, no bonus and no penalty, and then the table draws Wild Magic. It is Shadow Magic's price paid for the opposite reason -- nothing a Flagellant does to themselves comes back.
+
 <!-- /generated: titles -->
 
 ---
@@ -2024,7 +2256,7 @@ do not hold them: they are simply true once the node is yours.
 | Card | What it is | Primary | Secondary | Reaction | Copies |
 |---|---|---|---|---|---|
 | **Knife Work** | Close, quick and unremarkable, which is the whole idea. | Strike | Move 1 | Parry | 3 |
-| **Open Vein** | Not a killing blow. A bleeding one, which does its work later. | Strike +1 | Move 1 | – | 2 |
+| **Open Vein** | Not a killing blow. A bleeding one, which does its work later. | Strike +1 (needs a Light item) | Move 1 | – | 2 |
 | **Slip In** | Cross the gap along the wall and arrive beside them. | Move 2, then Strike | Move 1 | – | 1 |
 | **Shed the Blow** | Turn with it rather than against it, and be elsewhere afterwards. | Block 2 | Move 2 | Sidestep | 2 |
 | **Quick Step** | Three squares before anybody has decided you were worth watching. | Move 3 | Move 2 | Sidestep | 2 |
@@ -2058,7 +2290,7 @@ do not hold them: they are simply true once the node is yours.
 | **Sweep the Leg** | Take the feet from under somebody who has already lost their footing. | Strike → prone (1) when they are offBalance | Move 1 | – | 1 |
 | **Overbear** | Get hold of them while they are going down, and do not let go. | → grappled (2) when they are offBalance | Move 1 | – | 1 |
 | **Shield Wall** | Your shield covers the person beside you as well as yourself. | Defend | Defend, then Block 1 in an area of 1 | Block | 1 |
-| **Two-Hand It** | Both hands on the haft, and nothing kept back for defence. | Strike +2 | Ready | – | 1 |
+| **Two-Hand It** | Both hands on the haft, and nothing kept back for defence. | Strike +2 (needs both hands) | Ready | – | 1 |
 | **Follow Through** | Let the swing finish and bring the same steel back through. *Secondary only, after a Strike: the same weapon, again.* | Move 1 | Strike -1 | – | 1 |
 | **The Whole Arc** | All the way round, nothing held back, and a card off your hand to pay for it. *Secondary only, after a Strike: the same weapon at full value. Strain 1.* | Ready | Strike | – | 1 |
 | **Off Their Feet** | The second blow is not for the wound. It is for the ground. *Secondary only, after a Strike: the same weapon again, and they are Off-Balance.* | Strike | Strike -2 → offBalance (1) | – | 1 |
@@ -2071,7 +2303,7 @@ do not hold them: they are simply true once the node is yours.
 | **Nothing Held Back** | Commit the whole hand to one blow and have nothing left afterwards. *Strain your hand but one, and that card must be played this turn. Strike +1 per card strained.* | Strike | – | – | 1 |
 | **Call It** | Name what you are facing, and your people know what to do about it. *The secondary names one NPC type.* | Strike | Forestall 1 | – | 1 |
 | **Shoulder to Shoulder** | You swing, and every ally at your elbow is covered by it. | Strike, then Block 1 in an area of 1 | Move 1 | – | 1 |
-| **Ranging Shot** | Stand still, and the shot spreads where it is wanted. *Blast instead of Aimed, if you did not Move this turn.* | Strike in an area of 1 | Ready | – | 1 |
+| **Ranging Shot** | Stand still, and the shot spreads where it is wanted. *Blast instead of Aimed, if you did not Move this turn.* | Strike in an area of 1 (needs a Ranged item) | Ready | – | 1 |
 | **On My Call** | An ally plays their card the wrong way round because you told them to. *On an ally's turn: they may play a card in their hand halves swapped, its secondary as a primary.* | Ready | Move 1 | – | 1 |
 | **The Lance** | Weight, speed and a long point, which is the whole argument of cavalry. *Advantage if you moved at least 2. Needs the mount.* | Move 3, then Strike | Move 1 | – | 1 |
 | **Red Mist** | Spend everything and draw straight back up, because stopping is not in it. *Then draw back up to your hand size at once.* | Strike | Move 1 | – | 1 |
@@ -2086,17 +2318,17 @@ do not hold them: they are simply true once the node is yours.
 | **The Held Knife** | A blade balanced and not yet thrown, waiting for somebody to cross in front of you. *A weapon you can throw. The first enemy to walk into the ground you are watching takes it, at the blade's own value and no further than it flies.* | Ready | Move 1 | Overwatch | 1 |
 | **At Full Draw** | Held at full draw, watching one approach and nothing else. *A bow or a crossbow. The first enemy to walk into the ground you are watching takes the shot, at the bow's own value, out to its own range.* | Ready | Move 1 | Overwatch | 1 |
 | **Call the Shot** | Pick your man out of the crowd, and keep him picked. *Marked on any enemy you can see, at any range.* | Strike | → marked (1) | – | 1 |
-| **Find the Seam** | Not through the armour. Between it. *Armour does not apply. A point weaker than a plain Strike.* | Strike -1 (ignores armour) | Move 1 | – | 1 |
-| **Half-Hilt** | Hand on the blade, point driven into the gap by main force. *Ignores 2 armour. Reversed grip, straight into the gap.* | Strike (ignores 2 armour) | Move 1 | – | 1 |
-| **Round the Shield** | A knife thrown at the one angle a shield was never going to cover. *A thrown knife that answers neither a raised shield nor cover. Range 3.* | Strike -1 (ignores Block) at range 3 | Move 1 | – | 1 |
+| **Find the Seam** | Not through the armour. Between it. *Armour does not apply. A point weaker than a plain Strike.* | Strike -1 (ignores armour) (needs a Light item) | Move 1 | – | 1 |
+| **Half-Hilt** | Hand on the blade, point driven into the gap by main force. *Ignores 2 armour. Reversed grip, straight into the gap.* | Strike (ignores 2 armour) (needs a Light item) | Move 1 | – | 1 |
+| **Round the Shield** | A knife thrown at the one angle a shield was never going to cover. *A thrown knife that answers neither a raised shield nor cover. Range 3.* | Strike -1 (ignores Block) at range 3 (needs a Light item) | Move 1 | – | 1 |
 | **Between the Plates** | A gap you marked earlier, and a point that fits it. | Strike when they are marked | Move 1 | – | 1 |
-| **Take the Shot** | You have been waiting for this, and the waiting is what makes it land. | Strike +1 when they are marked | Move 2 | – | 1 |
-| **Pin the Shadow** | Put something through cloth and leg together. | Strike → slowed (1) when they are marked | Move 1 | – | 1 |
+| **Take the Shot** | You have been waiting for this, and the waiting is what makes it land. | Strike +1 (needs a Ranged item) when they are marked | Move 2 | – | 1 |
+| **Pin the Shadow** | Put something through cloth and leg together. | Strike → slowed (1) (needs a Ranged item) when they are marked | Move 1 | – | 1 |
 | **Cut and Run** | Open them up and be gone before they decide what to do about it. | Strike, then Move 2 | Move 1 | – | 1 |
 | **Light Feet** | Rubble, mud and bodies are all the same floor to you. *Ignoring difficult ground.* | Move 3 | Move 2 | Sidestep | 1 |
 | **Slip the Knot** | Whatever had hold of you does not, any more. | Move 2 | Shake 1 | Sidestep | 1 |
-| **Second Knife** | There was always a second knife. | Strike at range 3 | Strike -1 | – | 1 |
-| **Inside the Guard** | They moved the shield to stop the first one. Put the second where it was. *Secondary only, after a Strike with the same light blade. Answers no raised shield.* | Move 2 | Strike -2 (ignores Block) | – | 1 |
+| **Second Knife** | There was always a second knife. | Strike at range 3 (needs a Light item) | Strike -1 (needs a Light item) | – | 1 |
+| **Inside the Guard** | They moved the shield to stop the first one. Put the second where it was. *Secondary only, after a Strike with the same light blade. Answers no raised shield.* | Move 2 | Strike -2 (ignores Block) (needs a Light item) | – | 1 |
 | **Mock** | Say the one thing that makes them stop thinking. | → dazed (1) | Move 1 | – | 1 |
 | **Sleight** | Your hands do two things and they only see one. | Use, then Strike | Ready | Use | 1 |
 | **Vanish** | Be somewhere the eye slides off. *On yourself.* | → invisible (1) | Move 2 | – | 1 |
@@ -2107,7 +2339,7 @@ do not hold them: they are simply true once the node is yours.
 | **Named** | One enemy, named aloud, and from then on your parry cuts. *Name one enemy. Against it, your Parry also Strikes for 1.* | Strike | → marked (1) | Parry | 1 |
 | **One Opening** | Somebody who does not know you are there needs only the one. *Against a target that is unaware or carrying an opening, the damage is doubled.* | Strike | Move 1 | – | 1 |
 | **Lift** | Take a card out of their deck, and keep it. *On a hit, take one card from the target's own deck. It is yours now, and it is in your deck for good.* | Strike | Move 1 | – | 1 |
-| **Loose and Step** | Shoot, and be a square away by the time they look. | Strike, then Move 1 | Move 1 | – | 1 |
+| **Loose and Step** | Shoot, and be a square away by the time they look. | Strike (needs a Ranged item), then Move 1 | Move 1 | – | 1 |
 | **Set** | Leave something on the ground for whoever comes next. *Place a trap on an adjacent square.* | Ready → slowed (2) | Ready | – | 1 |
 | **Over and Past** | Their line is not a wall if you simply go through it. *You may move through enemy squares.* | Move 3 | Move 1 | Sidestep | 1 |
 | **Heckle** | Anybody who closes on you is rattled before they arrive. *An enemy arriving next to you draws fate with disadvantage until your next turn.* | → heckled (1) | Move 1 | Heckle | 1 |

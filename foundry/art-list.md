@@ -645,7 +645,7 @@ The combo pair and its two readers: the oldest spells in the game.
 | ✓ | **Frost** | strength 1 · range 3 Slowed (1) | `spells/elemental/frost.webp` |
 | ✓ | **Lightning** | strength 2 · Cast range 4 Stunned (1) | `spells/elemental/lightning.webp` |
 | ✓ | **Rain** | strength 2 · range 4 blast 3 Wet (1) no damage | `spells/elemental/rain.webp` |
-| ✓ | **Scorch** | strength 1 · Cast range 4 Burning (1) | `spells/elemental/scorch.webp` |
+| ✓ | **Scorch** | strength 1 · Cast range 4 Burning 1 (1) | `spells/elemental/scorch.webp` |
 
 ## Formulas — Shadow
 

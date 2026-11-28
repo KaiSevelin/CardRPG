@@ -6387,7 +6387,7 @@ Draw soaked through.
 File: `spells/elemental/scorch.webp`
 
 ```text
-SUBJECT. "Scorch" — strength 1 · Cast range 4 Burning (1)
+SUBJECT. "Scorch" — strength 1 · Cast range 4 Burning 1 (1)
 
 Carries no combo clause at all, and is still the proof that an opening is not always worth having: water and fire cancel, so a Wet target takes the Cast and sheds the Burning. The interaction is on Burning, where the rules put it.
 

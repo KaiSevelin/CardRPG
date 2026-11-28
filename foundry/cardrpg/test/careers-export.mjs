@@ -19,6 +19,18 @@
  * formula** any of them is granted (`spells`), and **all three starter decks** rather than the
  * Warrior's alone (`chassis`), so a caster can be measured on the chassis built for one.
  *
+ * **[ADDED 2026-11-27] And the MENU each career can reach, which is the thing a cheapest route
+ * structurally cannot see.** leveling.md §4a puts one menu node behind every school, every god and
+ * each martial Way -- *one formula or miracle of their choice from that source's list* -- and says
+ * in as many words why none of them is ever on a career's route: **a menu is a level you may spend,
+ * never one you must**, so all twenty-six are leaves nothing depends on.
+ *
+ * The consequence was a measurement that read as content. Every magical career crossed with the
+ * one or two formulas its branch names, 25 of 30 of them with nothing a simulator could cast, and
+ * that looked like a starved Way rather than like a route that had not spent a level. So `menus`
+ * carries the sources on the career's **frontier** -- what one more level buys -- and `sources`
+ * carries what each of those offers, in the order §4a offers it: **cheapest first**.
+ *
  *   node test/careers-export.mjs
  */
 import fs from "node:fs";
@@ -71,6 +83,13 @@ for (const node of content.NODES) {
     cards: g.cards, features: g.features, spells: g.spells,
     expertise: g.expertise, masteries: g.masteries, trainings: g.trainings,
     /*
+     * **What one more level would buy from a list**, which is a different question from what the
+     * route granted. `frontier` is the engine's own answer to *what can be taken now*, so this is
+     * not a guess about adjacency -- it is the same function the levelling pane paints with.
+     */
+    menus: graph.frontier(owned).map(id => graph.GRAPH.get(id))
+      .filter(n => n?.grants?.choose?.from).map(n => n.grants.choose.from),
+    /*
      * **The rewards a fight cannot see** (leveling.md §4). A win rate prices a card and is blind to
      * a know-how, so a career measured only in the arena is measured on part of its pay. These are
      * counted here so `careers_sim.py` can put the two ledgers side by side.
@@ -88,6 +107,31 @@ if (missing.length) throw new Error(`cards held by a career with no definition: 
 const known = new Set(careers.flatMap(c => c.spells));
 const unknown = [...known].filter(name => !spellDefs.has(name));
 if (unknown.length) throw new Error(`spells known by a career with no definition: ${unknown.join(", ")}`);
+
+/*
+ * **Every menu, and what it offers in the order it offers it.** `choiceList` is the engine's own
+ * menu and `SPELLS_BY_SOURCE` has already sorted it by strength then name, which **is** §4a's
+ * *cheapest first* -- so nothing here decides an order.
+ *
+ * Filtered to teachings that are spells, because a school may teach something else: all seven of
+ * Tattoo Magic's are **features** and Asceticism ends in two renunciations, none of which is ever
+ * prepared. A menu of those is a real menu and not a spell list.
+ */
+const sources = {};
+for (const source of new Set(careers.flatMap(c => c.menus))) {
+  /*
+   * `SPELLS_BY_SOURCE` and not `choiceList`, which falls back to the CARD pool for a source that
+   * teaches no spells -- so the two martial menus, *What You Favour* and *What You Lean On*, came
+   * back as 38 "formulas" that are cards. A card menu is a real menu and a different question;
+   * it is left out of this file rather than renamed.
+   */
+  const list = (graph.SPELLS_BY_SOURCE.get(source) ?? [])
+    .filter(t => graph.teachingKind(t) === "spell");
+  sources[source] = list.map(t => t.name);
+  for (const t of list) spellDefs.set(t.name, t);
+}
+/* The definitions a menu pick could need, on top of the ones a route grants. */
+const offered = new Set([...known, ...Object.values(sources).flat()]);
 
 const shape = card => ({
   name: card.name, copies: card.copies ?? 1,
@@ -126,8 +170,10 @@ const out = {
   liveTrainings,
   /* Only the cards a career can actually hold. */
   cards: [...held].sort().map(name => shape(cardDefs.get(name))),
-  /* And only the formulas one is granted: **36 of the 172** the six sources above define. */
-  spells: [...known].sort().map(name => spellShape(spellDefs.get(name))),
+  /* Every formula a career is granted **or could be offered** by a menu on its frontier. */
+  spells: [...offered].sort().map(name => spellShape(spellDefs.get(name))),
+  /* And the menus themselves: source -> the names it offers, cheapest first (leveling.md §4a). */
+  sources,
   /*
    * **All three starter decks** (starter-cards.md). Character creation does not exist yet
    * (core-rules §12), so a career is measured on a starter chassis rather than on a deck of its
@@ -153,5 +199,6 @@ const out = {
 const dest = path.join(import.meta.dirname, "../../../sim/careers.json");
 fs.writeFileSync(dest, JSON.stringify(out, null, 1) + "\n");
 console.log(`${careers.length} careers, ${out.cards.length} cards, ${out.spells.length} spells, `
+  + `${Object.keys(out.sources).length} menus, `
   + `${Object.keys(out.chassis).length} starter chassis, ${out.skills.length} skill cards `
   + `-> ${path.relative(process.cwd(), dest)}`);

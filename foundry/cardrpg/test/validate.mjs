@@ -1605,8 +1605,16 @@ check("formulas that drifted from the pools",
  *     which only a per-lookahead copy of the slots can get right.
  */
 check("a Blast catches the caster",
-  /if you're in it\.\* Armour/.test(simSource)
+  /ruled 2026-11-27\)\. Block does/.test(simSource)
   && /self\.game\.s\['blast_self'\] \+= mine/.test(simSource) ? "yes" : "no", "yes");
+/*
+ * And the armour half on the simulator's side, which is a DIAL rather than a constant: `False` is
+ * the rule and `True` restores the reading before it, so the cost of the ruling stays measurable
+ * the way every `draft 0.1 ...` scenario in that file does.
+ */
+check("and it goes through the caster's armour there too",
+  /blast_armour: bool = False/.test(simSource)
+  && /mine = max\(0, landed - own\)/.test(simSource) ? "yes" : "no", "yes");
 check("Strain is paid in full or not at all",
   /def can_pay_strain/.test(simSource) && /spare >= owed/.test(simSource) ? "yes" : "no", "yes");
 check("a dry Cast half is counted",
@@ -1639,7 +1647,25 @@ check("and each Way is handed a chassis",
  * the three things that can independently go stale are pinned on the script that writes them.
  */
 check("the export carries the formula definitions",
-  /spells: \[\.\.\.known\]\.sort\(\)\.map/.test(exportSource) ? "yes" : "no", "yes");
+  /spells: \[\.\.\.offered\]\.sort\(\)\.map/.test(exportSource) ? "yes" : "no", "yes");
+/*
+ * **And the menus, which is the half a cheapest route cannot see.**
+ *
+ * leveling.md 4a puts one menu node behind every school, every god and each martial Way -- *one
+ * formula or miracle of their choice from that source's list* -- and says in as many words why
+ * none of them is ever on a route: *a menu is a level you may spend, never one you must*, so all
+ * twenty-six are leaves nothing depends on.
+ *
+ * Without this the simulator measured every caster with only the one or two formulas its branch
+ * names, and reported **25 of 30 magical careers with nothing castable** as though that were a
+ * fact about the content. One level on a career's own list takes it to **20 of 30 that can**.
+ */
+check("and the menu each career can reach",
+  /menus: graph\.frontier\(owned\)/.test(exportSource) ? "yes" : "no", "yes");
+/* Off the spell menu and not `choiceList`, which falls back to the CARD pool for a source that
+ * teaches no spells -- so the two martial menus came back as 38 formulas that are cards. */
+check("and what each menu offers, cheapest first",
+  /graph\.SPELLS_BY_SOURCE\.get\(source\)/.test(exportSource) ? "yes" : "no", "yes");
 check("and all three starter decks",
   [...exportSource.matchAll(/^    (\w+): \(content\.(\w+) \?\? \[\]\)\.map\(shape\)/gm)]
     .map(m => `${m[1]}=${m[2]}`).join(", "),
@@ -1762,6 +1788,53 @@ check("a shield is not offered against a step that goes round it",
 check("and only Block is withheld",
   (resolveSource.match(/rounded && option\.key === "[a-z]+"/g) ?? [])
     .map(m => /"([a-z]+)"/.exec(m)[1]).join(", "), "block");
+
+/*
+ * **An Area resolves against everything standing in its footprint.**  **[BUILT 2026-11-27]**
+ *
+ * core-rules 11 says an Area *hits the target square and all squares within X of it*, and the icon
+ * table says a Blast catches *everyone in the area -- enemies, allies and you, if you're in it*
+ * where an Aimed area catches *only your enemies*. None of that happened: `area` was read for the
+ * disadvantage and nothing else, and the target list was whatever the player had clicked.
+ *
+ * Four things hold it, and the fourth is the one that matters: the aim point has to survive being
+ * widened, or the advantage read and the fate draw would come off whichever creature the footprint
+ * scan happened to reach first.
+ */
+check("the engine measures an area's footprint",
+  /export function areaTargets\(aim, size/.test(resolveSource) ? "yes" : "no", "yes");
+check("off the same measure every range is read with",
+  /const away = squaresBetween\(hub, token\);/.test(resolveSource) ? "yes" : "no", "yes");
+check("and Aimed spares your own side",
+  /if \(aimed && actor && token\.actor\.type === actor\.type\) continue;/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("and the player's aim point survives the widening",
+  inOrder(resolveSource, [
+    "const aim = targets[0] ?? null;",
+    "if (areaSize) {",
+    "if (caught) targets = caught;",
+    "const first = aim ?? targets[0] ?? null;"
+  ]), "in order");
+/*
+ * **And your own Blast ignores your armour** (core-rules 11). Narrow by construction: the flag is
+ * `who === actor` and an Aimed area never reaches the caster at all, so an ally in the footprint
+ * keeps their coat and nothing an area does to an enemy changes.
+ */
+check("a caster's own Blast goes through their armour",
+  /const ownBlast = !!areaSize && !aimed && \(who === myself \|\| who === actor\);/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/* And it finds the caster through an unlinked token, whose actor is not the one passed in. */
+check("and finds them through an unlinked token",
+  /const myself = actor\?\.getActiveTokens\?\.\(\)\[0\]\?\.actor \?\? actor;/
+    .test(resolveSource) ? "yes" : "no", "yes");
+check("and only their own",
+  /const hadArmor = ownBlast \? 0 : \(who\.system\.armor \?\? 0\);/.test(resolveSource)
+    ? "yes" : "no", "yes");
+/* The content it is about: one Blast item a starting character can hold, and it is the Wand. */
+check("items whose Cast line is a Blast",
+  content.ITEMS.filter(i => i.verbs?.cast?.area
+    && (i.verbs.cast.areaKind ?? "blast") === "blast").map(i => i.name).join(", "), "Fire Wand");
+
 /* Both are said out loud, because 0 armour and armour ignored subtract the same number. */
 check("the chat card says what was gone through",
   /row\.pierced \? ` \(\$\{row\.pierced\} armor ignored\)`/.test(resolveSource)
@@ -5057,15 +5130,41 @@ const { CARDRPG } = await import("../module/config.mjs");
  *
  * Found by ground phase 2, which was the first thing that ever asked a step for its intensity.
  */
+/*
+ * **[FOUND 2026-11-27] And the mirror of it, which did not exist: a VALUED condition with no
+ * intensity at all.**
+ *
+ * *Scorch* — a strength-1 Elemental Magic attack — carried `condition: "burning", duration: 1`
+ * and no intensity, so it applied **Burning (0)** and dealt nothing. way-cards §3.4 prints
+ * *Burning (1)*, the handbook prints *Burning 1 (1)*, conditions.md §6 lists it at **1**, and the
+ * engine read the field. It is `intensity: 1` now.
+ *
+ * Two reasons it survived. The check above looks for the opposite mistake and its own comment says
+ * it is there to stop *a THIRD arriving quietly* — and the thing that arrived quietly was the
+ * other direction. And the sweep did not read `FORMULAS` at all: Rain, Lightning, Frost and Scorch
+ * live there rather than in a pool, which is why four of the twelve schools' best-known formulas
+ * were outside every step sweep in this file.
+ *
+ * **`intensity: 0` is NOT a miss**, and the one that prints it says so in the document: *The Long
+ * Dose* is **Poisoned 0 (3)**, *no damage — three rounds of a man who cannot use his off hand*.
+ * So the test is for an intensity that is **absent**, not for one that is zero.
+ */
+const INTENSITY_KEYS = ["WARRIOR_DECK", "SHADE_DECK", "CASTER_DECK", "COMMON_POOL", "WAY_CARDS",
+  "STRENGTH_POOL", "SHADE_POOL", "STRENGTH_SIGNATURES", "SHADE_SIGNATURES", "MIND_SIGNATURES",
+  "FAITH_SIGNATURES", "MIND_POOL", "FAITH_POOL", "ALL_SKILLS", "INTENTS",
+  "FORMULAS", "SHADOW_FORMULAS", "RITUALS"];
 const INTENSITY_STEPS = [];
-for (const key of ["WARRIOR_DECK", "SHADE_DECK", "COMMON_POOL", "WAY_CARDS", "STRENGTH_POOL",
-  "SHADE_POOL", "STRENGTH_SIGNATURES", "SHADE_SIGNATURES", "MIND_SIGNATURES", "FAITH_SIGNATURES",
-  "MIND_POOL", "FAITH_POOL", "ALL_SKILLS", "INTENTS"]) {
+const UNVALUED_STEPS = [];
+for (const key of INTENSITY_KEYS) {
   for (const card of content[key] ?? []) {
     const look = step => {
-      if (step?.condition && step.intensity
-        && !CARDRPG.conditions[step.condition]?.valued) {
+      if (!step?.condition) return;
+      const isValued = !!CARDRPG.conditions[step.condition]?.valued;
+      if (step.intensity && !isValued) {
         INTENSITY_STEPS.push(`${card.name} -> ${step.condition}`);
+      }
+      if (isValued && step.intensity === undefined) {
+        UNVALUED_STEPS.push(`${card.name} -> ${step.condition}`);
       }
     };
     for (const half of ["primary", "secondary"]) for (const s of card[half] ?? []) look(s);
@@ -5074,6 +5173,18 @@ for (const key of ["WARRIOR_DECK", "SHADE_DECK", "COMMON_POOL", "WAY_CARDS", "ST
 }
 check("steps printing an intensity on a condition that has no value",
   INTENSITY_STEPS.sort().join(", ") || "none", "none");
+check("and a valued condition applied with no intensity",
+  UNVALUED_STEPS.sort().join(", ") || "none", "none");
+/*
+ * The sweep reads the arrays it says it does, so a new formula list cannot sit outside it. **Two
+ * checks and not one**: the first version compared the filtered list against `INTENSITY_KEYS.length`
+ * and therefore could not notice the list SHRINKING -- a break test that deleted `FORMULAS` from it
+ * passed, which is the defect Scorch fell through in the first place, in the check written to catch
+ * it. So the count is a number here and the resolution is a separate question.
+ */
+check("arrays the intensity sweep reads", INTENSITY_KEYS.length, 18);
+check("and every one of them resolves",
+  INTENSITY_KEYS.filter(k => !Array.isArray(content[k])).join(", ") || "none", "none");
 
 /*
  * **Every tag and every slot a content item declares is in the vocabulary the schema draws from.**
@@ -9888,6 +9999,109 @@ check("paragraphs written in the engine's vocabulary",
 check("and the handbook's titles chapter reads the table",
   /CONTENT\.TITLE_BLURBS\.find/.test(fs.readFileSync(path.join(root, "test/handbook.mjs"), "utf8"))
     ? "yes" : "no", "yes");
+
+/*
+ * **What each build is FOR**  **[BUILT 2026-11-27]**
+ *
+ * Chapter 20 named a title's Signature and printed its Tactic, and a reader holding both still had
+ * no way to learn what either did. The Signature was a bare **name** whose effect lived in another
+ * chapter -- 21 for a card, 24 for a feature, 25 for a spell, 22 for an item, and of the 54 there
+ * are 24, 6, 23 and 1 of those, so there was no single chapter to be sent to. And nothing anywhere
+ * said what the build was good at, which is the only question somebody choosing one is asking.
+ *
+ * Two things are printed now and they are held to different standards. **What the Signature does
+ * is derived** from the content by `signatureDoes`, so it cannot drift from the card. **What the
+ * build is for is authored**, in `TITLE_PLAY`, because no code can compute a judgement.
+ */
+const handbookSource = fs.readFileSync(path.join(root, "test/handbook.mjs"), "utf8");
+const playFor = title => content.TITLE_PLAY.filter(p => p.title === title);
+check("notes saying what a build is for", content.TITLE_PLAY.length, 54);
+check("titles with no note",
+  titleNodes.filter(n => playFor(n.title).length !== 1).map(n => n.title).join(", ")
+  || "none", "none");
+check("and notes naming no title",
+  content.TITLE_PLAY.filter(p => !titleNodes.some(n => n.title === p.title))
+    .map(p => p.title).join(", ") || "none", "none");
+/* The lead is bolded, the way every blurb in the book opens: a wall of unbroken prose in a
+ * reference chapter is a wall nobody reads. */
+check("notes that do not open on a bolded lead",
+  content.TITLE_PLAY.filter(p => !/^\*\*\S/.test(p.text)).map(p => p.title).join(", ")
+  || "none", "none");
+/*
+ * **And every note names what the build pays**, which is the house rule for the list and the one
+ * part of it a machine can hold. Chapter 20 defines the `Spends` column as *the resource it pays
+ * in, and therefore the thing it is bad at* -- so a note that recommends a build without naming
+ * its cost is half an answer, and this is what stops the next one being written that way.
+ */
+check("notes that do not name their Spends column",
+  titleNodes.filter(n => n.resource
+    && !(playFor(n.title)[0]?.text ?? "").includes(n.resource))
+    .map(n => `${n.title} (${n.resource})`).join(" | ") || "none", "none");
+/*
+ * And the derived half: every Signature resolves to something the generator can describe. A title
+ * naming a card nobody wrote would print an em dash and read as a build with no Signature.
+ */
+const SIG_SOURCES = ["SHADE_SIGNATURES", "STRENGTH_SIGNATURES", "MIND_SIGNATURES",
+  "FAITH_SIGNATURES", "COMMON_POOL", "SHADE_POOL", "STRENGTH_POOL", "MIND_POOL", "FAITH_POOL",
+  "MIND_CARDS", "FAITH_CARDS", "WAY_CARDS", "FORMULAS", "SHADOW_FORMULAS", "ITEMS", "FEATURES"];
+const sigDefs = new Map();
+for (const key of SIG_SOURCES) {
+  for (const e of content[key] ?? []) if (e?.name && !sigDefs.has(e.name)) sigDefs.set(e.name, e);
+}
+check("Signatures with no definition to describe",
+  titleNodes.filter(n => n.signature && !sigDefs.has(n.signature))
+    .map(n => `${n.title} -> ${n.signature}`).join(", ") || "none", "none");
+/*
+ * **And the three that are the same two steps.** The Assassin's *One Opening*, the Cutpurse's
+ * *Lift* and the Gambler's *Double or Nothing* are all `Strike / Move 1` and nothing else: their
+ * whole difference is the printed `text`. So the generator has to print `text` as well as the
+ * steps, and this is the check that says why -- without it three titles would describe one card.
+ */
+const sameSteps = ["One Opening", "Lift", "Double or Nothing"].map(n => {
+  const e = sigDefs.get(n);
+  return JSON.stringify([e?.primary, e?.secondary]);
+});
+check("Signatures that are indistinguishable by their steps",
+  new Set(sameSteps).size, 1);
+check("and are told apart by their text",
+  new Set(["One Opening", "Lift", "Double or Nothing"]
+    .map(n => sigDefs.get(n)?.text ?? "")).size, 3);
+check("so the generator prints a Signature's text",
+  /const note = cell\(e\.text\);/.test(handbookSource) ? "yes" : "no", "yes");
+check("and what a reaction-only Signature does",
+  /const what = bits\.length \? "" : REACTION_TEXT\[e\.reaction\];/.test(handbookSource)
+    ? "yes" : "no", "yes");
+/* A spell's `description` is flavour: Valtor's reads *it starts somewhere behind you* and does
+ * not say **+3 on your next Strike**. So a spell Signature prints its strength, its effect and
+ * its price before its sentence, and 23 of the 54 are spells. */
+check("and a spell Signature's mechanics before its flavour",
+  inOrder(handbookSource, [
+    'bits.push(`strength ${e.strength}`)',
+    'const mech = half([e.effect]);',
+    'if (e.effect.text) bits.push(cell(e.effect.text));',
+    'bits.push(`costs ${e.cost[purse]} ${label}`)'
+  ]), "in order");
+/*
+ * **And what a half cannot be played without.**  **[BUILT 2026-11-27]**
+ *
+ * Thirteen halves carry `requires` -- an item tag, or both hands free -- and no chapter of the
+ * handbook printed it. *Loose and Step* is an Archer Signature that read *Strike, then Move 1*,
+ * which is equally true of a swordsman: the one clause that made it an archer card was the one
+ * left out. Found while reading the new titles chapter for thin lines.
+ */
+const requiring = [];
+for (const [, list] of Object.entries(content)) {
+  if (!Array.isArray(list)) continue;
+  for (const e of list) for (const h of ["primary", "secondary"]) {
+    for (const st of e?.[h] ?? []) if (st.requires) requiring.push(`${e.name}.${h[0]}`);
+  }
+}
+check("halves that need a particular item", new Set(requiring).size, 13);
+check("and the book says so",
+  /if \(s\.requires\?\.tag\) bits\.push/.test(handbookSource)
+  && /if \(s\.requires\?\.bothHands\)/.test(handbookSource) ? "yes" : "no", "yes");
+check("and the chapter prints the authored note beside it",
+  /CONTENT\.TITLE_PLAY\.find/.test(handbookSource) ? "yes" : "no", "yes");
 
 
 const { fill: fillHandbook } = await import("./handbook.mjs");
@@ -22578,7 +22792,10 @@ readFiles.set("decksSource", decksSource);
  * crossing that carries content into the simulator. The export used to hold the two magical Ways
  * back because there was no spell engine; there is one now, so what it carries is a rule of its
  * own and a rule nothing checked is a rule that drifts. */
-check("files this suite greps by name", readFiles.size, 87);
+/* 88 since 2026-11-27: `module/content/title-play.mjs`, which is what each specialization is
+ * FOR. The handbook named every Signature and explained none of them, and said nothing anywhere
+ * about what a build was good at. */
+check("files this suite greps by name", readFiles.size, 88);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {

@@ -1125,11 +1125,11 @@ to do with it. This deck is the answer, built to the Warrior's budget field by f
 differences are the chassis: Strike halves to Cast halves, and the game's first **Strain** card.
 
 **What to notice, and it is now a number rather than an open question.**  **[MEASURED
-2026-11-27]** The simulator can cast, and the deck is **+4.7** points of win rate against the
+2026-11-27]** The simulator can cast, and the deck is **+1.4** points of win rate against the
 Warrior's over 3000 fights a cell — with a spread of eighty points inside that mean
-([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md)). It is **+46.8** against six goblin
-spears, because a Blast 1 reaches a clump where a sword reaches one man, and **−36.7** against
-two brutes and **−33.7** against armoured infantry, because the wand casts for 2, armour comes off
+([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md)). It is **+42.5** against six goblin
+spears, because a Blast 1 reaches a clump where a sword reaches one man, and **−38.2** against
+two brutes and **−34.3** against armoured infantry, because the wand casts for 2, armour comes off
 every hit, and this deck prints no ⚔ Strike to fall back on.
 
 So the thing to watch at the table is **the fight it is bad at**. Put the caster against two

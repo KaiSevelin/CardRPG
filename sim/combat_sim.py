@@ -212,12 +212,20 @@ WEAPONS = {
 #   health           its printed Health cost, paid every cast
 #   strength         slot cost, and **0 for an implement**, because an implement prepares nothing
 #
-# **A Blast catches the caster.** core-rules 11 is explicit -- *Blast: everyone in the area,
-# enemies, allies and you, if you're in it* -- and a Fire Wand is a Blast 1, so a cast at an
-# adjacent goblin burns the hero for the same figure it burns the goblin for. It is charged here,
-# through armour and not through Block, and it is what turns the wand from a free group answer
-# into a weapon that wants range. **The first measurement of the Caster deck was taken without it
-# and read +7.1**; it is the one rule in the spell engine whose absence flattered a chassis.
+# **A Blast catches the caster, and goes through their armour.** core-rules 11 is explicit about
+# the first half -- *Blast: everyone in the area, enemies, allies and you, if you're in it* -- and
+# a Fire Wand is a Blast 1, so a cast at an adjacent goblin burns the hero too. **The first
+# measurement of the Caster deck was taken without it and read +7.1**; it is the one rule in the
+# spell engine whose absence flattered a chassis.
+#
+# **The armour half is new (ruled 2026-11-27) and it came out of this file.** Charged through
+# armour, the deterrent was switched off exactly where it was needed: a caster in Plate took
+# `max(0, 2 - 4)` from their own wand, which is nothing. So a Blast's damage to the hero who set
+# it off is not reduced by armour -- you are inside it rather than facing it -- and nothing an
+# area does to a goblin changes, which is what keeps it off the `ignores N armor` economy.
+#
+# Neither half is reduced by Block either, and that one is not a ruling: a Block is a reaction to
+# somebody else's attack, and this is the hero's own.
 #
 # **A condition cast on a goblin does nothing in this file, and it is counted rather than hidden.**
 # `apply_cond` writes the hero's own record and nothing here reads a condition on a goblin -- the
@@ -491,6 +499,11 @@ class Config:
     # without this its +2 was free -- the second place the first measurement of that chassis
     # flattered it, after the Blast that did not catch the caster.
     strain_cards: dict = field(default_factory=dict)
+    # **Armour against a Blast of your own** -- the reading before 2026-11-27, kept so the cost of
+    # the ruling stays measurable, which is what every `draft 0.1 ...` scenario in this file is for.
+    # False is the rule: *you set it off and you are inside it rather than facing it.* True puts the
+    # coat back, and at armour 4 that made a Blast 1 on yourself cost nothing whatever.
+    blast_armour: bool = False
     # Everything carried that is not armour, weapons or the shield: pack, rope, loot. The kit a
     # starter Warrior carries is already in the armour and weapon kilograms, so 0 is the baseline
     # and this is the dial that makes Plate's weight bite (core-rules 4).
@@ -847,7 +860,8 @@ class Sim:
                            if max(0, fate_apply(power, c) - soak) >= g[1])
             return [max(reach, key=lambda g: (killp(g), -g[1]))], False
         blast = not spell.get('aimed')
-        own = self.game.armour_now()
+        # No armour: your own Blast goes through it (core-rules 11).
+        own = self.game.armour_now() if self.game.cfg.blast_armour else 0
         mine = sum(max(0, fate_apply(power, c) - own) * p for c, p in FATE_EVEN)
 
         def worth(g):
@@ -880,8 +894,9 @@ class Sim:
                     v += p * (min(d, g[1]) + 4 * (d >= g[1]))
             if self_hit:
                 # Priced where healing is priced, and at a premium when we are already hurt: the
-                # hero's own HP is the only resource in this file they cannot buy back.
-                own = self.game.armour_now()
+                # hero's own HP is the only resource in this file they cannot buy back. And no
+                # armour comes off it (core-rules 11).
+                own = self.game.armour_now() if self.game.cfg.blast_armour else 0
                 mine = sum(max(0, fate_apply(power, c) - own) * p for c, p in FATE_EVEN)
                 v -= mine * self.own_blood()
         if spell.get('heal'):
@@ -977,7 +992,7 @@ class Sim:
                 self.killp += pk
                 g[1] = 0 if pk >= .5 else g[1] - e
             if self_hit:
-                own = self.game.armour_now()
+                own = self.game.armour_now() if self.game.cfg.blast_armour else 0
                 mine = sum(max(0, fate_apply(power, c) - own) * p for c, p in FATE_EVEN)
                 self.whp -= mine
                 self.paid += mine
@@ -997,10 +1012,11 @@ class Sim:
             g[1] -= d
             self.dmg += min(d, max(0, g[1] + d))
         if self_hit:
-            # *Blast: everyone in the area -- enemies, allies and you, if you're in it.* Armour
-            # comes off it; Block does not, because a Block is a reaction to somebody else's
-            # attack and this one is the hero's own.
-            mine = max(0, landed - self.game.armour_now())
+            # *Blast: everyone in the area -- enemies, allies and you, if you're in it*, and
+            # **your own Blast ignores your armour** (core-rules 11, ruled 2026-11-27). Block does
+            # not come off it either, because a Block answers somebody else's attack.
+            own = self.game.armour_now() if self.game.cfg.blast_armour else 0
+            mine = max(0, landed - own)
             self.whp = max(0, self.whp - mine)
             self.paid += mine
             self.game.s['blast_self'] += mine

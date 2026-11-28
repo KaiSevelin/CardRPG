@@ -152,6 +152,40 @@ you arrived, took the Signature, and the school had nothing else in it.
 > level you may spend, never one you must. The real asymmetry was **availability** — Mind 12, Faith
 > 12, Shade 0, Strength 0 — and that is what these two nodes fix.
 
+> **[FOUND 2026-11-27] And the same sentence misread a Way as starved.**
+>
+> *No menu node is on any cheapest route* is a fact about the convention, not about a character —
+> and `sim/careers_sim.py` measures careers **by** that convention, because it is what "level 8"
+> means there. So the first run that could cast reported **25 of the 30 magical careers with no
+> formula a simulator can resolve**, which reads as a Way with nothing in it. What it actually
+> measured was a caster who had never spent a level on their own school's list.
+>
+> Spend one — which every one of them can do at the next level, because the menu sits directly
+> behind their title — and it is **20 of 30**; Way of Faith goes from **1 of 16** to **10**
+> ([../sim/analysis-2026-11-27.md](../sim/analysis-2026-11-27.md) §4). The ten still empty are a
+> craft (*Engineer* has no spells at all), a school that teaches only features (*Tattoo Magic*,
+> §4a's own example of why a menu is teachings rather than formulas), and eight whose lists are
+> prose, allies or deck-reading — Vax's miracles are *adjacent allies* in their entirety and
+> Household Magic's are rites. None of that is starvation; it is content a fight cannot see.
+>
+> **The lesson is about the measurement and not the graph.** A cheapest route is the right
+> definition of a level for comparing branches and the wrong one for asking what a character can
+> do, and anything that measures the second off the first will understate every Way whose content
+> lives on a menu. `careers.json` carries each career's reachable menus now, and the simulator
+> reports the route and the one extra level as separate tables.
+>
+> **And then the win rate did not move, which is the more interesting half.** Across all 54 careers
+> the extra level is worth **+0.18 points** on the mean, and nineteen of the twenty careers it
+> hands a formula to gain a **strength-1 or strength-2 utility spell** that the AI casts about
+> every other fight. One of the twenty moves at all: **Demonology**, whose menu offers *The
+> Reckoning* at **strength 5**, gains **+9.5** and becomes the best magical career in the table.
+>
+> So a menu is worth what is **big** on it rather than what is castable on it, and the thing a
+> level buys at the bottom of a school's ladder is the thing §3.4 of
+> [way-cards.md](way-cards.md) says it should be: utility. That is not a gap in the graph. It is a
+> gap in what a one-hero combat simulator can see, because utility here means a condition on an
+> enemy or something done for an ally, and those are the two things it cannot resolve.
+
 **Nothing already on a branch changed.** Every named grant is still the formula its branch was
 written around: Rain and Lightning are still two nodes six slots apart, which is the price §1.4 of
 [way-cards.md](way-cards.md) says a combo costs. A menu node is one more node on each branch, not a

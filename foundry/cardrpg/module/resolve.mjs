@@ -3899,6 +3899,43 @@ export function refusesTiming(actor, slate, { what = "that" } = {}) {
   return true;
 }
 
+/**
+ * **Everything standing in an area's footprint**  **[BUILT 2026-11-27]**
+ *
+ * core-rules 11: *Area X — hits the target square and all squares within X of it*, and the icon
+ * table says what "hits" covers: a **Blast** catches *everyone in the area — enemies, allies and
+ * you, if you're in it*, where an **Aimed** area catches *only your enemies*.
+ *
+ * None of that happened. An area was targeted by hand, `area` was read for exactly one thing — the
+ * disadvantage a ranged or area attack takes with an enemy adjacent — and nothing computed a
+ * footprint. So a player simply did not target themselves or their party, the sentence cost
+ * nothing, and the difference between the cheap icon and the dear one was decoration. It was found
+ * from the other side: `sim/combat_sim.py` had the same hole, and charging a caster for their own
+ * Blast cost the Caster starter deck 1.3 points of win rate
+ * (../../../sim/analysis-2026-11-27.md).
+ *
+ * **The aim point is the first target**, which is the smallest change that makes the rule real: the
+ * player still picks a creature, and the area is measured from the square that creature is in.
+ * Picking an empty square would want its own targeting UI and is the next thing this asks for.
+ *
+ * Returns `null` rather than an empty list when there is no canvas to measure on, so a caller can
+ * tell "nothing is in it" from "nothing can be measured" and leave the hand-picked targets alone.
+ */
+export function areaTargets(aim, size, { aimed = false, actor = null } = {}) {
+  const hub = aim?.getActiveTokens?.()[0];
+  if (!hub || !canvas?.ready) return null;
+  const out = new Set();
+  for (const token of canvas.tokens.placeables) {
+    if (!token.actor) continue;
+    const away = squaresBetween(hub, token);
+    if (away === null || away > size) continue;
+    /* Aimed spares your own side, and the caster is on it. A Blast spares nobody. */
+    if (aimed && actor && token.actor.type === actor.type) continue;
+    out.add(token.actor);
+  }
+  return [...out];
+}
+
 export async function resolveAttack(actor, {
   verb = "strike", item, mod = 0, targets = [], step = {}, ammo = null, payload = null,
   using = null
@@ -3929,7 +3966,31 @@ export async function resolveAttack(actor, {
   const before = base + mod + (shot?.mod ?? 0) + bonuses.total;
 
   const ranged = !!(line.range && line.range > 1) || !!(step.range && step.range > 1);
-  const area = !!(line.area || step.area || shot?.area);
+  const areaSize = Number(line.area || step.area || shot?.area || 0);
+  const area = !!areaSize;
+  /* Blast is the default and the cheap one (core-rules 11); Aimed spares your side. */
+  const aimed = (step.areaKind ?? line.areaKind ?? shot?.areaKind ?? "blast") === "aimed";
+  /*
+   * **The aim point, kept before the footprint replaces the target list.** `advantageFor` settles
+   * from the first target and there is only one draw, so the square the player picked has to
+   * survive being widened.
+   */
+  const aim = targets[0] ?? null;
+  if (areaSize) {
+    const caught = areaTargets(aim, areaSize, { aimed, actor });
+    if (caught) targets = caught;
+  }
+  /*
+   * **Which row in the footprint is the caster, and it is not an `===` on what was passed in.**
+   *
+   * `areaTargets` hands back `token.actor`, which is the right thing to damage -- for an
+   * **unlinked** token that is the token's own synthetic actor and not the base one. So a caster
+   * whose token is unlinked would never have matched the actor this function was called with, and
+   * *your own Blast ignores your armour* would have been a rule that fired only for linked tokens.
+   * Found by a live probe: the footprint came back *Starter Warrior, Goblin, Goblin* and the
+   * identity test on the hero was still false.
+   */
+  const myself = actor?.getActiveTokens?.()[0]?.actor ?? actor;
 
   /*
    * The combo clause. `advantage` has to be settled before the draw and there is only one draw, so
@@ -3939,8 +4000,8 @@ export async function resolveAttack(actor, {
    */
   const when = step.when?.needs ? step.when : null;
 
-  // One draw for the whole action.
-  const first = targets[0] ?? null;
+  // One draw for the whole action, aimed where the player aimed it.
+  const first = aim ?? targets[0] ?? null;
   const { mode, reasons } = advantageFor(actor, first, {
     ranged, area, when, ignoresCover: effect === "ignoresCover"
   });
@@ -4011,7 +4072,21 @@ export async function resolveAttack(actor, {
      */
     const against = who => {
       const opening = !!(when && carries(who, when.needs));
-      const hadArmor = who.system.armor ?? 0;
+      /*
+       * **Your own Blast ignores your armour**  **[RULED 2026-11-27]**
+       *
+       * You set it off and you are standing inside it rather than facing it, so there is no front
+       * to put a coat between. It exists because the half of the Blast rule that is supposed to
+       * deter you was switched off exactly where it was needed: a caster in **Plate** took
+       * `max(0, 2 - 4)` from their own Fire Wand, which is **nothing**, so the best-armoured
+       * caster in the game could stand in their own fire for free.
+       *
+       * **Narrow on purpose.** An ally caught in it keeps their coat, and nothing an area does to
+       * an enemy changes -- so this does not become a universal armour bypass competing with the
+       * eight items that buy `ignores N armor` and pay for it.
+       */
+      const ownBlast = !!areaSize && !aimed && (who === myself || who === actor);
+      const hadArmor = ownBlast ? 0 : (who.system.armor ?? 0);
       const hadBlock = who.system.blockNow ?? who.system.block ?? 0;
       const { armor, block, pierced, rounded } =
         defencesAgainst({ armor: hadArmor, block: hadBlock, pierce, step, when, opening });

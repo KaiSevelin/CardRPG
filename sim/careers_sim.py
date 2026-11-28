@@ -155,18 +155,52 @@ def spell_coverage(career, defs):
     return castable, timed, condition, prose
 
 
-def prepare(career, defs):
-    """Fill the slots with what this career can cast, cheapest first (core-rules 4).
+def menu_pick(career, defs, sources):
+    """What ONE more level buys from this career's own list (leveling.md 4a).
+
+    **The thing a cheapest route structurally cannot see.** One menu node sits behind every school,
+    every god and each martial Way -- *one formula or miracle of their choice from that source's
+    list* -- and leveling.md 4a says why none is ever on a route: *a menu is a level you may spend,
+    never one you must*, so all twenty-six are leaves nothing depends on. The first version of this
+    file therefore measured every caster with only the one or two formulas its branch names, and
+    reported **25 of 30 with nothing castable** as though it were a fact about the content.
+
+    The node offers everything from the source **cheapest first** and the player picks one. A
+    player picking for a fight takes the strongest formula the engine can resolve, because strength
+    **is** the power band (way-cards 1.4) -- and a source with nothing resolvable on it comes back
+    empty, which is the honest answer and the one worth printing.
+    """
+    held = set(career['spells'])
+    offered = []
+    for source in career.get('menus') or ():
+        offered += [defs[n] for n in sources.get(source, ()) if n not in held and n in defs]
+    castable = [sp for sp in offered if spell_record(sp)]
+    # **One pick, because one level buys one.** A few careers have two spell menus on the frontier
+    # -- Ward Magic reaches its own and Elemental Magic's -- and taking both is two levels, which
+    # would make the table compare careers at different levels. The best of what is offered.
+    if not castable:
+        return []
+    return [max(castable, key=lambda sp: (sp.get('strength') or 0, sp['name']))]
+
+
+def prepare(career, defs, sources=None):
+    """Fill the slots with what this career can cast (core-rules 4).
 
     Preparation happens between fights, so this is a loadout and never a decision in the fight.
-    Cheapest first because a slot spent is a slot gone: two strength-1 formulas beat one
-    strength-2 whenever both are castable, and nothing in the graph grants enough formulas for
-    that to be a hard choice -- 4 known is the most any career reaches against 5 or 6 slots.
+    **Strongest first**, greedily, then whatever still fits: strength is the power band, and with a
+    menu pick in hand it is the first time the order can matter at all. Every career's granted set
+    fits whole either way -- 3 of 5 slots is the fullest the graph reaches -- so this changes no
+    figure measured without `sources`.
+
+    With `sources`, the career has spent one more level on its own menu (see `menu_pick`).
     """
     slots = career.get('spellSlots') or 0
-    pairs = [(defs[n], spell_record(defs[n])) for n in career['spells']]
+    names = list(career['spells'])
+    picked = menu_pick(career, defs, sources) if sources else []
+    pairs = [(defs[n], spell_record(defs[n])) for n in names]
+    pairs += [(sp, spell_record(sp)) for sp in picked]
     pairs = [(sp, rec) for sp, rec in pairs if rec is not None]
-    pairs.sort(key=lambda t: (t[0].get('strength') or 0, t[0]['name']))
+    pairs.sort(key=lambda t: (-(t[0].get('strength') or 0), t[0]['name']))
     ready, unslotted, used = [], [], 0
     for spell, rec in pairs:
         cost = spell.get('strength') or 0
@@ -345,7 +379,8 @@ def mean(xs):
     return statistics.fmean(xs) if xs else float('nan')
 
 
-def run(career, data, encounter, fights, seed, kit=False, chassis='Warrior', magic=False):
+def run(career, data, encounter, fights, seed, kit=False, chassis='Warrior', magic=False,
+        menu=False):
     deck, spent, strain = deck_for(career, data['cards_by_name'], data['chassis'][chassis])
     opts = dict(
         name=career['title'],
@@ -368,7 +403,8 @@ def run(career, data, encounter, fights, seed, kit=False, chassis='Warrior', mag
         # The implement, the free hand, and every formula the engine can play, prepared. All three
         # together, because a Cast half with no implement and no castable formula is a dead half
         # and measuring one is measuring nothing.
-        ready, _, _, _ = prepare(career, data['spells_by_name'])
+        ready, _, _, _ = prepare(career, data['spells_by_name'],
+                                 data['sources'] if menu else None)
         opts.update(CASTER_HANDS)
         opts.update(implement=IMPLEMENT_FOR[career['way']], spells=ready)
     opts.update(encounter)
@@ -482,7 +518,7 @@ def main():
     rows = []
     for career in careers:
         own = CHASSIS_FOR[career['way']]
-        plain, kitted, owned = [], [], []
+        plain, kitted, owned, menued = [], [], [], []
         for label, enc in LADDER:
             r = run(career, data, enc, args.fights, args.seed)
             plain.append(100.0 * r['wins'] / r['fights'])
@@ -491,14 +527,21 @@ def main():
             c = run(career, data, enc, args.fights, args.seed, kit=True,
                     chassis=own, magic=True)
             owned.append(100.0 * c['wins'] / c['fights'])
+            d = run(career, data, enc, args.fights, args.seed, kit=True,
+                    chassis=own, magic=True, menu=True)
+            menued.append(100.0 * d['wins'] / d['fights'])
         steps, unmodelled, inert = coverage(career, data['cards_by_name'])
         castable, timed, condition, prose = spell_coverage(career, data['spells_by_name'])
         ready, unslotted, used, slots = prepare(career, data['spells_by_name'])
-        rows.append(dict(career=career, plain=plain, kitted=kitted, owned=owned,
+        pick = menu_pick(career, data['spells_by_name'], data['sources'])
+        rows.append(dict(career=career, plain=plain, kitted=kitted, owned=owned, menued=menued,
                          mean_win=mean(plain), mean_kit=mean(kitted), mean_own=mean(owned),
+                         mean_menu=mean(menued),
                          steps=steps, unmodelled=unmodelled, inert=inert, chassis=own,
                          castable=castable, timed=timed, condition=condition, prose=prose,
-                         used=used, slots=slots, unslotted=unslotted))
+                         used=used, slots=slots, unslotted=unslotted,
+                         menus=career.get('menus') or [],
+                         pick=[sp['name'] for sp in pick]))
 
     base = []
     for label, enc in LADDER:
@@ -512,6 +555,12 @@ def main():
             ('kitted', 'mean_kit', 'B. CAREER-APPROPRIATE KIT',
              'plus the weapon/armour its content names and the Signature features that '
              'can be expressed.'),
+            ('menued', 'mean_menu', 'D. AND ONE LEVEL ON ITS OWN LIST',
+             'C, and one level spent on the menu behind its own school or god -- *one formula of '
+             'their\nchoice, cheapest first* (leveling.md 4a). No menu node is on any career\'s '
+             'cheapest route,\nbecause a menu is a level you may spend and never one you must, so '
+             'C measures a caster who\nnever spent it. Identical to C for Shade and Strength, '
+             'whose menus offer cards rather than\nformulas and are not modelled.'),
             ('owned', 'mean_own', 'C. THE DECK THE RULES HAND IT',
              'B, and the starter deck core-rules 4 gives that Way -- Caster for Mind and '
              'Faith, with a wand\nand its formulas prepared.'
@@ -571,8 +620,9 @@ def main():
         print('\n\nFORMULAS: what the engine can cast of what the graph grants')
         print('A caster\'s table C is the DECK and the WAND. These are the formulas, and a career'
               '\nwith none castable is one measured without the thing its school is about.\n')
-        print('  %-18s %-7s %-30s %s' % ('career', 'slots', 'prepared', 'and what is not'))
-        tally = dict(castable=0, condition=0, timed=0, prose=0, known=0)
+        print('  %-18s %-7s %-26s %-22s %s'
+              % ('career', 'slots', 'prepared', 'one level buys', 'and what is not'))
+        tally = dict(castable=0, condition=0, timed=0, prose=0, known=0, picked=0)
         for r in sorted(magical, key=lambda r: (-len(r['castable']), r['career']['title'])):
             missed = []
             if r['condition']:
@@ -583,18 +633,26 @@ def main():
                 missed.append('%d prose' % len(r['prose']))
             if r['unslotted']:
                 missed.append('%d no slot' % len(r['unslotted']))
-            print('  %-18s %d/%-5d %-30s %s'
+            print('  %-18s %d/%-5d %-26s %-22s %s'
                   % (r['career']['title'], r['used'], r['slots'],
-                     ', '.join(r['castable']) or '--', ', '.join(missed) or '--'))
+                     ', '.join(r['castable']) or '--',
+                     ', '.join(r['pick']) or ('--' if not r['menus'] else 'nothing castable'),
+                     ', '.join(missed) or '--'))
             for key in ('castable', 'condition', 'timed', 'prose'):
                 tally[key] += len(r[key])
             tally['known'] += len(r['career']['spells'])
+            tally['picked'] += 1 if (r['castable'] or r['pick']) else 0
         print('\n  %d formulas granted across the %d magical careers here: %d castable, '
               '%d a condition on an enemy,\n  %d a timing that is not on a Cast menu, %d prose. '
               'The condition pile is the one worth\n  closing, and it is one job: nothing in '
               'combat_sim.py reads a condition on a goblin.'
               % (tally['known'], len(magical), tally['castable'], tally['condition'],
                  tally['timed'], tally['prose']))
+        print('  %d of the %d have something castable once ONE level goes on their own list, '
+              'against %d\n  on the cheapest route -- which is what a route cannot see rather '
+              'than what the content\n  withholds (leveling.md 4a).'
+              % (tally['picked'], len(magical),
+                 sum(1 for r in magical if r['castable'])))
 
     # The win rates, written out so `careers_offduty.py` can set them beside the ledger a fight
     # cannot see. Two currencies, one file, and no second simulation run to read either of them.
@@ -612,8 +670,10 @@ def main():
                    'baseline': {'plain': base, 'mean': mean(base)},
                    'careers': {r['career']['title']:
                                dict(plain=r['plain'], kitted=r['kitted'], owned=r['owned'],
+                                    menued=r['menued'],
                                     mean_win=r['mean_win'], mean_kit=r['mean_kit'],
-                                    mean_own=r['mean_own'], chassis=r['chassis'])
+                                    mean_own=r['mean_own'], mean_menu=r['mean_menu'],
+                                    chassis=r['chassis'], pick=r['pick'])
                                for r in rows}}, fh, indent=1)
         fh.write(chr(10))
 

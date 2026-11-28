@@ -277,6 +277,12 @@ function spellChapter() {
  * One half of a card, as a player reads it off the face: the verb, then whatever number or
  * condition the step carries. A half with nothing in it is a half the card does not have.
  */
+/** An item tag as the book writes it: capitalised, with the article it reads with. */
+const article = tag => {
+  const named = tag[0].toUpperCase() + tag.slice(1);
+  return `${/^[aeiou]/i.test(named) ? "an" : "a"} ${named} item`;
+};
+
 function half(steps) {
   if (!steps?.length) return "";
   return steps.map(s => {
@@ -292,6 +298,17 @@ function half(steps) {
     if (s.condition) {
       bits.push(`→ ${s.condition}${s.duration ? ` (${s.duration})` : ""}`);
     }
+    /*
+      * **What the half cannot be played without.**  **[BUILT 2026-11-27]**
+      *
+      * Thirteen halves carry `requires` -- a tag the item in your hand has to have, or both hands
+      * free -- and nothing in the handbook said so in any chapter. *Loose and Step* is an
+      * Archer's Signature and reads *Strike, then Move 1*, which is true of a swordsman too; the
+      * clause that makes it an archer's card was the one part not printed. The chapter that names
+      * a Signature is the worst place of all to leave it out.
+      */
+    if (s.requires?.tag) bits.push(`(needs ${article(s.requires.tag)})`);
+    if (s.requires?.bothHands) bits.push("(needs both hands)");
     if (s.when?.needs) bits.push(`when they are ${s.when.needs}`);
     return bits.filter(Boolean).join(" ");
   }).join(", then ");
@@ -303,6 +320,86 @@ function half(steps) {
  * belongs here is what you can hold.
  */
 const isCard = e => !!(e.primary?.length || e.secondary?.length || e.reaction);
+
+/**
+ * **What a Signature actually does, read off the content rather than typed again.**
+ *
+ * Chapter 20 printed the Signature's NAME and nothing else, and a reader who wanted to know what
+ * *Shoulder to Shoulder* was had to find it two hundred lines away in chapter 21 -- or in 24, or
+ * 25, or 22, because a Signature is not always a card. Of the 54 there are **24 cards, 23 spells,
+ * 6 features and 1 item**, so there was no one chapter to send anybody to.
+ *
+ * **The card branch has to print `text` as well as the steps**, and that is not a nicety: the
+ * Assassin's *One Opening*, the Cutpurse's *Lift* and the Gambler's *Double or Nothing* are all
+ * `Strike / Move 1` and nothing else. Their whole difference is the sentence. Rendering the steps
+ * alone would have printed three different titles as the same card.
+ */
+function signatureDoes(name) {
+  const e = SIGNATURES_BY_NAME.get(name);
+  if (!e) return { kind: "", does: "" };
+  if (isCard(e)) {
+    const bits = [];
+    if (e.primary?.length) bits.push(half(e.primary));
+    if (e.secondary?.length) bits.push(half(e.secondary));
+    if (e.reaction) {
+      /*
+       * **And what the reaction does, when it is the whole card.** Two Signatures print no halves
+       * at all -- Ward Magic's *Unmake* and the Eternal Spirit's *Breath of the Spirit* -- so a
+       * line that named the reaction and stopped said *Unmake: Unmake*, which is the reader's own
+       * question handed back to them. `REACTION_TEXT` is the sentence chapter 6 prints.
+       */
+      const what = bits.length ? "" : REACTION_TEXT[e.reaction];
+      bits.push(`\u26a1 ${say(CARDRPG.reactions[e.reaction]?.label)}`
+        + (what ? ` -- ${cell(what)}` : ""));
+    }
+    /* Spent and Strain are the two prices a half can print, and both change the card entirely. */
+    for (const [which, cost] of Object.entries(e.costs ?? {})) {
+      const paid = cost?.spent ? "Spent" : cost?.strain ? `Strain ${cost.strain}` : "";
+      if (paid) bits.push(`${paid} on the ${which}`);
+    }
+    const note = cell(e.text);
+    return { kind: "card", does: [bits.join(" \u00b7 "), note].filter(Boolean).join(". ") };
+  }
+  if (e.verbs) {
+    return { kind: "item", does: Object.entries(e.verbs)
+      .map(([v, l]) => `${v} ${l.value}`).join(", ") };
+  }
+  if (!e.effect) return { kind: "feature", does: cell(e.text || e.description) };
+  /*
+   * **A spell's `description` is its flavour, and on its own it is not an answer.** Valtor's *The
+   * Drum* describes itself as *it starts somewhere behind you and it is already in your arms*,
+   * which is a good sentence and does not say **+3 on your next Strike**. So the mechanical part
+   * comes first: the strength, the effect read the same way a card's steps are read, the effect's
+   * own text where it has one, and the price. A spell Signature is the one kind whose cost is
+   * printed on the spell rather than in the Spends column.
+   */
+  const bits = [];
+  if (e.strength !== null && e.strength !== undefined) bits.push(`strength ${e.strength}`);
+  const mech = half([e.effect]);
+  if (mech) bits.push(mech);
+  if (e.effect.text) bits.push(cell(e.effect.text));
+  for (const [purse, label] of [["health", "Health"], ["taint", "Taint"],
+    ["skillCards", "skill cards"], ["wilds", "Wild"]]) {
+    if (e.cost?.[purse]) bits.push(`costs ${e.cost[purse]} ${label}`);
+  }
+  return { kind: "spell",
+    does: [bits.join(" \u00b7 "), cell(e.description)].filter(Boolean).join(". ") };
+}
+
+/**
+ * Every array a Signature can be defined in. Four signature lists, plus the pools and the item
+ * catalogue, because a title may be named for a pool card or for a piece of gear.
+ */
+const SIGNATURES_BY_NAME = (() => {
+  const out = new Map();
+  for (const key of ["SHADE_SIGNATURES", "STRENGTH_SIGNATURES", "MIND_SIGNATURES",
+    "FAITH_SIGNATURES", "COMMON_POOL", "SHADE_POOL", "STRENGTH_POOL", "MIND_POOL", "FAITH_POOL",
+    "MIND_CARDS", "FAITH_CARDS", "WAY_CARDS", "FORMULAS", "SHADOW_FORMULAS", "ITEMS", "FEATURES"]) {
+    for (const e of CONTENT[key] ?? []) if (e?.name && !out.has(e.name)) out.set(e.name, e);
+  }
+  return out;
+})();
+
 
 function actionChapter() {
   const shelves = [
@@ -836,6 +933,25 @@ function titleChapter() {
         + `| ${cell(n.signature ?? "none")} | ${tactic} |`);
     }
     out.push("");
+    /*
+     * **And then what each of them is, in two clauses.** The first is derived -- what the
+     * Signature does, off the content -- and the second is authored, in `TITLE_PLAY`, because
+     * *what is this build for* is a judgement and nothing can compute it. The table above is the
+     * map; this is the only place in the book that answers why anybody would take one.
+     */
+    out.push(`#### What each Signature does, and what the build is for`, "");
+    for (const n of ts) {
+      const { kind, does } = signatureDoes(n.signature);
+      const play = CONTENT.TITLE_PLAY.find(p => p.title === n.title);
+      /*
+       * **`--` and not an em dash.** The suite holds the handbook to four typographic rules
+       * and the first is **no em dashes**, on the grounds that they read as machine-written.
+       * Fifty-six of them arrived here in one commit, which is exactly the case that pin
+       * exists for: prose written by hand is reviewed and three hundred generated rows are not.
+       */
+      const lead = `**${n.title}** -- ***${n.signature}***${kind ? ` (${kind})` : ""}`;
+      out.push(`${lead}: ${does || "—"}`, "", plain(play?.text ?? ""), "");
+    }
   }
   return out;
 }
