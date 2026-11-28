@@ -1500,6 +1500,51 @@ const limit = /Your \*\*limit\*\* is \*\*(\d+) kg\*\*/.exec(
 check("carry limit matches core-rules", /CARRY_LIMIT = (\d+)/.exec(simSource)?.[1], limit);
 
 /*
+ * **Overloaded charges one currency, and it is the one the engine charges.**  **[FIXED 2026-11-28]**
+ *
+ * The 2026-11-12 ruling says **2 stamina** and explains why it is no longer cards -- *it always
+ * said stamina and used to charge it in cards, because the deck was the stamina; now that they are
+ * two things, the sentence charges the one it names*. Three places had not caught up: section 4's
+ * carry table, section 8's condition summary, and two of the ruling's own bullets, all of which
+ * still charged **2 random cards**. A reader met the retired version twice before reaching the
+ * live one.
+ *
+ * It was written down as an open decision for a day and it was not one. `data/actors.mjs` takes
+ * the stamina and **nothing in the system Spends a card for it**, so the engine had already
+ * decided; only the prose disagreed.
+ *
+ * **And this suite was green throughout, which is the part worth understanding.** Two checks
+ * already held the stamina reading -- *Overloaded's price, in core-rules* further down, and *because
+ * Overloaded taxes stamina instead* in the manifest section. Both read the **ruling's own
+ * sentence**, which was correct the whole time. Nothing read the carry table or the condition
+ * summary, so the two cells that were wrong were the two nothing looked at: a pin on the paragraph
+ * does not hold the summary of the paragraph.
+ *
+ * So the check below counts the retired currency across the **whole document** rather than
+ * checking one more sentence, which is the only shape that would have caught this -- and the
+ * engine read beside it is what makes the answer non-negotiable: a card cost would have to appear
+ * in `actors.mjs` before it could be true anywhere in the book.
+ */
+const overloadedDoc = fs.readFileSync(path.join(root, "../../rules/core-rules.md"), "utf8");
+/* Off the source and not off `CARDRPG`, which is declared hundreds of lines below this
+ * section -- a pin above the const it reads throws on load, which this suite has learned
+ * three times now. */
+check("what Overloaded costs, in config",
+  /overloadedStamina: (\d+)/.exec(
+    fs.readFileSync(path.join(root, "module/config.mjs"), "utf8"))?.[1], "2");
+check("and the engine takes it off the ceiling",
+  /this\.stamina\.max = Math\.max\(1, this\.stamina\.max - d\.overloadedStamina\)/
+    .test(fs.readFileSync(path.join(root, "module/data/actors.mjs"), "utf8")) ? "yes" : "no",
+  "yes");
+check("places in core-rules still charging it in cards",
+  (overloadedDoc.match(/2 random cards are Spent/g) ?? []).length, 0);
+/* And said in stamina wherever Overloaded's price is given: the ruling, the carry table and the
+ * condition summary, which is three. */
+check("and places that charge it in stamina",
+  (overloadedDoc.match(/Overloaded[^|\n]*2 stamina|2 stamina[^|\n]*load is on your back/g) ?? [])
+    .length >= 2 ? "at least two" : "fewer", "at least two");
+
+/*
  * **The spell engine's copy of the content**  **[BUILT 2026-11-27]**
  *
  * `sim/combat_sim.py` can cast now, which means two more hand-transcriptions of content live in
@@ -22795,7 +22840,10 @@ readFiles.set("decksSource", decksSource);
 /* 88 since 2026-11-27: `module/content/title-play.mjs`, which is what each specialization is
  * FOR. The handbook named every Signature and explained none of them, and said nothing anywhere
  * about what a build was good at. */
-check("files this suite greps by name", readFiles.size, 88);
+/* 89 since 2026-11-28: `module/data/actors.mjs`, read to hold what Overloaded actually
+ * charges. The ruling said stamina, three prose spots said cards, and the engine was the thing
+ * that settled it — so the engine is what the check reads. */
+check("files this suite greps by name", readFiles.size, 89);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {

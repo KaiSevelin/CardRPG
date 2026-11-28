@@ -1030,7 +1030,7 @@ action, so they are **not** bonus-grouped (section 5).
 |---|---|---|
 | Up to your limit | **Unburdened** | — |
 | Over it, up to half again (41–60 kg) | **Burdened** | **Slowed**, and disadvantage on 🌀 Agility and 🌑 Shadow checks |
-| Over half again, up to double (61–80 kg) | **Overloaded** | Burdened, **and 2 random cards are Spent** |
+| Over half again, up to double (61–80 kg) | **Overloaded** | Burdened, **and 2 stamina** for as long as the load is on your back |
 | Over double (81 kg +) | — | You can't pick it up. Make two trips. |
 
 Neither state has a duration: both last until you drop enough weight. You can shed a load at any
@@ -1062,38 +1062,39 @@ helpless — just easy to catch.
   **−2.0 / −5.7 / −10.2 / −8.3**, against the old reading's measured −2.3 / −6.5 / −11.2 / −8.5. The
   number did not move; only the currency did.
   ([../sim/analysis-2026-11-12.md](../sim/analysis-2026-11-12.md) §5.)
-- **Random, not chosen.** A pack doesn't care which of your tricks it costs you. Choosing would let
-  you shed your dead cards, which is a reward for being overloaded rather than a price — and it
-  would turn every pickup into a deck-pruning decision.
-- **Where they come from.** Normally you pick up a load between fights, when your deck is whole. If
-  you become Overloaded during a fight, take the cards from your **draw pile**; if that is empty,
-  from your hand.
+- **Nothing is chosen and nothing is taken from a pile**, and both of those used to need saying.
+  While the cost was cards it mattered *which* cards and *where from*: picking them would have let
+  you shed your dead ones, which is a reward for being overloaded rather than a price, and a load
+  taken up mid-fight had to come off the draw pile and then the hand. **A stamina cost has neither
+  question.** It is two off the ceiling while the weight is on you and back when you put it down,
+  so there is no pile to take from and nothing to choose.
 - Two is a measured number, not a guess. In simulation two random cards off a 16-card deck cost
   **7.5 points of win rate in a hard fight and 2.5 in a moderate one**; three starts taking the
   fight away. That difficulty-scaling is the point — hauling loot through a quiet dungeon is nearly free,
   hauling it into a real fight is a coin flip. See
   [../sim/analysis-2026-10-27.md](../sim/analysis-2026-10-27.md).
 
-> **[OPEN 2026-11-28] Two tables and one bullet still charge the old currency.** This ruling says
-> Overloaded costs **2 stamina** and the bullet above it says why: *it always said stamina and used
-> to charge it in cards, because the deck was the stamina; now that they are two things, the
-> sentence charges the one it names.* Three places were not changed with it:
+> **[CLOSED 2026-11-28] Three places charged the old currency, and the engine was not one of
+> them.** This ruling has said **2 stamina** since 2026-11-12, and §4's carry table, §8's condition
+> summary and two of this ruling's own bullets still charged **2 random cards** — so a reader met
+> the retired version twice before reaching the live one, and the ruling carried an explanation of
+> a mechanism it had replaced.
 >
-> | Where | What it still says |
-> |---|---|
-> | §4's carry table | *Burdened, **and 2 random cards are Spent*** |
-> | §8's condition summary | *Burdened, and 2 random cards are Spent* |
-> | **this ruling's own *Where they come from* bullet** | which draw pile the cards are taken from |
+> **It was recorded as a decision for a day and it was not one.** `data/actors.mjs` does
+> `stamina.max -= overloadedStamina`, `config.mjs` sets that to **2**, and **nothing anywhere in
+> the system Spends a card for being Overloaded**. The engine, the ruling and the measurement all
+> said stamina; only the prose disagreed, so this was three stale cells rather than a choice about
+> the price. All three now say what the engine does, and a check holds the three of them together.
 >
-> So a reader meets the card version twice before reaching the stamina version, and the ruling
-> contains an explanation of a mechanism it replaced. `combat_sim.py` carries both readings behind
-> a dial and its comment is explicit that the stamina one is the rule.
+> Found while writing a title's play note for the **Ironclad**, the one build that is Overloaded on
+> purpose — the note had repeated the stale version in good faith.
 >
-> **Which to keep is a decision and not a typo**, which is why this is open rather than fixed: the
-> measured costs are not the same — two cards Spent is worth about nothing (**−0.1 / −0.2 / +0.8 /
-> −0.5**) and two stamina off fourteen is worth **−2.0 to −10.2** — so the choice is the price of
-> being Overloaded, not the wording of it. Found while writing a title's play note, which had
-> repeated the stale version in good faith.
+> **[OPEN] The simulator still plays the pre-ruling game by default**, and that is a real decision
+> rather than a stale cell. `sim/combat_sim.py` has `stamina = 0`, which means *the deck is the
+> stamina* and Overloaded spends two cards; the figures above say that costs about **nothing** where
+> two stamina costs **−2.0 to −10.2**. Turning the default on would move every number the file has
+> published, so it is worth doing deliberately and re-measuring rather than as a side effect of
+> tidying this ruling.
 
 ### Weights
 
@@ -1640,7 +1641,7 @@ or Slowed (1) on a partial.*
 | **Disarmed** | Blocks ⇄ Ready, and ⚔ with the disarmed item. You cannot simply draw another: Ready is the verb it takes away. |
 | **Compelled** | You must spend your **primary** attacking whoever compelled you. Everything else about your turn is yours. |
 | **Burdened** | Over your carry limit: Slowed, and disadvantage on 🌀 Agility and 🌑 Shadow checks. No duration – it lasts until you drop weight (section 4). |
-| **Overloaded** | Over half again your limit: Burdened, and 2 random cards are Spent. No duration (section 4). |
+| **Overloaded** | Over half again your limit: Burdened, and **2 stamina** while the load is on you. No duration (section 4). |
 | **Blessed / Cursed** | See fate deck (no duration – they last until the card is drawn). |
 
 ### Shake Off
