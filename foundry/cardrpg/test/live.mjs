@@ -2521,6 +2521,81 @@ async function probes(page) {
   });
 
   /*
+   * **A transformation quarantines a card that is in the player's hand.**  [BUILT 2026-11-28]
+   *
+   * **The transformation had no live coverage whatsoever** -- `grep -n "ransform" test/live.mjs`
+   * found nothing -- and it is a subsystem that moves a player's own cards out of play and is
+   * supposed to put every one of them back.
+   *
+   * What it is pointed at: a card **in hand** leaves a shadow behind. Foundry keeps the original
+   * in its home deck and marks it drawn, so the action deck lists the originals of everything the
+   * player is holding, and `quarantineCards` visits the hand first and the deck second. Reading
+   * `stack.cards` therefore found each held card twice, and the second was not a second copy:
+   * `pass` refuses a drawn card out of a deck **for the whole call**, the shadow was flagged
+   * before that so `endTransformation` would never clear it, and it was counted so the chat card
+   * over-reported.
+   *
+   * **Latent rather than live**, and worth saying: no card in the content carries a `shape` step,
+   * so nothing a player can play reaches this. The probe writes the step it needs, which is what a
+   * probe is for -- the next card to carry one would have walked straight into it.
+   */
+  await probe("a transformation quarantines a card that is in hand", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const resolve = await import("/systems/cardrpg/module/resolve.mjs");
+      const { hero, deckOf } = LIVE;
+      const FORM = "transformation";
+
+      /* The tray is one object for the whole run and so is the hero: an earlier probe may have
+       * left a form on. */
+      if (hero.getFlag("cardrpg", FORM)) await resolve.endTransformation(hero);
+
+      const deck = deckOf(hero, "action");
+      const hand = deckOf(hero, "actionHand");
+      const shelf = deckOf(hero, "quarantine");
+      if (!deck || !hand || !shelf) return [["the hero has the three stacks this needs", false, true]];
+      if (!hand.cards.size) return [["the hero is holding a card to quarantine", false, true]];
+
+      const name = hand.cards.contents[0].name;
+      /* **Counted, not assumed.** The quarantine filter is by NAME and the starter deck carries
+       * three copies of a Strike, so a hand very often holds two of the chosen name. The first
+       * version of this probe expected one and read two, which is the filter working. */
+      const held = hand.cards.filter(c => c.name === name).length;
+      const shadows = deck.cards.filter(c => c.name === name && c.drawn).length;
+
+      let threw = "none";
+      try {
+        await resolve.resolveShape(hero, {
+          step: { shape: { transformation: "Doomfly", quarantine: { cards: [name] } } }
+        });
+      } catch (err) { threw = err.message; }
+
+      const onShelf = shelf.cards.filter(c => c.name === name).length;
+      const leftInHand = hand.cards.filter(c => c.name === name).length;
+      const flaggedShadow = deck.cards
+        .filter(c => c.name === name && c.getFlag("cardrpg", FORM)).length;
+      const wore = !!hero.getFlag("cardrpg", FORM);
+
+      await resolve.endTransformation(hero);
+      const back = deckOf(hero, "actionHand").cards.filter(c => c.name === name).length;
+      const shelfAfter = deckOf(hero, "quarantine").cards.size;
+      const stillWorn = !!hero.getFlag("cardrpg", FORM);
+
+      return [
+        ["the held card is shadowed in its home deck", shadows >= 1, true],
+        ["transforming does not throw", threw, "none"],
+        ["and the form goes on", wore, true],
+        ["every held copy is on the quarantine shelf", onShelf, held],
+        ["and is out of the hand", leftInHand, 0],
+        ["the shadow in the deck is not flagged", flaggedShadow, 0],
+        ["ending it puts every one of them back in the hand", back, held],
+        ["and leaves the shelf empty", shelfAfter, 0],
+        ["and takes the form off", stillWorn, false]
+      ];
+    });
+  });
+
+  /*
    * **A Blast fills its footprint, and it burns the caster.**  [BUILT 2026-11-27]
    *
    * core-rules 11 says an Area *hits the target square and all squares within X of it*, and the

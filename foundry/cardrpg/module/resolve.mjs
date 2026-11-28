@@ -2556,12 +2556,31 @@ async function quarantineCards(actor, filter) {
   const moved = [];
   for (const which of ["actionHand", "action"]) {
     const stack = deckOf(actor, which);
-    const hits = [...(stack?.cards ?? [])].filter(c => names.includes(c.name));
+    /*
+     * **`available`, not `cards`, and `move`, not `pass`.**  **[FIXED 2026-11-28]**
+     *
+     * A card in hand leaves a **shadow** behind: Foundry keeps the original in its home deck and
+     * marks it drawn -- `if (card.isHome && to.type !== "deck") fromUpdate.push({ drawn: true })`.
+     * So the action deck always lists the originals of everything the player is holding, and this
+     * loop visits the hand first and the deck second.
+     *
+     * Reading `stack.cards` therefore found each held card **twice**, and the second was not a
+     * second copy to quarantine. Three things went wrong with it and only the first was visible:
+     * `pass` refuses a drawn card out of a deck **for the whole call**, so a transformation whose
+     * list named a card in hand threw and took the whole transformation with it; the shadow was
+     * flagged `transformation` before that, and `endTransformation` sweeps the **shelf**, so the
+     * flag would have been left on a card that never moved; and it was counted, so the chat card
+     * reported a quarantine of two where one card went.
+     *
+     * `available` is the predicate that answers *is it really there* -- the same one `move`,
+     * `topOf` and `moveRandom` use -- so the shadow is not flagged, not counted and not moved.
+     */
+    const hits = available(stack).filter(c => names.includes(c.name));
     for (const card of hits) {
       await card.setFlag("cardrpg", FORM_FLAG, which);
       moved.push(card.name);
     }
-    if (hits.length) await stack.pass(shelf, hits.map(c => c.id), { chatNotification: false });
+    if (hits.length) await move(stack, shelf, hits.map(c => c.id));
   }
   return moved;
 }
@@ -2592,7 +2611,9 @@ export async function endTransformation(actor) {
     if (!home) continue;
     returned.push(card.name);
     await card.unsetFlag("cardrpg", FORM_FLAG);
-    await shelf.pass(home, [card.id], { chatNotification: false });
+    /* The same door on the way back. The shelf is a pile so `pass` would not have refused it,
+     * but one mover means one set of rules about `drawn` and `reserved`. */
+    await move(shelf, home, [card.id]);
   }
 
   await actor.unsetFlag("cardrpg", FORM_FLAG);
